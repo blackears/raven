@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : menuText_en.xml.xml
+    Created on : October 9, 2010, 10:29 AM
+    Author     : kitfox
+    Description:
+        Purpose of the document follows.
+-->
+
+<textTable>
+  <string name="inv">
+    库存
+  </string>
+  <string name="save">
+    保存游戏
+  </string>
+  <string name="yes">
+    是的
+  </string>
+  <string name="no">
+    无
+  </string>
+  <string name="quit">
+    退出比赛？
+  </string>
+  <string name="time">
+    时间：{0}
+  </string>
+  <string name="score">
+    评分：{0}
+  </string>
+  <string name="ch1">
+    一个新的地平线
+  </string>
+  <string name="ladder_nm">
+    阶梯
+  </string>
+  <string name="ladder_de">
+    一个强大的铝梯。
+  </string>
+</textTable>

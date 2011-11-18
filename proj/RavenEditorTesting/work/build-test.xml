@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="RavenTesting" default="generate-manual" basedir=".">
+
+    <target name="init">
+    </target>
+
+    <target name="generate-manual" depends="init">
+        <taskdef name="buildHelp" classname="com.kitfox.raven.util.help.HelpBuilderAnt">
+            <classpath>
+                <pathelement path="${javac.classpath}"/>
+            </classpath>
+        </taskdef>
+
+        <buildHelp dest="../gen/manual" root="../doc/manual/helpIndex.xml"
+            css="../doc/manual/style.css">
+        </buildHelp>
+    </target>
+
+
+</project>

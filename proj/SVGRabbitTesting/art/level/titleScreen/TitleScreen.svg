@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="480"
+   height="320"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.0 r9654"
+   sodipodi:docname="titleScreen.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#2e2e2e"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="1"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.04375"
+     inkscape:cx="274.97006"
+     inkscape:cy="160"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1119"
+     inkscape:window-height="638"
+     inkscape:window-x="139"
+     inkscape:window-y="29"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-732.36218)">
+    <image
+       y="872.27539"
+       x="30.646702"
+       id="image3026"
+       xlink:href="exhaust2.png"
+       height="67"
+       width="92" />
+    <image
+       y="871.31732"
+       x="29.688625"
+       id="image3015"
+       xlink:href="exhaust1.png"
+       height="67"
+       width="92" />
+    <image
+       y="799.56873"
+       x="61.85928"
+       id="image2993"
+       xlink:href="spaceship.png"
+       height="199"
+       width="317" />
+    <image
+       y="739.67957"
+       x="354.47604"
+       id="image3004"
+       xlink:href="meteor.png"
+       height="108"
+       width="115" />
+    <image
+       y="760.89514"
+       x="189.03294"
+       id="image3037"
+       xlink:href="star1.png"
+       height="10"
+       width="9" />
+    <image
+       y="858.53583"
+       x="370.02695"
+       id="image3048"
+       xlink:href="star2.png"
+       height="14"
+       width="13" />
+    <image
+       y="834.66754"
+       x="244.60179"
+       id="image3059"
+       xlink:href="star3.png"
+       height="10"
+       width="9" />
+    <image
+       y="766.14368"
+       x="296.25449"
+       id="image3070"
+       xlink:href="star4.png"
+       height="11"
+       width="13" />
+    <image
+       y="993.16754"
+       x="167.41318"
+       id="image3081"
+       xlink:href="star5.png"
+       height="13"
+       width="12" />
+    <image
+       y="1019.994"
+       x="35.197617"
+       id="image3092"
+       xlink:href="star6.png"
+       height="13"
+       width="12" />
+    <image
+       y="796.30231"
+       x="49.110786"
+       id="image3103"
+       xlink:href="star7.png"
+       height="12"
+       width="11" />
+    <image
+       y="958.88318"
+       x="282.21255"
+       id="image3114"
+       xlink:href="../../cursor/handPointerRight.png"
+       height="26"
+       width="43" />
+    <rect
+       style="fill:#ffffff;fill-opacity:0;stroke:#ffffff;stroke-width:4;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect3117"
+       width="197.36517"
+       height="98.682632"
+       x="274.01193"
+       y="943.14062"
+       ry="18.203592" />
+    <text
+       xml:space="preserve"
+       style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       x="334.37125"
+       y="980.47302"
+       id="textNewGame"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3889"
+         x="334.37125"
+         y="980.47302">New Game</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       x="335.00406"
+       y="1020.7125"
+       id="textContinue"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3893"
+         x="335.00406"
+         y="1020.7125">Continue</tspan></text>
+    <image
+       y="999.12268"
+       x="282.21255"
+       id="image3114-6"
+       xlink:href="../../cursor/handPointerRight.png"
+       height="26"
+       width="43" />
+    <image
+       y="849.03882"
+       x="436.21854"
+       id="image3059-5"
+       xlink:href="star3.png"
+       height="10"
+       width="9" />
+    <image
+       y="919.93701"
+       x="348.07486"
+       id="image3059-9"
+       xlink:href="star3.png"
+       height="10"
+       width="9" />
+    <image
+       y="1016.7036"
+       x="201.48802"
+       id="image3059-6"
+       xlink:href="star3.png"
+       height="10"
+       width="9" />
+    <image
+       y="872.03284"
+       x="388.31436"
+       id="image3037-4"
+       xlink:href="star1.png"
+       height="10"
+       width="9" />
+    <image
+       y="987.00293"
+       x="156.4581"
+       id="image3037-40"
+       xlink:href="star1.png"
+       height="10"
+       width="9" />
+  </g>
+</svg>

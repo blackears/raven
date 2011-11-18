@@ -1,0 +1,62 @@
+SCRIPT
+======
+
+// Vampire lord is abducting townsfolk to use them in chimeric experiments.  Draws out their lifeforce and uses them to make undead golems.
+
+// Lord of Oak Manor has recently aquired an artifact that lets him extract chi.
+
+Hero & friends break into Manor after one of their friends goes missing.  Suspect lord is behind it.
+
+// Rumors of strange lights at night, strange contraptions
+
+Lord runs a sheep & wool business.  Employs most of town.  Folks reluctant of speaking ill of lord.
+
+On enterting manor, discover many booby traps & were creatures.
+
+Discover townsfolk serving as gurads have been augmented and no longer controltheir own actions.
+
+---
+
+//Bobby is young man, protagonist
+
+Bobby is preparing wagon of wool for shipping.  Talk with Gwen, sweetheart.  Set up date for that evening for a moonlight boat ride.
+
+Ralph is part of Lord's guard, also fancies Gwen.  Bullies Bobby, tells Gwen that Lord had specially requested for her to see him.  Gwen leaves with Ralph.
+
+That evening, Gwen does not appear.  Is attacked by wild beast by lake edge.  Bobby discovers that Gwen has not returned from Oak manor.  Goes to investigate.
+
+Sees guards milling about outside.  Finds water duct, removes grate, and slips into keep.
+
+...
+
+Dungeon below keep has missing villagers, travelers who have been captured by monsters in woods.  
+
+Doctor drains life energy from prisoners and transfers energy to golems.  
+
+Helps prisoner escape.  
+
+//Doctor researching energy properties for Lord
+
+...
+
+
+
+...
+
+Boddy hears rattling in pantry cupboard and investigates.  Expects to find monster.  Finds young boy hiding.  Boy is kitchen helper and ordinarily washes pots and helps prepare food.  Asks boy to help him search.  Boy initially refuses, but after they are attacked, decides it's better to stick with Bobby.  (white mage)
+
+...
+
+Lord chose Gwen based on astrology.  Determined that she posesses a spirit he can us to bind open the gates to a sprit realm in a ceremony held during an upcoming lunar eclipse.  Is holding her in a trance in tower.  Needs someone pure of soul to enter holy land and retrieve philosopher's stone.
+
+As Gwen returns from holy land, shakes off trance.  Relizes what is going on, hurls artifact from tower.  Doctor falls after it.  However, Lord gathers pieces.  Retreats to inner sanctum where he starts to revive original body.  Gwen joins party.  (black mage)
+
+...
+
+Castle guards have been turned into zombies.  Fight zombie Ralph en route to sanctum.
+
+Fight Lord as boss monster in inner sanctum.
+
+Retrieve artifact that has been reassembed, but most of which has crumbled away.  Only a trace of it's power remains.  Bring back to village.
+
+End: Gwen and Boddy rowing on lake under moon.

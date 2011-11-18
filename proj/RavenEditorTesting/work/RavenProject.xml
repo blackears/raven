@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : RavenProject.xml
+    Created on : February 22, 2011, 3:45 PM
+    Author     : kitfox
+    Description:
+        Purpose of the document follows.
+-->
+
+<RavenProject  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+   xmlns='http://xml.kitfox.com/schema/RavenProjectSchema'
+   xsi:schemaLocation='http://xml.kitfox.com/schema/RavenProjectSchema ../../RavenUtil/build/classes/com/kitfox/raven/util/project/RavenProjectSchema.xsd'>
+
+    <exportSourceDir>../gen/src</exportSourceDir>
+    <exportResourceDir>../gen/res</exportResourceDir>
+<!--
+    <svgFonts>
+        <font family="sans">
+            <characters>abc123</characters>
+            <stringTables dir="stringTables">
+                <includes name="**/*.properties"/>
+            </stringTables>
+        </font>
+    </svgFonts>
+-->
+</RavenProject>

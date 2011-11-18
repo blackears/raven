@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://xml.kitfox.com/ns/RavenEditorPreferences"
+    xmlns:tns="http://xml.kitfox.com/ns/RavenEditorPreferences"
+    elementFormDefault="qualified">
+    <xsd:complexType name="RavenEditorPreferencesType">
+        <xsd:sequence>
+            <xsd:element name="recentFiles" type="tns:RecentFilesType"></xsd:element>
+            <xsd:element name="views" type="tns:ViewsType"></xsd:element>
+            <xsd:element name="toolProperties" type="tns:PropertiesSetType"></xsd:element>
+            <xsd:element name="viewProperties" type="tns:PropertiesSetType"></xsd:element>
+            <xsd:element name="importerProperties" type="tns:PropertiesSetType"></xsd:element>
+            <xsd:element name="exporterProperties" type="tns:PropertiesSetType"></xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="RavenEditorPreferences" type="tns:RavenEditorPreferencesType"></xsd:element>
+    <xsd:complexType name="RecentFilesType">
+        <xsd:sequence>
+            <xsd:element name="file" type="tns:FileType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="FileType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:anyURI"/>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="ViewLayoutType">
+        <xsd:sequence>
+            <xsd:element name="root" type="tns:ViewDockType" minOccurs="1" maxOccurs="1"></xsd:element>
+            <xsd:element name="window" type="tns:ViewWindowType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="ViewsType">
+        <xsd:sequence>
+            <xsd:element name="viewLayout" type="tns:ViewLayoutType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+            <xsd:element name="mainFrame" type="tns:MainFrameType"></xsd:element>
+            <xsd:element name="workingLayout" type="tns:ViewLayoutType"></xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="MainFrameType">
+        <xsd:sequence/>
+        <xsd:attribute name="x" type="xsd:int"/>
+        <xsd:attribute name="y" type="xsd:int"/>
+        <xsd:attribute name="width" type="xsd:int"/>
+        <xsd:attribute name="height" type="xsd:int"/>
+        <xsd:attribute name="maximized" type="xsd:boolean"/>
+    </xsd:complexType>
+    <xsd:complexType name="ViewDockSplitType">
+        <xsd:complexContent>
+            <xsd:extension base="tns:ViewDockType">
+                <xsd:sequence>
+                    <xsd:element name="positions" type="tns:DirectionType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+                    <xsd:element name="children" type="tns:ViewDockType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+                    <xsd:element name="left" type="tns:ViewDockType"></xsd:element>
+                    <xsd:element name="right" type="tns:ViewDockType"></xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="divider" type="xsd:int"/>
+                <xsd:attribute name="vertical" type="xsd:boolean"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="ViewDockType"></xsd:complexType>
+    <xsd:simpleType name="DirectionType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="center"/>
+            <xsd:enumeration value="left"/>
+            <xsd:enumeration value="right"/>
+            <xsd:enumeration value="top"/>
+            <xsd:enumeration value="bottom"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="ViewDockTabbedType">
+        <xsd:complexContent>
+            <xsd:extension xmlns:tns="http://xml.kitfox.com/ns/RavenEditorPreferences" base="tns:ViewDockType">
+                <xsd:sequence>
+                    <xsd:element name="dockables" type="tns:ViewDockableContentType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="ViewDockableContentType">
+        <xsd:sequence/>
+        <xsd:attribute name="class" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="ViewWindowType">
+        <xsd:sequence>
+            <xsd:element name="root" type="tns:ViewDockType"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="x" type="xsd:int"/>
+        <xsd:attribute name="y" type="xsd:int"/>
+        <xsd:attribute name="width" type="xsd:int"/>
+        <xsd:attribute name="height" type="xsd:int"/>
+    </xsd:complexType>
+    <xsd:complexType name="PropertyType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+                <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="PropertiesType">
+        <xsd:sequence>
+            <xsd:element name="property" type="tns:PropertyType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="class" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="MenuEntryType"></xsd:complexType>
+    <xsd:complexType name="MenuEntryGroupType">
+        <xsd:complexContent>
+            <xsd:extension xmlns:tns="http://xml.kitfox.com/ns/RavenEditorPreferences" base="tns:MenuEntryType">
+                <xsd:sequence>
+                    <xsd:element name="child" type="tns:MenuEntryType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="MenuEntrySeparatorType">
+        <xsd:complexContent>
+            <xsd:extension xmlns:tns="http://xml.kitfox.com/ns/RavenEditorPreferences" base="tns:MenuEntryType"></xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="MenuEntryActionProviderType">
+        <xsd:complexContent>
+            <xsd:extension xmlns:tns="http://xml.kitfox.com/ns/RavenEditorPreferences" base="tns:MenuEntryType">
+                <xsd:sequence/>
+                <xsd:attribute name="class" type="xsd:string"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="MenuEntryListProviderType">
+        <xsd:complexContent>
+            <xsd:extension xmlns:tns="http://xml.kitfox.com/ns/RavenEditorPreferences" base="tns:MenuEntryType">
+                <xsd:sequence/>
+                <xsd:attribute name="class" type="xsd:string"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="MenuLayoutType">
+        <xsd:sequence>
+            <xsd:element name="child" type="tns:MenuEntryGroupType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="MenuLayout" type="tns:MenuLayoutType"></xsd:element>
+    <xsd:complexType name="PropertiesSetType">
+        <xsd:sequence>
+            <xsd:element name="properties" type="tns:PropertiesType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>
+
+
+
+

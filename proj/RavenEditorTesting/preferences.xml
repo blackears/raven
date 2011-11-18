@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<RavenEditorPreferences xmlns="http://xml.kitfox.com/ns/RavenEditorPreferences">
+    <recentFiles>
+        <file>C:\dev\kitfox.com\gameTools4\proj\RavenEditorTesting\work\testManyShapes.raven</file>
+        <file>C:\dev\kitfox.com\gameTools4\proj\RavenEditorTesting\work\testShapes.raven</file>
+        <file>C:\dev\hyena\adventure\art\level\titleScreen.xml</file>
+        <file>C:\dev\kitfox.com\gameTools4\proj\TileWorld\work\ellipse.raven.raven</file>
+        <file>C:\dev\hyena\adventure\art\level\villageMarket.xml</file>
+        <file>C:\dev\kitfox.com\gameTools4\proj\TileWorld\work\ellipse</file>
+        <file>C:\dev\hyena\adventure\art\level\testTiles.xml</file>
+        <file>C:\dev\kitfox.com\gameTools4\proj\RavenEditorTesting\work\frustumTest.xml</file>
+        <file>C:\dev\hyena\adventure\art\level\testNewStack.xml</file>
+        <file>C:\dev\kitfox.com\gameTools4\proj\TileWorld\work\testLevel.xml</file>
+        <file>C:\dev\kitfox.com\webRPG\art\physLab.xml</file>
+        <file>C:\dev\kitfox.com\gameTools4\proj\RavenEditorTesting\work\testCode.xml</file>
+        <file>C:\dev\kitfox.com\gameTools4\proj\RavenEditorTesting\work\testSubselect.xml</file>
+        <file>C:\dev\kitfox.com\gameTools4\proj\RavenEditorTesting\work\testAnim.xml</file>
+        <file>C:\dev\kitfox.com\gameTools4\proj\RavenEditorTesting\work\test.xml</file>
+        <file>C:\dev\kitfox.com\gameTools4\proj\RavenEditorTesting\work\testStroke.xml</file>
+        <file>C:\dev\kitfox.com\gameTools4\proj\RavenEditorTesting\work\testSwfImport.xml</file>
+        <file>C:\dev\kitfox.com\gameTools4\proj\RavenEditorTesting\work\testText.xml</file>
+        <file>C:\dev\kitfox.com\gameTools4\proj\RavenEditorTesting\work\testComplex.xml</file>
+    </recentFiles>
+    <views>
+        <mainFrame x="54" y="75" width="941" height="806" maximized="false"/>
+        <workingLayout>
+            <root xsi:type="ViewDockSplitType" divider="724" vertical="false" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                <left xsi:type="ViewDockSplitType" divider="229" vertical="false">
+                    <left xsi:type="ViewDockSplitType" divider="288" vertical="true">
+                        <left xsi:type="ViewDockTabbedType">
+                            <dockables class="com.kitfox.raven.editor.view.outliner.OutlinerViewProvider"/>
+                        </left>
+                        <right xsi:type="ViewDockTabbedType">
+                            <dockables class="com.kitfox.raven.editor.view.properties.PropertiesViewProvider"/>
+                        </right>
+                    </left>
+                    <right xsi:type="ViewDockSplitType" divider="572" vertical="true">
+                        <left xsi:type="ViewDockTabbedType">
+                            <dockables class="com.kitfox.raven.editor.view.displayCy.DisplayCyViewProvider"/>
+                        </left>
+                        <right xsi:type="ViewDockTabbedType">
+                            <dockables class="com.kitfox.raven.editor.view.player.PlayerViewProvider"/>
+                        </right>
+                    </right>
+                </left>
+                <right xsi:type="ViewDockSplitType" divider="308" vertical="true">
+                    <left xsi:type="ViewDockTabbedType">
+                        <dockables class="com.kitfox.raven.editor.view.toolSettings.ToolSettingsViewProvider"/>
+                    </left>
+                    <right xsi:type="ViewDockTabbedType">
+                        <dockables class="com.kitfox.raven.editor.view.history.HistoryViewProvider"/>
+                    </right>
+                </right>
+            </root>
+            <window x="856" y="600" width="294" height="164">
+                <root xsi:type="ViewDockTabbedType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                    <dockables class="com.kitfox.raven.editor.view.tools.ToolsViewProvider"/>
+                </root>
+            </window>
+        </workingLayout>
+    </views>
+    <toolProperties>
+        <properties class="com.kitfox.raven.editor.node.tools.common.ToolPaintFlood.Provider">
+            <property name="strokeMode">false</property>
+        </properties>
+        <properties class="com.kitfox.raven.editor.node.tools.common.ToolPaintLayout.Provider">
+            <property name="strokeMode">false</property>
+        </properties>
+        <properties class="com.kitfox.raven.editor.node.tools.common.ToolPaintStroke.Provider">
+            <property name="strokeSpacing">0.2</property>
+            <property name="vertexSmooth">SMOOTH</property>
+            <property name="strokeWidthMax">8.0</property>
+            <property name="strokeSmoothing">10.0</property>
+            <property name="vertexSmoothAngle">10.0</property>
+            <property name="strokeWidthMin">1.0</property>
+        </properties>
+        <properties class="com.kitfox.raven.editor.node.tools.common.ToolPan.Provider"/>
+        <properties class="com.kitfox.raven.editor.node.tools.common.ToolPen.Provider"/>
+        <properties class="com.kitfox.raven.editor.node.tools.common.ToolPencilLine.Provider"/>
+        <properties class="com.kitfox.raven.editor.node.tools.common.ToolPropertyCurveEditor.Provider"/>
+        <properties class="com.kitfox.raven.editor.node.tools.common.ToolSelect.Provider"/>
+        <properties class="com.kitfox.raven.editor.node.tools.common.ToolSubselect.Provider"/>
+        <properties class="com.kitfox.raven.editor.node.tools.common.ToolText.Provider"/>
+        <properties class="com.kitfox.raven.editor.node.tools.common.ToolTumble.Provider"/>
+        <properties class="com.kitfox.raven.editor.node.tools.common.ToolZoom.Provider"/>
+    </toolProperties>
+    <viewProperties>
+        <properties class="com.kitfox.raven.editor.view.camera.CameraDisplayViewProvider"/>
+        <properties class="com.kitfox.raven.editor.view.code.CodeViewProvider"/>
+        <properties class="com.kitfox.raven.editor.view.color.ColorViewProvider"/>
+        <properties class="com.kitfox.raven.editor.view.console.ConsoleViewProvider"/>
+        <properties class="com.kitfox.raven.editor.view.displayCy.DisplayCyViewProvider"/>
+        <properties class="com.kitfox.raven.editor.view.help.HelpViewProvider"/>
+        <properties class="com.kitfox.raven.editor.view.history.HistoryViewProvider"/>
+        <properties class="com.kitfox.raven.editor.view.outliner.OutlinerViewProvider"/>
+        <properties class="com.kitfox.raven.editor.view.player.PlayerViewProvider"/>
+        <properties class="com.kitfox.raven.editor.view.properties.PropertiesViewProvider"/>
+        <properties class="com.kitfox.raven.editor.view.text.TextViewProvider"/>
+        <properties class="com.kitfox.raven.editor.view.toolSettings.ToolSettingsViewProvider"/>
+        <properties class="com.kitfox.raven.editor.view.tools.ToolsViewProvider"/>
+        <properties class="com.kitfox.raven.editor.view.tracks.TrackViewProvider">
+            <property name="splitBar">144</property>
+        </properties>
+    </viewProperties>
+    <importerProperties>
+        <properties class="com.kitfox.raven.swf.importer.SWFImporter">
+            <property name="file">C:\dev\kitfox.com\game\midsummerMoon\proj\swf\joel.swf</property>
+            <property name="importBackgroundColor">false</property>
+        </properties>
+        <properties class="com.kitfox.raven.svg.importer.SVGImporter"/>
+    </importerProperties>
+    <exporterProperties/>
+</RavenEditorPreferences>

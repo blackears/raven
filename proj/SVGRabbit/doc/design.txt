@@ -1,0 +1,9 @@
+-Use a stack to draw images.  Start at root and draw in depth first order.
+-<use> and other reference tags can just add their target onto the draw stack
+when encountered.
+-Scene graph renders to a surface.  The root has a surface, and every node with
+a filter also has a surface target.  An <image> can also be interpreted as a
+static surface.  Each surface is backed by an image buffer and treated as an
+image by whatever is below it.
+-Most renderers will cache surfaces and paths on a per-node basis and clear
+them when their shape structure changes.

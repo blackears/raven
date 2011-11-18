@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : menuText_en.xml.xml
+    Created on : October 9, 2010, 10:29 AM
+    Author     : kitfox
+    Description:
+        Purpose of the document follows.
+-->
+
+<textTable>
+  <string name="inv">
+    Инвентаризация
+  </string>
+  <string name="save">
+    Сохранить игры
+  </string>
+  <string name="yes">
+    Да
+  </string>
+  <string name="no">
+    Нет
+  </string>
+  <string name="quit">
+    Выйти из игры?
+  </string>
+  <string name="time">
+    Время: {0}
+  </string>
+  <string name="score">
+    Оценка: {0}
+  </string>
+  <string name="ch1">
+    Новые горизонты
+  </string>
+  <string name="ladder_nm">
+    Лестница
+  </string>
+  <string name="ladder_de">
+    Сильный лестницы алюминиевые.
+  </string>
+</textTable>

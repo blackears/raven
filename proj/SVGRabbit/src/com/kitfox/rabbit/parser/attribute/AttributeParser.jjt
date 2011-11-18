@@ -1,0 +1,475 @@
+options {
+   MULTI=true;
+   STATIC=false;
+}
+
+PARSER_BEGIN(AttributeParser)
+
+package com.kitfox.rabbit.parser.attribute;
+
+import com.kitfox.rabbit.nodes.ArcBuilder;
+import com.kitfox.rabbit.types.RaAngle;
+import com.kitfox.rabbit.types.RaLength;
+import java.awt.Color;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Path2D;
+import java.util.ArrayList;
+
+public class AttributeParser
+{
+    /**
+     * Test the parser
+     */
+    public static void main(String args[]) throws ParseException
+    {
+        java.io.StringReader reader;
+
+        reader = new java.io.StringReader("1 2 3 4");
+        AttributeParser parser = new AttributeParser(reader);
+        float[] arr = parser.FloatArray();
+        for (float val: arr)
+        {
+            System.err.print(" " + val);
+        }
+        System.err.println();
+
+/*
+        {
+            reader = new java.io.StringReader("M 3 4 5 6 m 2 3");
+            parser.ReInit(reader);
+            Path2D.Float path = parser.Path();
+
+            int j = 9;
+        }
+*/
+
+        {
+            reader = new java.io.StringReader("url( #kitten )");
+            parser.ReInit(reader);
+            String s = parser.FuncIRI();
+            System.err.println(s);
+        }
+    }
+
+}
+
+PARSER_END(AttributeParser)
+
+
+
+
+/**
+ * Tokens
+ * https://javacc.dev.java.net/files/documents/17/2910/C.jj
+ */
+
+SKIP : /* WHITE SPACE */
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+| "\f"
+| ","
+}
+
+
+TOKEN :
+{
+  < INTEGER_LITERAL:
+        (["+","-"])? (["0"-"9"])+
+  >
+  |
+  < FLOAT_LITERAL:
+        (["+","-"])? (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)?
+      | (["+","-"])? "." (["0"-"9"])+ (<EXPONENT>)?
+      | (["+","-"])? (["0"-"9"])+ <EXPONENT>
+  >
+  |
+  < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
+  |
+  <
+    COLOR_LITERAL:
+        "#" (["0"-"9","a"-"f","A"-"F"]){3} ((["0"-"9","a"-"f","A"-"F"]){3})?
+  >
+  |
+  <
+    REF:
+        "#" (["-","_","a"-"z","A"-"Z","0"-"9"])+
+  >
+}
+
+
+
+/**
+ * Expression structure
+ */
+
+float Number() :
+{
+    Token value;
+}
+{
+    (value = <INTEGER_LITERAL> | value = <FLOAT_LITERAL>)
+    {
+        return Float.parseFloat(value.image);
+    }
+}
+
+float[] FloatArray() :
+{
+    float value;
+    ArrayList<Float> list = new ArrayList<Float>();
+}
+{
+    (value = Number()
+        {
+            list.add(value);
+        }
+    ) *
+    {
+        float[] arr = new float[list.size()];
+        for (int i = 0; i < arr.length; ++i)
+        {
+            arr[i] = list.get(i);
+        }
+        return arr;
+    }
+}
+
+RaAngle Angle() :
+{
+    float value;
+    RaAngle.Type units = RaAngle.Type.NONE;
+}
+{
+    value = Number()
+    (
+        ("deg" {units = RaAngle.Type.DEG;})
+        | ("grad" {units = RaAngle.Type.GRAD;})
+        | ("rad" {units = RaAngle.Type.RAD;})
+    )?
+    {
+        return new RaAngle(value, units);
+    }
+}
+
+Color Color() :
+{
+    Token value = null;
+    Token value2;
+    Token value3;
+    Color color = null;
+}
+{
+    ( value = <COLOR_LITERAL>
+        {
+            String r = null, g = null, b = null;
+            if (value.image.length() == 4)
+            {
+                r = "" + value.image.charAt(1) + value.image.charAt(1);
+                g = "" + value.image.charAt(2) + value.image.charAt(2);
+                b = "" + value.image.charAt(3) + value.image.charAt(3);
+            }
+            else
+            {
+                r = "" + value.image.charAt(1) + value.image.charAt(2);
+                g = "" + value.image.charAt(3) + value.image.charAt(4);
+                b = "" + value.image.charAt(5) + value.image.charAt(6);
+            }
+            color = new Color(Integer.parseInt(r, 16),
+                Integer.parseInt(g, 16),
+                Integer.parseInt(b, 16)
+                );
+        }
+    )
+    {
+        return color;
+    }
+    | ("rgb" "(" value = <INTEGER_LITERAL>
+            (value2 = <INTEGER_LITERAL> value3 = <INTEGER_LITERAL>
+                {
+                    color = new Color(Integer.parseInt(value.image),
+                        Integer.parseInt(value2.image),
+                        Integer.parseInt(value3.image)
+                        );
+                }
+            )
+            | ("%" value2 = <INTEGER_LITERAL> "%" value3 = <INTEGER_LITERAL> "%"
+                {
+                    color = new Color(Integer.parseInt(value.image) / 100f,
+                        Integer.parseInt(value2.image) / 100f,
+                        Integer.parseInt(value3.image) / 100f
+                        );
+                }
+            )
+         ")"
+    )
+    {
+        return color;
+    }
+    | ("aliceblue" { return new Color(0xf0f8ff); })
+    | ("antiquewhite" { return new Color(0xfaebd7); })
+    | ("aqua" { return new Color(0x00ffff); })
+    | ("aquamarine" { return new Color(0x7fffd4); })
+    | ("azure" { return new Color(0xf0ffff); })
+    | ("beige" { return new Color(0xf5f5dc); })
+    | ("bisque" { return new Color(0xffe4c4); })
+    | ("black" { return new Color(0x000000); })
+    | ("blanchedalmond" { return new Color(0xffebcd); })
+    | ("blue" { return new Color(0x0000ff); })
+    | ("blueviolet" { return new Color(0x8a2be2); })
+    | ("brown" { return new Color(0xa52a2a); })
+    | ("burlywood" { return new Color(0xdeb887); })
+    | ("cadetblue" { return new Color(0x5f9ea0); })
+    | ("chartreuse" { return new Color(0x7fff00); })
+    | ("chocolate" { return new Color(0xd2691e); })
+    | ("coral" { return new Color(0xff7f50); })
+    | ("cornflowerblue" { return new Color(0x6495ed); })
+    | ("cornsilk" { return new Color(0xfff8dc); })
+    | ("crimson" { return new Color(0xdc143c); })
+    | ("cyan" { return new Color(0x00ffff); })
+    | ("darkblue" { return new Color(0x00008b); })
+    | ("darkcyan" { return new Color(0x008b8b); })
+    | ("darkgoldenrod" { return new Color(0xb8860b); })
+    | ("darkgray" { return new Color(0xa9a9a9); })
+    | ("darkgreen" { return new Color(0x006400); })
+    | ("darkkhaki" { return new Color(0xbdb76b); })
+    | ("darkmagenta" { return new Color(0x8b008b); })
+    | ("darkolivegreen" { return new Color(0x556b2f); })
+    | ("darkorange" { return new Color(0xff8c00); })
+    | ("darkorchid" { return new Color(0x9932cc); })
+    | ("darkred" { return new Color(0x8b0000); })
+    | ("darksalmon" { return new Color(0xe9967a); })
+    | ("darkseagreen" { return new Color(0x8fbc8f); })
+    | ("darkslateblue" { return new Color(0x483d8b); })
+    | ("darkslategray" { return new Color(0x2f4f4f); })
+    | ("darkturquoise" { return new Color(0x00ced1); })
+    | ("darkviolet" { return new Color(0x9400d3); })
+    | ("deeppink" { return new Color(0xff1493); })
+    | ("deepskyblue" { return new Color(0x00bfff); })
+    | ("dimgray" { return new Color(0x696969); })
+    | ("dodgerblue" { return new Color(0x1e90ff); })
+    | ("feldspar" { return new Color(0xd19275); })
+    | ("firebrick" { return new Color(0xb22222); })
+    | ("floralwhite" { return new Color(0xfffaf0); })
+    | ("forestgreen" { return new Color(0x228b22); })
+    | ("fuchsia" { return new Color(0xff00ff); })
+    | ("gainsboro" { return new Color(0xdcdcdc); })
+    | ("ghostwhite" { return new Color(0xf8f8ff); })
+    | ("gold" { return new Color(0xffd700); })
+    | ("goldenrod" { return new Color(0xdaa520); })
+    | ("gray" { return new Color(0x808080); })
+    | ("green" { return new Color(0x008000); })
+    | ("greenyellow" { return new Color(0xadff2f); })
+    | ("honeydew" { return new Color(0xf0fff0); })
+    | ("hotpink" { return new Color(0xff69b4); })
+    | ("indianred" { return new Color(0xcd5c5c); })
+    | ("indigo" { return new Color(0x4b0082); })
+    | ("ivory" { return new Color(0xfffff0); })
+    | ("khaki" { return new Color(0xf0e68c); })
+    | ("lavender" { return new Color(0xe6e6fa); })
+    | ("lavenderblush" { return new Color(0xfff0f5); })
+    | ("lawngreen" { return new Color(0x7cfc00); })
+    | ("lemonchiffon" { return new Color(0xfffacd); })
+    | ("lightblue" { return new Color(0xadd8e6); })
+    | ("lightcoral" { return new Color(0xf08080); })
+    | ("lightcyan" { return new Color(0xe0ffff); })
+    | ("lightgoldenrodyellow" { return new Color(0xfafad2); })
+    | ("lightgrey" { return new Color(0xd3d3d3); })
+    | ("lightgreen" { return new Color(0x90ee90); })
+    | ("lightpink" { return new Color(0xffb6c1); })
+    | ("lightsalmon" { return new Color(0xffa07a); })
+    | ("lightseagreen" { return new Color(0x20b2aa); })
+    | ("lightskyblue" { return new Color(0x87cefa); })
+    | ("lightslateblue" { return new Color(0x8470ff); })
+    | ("lightslategray" { return new Color(0x778899); })
+    | ("lightsteelblue" { return new Color(0xb0c4de); })
+    | ("lightyellow" { return new Color(0xffffe0); })
+    | ("lime" { return new Color(0x00ff00); })
+    | ("limegreen" { return new Color(0x32cd32); })
+    | ("linen" { return new Color(0xfaf0e6); })
+    | ("magenta" { return new Color(0xff00ff); })
+    | ("maroon" { return new Color(0x800000); })
+    | ("mediumaquamarine" { return new Color(0x66cdaa); })
+    | ("mediumblue" { return new Color(0x0000cd); })
+    | ("mediumorchid" { return new Color(0xba55d3); })
+    | ("mediumpurple" { return new Color(0x9370d8); })
+    | ("mediumseagreen" { return new Color(0x3cb371); })
+    | ("mediumslateblue" { return new Color(0x7b68ee); })
+    | ("mediumspringgreen" { return new Color(0x00fa9a); })
+    | ("mediumturquoise" { return new Color(0x48d1cc); })
+    | ("mediumvioletred" { return new Color(0xc71585); })
+    | ("midnightblue" { return new Color(0x191970); })
+    | ("mintcream" { return new Color(0xf5fffa); })
+    | ("mistyrose" { return new Color(0xffe4e1); })
+    | ("moccasin" { return new Color(0xffe4b5); })
+    | ("navajowhite" { return new Color(0xffdead); })
+    | ("navy" { return new Color(0x000080); })
+    | ("oldlace" { return new Color(0xfdf5e6); })
+    | ("olive" { return new Color(0x808000); })
+    | ("olivedrab" { return new Color(0x6b8e23); })
+    | ("orange" { return new Color(0xffa500); })
+    | ("orangered" { return new Color(0xff4500); })
+    | ("orchid" { return new Color(0xda70d6); })
+    | ("palegoldenrod" { return new Color(0xeee8aa); })
+    | ("palegreen" { return new Color(0x98fb98); })
+    | ("paleturquoise" { return new Color(0xafeeee); })
+    | ("palevioletred" { return new Color(0xd87093); })
+    | ("papayawhip" { return new Color(0xffefd5); })
+    | ("peachpuff" { return new Color(0xffdab9); })
+    | ("peru" { return new Color(0xcd853f); })
+    | ("pink" { return new Color(0xffc0cb); })
+    | ("plum" { return new Color(0xdda0dd); })
+    | ("powderblue" { return new Color(0xb0e0e6); })
+    | ("purple" { return new Color(0x800080); })
+    | ("red" { return new Color(0xff0000); })
+    | ("rosybrown" { return new Color(0xbc8f8f); })
+    | ("royalblue" { return new Color(0x4169e1); })
+    | ("saddlebrown" { return new Color(0x8b4513); })
+    | ("salmon" { return new Color(0xfa8072); })
+    | ("sandybrown" { return new Color(0xf4a460); })
+    | ("seagreen" { return new Color(0x2e8b57); })
+    | ("seashell" { return new Color(0xfff5ee); })
+    | ("sienna" { return new Color(0xa0522d); })
+    | ("silver" { return new Color(0xc0c0c0); })
+    | ("skyblue" { return new Color(0x87ceeb); })
+    | ("slateblue" { return new Color(0x6a5acd); })
+    | ("slategray" { return new Color(0x708090); })
+    | ("snow" { return new Color(0xfffafa); })
+    | ("springgreen" { return new Color(0x00ff7f); })
+    | ("steelblue" { return new Color(0x4682b4); })
+    | ("tan" { return new Color(0xd2b48c); })
+    | ("teal" { return new Color(0x008080); })
+    | ("thistle" { return new Color(0xd8bfd8); })
+    | ("tomato" { return new Color(0xff6347); })
+    | ("turquoise" { return new Color(0x40e0d0); })
+    | ("violet" { return new Color(0xee82ee); })
+    | ("violetred" { return new Color(0xd02090); })
+    | ("wheat" { return new Color(0xf5deb3); })
+    | ("white" { return new Color(0xffffff); })
+    | ("whitesmoke" { return new Color(0xf5f5f5); })
+    | ("yellow" { return new Color(0xffff00); })
+    | ("yellowgreen" { return new Color(0x9acd32); })
+}
+
+
+RaLength Length() :
+{
+    float value;
+    RaLength.Type units = RaLength.Type.NONE;
+}
+{
+    value = Number()
+    (
+        ("em" {units = RaLength.Type.EM;})
+        | ("ex" {units = RaLength.Type.EX;})
+        | ("px" {units = RaLength.Type.PX;})
+        | ("in" {units = RaLength.Type.IN;})
+        | ("cm" {units = RaLength.Type.CM;})
+        | ("mm" {units = RaLength.Type.MM;})
+        | ("pt" {units = RaLength.Type.PT;})
+        | ("pc" {units = RaLength.Type.PC;})
+        | ("%" {units = RaLength.Type.PERCENT;})
+    )?
+    {
+        return new RaLength(value, units);
+    }
+}
+
+AffineTransform Transform() :
+{
+    float v0;
+    float v1;
+    float v2;
+    float v3;
+    float v4;
+    float v5;
+    AffineTransform xform = new AffineTransform();
+}
+{
+    (
+        ("matrix" "(" v0 = Number() v1 = Number() v2 = Number() v3 = Number() v4 = Number() v5 = Number() ")"
+            {
+                AffineTransform local = new AffineTransform(v0, v1, v2, v3, v4, v5);
+                xform.concatenate(local);
+            }
+        )
+        |
+        ("rotate" "(" v0 = Number() ")"
+            {
+                xform.rotate(v0);
+            }
+        )
+        |
+        ("scale" "(" v0 = Number() v1 = Number() ")"
+            {
+                xform.scale(v0, v1);
+            }
+        )
+        |
+        ("shear" "(" v0 = Number() v1 = Number() ")"
+            {
+                xform.shear(v0, v1);
+            }
+        )
+        |
+        ("translate" "(" v0 = Number() v1 = Number() ")"
+            {
+                xform.translate(v0, v1);
+            }
+        )
+    )*
+    {
+        return xform;
+    }
+}
+
+String Url() :
+{
+    Token t;
+}
+{
+    t = <REF>
+    {
+        return t.image;
+    }
+    | t = <COLOR_LITERAL>
+    {
+        return t.image;
+    }
+}
+
+String FuncIRI() :
+{
+    String url;
+}
+{
+    "url" "(" url = Url() ")"
+    {
+        return url;
+    }
+}
+
+Object Paint() :
+{
+    Object value;
+}
+{
+    "none"
+    {   
+        return null;
+    }
+    | "currentColor"
+    {   
+        return null;
+    }
+    | value = Color()
+    {
+        return value;
+    }
+    | value = FuncIRI()
+    {
+        return value;
+    }
+}

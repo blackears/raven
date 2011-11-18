@@ -1,0 +1,318 @@
+options {
+   MULTI=true;
+   STATIC=false;
+}
+
+PARSER_BEGIN(PathParser)
+
+package com.kitfox.rabbit.parser.path;
+
+import com.kitfox.rabbit.nodes.ArcBuilder;
+import java.awt.geom.Path2D;
+import java.io.StringReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class PathParser
+{
+
+    public static Path2D.Double parse(String text)
+    {
+        StringReader reader = new StringReader(text);
+        PathParser parser = new PathParser(reader);
+        try {
+            return parser.Path();
+        } catch (ParseException ex) {
+            Logger.getLogger(PathParser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    /**
+     * Test the parser
+     */
+    public static void main(String args[]) throws ParseException
+    {
+        StringReader reader;
+
+        {
+            reader = new java.io.StringReader("M 3 4 5 6 m 2 3");
+            PathParser parser = new PathParser(reader);
+            Path2D.Double path = parser.Path();
+        }
+    }
+
+}
+
+PARSER_END(PathParser)
+
+
+/**
+ * Tokens
+ * https://javacc.dev.java.net/files/documents/17/2910/C.jj
+ */
+
+SKIP : /* WHITE SPACE */
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+| "\f"
+| ","
+}
+
+
+TOKEN :
+{
+  < INTEGER_LITERAL:
+        (["+","-"])? (["0"-"9"])+
+  >
+  |
+  < FLOAT_LITERAL:
+        (["+","-"])? (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)?
+      | (["+","-"])? "." (["0"-"9"])+ (<EXPONENT>)?
+      | (["+","-"])? (["0"-"9"])+ <EXPONENT>
+  >
+  |
+  < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
+}
+
+
+
+/**
+ * Expression structure
+ */
+
+double Number() :
+{
+    Token value;
+}
+{
+    (value = <INTEGER_LITERAL> | value = <FLOAT_LITERAL>)
+    {
+        return Double.parseDouble(value.image);
+    }
+}
+
+Path2D.Double Path() :
+{
+    Path2D.Double path = new Path2D.Double();
+    //Last plotted point
+    double rx = 0;
+    double ry = 0;
+    //Last curve knot
+    double ckx = 0;
+    double cky = 0;
+    //Last quad knot
+    double qkx = 0;
+    double qky = 0;
+
+    //Parsed point
+    double px;
+    double py;
+    //Parsed knots
+    double kx1 = 0;
+    double ky1 = 0;
+    double kx2 = 0;
+    double ky2 = 0;
+
+    double rrx = 0;
+    double rry = 0;
+    double xAxisRotation = 0;
+    double largeArcFlag = 0;
+    double sweepFlag = 0;
+}
+{
+    (
+        "M"
+        (px = Number() py = Number()
+            {
+                path.moveTo(px, py);
+                rx = ckx = qkx = px;
+                ry = cky = qky = py;
+            }
+        )
+        (px = Number() py = Number()
+            {
+                path.lineTo(px, py);
+                rx = ckx = qkx = px;
+                ry = cky = qky = py;
+            }
+        )*
+        |
+        "m"
+        (px = Number() py = Number()
+            {
+                path.moveTo(rx + px, ry + py);
+                rx = ckx = qkx = rx + px;
+                ry = cky = qky = ry + py;
+            }
+        )
+        (px = Number() py = Number()
+            {
+                path.lineTo(rx + px, ry + py);
+                rx = ckx = qkx = rx + px;
+                ry = cky = qky = ry + py;
+            }
+        )*
+        |
+        "L" (px = Number() py = Number()
+            {
+                path.lineTo(px, py);
+                rx = ckx = qkx = px;
+                ry = cky = qky = py;
+            }
+        ) +
+        |
+        "l" (px = Number() py = Number()
+            {
+                path.lineTo(rx + px, ry + py);
+                rx = ckx = qkx = rx + px;
+                ry = cky = qky = ry + py;
+            }
+        ) +
+        |
+        "H" (px = Number()
+            {
+                path.lineTo(px, ry);
+                rx = ckx = qkx = px;
+                ry = cky = qky = ry;
+            }
+        ) +
+        |
+        "h" (px = Number()
+            {
+                path.lineTo(rx + px, ry);
+                rx = ckx = qkx = rx + px;
+                ry = cky = qky = ry + 0;
+            }
+        ) +
+        |
+        "V" (py = Number()
+            {
+                path.lineTo(rx, py);
+                rx = ckx = qkx = rx;
+                ry = cky = qky = py;
+            }
+        ) +
+        |
+        "v" (py = Number()
+            {
+                path.lineTo(rx, ry + py);
+                rx = ckx = qkx = rx + 0;
+                ry = cky = qky = ry + py;
+            }
+        ) +
+        |
+        "C" (kx1 = Number() ky1 = Number() kx2 = Number() ky2 = Number() px = Number() py = Number()
+            {
+                path.curveTo(kx1, ky1, kx2, ky2, px, py);
+                ckx = kx2;
+                cky = ky2;
+                rx = qkx = rx;
+                ry = qky = ry;
+            }
+        ) +
+        |
+        "c" (kx1 = Number() ky1 = Number() kx2 = Number() ky2 = Number() px = Number() py = Number()
+            {
+                path.curveTo(rx + kx1, ry + ky1, rx + kx2, ry + ky2, rx + px, ry + py);
+                ckx = rx + kx2;
+                cky = ry + ky2;
+                rx = qkx = rx + px;
+                ry = qky = ry + py;
+            }
+        ) +
+        |
+        "S" (kx2 = Number() ky2 = Number() px = Number() py = Number()
+            {
+                path.curveTo(2 * rx - ckx, 2 * ry - cky, kx2, ky2, px, py);
+                ckx = kx2;
+                cky = ky2;
+                rx = qkx = px;
+                ry = qky = py;
+            }
+        ) +
+        |
+        "s" (kx2 = Number() ky2 = Number() px = Number() py = Number()
+            {
+                path.curveTo(2 * rx - ckx, 2 * ry - cky, rx + kx2, ry + ky2, rx + px, ry + py);
+                ckx = rx + kx2;
+                cky = ry + ky2;
+                rx = qkx = rx + px;
+                ry = qky = ry + py;
+            }
+        ) +
+        |
+        "Q" (kx1 = Number() ky1 = Number() px = Number() py = Number()
+            {
+                path.quadTo(kx1, ky1, px, py);
+                qkx = kx1;
+                qky = ky1;
+                rx = ckx = px;
+                ry = cky = py;
+            }
+        ) +
+        |
+        "q" (kx1 = Number() ky1 = Number() px = Number() py = Number()
+            {
+                path.quadTo(rx + kx1, ry + ky1, rx + px, ry + py);
+                qkx = rx + kx1;
+                qky = ry + ky1;
+                rx = ckx = rx + px;
+                ry = cky = ry + py;
+            }
+        ) +
+        |
+        "T" (px = Number() py = Number()
+            {
+                path.quadTo(2 * rx - qkx, 2 * ry - qky, px, py);
+                qkx = 2 * rx - qkx;
+                qky = 2 * ry - qky;
+                rx = ckx = px;
+                ry = cky = py;
+            }
+        ) +
+        |
+        "t" (px = Number() py = Number()
+            {
+                path.quadTo(2 * rx - qkx, 2 * ry - qky, rx + px, ry + py);
+                qkx = 2 * rx - qkx;
+                qky = 2 * ry - qky;
+                rx = ckx = rx + px;
+                ry = cky = ry + py;
+            }
+        ) +
+        |
+        "A" (rrx = Number() rry = Number() xAxisRotation = Number() largeArcFlag = Number() sweepFlag = Number() px = Number() py = Number()
+            {
+                ArcBuilder.arcTo(path, rrx, rry,
+                    xAxisRotation, largeArcFlag != 0, sweepFlag != 0,
+                    px, py, rx, ry);
+
+                rx = ckx = qkx = px;
+                ry = cky = qky = py;
+            }
+        ) +
+        |
+        "a" (rrx = Number() rry = Number() xAxisRotation = Number() largeArcFlag = Number() sweepFlag = Number() px = Number() py = Number()
+            {
+                ArcBuilder.arcTo(path, rrx, rry,
+                    xAxisRotation, largeArcFlag != 0, sweepFlag != 0,
+                    px + rx, py + ry, rx, ry);
+
+                rx = ckx = qkx = rx + px;
+                ry = cky = qky = ry + py;
+            }
+        ) +
+        |
+        ("Z" | "z")
+        {
+            path.closePath();
+        }
+    )*
+    {
+        return path;
+    }
+}

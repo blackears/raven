@@ -1,0 +1,82 @@
+Pipeline
+--------
+
+A 2D scenegraph is created.  It has a tree structure.
+
+The geometry portion of this tree contains nodes with plane buffers.  A plane
+buffer is a (possibly tiled) bitmap containing the composite image of all
+nodes below it in the tree.  Each plane has coordinates in device space, so
+a region in any one plane maps exactly to the same region in all other planes.
+
+Each node can be associated with a transform.  This transform is cumulative
+with all nodes below it in the tree.  This transform is applied only to
+geometry elements and does not affect the plane buffers in any way.
+
+Geometry elements include shapes and images.  Geometry elements are drawn
+directly on their assigned plane, subject to their transform (as
+determined by their position in the tree).
+
+Once all geometry elements have been rendered, any masks and filters are
+applied to the plane.
+
+Group nodes will composite the planes of all their child members and may apply
+further masking and filtering effects.
+
+One advantage of this technique is that planes that change infrequently can
+be rendered once and cached.  Camera pans are essentially free.  If a tile
+based plane is used empty sections can be left null.
+
+
+Directory Structure
+-------------------
+
+When a file is loaded, the editor will recursively look in parent directories
+for the first .ravenProject file.  This file will include directory and
+server settings.  It will also indicate the base directory against which
+all partial file paths are resolved.
+
+
+Path changes:
+
+- New tapered stroke style
+    - Uses a weight per vertex to modulate the width of the stroke
+    - Join and cap always round
+    - Line width implied from vertex weight
+
+- Per vertex and per segment metadata
+    - Stroke weight, bone weights are metadata that should be associated per vertex
+    - Mesh paints are assoc per segment
+    - Different nodes may want to store their own metadata per vertex or segment
+
+- Path vertices
+    - A path vertex is any vertex connected to exactly two edges.
+    - Path vertices can be 'tense', meaning their knots are calculated entirely
+        from their position and that of their neighboring points
+    - 'Smooth' path vertices enforce that their input and output knots have the
+        same derivative.
+
+- Push and pull vertices
+    - A 'Push & Pull' vertex brush exists that can move vertices as a group.
+    - Defines a circular region that ramps from transparent at the
+    circumference to opaque at the middle.
+    - Brush density and pen pressure used to determine amount of alteration
+    applied to vertices.
+    - If in pull mode, vertices move in same direction as brush (weighted by
+    brush density)
+    - If in push mode, vertices move as if colliding with a sphere (ie,
+    perpendicular to brush direction)
+
+- Path smoothing
+    - Any path can be smoothed
+    - Smoothing first turns path into set of line segments
+    - Each vertex on this path is then connected to each other with a spring.
+        They are also connected to their origin with a spring of a different
+        weight
+    - Vertices are then allowed to move to minimize tension in curve.  This
+        continues until all vertex movements are below epsilon.
+    - Resulting line segs are then converted back into a path by fitting
+        quadratics.
+
+- Painted strokes
+    - A tool that uses a pressure sensitive stylus can paint freehand strokes.
+

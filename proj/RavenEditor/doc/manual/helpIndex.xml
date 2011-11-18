@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : helpIndex.xml
+    Created on : December 16, 2010, 12:51 AM
+    Author     : kitfox
+    Description:
+        Purpose of the document follows.
+-->
+
+<helpIndex  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+   xmlns='http://xml.kitfox.com/schema/HelpIndexSchema'
+   xsi:schemaLocation='http://xml.kitfox.com/schema/HelpIndexSchema ../../../RavenUtil/src/com/kitfox/raven/util/help/HelpIndexSchema.xsd'>
+    <title>Contents</title>
+
+    <header src=""/>
+
+    <outline>
+        <subindex src="tools/helpIndex.xml"/>
+        <page title="About" src="about.html"/>
+    </outline>
+    
+</helpIndex>

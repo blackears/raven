@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="windows-1252"?>
+
+<!--
+    Document   : menuText_en.xml.xml
+    Created on : October 9, 2010, 10:29 AM
+    Author     : kitfox
+    Description:
+        Purpose of the document follows.
+-->
+
+<textTable>
+  <string name="inv">
+    Inventario
+  </string>
+  <string name="save">
+    Guardar partida
+  </string>
+  <string name="yes">
+    Sí
+  </string>
+  <string name="no">
+    N
+  </string>
+  <string name="quit">
+    Salir del juego?
+  </string>
+  <string name="time">
+    Hora: {0}
+  </string>
+  <string name="score">
+    Puntuación: {0}
+  </string>
+  <string name="ch1">
+    Un nuevo horizonte
+  </string>
+  <string name="ladder_nm">
+    Escalera
+  </string>
+  <string name="ladder_de">
+    Una escalera de aluminio fuerte.
+  </string>
+</textTable>

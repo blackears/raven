@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="windows-1252"?>
+
+<textTable>
+  <string name="inv">
+    Inventaire
+  </string>
+  <string name="save">
+    Save Game
+  </string>
+  <string name="yes">
+    Oui
+  </string>
+  <string name="no">
+    Non
+  </string>
+  <string name="quit">
+    jeu cesser de fumer?
+  </string>
+  <string name="time">
+    Temps: {0}
+  </string>
+  <string name="score">
+    Score: {0}
+  </string>
+  <string name="ch1">
+    Un nouvel horizon
+  </string>
+  <string name="ladder_nm">
+    Échelle
+  </string>
+  <string name="ladder_de">
+    Une échelle en aluminium solide.
+  </string>
+</textTable>

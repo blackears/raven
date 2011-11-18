@@ -1,0 +1,353 @@
+options {
+   MULTI=true;
+   STATIC=false;
+}
+
+PARSER_BEGIN(CacheParser)
+
+package com.kitfox.cache.parser;
+
+import com.kitfox.cache.CacheBoolean;
+import com.kitfox.cache.CacheElement;
+import com.kitfox.cache.CacheFloat;
+import com.kitfox.cache.CacheIdentifier;
+import com.kitfox.cache.CacheInteger;
+import com.kitfox.cache.CacheList;
+import com.kitfox.cache.CacheMap;
+import com.kitfox.cache.CacheNull;
+import com.kitfox.cache.CacheString;
+import java.io.StringReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
+public class CacheParser
+{
+    public static CacheElement parse(String text) throws ParseException
+    {
+        StringReader reader = new StringReader(text);
+        CacheParser parser = new CacheParser(reader);
+        return parser.Cache();
+    }
+
+    /**
+     * Test the parser
+     */
+    public static void main(String args[]) throws ParseException
+    {
+        StringReader reader;
+
+        reader = new StringReader("abc(\"def\", 34, {foo: true})");
+        CacheParser parser = new CacheParser(reader);
+        CacheElement tc;
+
+        tc = parser.Cache();
+        System.err.println("CacheParser eval to " + tc.toString());
+
+        reader = new java.io.StringReader("(-2, 3.4, rgb(1, blue, 3), grad{m:n})");
+        parser.ReInit(reader);
+        tc = parser.Cache();
+        System.err.println("CacheParser eval to " + tc.toString());
+    }
+
+}
+
+PARSER_END(CacheParser)
+
+
+
+
+/**
+ * Tokens
+ * https://javacc.dev.java.net/files/documents/17/2910/C.jj
+ */
+
+SKIP : /* WHITE SPACE */
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+| "\f"
+|  <"//" (~["\n","\r"])* ("\n" | "\r" | "\r\n")>
+|  <"/*" (~["*"])* "*" ("*" | ~["*","/"] (~["*"])* "*")* "/">
+}
+
+TOKEN :
+{
+  < INTEGER_LITERAL:
+        <DECIMAL_LITERAL> (["l","L"])?
+      | <HEX_LITERAL> (["l","L"])?
+      | <OCTAL_LITERAL> (["l","L"])?
+  >
+|
+  < #DECIMAL_LITERAL: (["+","-"])? ["1"-"9"] (["0"-"9"])* >
+|
+  < #HEX_LITERAL: "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+ >
+|
+  < #OCTAL_LITERAL: "0" (["0"-"7"])* >
+|
+  < FLOATING_POINT_LITERAL:
+        (["+","-"])? (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)? (["f","F","d","D"])?
+      | (["+","-"])? "." (["0"-"9"])+ (<EXPONENT>)? (["f","F","d","D"])?
+      | (["+","-"])? (["0"-"9"])+ <EXPONENT> (["f","F","d","D"])?
+      | (["+","-"])? (["0"-"9"])+ (<EXPONENT>)? ["f","F","d","D"]
+  >
+|
+  < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
+|
+  < CHARACTER_LITERAL:
+      "'"
+      (   (~["'","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )
+      "'"
+  >
+|
+  < STRING_LITERAL:
+      "\""
+      (   (~["\"","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            | "u" <HEX_LITERAL> <HEX_LITERAL> <HEX_LITERAL> <HEX_LITERAL>
+            )
+          )
+      )*
+      "\""
+  >
+}
+
+TOKEN : {
+	<TRUE: "true"> |
+	<FALSE: "false"> |
+	<NULL: "null">
+}
+
+TOKEN : {
+ <IDENTIFIER: <LETTER> (<LETTER> | <DIGIT>)*>
+|  <#LETTER: ["$","A"-"Z","_","a"-"z"]>
+|  <#DIGIT: ["0"-"9"]>
+}
+
+
+
+
+
+
+
+/**
+ * Expression structure
+ */
+
+CacheElement Cache() :
+{
+    CacheElement ele;
+}
+{
+    ele = NullValue()
+        { return ele; }
+    | ele = BooleanValue()
+        { return ele; }
+    | ele = FloatValue()
+        { return ele; }
+    | ele = IntegerValue()
+        { return ele; }
+    | ele = StringValue()
+        { return ele; }
+//    | ele = Map()
+//        { return ele; }
+//    | ele = List()
+//        { return ele; }
+    | ele = Identifier()
+        { return ele; }
+}
+
+
+CacheMap Map() :
+{
+    Token key;
+    CacheElement value;
+    CacheMap map = new CacheMap();
+}
+{
+    "{"
+        ( key = <IDENTIFIER> ":" value = Cache()
+            {
+                map.put(key.image, value);
+            }
+        )?
+        ( LOOKAHEAD(4) ";" key = <IDENTIFIER> ":" value = Cache()
+            {
+                map.put(key.image, value);
+            }
+        ) *
+    "}"
+    {
+        return map;
+    }
+}
+
+
+CacheList List() :
+{
+    CacheElement term;
+    CacheList list = new CacheList();
+}
+{
+    "("
+        ( term = Cache()
+            {
+                list.add(term);
+            }
+        )?
+        ( LOOKAHEAD(2) "," term = Cache()
+            {
+                list.add(term);
+            }
+        ) *
+    ")"
+    {
+        return list;
+    }
+}
+
+CacheIdentifier Identifier() :
+{
+    Token name = null;
+    CacheIdentifier fn = new CacheIdentifier();
+}
+{
+    ((name = <IDENTIFIER> (fn = List() | fn = Map())?)
+    | fn = List()
+    | fn = Map())
+    {
+        if (name != null)
+        {
+            fn.setName(name.image);
+        }
+        return fn;
+    }
+}
+
+
+CacheNull NullValue() :
+{
+    Token valueStrn;
+}
+{
+    (valueStrn=<NULL>)
+    {
+        return new CacheNull();
+    }
+}
+
+
+CacheBoolean BooleanValue() :
+{
+    Token valueStrn;
+}
+{
+    (valueStrn=<TRUE>)
+    {
+        return new CacheBoolean(true);
+    }
+    | (valueStrn=<FALSE>)
+    {
+        return new CacheBoolean(false);
+    }
+}
+
+
+CacheInteger IntegerValue() :
+{
+    Token valueStrn;
+}
+{
+    valueStrn = <INTEGER_LITERAL>
+    {
+        return new CacheInteger(Integer.parseInt(valueStrn.image));
+    }
+}
+
+
+CacheFloat FloatValue() :
+{
+    Token valueStrn;
+}
+{
+    valueStrn = <FLOATING_POINT_LITERAL>
+    {
+        return new CacheFloat(Float.parseFloat(valueStrn.image));
+    }
+}
+
+
+
+CacheString StringValue() :
+{
+    Token valueToken;
+}
+{
+    valueToken = <STRING_LITERAL>
+    {
+        String valueStrn = valueToken.image;
+
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 1; i < valueStrn.length() - 1; ++i)
+        {
+            char ch = valueStrn.charAt(i);
+            if (ch == '\\')
+            {
+                char ch2 = valueStrn.charAt(++i);
+                switch (ch2)
+                {
+                    case 'n':
+                        sb.append('\n');
+                        continue;
+                    case 't':
+                        sb.append('\t');
+                        continue;
+                    case 'b':
+                        sb.append('\b');
+                        continue;
+                    case 'f':
+                        sb.append('\f');
+                        continue;
+                    case 'r':
+                        sb.append('\r');
+                        continue;
+                    case '"':
+                        sb.append('"');
+                        continue;
+                    case '\'':
+                        sb.append('\'');
+                        continue;
+                    case '\\':
+                        sb.append('\\');
+                        continue;
+                    case 'u':
+                    {
+                        String unicode = valueStrn.substring(i, i + 4);
+                        i += 4;
+                        int ival = Integer.parseInt(unicode, 16);
+                        sb.append((char)ival);
+                        continue;
+                    }
+                    default:
+                        assert false : "Parser should not find other escape sequences";
+                }
+            }
+
+            sb.append(ch);
+        }
+        return new CacheString(sb.toString());
+    }
+}

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<RavenDocument version="0.0.0" xmlns="http://xml.kitfox.com/schema/RavenDocumentSchema">
+    <root nextUid="6" name="ravenNodeRoot" uid="0" class="com.kitfox.raven.editor.node.scene.RavenNodeRoot">
+        <property name="background">
+            <direct style="inline">color(1.0,1.0,1.0)</direct>
+        </property>
+        <property name="antialiased">
+            <direct style="inline">false</direct>
+        </property>
+        <property name="fillPaint">
+            <direct style="inline">color(0.0,0.0,0.0)</direct>
+        </property>
+        <property name="strokePaint">
+            <direct style="inline">color(0.0,0.0,0.0)</direct>
+        </property>
+        <property name="strokeStyle">
+            <direct style="inline">stroke{}</direct>
+        </property>
+        <property name="font">
+            <direct style="inline">font("Serif",12,false,false)</direct>
+        </property>
+        <property name="justify">
+            <direct style="inline">com.kitfox.raven.util.text.Justify.LEFT</direct>
+        </property>
+        <property name="panX">
+            <direct style="inline">0.0</direct>
+        </property>
+        <property name="panY">
+            <direct style="inline">0.0</direct>
+        </property>
+        <property name="rotate">
+            <direct style="inline">0.0</direct>
+        </property>
+        <property name="zoom">
+            <direct style="inline">1.0</direct>
+        </property>
+        <child name="trackLibrary">
+            <node name="trackLibrary" uid="1" class="com.kitfox.raven.util.tree.TrackLibrary">
+                <property name="fps">
+                    <direct style="inline">30.0</direct>
+                </property>
+                <property name="curFrame">
+                    <direct style="inline">0</direct>
+                </property>
+                <property name="curTrack">
+                    <direct style="reference">6</direct>
+                </property>
+                <property name="loop">
+                    <direct style="inline">true</direct>
+                </property>
+                <child name="tracks">
+                    <node name="tumble" uid="6" class="com.kitfox.raven.util.tree.Track">
+                        <property name="frameStart">
+                            <direct style="inline">0</direct>
+                        </property>
+                        <property name="frameEnd">
+                            <direct style="inline">50</direct>
+                        </property>
+                    </node>
+                </child>
+            </node>
+        </child>
+        <child name="resourceLibrary">
+            <node name="resourceLibrary" uid="2" class="com.kitfox.raven.util.tree.ResourceLibrary"/>
+        </child>
+        <child name="paintLibrary">
+            <node name="ravenNodePaintLibrary" uid="3" class="com.kitfox.raven.editor.node.scene.RavenNodePaintLibrary">
+                <child name="paints"/>
+            </node>
+        </child>
+        <child name="strokeLibrary">
+            <node name="ravenNodeStrokeLibrary" uid="4" class="com.kitfox.raven.editor.node.scene.RavenNodeStrokeLibrary">
+                <child name="strokes"/>
+            </node>
+        </child>
+        <child name="sceneGraph">
+            <node name="Pencil" uid="5" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">-3.0316837E-6</direct>
+                    <track after="none" before="none" trackUid="6">
+                        <key frame="0" tanOutY="0.9957584801289171" tanOutX="0.09200570227626605" tanInY="0.0" tanInX="1.0" interpolation="bezier">
+                            <data style="inline">-3.0316837E-6</data>
+                        </key>
+                        <key frame="12" tanOutY="-0.05205643723050234" tanOutX="0.9986441444993641" tanInY="-0.05205643723050234" tanInX="0.9986441444993641" interpolation="smooth">
+                            <data style="inline">178.66357</data>
+                        </key>
+                        <key frame="30" tanOutY="-0.4460532831753824" tanOutX="0.8950064069985545" tanInY="-0.4460532831753824" tanInX="0.8950064069985545" interpolation="smooth">
+                            <data style="inline">50.88256</data>
+                        </key>
+                        <key frame="40" tanOutY="0.0" tanOutX="1.0" tanInY="0.0" tanInX="1.0" interpolation="bezier">
+                            <data style="inline">237.12784</data>
+                        </key>
+                    </track>
+                </property>
+                <property name="transY">
+                    <direct style="inline">0.0</direct>
+                    <track after="none" before="none" trackUid="6">
+                        <key frame="0" tanOutY="0.0" tanOutX="1.0" tanInY="0.0" tanInX="1.0" interpolation="smooth_step">
+                            <data style="inline">0.0</data>
+                        </key>
+                        <key frame="20" tanOutY="0.0" tanOutX="1.0" tanInY="0.0" tanInX="1.0" interpolation="smooth_step">
+                            <data style="inline">-7.1410866</data>
+                        </key>
+                        <key frame="40" tanOutY="0.0" tanOutX="1.0" tanInY="0.0" tanInX="1.0" interpolation="smooth_step">
+                            <data style="inline">-14.282173</data>
+                        </key>
+                    </track>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                    <track after="none" before="none" trackUid="6">
+                        <key frame="0" tanOutY="0.0" tanOutX="1.0" tanInY="0.0" tanInX="1.0" interpolation="smooth_step">
+                            <data style="inline">0.0</data>
+                        </key>
+                        <key frame="20" tanOutY="0.0" tanOutX="1.0" tanInY="0.0" tanInX="1.0" interpolation="smooth_step">
+                            <data style="inline">86.469864</data>
+                        </key>
+                        <key frame="40" tanOutY="0.0" tanOutX="1.0" tanInY="0.0" tanInX="1.0" interpolation="smooth_step">
+                            <data style="inline">172.93973</data>
+                        </key>
+                    </track>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">-270.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">174.0</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">130.0</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">none</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline">stroke{width:5.0;miterLimit:4.0}</direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M11700 5000c-2100 700 -4100 3300 -1600 4300 1800 600 3800 600 5800 600 2200 0 4400 -200 6700 100 1600 0 2600 1200 3300 2600 1000 1000 400 3100 -800 3700 -1300 1200 -2900 2200 -4600 2500 -2200 800 -4400 1100 -6700 1100 -700 100 -1300 0 -1900 100</direct>
+                </property>
+                <child name="vertexPlanes"/>
+                <child name="edgePlanes"/>
+                <child name="facePlanes"/>
+                <child name="faceVertexPlanes"/>
+            </node>
+        </child>
+    </root>
+</RavenDocument>

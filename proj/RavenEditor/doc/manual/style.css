@@ -1,0 +1,44 @@
+body
+{
+    background-color:#ffffff;
+    font-family:"arial,sans-serif";
+    font-size:10px;
+}
+
+ul.contents
+{
+    list-style-type: none;
+}
+
+div.header
+{
+    background: gray;
+    border: black;
+    border-style: solid;
+    padding: 6px;
+}
+
+span.button
+{
+    background: lightslategray;
+    border: black;
+    border-style: solid;
+    padding: 4px;
+
+}
+
+h1
+{
+    text-align:left;
+    font-size:16px;
+}
+
+h2
+{
+    text-align:left;
+    font-size:12px;
+}
+
+p
+{
+}

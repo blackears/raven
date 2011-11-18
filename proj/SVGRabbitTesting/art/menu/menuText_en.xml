@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="windows-1252"?>
+
+<!--
+    Document   : menuText_en.xml.xml
+    Created on : October 9, 2010, 10:29 AM
+    Author     : kitfox
+    Description:
+        Purpose of the document follows.
+-->
+
+<textTable>
+    <string name="inv">Inventory</string>
+    <string name="save">Save Game</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="quit">Quit game?</string>
+    <string name="time">Time: {0}</string>
+    <string name="score">Score: {0}</string>
+
+    <!-- Chapters -->
+    <string name="ch1">A new horizon</string>
+
+    <!-- Items -->
+    <string name="ladder_nm">Ladder</string>
+    <string name="ladder_de">A strong aluminum ladder.</string>
+</textTable>

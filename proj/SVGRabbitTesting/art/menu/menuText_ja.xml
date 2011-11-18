@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : menuText_en.xml.xml
+    Created on : October 9, 2010, 10:29 AM
+    Author     : kitfox
+    Description:
+        Purpose of the document follows.
+-->
+
+<textTable>
+  <string name="inv">
+    在庫
+  </string>
+  <string name="save">
+    名前を付けて保存ゲーム
+  </string>
+  <string name="yes">
+    はい
+  </string>
+  <string name="no">
+    いいえ
+  </string>
+  <string name="quit">
+    終了ゲーム？
+  </string>
+  <string name="time">
+    時間：{0}
+  </string>
+  <string name="score">
+    スコア：{0}
+  </string>
+  <string name="ch1">
+    新しい地平
+  </string>
+  <string name="ladder_nm">
+    はしご
+  </string>
+  <string name="ladder_de">
+    強いアルミはしご。
+  </string>
+</textTable>

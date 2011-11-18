@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<RavenDocument version="0.0.0" xmlns="http://xml.kitfox.com/schema/RavenDocumentSchema">
+    <root nextUid="5" name="ravenNodeRoot" uid="0" class="com.kitfox.raven.editor.node.scene.RavenNodeRoot">
+        <property name="background">
+            <direct style="inline">color(1.0,1.0,1.0)</direct>
+        </property>
+        <property name="antialiased">
+            <direct style="inline">false</direct>
+        </property>
+        <property name="fillPaint">
+            <direct style="inline">color(0.0,0.0,0.0)</direct>
+        </property>
+        <property name="strokePaint">
+            <direct style="inline">color(0.0,0.0,0.0)</direct>
+        </property>
+        <property name="strokeStyle">
+            <direct style="inline">stroke{}</direct>
+        </property>
+        <property name="font">
+            <direct style="inline">font("Serif",12,false,false)</direct>
+        </property>
+        <property name="justify">
+            <direct style="inline">com.kitfox.raven.util.text.Justify.LEFT</direct>
+        </property>
+        <property name="panX">
+            <direct style="inline">0.0</direct>
+        </property>
+        <property name="panY">
+            <direct style="inline">0.0</direct>
+        </property>
+        <property name="rotate">
+            <direct style="inline">0.0</direct>
+        </property>
+        <property name="zoom">
+            <direct style="inline">1.0</direct>
+        </property>
+        <property name="camera">
+            <direct style="inline"></direct>
+        </property>
+        <child name="trackLibrary">
+            <node name="trackLibrary" uid="1" class="com.kitfox.raven.util.tree.TrackLibrary">
+                <property name="fps">
+                    <direct style="inline">30.0</direct>
+                </property>
+                <property name="curFrame">
+                    <direct style="inline">0</direct>
+                </property>
+                <property name="curTrack">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="loop">
+                    <direct style="inline">false</direct>
+                </property>
+                <child name="tracks"/>
+            </node>
+        </child>
+        <child name="resourceLibrary">
+            <node name="resourceLibrary" uid="2" class="com.kitfox.raven.util.tree.ResourceLibrary"/>
+        </child>
+        <child name="paintLibrary">
+            <node name="ravenNodePaintLibrary" uid="3" class="com.kitfox.raven.editor.node.scene.RavenNodePaintLibrary">
+                <child name="paints"/>
+            </node>
+        </child>
+        <child name="strokeLibrary">
+            <node name="ravenNodeStrokeLibrary" uid="4" class="com.kitfox.raven.editor.node.scene.RavenNodeStrokeLibrary">
+                <child name="strokes"/>
+            </node>
+        </child>
+        <child name="sceneGraph">
+            <node name="ravenNodeEllipse" uid="5" class="com.kitfox.raven.editor.node.scene.RavenNodeEllipse">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline">none</direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline">none</direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="x">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="y">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="width">
+                    <direct style="inline">100.0</direct>
+                </property>
+                <property name="height">
+                    <direct style="inline">100.0</direct>
+                </property>
+                <event name="onPick">
+                    <source>
+                        <source>System.err.println("picked");</source>
+                    </source>
+                </event>
+                <event name="onKeyTyped">
+                    <source>
+                        <source>System.err.println("typed");</source>
+                    </source>
+                </event>
+            </node>
+        </child>
+        <plugins/>
+        <code>
+            <source>
+                <source>int j;
+
+public void myMethod()
+{
+}</source>
+            </source>
+            <imports>
+                <source>import static java.lang.Math.*;</source>
+            </imports>
+            <implements>
+                <source></source>
+            </implements>
+            <extends>
+                <source></source>
+            </extends>
+            <annotations>
+                <source></source>
+            </annotations>
+        </code>
+    </root>
+</RavenDocument>

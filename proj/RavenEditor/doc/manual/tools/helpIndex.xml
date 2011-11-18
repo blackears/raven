@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : helpIndex.xml
+    Created on : December 16, 2010, 12:51 AM
+    Author     : kitfox
+    Description:
+        Purpose of the document follows.
+-->
+
+<helpIndex xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+   xmlns='http://xml.kitfox.com/schema/HelpIndexSchema'
+   xsi:schemaLocation='http://xml.kitfox.com/schema/HelpIndexSchema ../../../RavenUtil/src/com/kitfox/raven/util/help/HelpIndexSchema.xsd'>
+    <title>Tools</title>
+
+    <header src=""/>
+
+    <outline>
+        <page title="Paint Flood" src="paintFlood.html"/>
+        <page title="Paint Layout" src="paintLayout.html"/>
+        <page title="Pan" src="pan.html"/>
+        <page title="Pen" src="pen.html"/>
+        <page title="Pencil Line" src="pencilLine.html"/>
+        <page title="Select" src="select.html"/>
+        <page title="Stroke Brush" src="strokeBrush.html"/>
+        <page title="Sub Select" src="subselect.html"/>
+        <page title="Tumble" src="tumble.html"/>
+        <page title="Zoom" src="zoom.html"/>
+    </outline>
+    
+</helpIndex>

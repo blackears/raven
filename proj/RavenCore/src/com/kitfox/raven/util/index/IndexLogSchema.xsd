@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://xml.kitfox.com/schema/IndexLog"
+    xmlns:tns="http://xml.kitfox.com/schema/IndexLog"
+    elementFormDefault="qualified">
+    <xsd:complexType name="IndexBuilderLogType">
+        <xsd:sequence>
+            <xsd:element name="index" type="tns:IndexLog" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="IndexBuilderLog" type="tns:IndexBuilderLogType"></xsd:element>
+    <xsd:complexType name="IndexLog">
+        <xsd:sequence>
+            <xsd:element name="item" type="tns:IndexItemLogType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="class" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="IndexItemLogType">
+        <xsd:sequence/>
+        <xsd:attribute name="itemClass" type="xsd:string"/>
+        <xsd:attribute name="index" type="xsd:int" default="0"/>
+    </xsd:complexType>
+</xsd:schema>

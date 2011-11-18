@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<RavenDocument version="0.0.0" xmlns="http://xml.kitfox.com/schema/RavenDocumentSchema">
+    <root nextUid="7" name="ravenNodeRoot" uid="0" class="com.kitfox.raven.editor.node.scene.RavenNodeRoot">
+        <property name="background">
+            <direct style="inline">color(1.0,1.0,1.0)</direct>
+        </property>
+        <property name="antialiased">
+            <direct style="inline">false</direct>
+        </property>
+        <property name="fillPaint">
+            <direct style="reference">6</direct>
+        </property>
+        <property name="strokePaint">
+            <direct style="inline">gradient{color:((231,17,17),(222,223,36),(36,231,25),(45,169,214),(26,11,255));offset:(0.0,0.2542373,0.4858757,0.75706214,1.0)}</direct>
+        </property>
+        <property name="strokeStyle">
+            <direct style="inline">stroke{}</direct>
+        </property>
+        <property name="panX">
+            <direct style="inline">0.0</direct>
+        </property>
+        <property name="panY">
+            <direct style="inline">0.0</direct>
+        </property>
+        <property name="rotate">
+            <direct style="inline">0.0</direct>
+        </property>
+        <property name="zoom">
+            <direct style="inline">1.0</direct>
+        </property>
+        <child name="trackLibrary">
+            <node name="trackLibrary" uid="1" class="com.kitfox.raven.util.tree.TrackLibrary">
+                <property name="fps">
+                    <direct style="inline">30.0</direct>
+                </property>
+                <property name="curFrame">
+                    <direct style="inline">0</direct>
+                </property>
+                <property name="curTrack">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="loop">
+                    <direct style="inline">false</direct>
+                </property>
+                <child name="tracks"/>
+            </node>
+        </child>
+        <child name="resourceLibrary">
+            <node name="resourceLibrary" uid="2" class="com.kitfox.raven.util.tree.ResourceLibrary"/>
+        </child>
+        <child name="paintLibrary">
+            <node name="ravenNodePaintLibrary" uid="3" class="com.kitfox.raven.editor.node.scene.RavenNodePaintLibrary">
+                <child name="paints">
+                    <node name="ravenNodeColor" uid="5" class="com.kitfox.raven.editor.node.scene.RavenNodeColor">
+                        <property name="color">
+                            <direct style="inline">color(0.087496646,0.7826087,0.24401198)</direct>
+                        </property>
+                    </node>
+                    <node name="ravenNodeGradient" uid="6" class="com.kitfox.raven.editor.node.scene.RavenNodeGradient">
+                        <property name="gradient">
+                            <direct style="inline">gradient{style:RADIAL;color:((231,17,17),(26,11,255));offset:(0.0,1.0)}</direct>
+                        </property>
+                    </node>
+                </child>
+            </node>
+        </child>
+        <child name="strokeLibrary">
+            <node name="ravenNodeStrokeLibrary" uid="4" class="com.kitfox.raven.editor.node.scene.RavenNodeStrokeLibrary">
+                <child name="strokes"/>
+            </node>
+        </child>
+        <child name="sceneGraph">
+            <node name="ravenNodeRectangle" uid="7" class="com.kitfox.raven.editor.node.scene.RavenNodeRectangle">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">176.0</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">176.0</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="reference">6</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">radial{cx:0.0;cy:0.0;rx:50.0;ry:50.0;fx:0.0;fy:0.0;rot:0.0;skew:135.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline">none</direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline">none</direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="x">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="y">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="width">
+                    <direct style="inline">100.0</direct>
+                </property>
+                <property name="height">
+                    <direct style="inline">100.0</direct>
+                </property>
+                <property name="rx">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="ry">
+                    <direct style="inline">0.0</direct>
+                </property>
+            </node>
+        </child>
+    </root>
+</RavenDocument>

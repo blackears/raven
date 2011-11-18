@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="SVGRabbitTesting" default="all" basedir=".">
+    <taskdef name="svgBuilder" classname="com.kitfox.rabbit.ant.SVGToResourceTask">
+        <classpath>
+            <pathelement path="${javac.classpath}"/>
+        </classpath>
+    </taskdef>
+
+    <taskdef name="svgFontBuilder" classname="com.kitfox.rabbit.ant.SVGFontTask">
+        <classpath>
+            <pathelement path="${javac.classpath}"/>
+        </classpath>
+    </taskdef>
+
+    <target name="fontBuild">
+        <svgFontBuilder dest="../gen/Serif.svg"
+            characters="0123456789.:,">
+            <font name="Serif" bold="false" italic="false"/>
+            <characterData dir="../art">
+                <include name="menu/**/*.xml"/>
+            </characterData>
+        </svgFontBuilder>
+
+    </target>
+
+    <target name="all" depends="fontBuild">
+
+
+<!--
+        <delete includeemptydirs="true">
+            <fileset dir="../gen" includes="**/*"/>
+        </delete>
+    -->
+        <svgBuilder dest="../gen">
+            <inputResources dir="../art">
+                <include name="**/InventoryMenu.svg"/>
+<!--
+                <include name="**/*.svg"/>
+                <exclude name="*.svg"/>
+    -->
+            </inputResources>
+        </svgBuilder>
+    </target>
+</project>

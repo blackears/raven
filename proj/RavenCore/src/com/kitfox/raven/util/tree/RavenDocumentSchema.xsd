@@ -1,0 +1,171 @@
+<?xml version="1.0"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://xml.kitfox.com/schema/RavenDocumentSchema"
+    xmlns:tns="http://xml.kitfox.com/schema/RavenDocumentSchema"
+    elementFormDefault="qualified">
+    <xsd:complexType name="RavenDocumentType">
+        <xsd:sequence>
+            <xsd:element name="root" type="tns:NodeDocumentType"></xsd:element>
+            <xsd:element name="propertySetGroups" type="tns:MetaPropertySetGroupType" minOccurs="1" maxOccurs="1"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="version" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:element name="RavenDocument" type="tns:RavenDocumentType"></xsd:element>
+    <xsd:complexType name="NodeObjectType">
+        <xsd:sequence>
+            <xsd:element name="property" type="tns:PropertyType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+            <xsd:element name="child" type="tns:ChildrenType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+            <xsd:element name="event" type="tns:EventType" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="class" type="xsd:string"/>
+        <xsd:attribute name="uid" type="xsd:int"/>
+        <xsd:attribute name="name" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="PropertyType">
+        <xsd:sequence>
+            <xsd:element name="direct" type="tns:PropertyDataType"></xsd:element>
+            <xsd:element name="track" type="tns:TrackType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="ChildrenType">
+        <xsd:sequence>
+            <xsd:element name="node" type="tns:NodeObjectType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:simpleType name="PropertyStyleType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="inline"/>
+            <xsd:enumeration value="reference"/>
+            <xsd:enumeration value="resource"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="NodeDocumentType">
+        <xsd:complexContent>
+            <xsd:extension xmlns:tns="http://xml.kitfox.com/schema/RavenDocumentSchema" base="tns:NodeObjectType">
+                <xsd:sequence>
+                    <xsd:element name="plugins" type="tns:PluginsType"></xsd:element>
+                    <xsd:element name="code" type="tns:DocumentCodeType"></xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="nextUid" type="xsd:int"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="RavenTransferableType">
+        <xsd:sequence>
+            <xsd:element name="nodes" type="tns:NodeObjectType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="source" type="xsd:anyURI"></xsd:attribute>
+    </xsd:complexType>
+    <xsd:element name="RavenTransferable" type="tns:RavenTransferableType"></xsd:element>
+    <xsd:complexType name="PropertyDataType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+                <xsd:attribute name="style" type="tns:PropertyStyleType" xmlns:tns="http://xml.kitfox.com/schema/RavenDocumentSchema"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="TrackType">
+        <xsd:sequence>
+            <xsd:element name="key" type="tns:TrackKeyType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="trackUid" type="xsd:int"/>
+        <xsd:attribute name="before" type="tns:RepeatType"/>
+        <xsd:attribute name="after" type="tns:RepeatType"/>
+    </xsd:complexType>
+    <xsd:complexType name="TrackKeyType">
+        <xsd:sequence>
+            <xsd:element name="data" type="tns:PropertyDataType"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="interpolation" type="tns:InterpolationType"/>
+        <xsd:attribute name="tanInX" type="xsd:double"/>
+        <xsd:attribute name="tanInY" type="xsd:double"/>
+        <xsd:attribute name="tanOutX" type="xsd:double"/>
+        <xsd:attribute name="tanOutY" type="xsd:double"/>
+        <xsd:attribute name="frame" type="xsd:int"/>
+    </xsd:complexType>
+    <xsd:simpleType name="InterpolationType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="none"/>
+            <xsd:enumeration value="const"/>
+            <xsd:enumeration value="linear"/>
+            <xsd:enumeration value="smooth_step"/>
+            <xsd:enumeration value="smooth"/>
+            <xsd:enumeration value="bezier"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="RepeatType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="none"/>
+            <xsd:enumeration value="const"/>
+            <xsd:enumeration value="repeat"/>
+            <xsd:enumeration value="reflect"/>
+            <xsd:enumeration value="repeat_offset"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="SourceCodeType">
+        <xsd:sequence>
+            <xsd:element name="source" type="xsd:string" default=""></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="lang" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="EventType">
+        <xsd:sequence>
+            <xsd:element name="source" type="tns:SourceCodeType"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="PluginPropertiesType">
+        <xsd:sequence>
+            <xsd:element name="property" type="tns:PluginPropertyEntry" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="class" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="PluginPropertyEntry">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+                <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="PluginsType">
+        <xsd:sequence>
+            <xsd:element name="properties" type="tns:PluginPropertiesType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="DocumentCodeType">
+        <xsd:sequence>
+            <xsd:element name="source" type="tns:SourceCodeType"></xsd:element>
+            <xsd:element name="imports" type="tns:SourceCodeType"></xsd:element>
+            <xsd:element name="implements" type="tns:SourceCodeType"></xsd:element>
+            <xsd:element name="extends" type="tns:SourceCodeType"></xsd:element>
+            <xsd:element name="annotations" type="tns:SourceCodeType"></xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="TrackTransferableType">
+        <xsd:sequence>
+            <xsd:element name="track" type="tns:TrackType"></xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="TrackTransferable" type="tns:TrackTransferableType"></xsd:element>
+    <xsd:complexType name="MetaPropertySetType">
+        <xsd:sequence>
+            <xsd:element name="entry" type="tns:MetaPropertyEntryType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="key" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="MetaPropertySetGroupType">
+        <xsd:sequence>
+            <xsd:element name="propertySet" type="tns:MetaPropertySetType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="MetaPropertyEntryType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+                <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+</xsd:schema>

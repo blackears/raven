@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<RavenDocument version="0.0.0" xmlns="http://xml.kitfox.com/schema/RavenDocumentSchema">
+    <root nextUid="24" name="ravenNodeRoot" uid="0" class="com.kitfox.raven.editor.node.scene.RavenNodeRoot">
+        <property name="background">
+            <direct style="inline">color(1.0,1.0,1.0)</direct>
+        </property>
+        <property name="antialiased">
+            <direct style="inline">false</direct>
+        </property>
+        <property name="fillPaint">
+            <direct style="inline">color(0.0,0.0,0.0)</direct>
+        </property>
+        <property name="strokePaint">
+            <direct style="inline">color(0.0,0.0,0.0)</direct>
+        </property>
+        <property name="strokeStyle">
+            <direct style="inline">stroke{}</direct>
+        </property>
+        <property name="font">
+            <direct style="inline">font("Serif",12,false,false)</direct>
+        </property>
+        <property name="panX">
+            <direct style="inline">0.0</direct>
+        </property>
+        <property name="panY">
+            <direct style="inline">0.0</direct>
+        </property>
+        <property name="rotate">
+            <direct style="inline">0.0</direct>
+        </property>
+        <property name="zoom">
+            <direct style="inline">1.0</direct>
+        </property>
+        <child name="trackLibrary">
+            <node name="trackLibrary" uid="1" class="com.kitfox.raven.util.tree.TrackLibrary">
+                <property name="fps">
+                    <direct style="inline">30.0</direct>
+                </property>
+                <property name="curFrame">
+                    <direct style="inline">0</direct>
+                </property>
+                <property name="curTrack">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="loop">
+                    <direct style="inline">false</direct>
+                </property>
+                <child name="tracks"/>
+            </node>
+        </child>
+        <child name="resourceLibrary">
+            <node name="resourceLibrary" uid="2" class="com.kitfox.raven.util.tree.ResourceLibrary"/>
+        </child>
+        <child name="paintLibrary">
+            <node name="ravenNodePaintLibrary" uid="3" class="com.kitfox.raven.editor.node.scene.RavenNodePaintLibrary">
+                <child name="paints"/>
+            </node>
+        </child>
+        <child name="strokeLibrary">
+            <node name="ravenNodeStrokeLibrary" uid="4" class="com.kitfox.raven.editor.node.scene.RavenNodeStrokeLibrary">
+                <child name="strokes"/>
+            </node>
+        </child>
+        <child name="sceneGraph">
+            <node name="Stroke" uid="5" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">234.05</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">198.54</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline">none</direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline">none</direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M23738 29123c2089 -307 4172 -872 5984 -2094 1535 -1036 2693 -2341 3291 -3890 485 -1261 807 -2587 698 -4089 -95 -1295 -336 -2549 -997 -3591 -775 -1221 -1868 -2007 -2992 -2992 -2493 -2185 -6103 -2517 -9076 -1197 -2289 1015 -4373 2519 -5686 4488 -809 1211 -1339 2475 -1695 3890 -299 1181 -770 2686 -299 3890 724 1853 2199 3740 4189 4688 2047 974 4351 1223 6583 897zm-3092 898c-2413 -137 -4892 -1109 -6384 -3092 -893 -1186 -1999 -2265 -2194 -3690 -196 -1424 155 -2742 499 -3990 419 -1524 1141 -2853 2094 -4189 1536 -2156 3937 -3748 6483 -4688 2103 -777 4333 -448 6583 0 1780 354 2924 1348 4189 2394 1029 851 1836 2087 2194 3391 365 1332 828 2654 699 4189 -93 1095 -407 2112 -798 3092 -646 1613 -1723 3153 -3391 4189 -1583 982 -3251 1550 -5087 1995 -1622 392 -3256 491 -4887 399z</direct>
+                </property>
+                <child name="vertexPlanes">
+                    <node name="ravenNodeDataPlane" uid="6" class="com.kitfox.raven.editor.node.scene.RavenNodeDataPlane">
+                        <property name="dataType">
+                            <direct style="inline">com.kitfox.raven.shape.bezier.VertexSmooth.PlaneData</direct>
+                        </property>
+                        <property name="dataValues">
+                            <direct style="inline">(SMOOTH,SMOOTH,SMOOTH,SMOOTH,SMOOTH,SMOOTH,SMOOTH,SMOOTH,SMOOTH,SMOOTH,SMOOTH,SMOOTH,SMOOTH,SMOOTH,SMOOTH,SMOOTH,SMOOTH,SMOOTH,SMOOTH,SMOOTH,SMOOTH,SMOOTH,SMOOTH,SMOOTH,SMOOTH,SMOOTH)</direct>
+                        </property>
+                    </node>
+                </child>
+                <child name="edgePlanes"/>
+                <child name="facePlanes"/>
+                <child name="faceVertexPlanes"/>
+            </node>
+            <node name="Stroke1" uid="7" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">74.68</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">72.945</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline">none</direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline">none</direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M10036 13834c-1861 -31 -5347 -4598 -5076 -6393 260 -1733 4546 -4227 6669 -4192 1833 29 5424 2885 5199 4386 -306 2028 -4697 6233 -6792 6199z</direct>
+                </property>
+                <child name="vertexPlanes">
+                    <node name="ravenNodeDataPlane" uid="23" class="com.kitfox.raven.editor.node.scene.RavenNodeDataPlane">
+                        <property name="dataType">
+                            <direct style="inline">com.kitfox.raven.shape.bezier.VertexSmooth.PlaneData</direct>
+                        </property>
+                        <property name="dataValues">
+                            <direct style="inline">(TENSE,TENSE,TENSE,TENSE,TENSE)</direct>
+                        </property>
+                    </node>
+                </child>
+                <child name="edgePlanes">
+                    <node name="ravenNodeDataPlane" uid="24" class="com.kitfox.raven.editor.node.scene.RavenNodeDataPlane">
+                        <property name="dataType">
+                            <direct style="inline">com.kitfox.raven.shape.bezier.EdgeVisible</direct>
+                        </property>
+                        <property name="dataValues">
+                            <direct style="inline">(true,true,true,true)</direct>
+                        </property>
+                    </node>
+                </child>
+                <child name="facePlanes"/>
+                <child name="faceVertexPlanes"/>
+            </node>
+        </child>
+    </root>
+</RavenDocument>

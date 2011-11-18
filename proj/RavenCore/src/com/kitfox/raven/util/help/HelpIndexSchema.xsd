@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://xml.kitfox.com/schema/HelpIndexSchema"
+    xmlns:tns="http://xml.kitfox.com/schema/HelpIndexSchema"
+    elementFormDefault="qualified">
+    <xsd:complexType name="HelpIndexType">
+        <xsd:sequence>
+            <xsd:element name="title" type="tns:TitleType"></xsd:element>
+            <xsd:element name="header" type="tns:HeaderType"></xsd:element>
+            <xsd:element name="outline" type="tns:OutlineType"></xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="helpIndex" type="tns:HelpIndexType"></xsd:element>
+    <xsd:complexType name="TitleType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string"/>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="HeaderType">
+        <xsd:attribute name="src" type="xsd:anyURI"/>
+    </xsd:complexType>
+    <xsd:complexType name="OutlineType">
+        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+            <xsd:element name="page" type="tns:PageType"></xsd:element>
+            <xsd:element name="subindex" type="tns:SubindexType"></xsd:element>
+        </xsd:choice>
+    </xsd:complexType>
+    <xsd:complexType name="PageType">
+        <xsd:complexContent>
+            <xsd:extension base="tns:OutlineEntryType">
+                <xsd:sequence/>
+                <xsd:attribute name="src" type="xsd:anyURI"/>
+                <xsd:attribute name="title" type="xsd:string"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="SubindexType">
+        <xsd:complexContent>
+            <xsd:extension base="tns:OutlineEntryType">
+                <xsd:sequence/>
+                <xsd:attribute name="src" type="xsd:anyURI"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="OutlineEntryType"></xsd:complexType>
+</xsd:schema>

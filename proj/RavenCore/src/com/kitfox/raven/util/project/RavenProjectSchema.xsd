@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://xml.kitfox.com/schema/RavenProjectSchema"
+    xmlns:tns="http://xml.kitfox.com/schema/RavenProjectSchema"
+    elementFormDefault="qualified">
+    <xsd:complexType name="RavenProjectType">
+        <xsd:sequence>
+            <xsd:element name="exportSourceDir" type="xsd:anyURI"></xsd:element>
+            <xsd:element name="exportResourceDir" type="xsd:anyURI"></xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="project" type="tns:RavenProjectType"></xsd:element>
+    <xsd:complexType name="FileSetType">
+        <xsd:sequence>
+            <xsd:element name="includes" type="tns:IncludesType" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+            <xsd:element name="excludes" type="tns:ExcludesType" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="dir" type="xsd:anyURI"/>
+    </xsd:complexType>
+    <xsd:complexType name="IncludesType">
+        <xsd:attribute name="name" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="ExcludesType">
+        <xsd:attribute name="name" type="xsd:string"/>
+    </xsd:complexType>
+</xsd:schema>

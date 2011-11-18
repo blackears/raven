@@ -1,0 +1,1567 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<RavenDocument version="0.0.0" xmlns="http://xml.kitfox.com/schema/RavenDocumentSchema">
+    <root nextUid="32" name="ravenNodeRoot" uid="0" class="com.kitfox.raven.editor.node.scene.RavenNodeRoot">
+        <property name="background">
+            <direct style="inline">color(1.0,1.0,1.0)</direct>
+        </property>
+        <property name="antialiased">
+            <direct style="inline">true</direct>
+        </property>
+        <property name="panX">
+            <direct style="inline">0.0</direct>
+        </property>
+        <property name="panY">
+            <direct style="inline">0.0</direct>
+        </property>
+        <property name="rotate">
+            <direct style="inline">0.0</direct>
+        </property>
+        <property name="zoom">
+            <direct style="inline">1.0</direct>
+        </property>
+        <child name="trackLibrary">
+            <node name="trackLibrary" uid="1" class="com.kitfox.raven.util.tree.TrackLibrary">
+                <property name="fps">
+                    <direct style="inline">30.0</direct>
+                </property>
+                <property name="curFrame">
+                    <direct style="inline">0</direct>
+                </property>
+                <property name="curTrack">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="loop">
+                    <direct style="inline">false</direct>
+                </property>
+                <child name="tracks"/>
+            </node>
+        </child>
+        <child name="resourceLibrary">
+            <node name="resourceLibrary" uid="2" class="com.kitfox.raven.util.tree.ResourceLibrary"/>
+        </child>
+        <child name="paintLibrary">
+            <node name="ravenNodePaintLibrary" uid="3" class="com.kitfox.raven.editor.node.scene.RavenNodePaintLibrary">
+                <child name="paints"/>
+            </node>
+        </child>
+        <child name="strokeLibrary">
+            <node name="ravenNodeStrokeLibrary" uid="4" class="com.kitfox.raven.editor.node.scene.RavenNodeStrokeLibrary">
+                <child name="strokes"/>
+            </node>
+        </child>
+        <child name="sceneGraph">
+            <node name="Stroke" uid="5" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">181.0668</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-227.31067</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">223.5</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">301.5</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M216 433c30 -7 60 -16 82 -38 17 -12 28 -30 40 -46 6 -11 11 -22 11 -35 2 -11 4 -22 4 -34 0 -10 -2 -22 -9 -30 -8 -14 -18 -27 -25 -41 -23 -20 -51 -37 -83 -36 -38 -1 -82 2 -109 31 -15 11 -22 26 -26 42 -4 12 -6 24 -9 36 -1 11 1 22 0 34 3 10 2 22 10 30 8 15 17 28 24 43 6 12 15 22 28 29 18 12 41 17 62 15m-22 10c-27 -2 -51 -18 -69 -36 -7 -15 -16 -29 -24 -43 -5 -12 -16 -22 -16 -37 -3 -13 -3 -27 -3 -41 2 -12 5 -22 7 -34 5 -14 8 -28 17 -40 10 -13 26 -24 40 -34 41 -17 90 -20 133 -6 17 7 31 19 45 30 10 3 12 16 19 23 6 12 16 23 20 36 2 13 2 27 0 40 -3 12 -3 25 -7 36 -6 16 -18 30 -28 44 -14 15 -30 28 -46 40 -27 14 -57 24 -88 22</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+            <node name="Stroke1" uid="6" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">176.18211</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-224.0251</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">230.5</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">297.0</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M377 308c-101 -10 -207 1 -305 -11 89 -12 204 -1 302 2 8 -2 15 10 3 9</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+            <node name="Stroke2" uid="7" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">213.86397</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-225.48535</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">176.5</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">299.0</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M191 467c-12 -10 -14 -24 -20 -36 -3 -13 -7 -25 -9 -38 -3 -12 -4 -24 -6 -36 0 -20 0 -40 -1 -59 -1 -14 2 -27 3 -40 2 -12 2 -26 4 -38 2 -14 9 -25 12 -39 6 -13 9 -29 18 -42 7 -8 5 7 1 10 -5 14 -10 28 -14 42s-10 28 -10 43c-2 11 -1 22 -3 32 -3 14 -1 31 -2 46 3 17 0 36 2 53 3 12 4 24 7 36 3 13 7 27 12 40 2 8 9 14 12 22 0 2 -4 4 -6 4</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+            <node name="Stroke3" uid="8" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">171.29742</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-209.05753</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">237.5</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">276.5</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M253 345c17 1 18 -15 19 -26 0 -21 1 -43 -5 -62 -5 -15 -9 -31 -23 -43 -6 8 -9 19 -13 29 -4 14 -10 28 -15 42 -4 12 -7 26 -8 40 1 14 23 15 35 19q5 1 10 1m-8 11c-17 -5 -38 -6 -47 -22 -8 -4 -8 -17 4 -13 0 -14 2 -28 6 -40 5 -13 10 -26 14 -40 4 -11 8 -22 14 -33 7 -12 19 3 24 9 9 13 14 27 18 42 7 19 5 42 5 64 -2 12 -3 28 -19 31 -6 1 -12 3 -19 2</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+            <node name="Stroke4" uid="9" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">253.29034</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-206.50209</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">120.0</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">273.0</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M114 323c18 -8 17 -27 17 -44 1 -15 -1 -29 -4 -42 0 -9 -5 -6 -6 1 -8 10 -9 24 -11 37 -4 11 -2 25 -4 38 2 4 -1 13 8 10m-8 9c-11 -6 -8 -20 -8 -29 -1 -15 3 -28 5 -41 1 -14 9 -25 14 -37 2 -9 17 -13 16 -1 3 14 7 28 6 44 3 7 -7 19 4 18 2 6 -7 12 -4 20 -4 13 -16 28 -33 26</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+            <node name="Stroke5" uid="10" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">183.16023</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-226.94562</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">220.5</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">301.0</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M215 333c-12 -6 6 -15 12 -11 6 -9 3 -24 3 -35 -2 -12 -18 -6 -20 3 -10 6 -5 -11 1 -14 11 -13 29 0 28 13 1 10 2 24 -1 33 -3 8 -13 17 -23 11</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+            <node name="Stroke6" uid="11" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">250.15019</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-218.91423</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">124.5</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">290.0</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M121 315c-15 -3 -20 -19 -16 -32 0 -13 16 -20 28 -18 4 4 7 19 -2 10 -5 -7 -19 3 -18 11 -3 12 6 26 19 19 3 -10 16 -2 9 5 -3 7 -14 7 -20 5</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+            <node name="Stroke7" uid="12" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">262.3619</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-249.21443</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">107.0</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">331.5</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M95 341c9 -5 19 -10 28 -15 -15 -4 -55 -10 -36 7 4 2 3 9 8 8m-5 12c-7 -7 -12 -16 -17 -24 3 -5 -1 -10 9 -12 17 1 52 -7 64 10 -8 9 -25 7 -35 16 -7 2 -13 8 -21 10</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+            <node name="Stroke8" uid="13" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">219.09756</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-294.11716</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">169.0</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">393.0</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M177 417c-25 -1 -44 -18 -62 -32 -9 -10 -22 5 -28 1 10 -18 35 -10 46 4 29 26 78 24 106 -3 2 -4 9 -12 12 -3 -2 12 -18 17 -26 24 -15 6 -32 10 -48 9</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+            <node name="Stroke9" uid="14" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">158.38791</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-282.43515</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">256.0</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">377.0</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M261 392c-4 -6 8 -14 -3 -18 -5 -5 -25 -1 -21 -11 14 -3 42 5 35 23 -2 4 -6 8 -11 6</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+            <node name="Stroke10" uid="15" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">287.83203</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-267.83264</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">70.5</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">357.0</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M79 390c-10 -13 -20 -26 -26 -41 -5 -12 6 -22 17 -26 3 7 -13 9 -10 18 0 11 11 21 18 31 4 5 15 19 1 18</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+            <node name="Stroke11" uid="16" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">204.79242</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-320.40167</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">189.5</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">429.0</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M183 463c-17 -8 -39 -7 -53 -19 -7 -10 -19 -17 -23 -29 -2 -7 -11 -14 -9 -22 12 6 13 20 22 28 10 9 19 24 35 23 22 9 47 12 68 -1 18 -8 35 -23 54 -27 6 10 -13 15 -19 20 -23 13 -47 29 -75 27</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+            <node name="Stroke12" uid="17" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">112.68121</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-272.57846</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">321.5</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">363.5</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M259 432c-10 -12 16 -11 22 -16 31 -12 61 -29 88 -48 12 -11 23 -23 21 -41 1 -15 -19 -19 -30 -22 -38 -3 -75 16 -104 38 -13 6 -3 -8 2 -11 22 -19 52 -31 81 -36 20 -1 55 3 60 26 1 16 -1 30 -12 41 -17 22 -44 32 -67 46 -20 9 -39 20 -61 23</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+            <node name="Stroke13" uid="18" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">274.5736</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-221.10461</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">89.5</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">293.0</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M91 300c-9 -3 -4 -15 2 -7 -1 3 4 8 -2 7</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+            <node name="Stroke14" uid="19" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">281.20282</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-225.85042</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">80.0</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">299.5</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M75 320c-8 -7 -12 -18 -5 -27 2 -9 15 -17 21 -6 6 8 -3 10 -8 3 -7 5 -13 19 -1 23 5 4 -1 10 -7 7</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+            <node name="Stroke15" uid="20" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">82.326385</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-142.98117</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">365.0</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">186.0</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M304 272c-16 -6 -30 -19 -33 -35 -4 -11 -4 -25 3 -35 7 -16 26 -24 39 -35 23 -15 43 -35 70 -43 24 -9 47 -22 72 -27 8 11 -11 16 -18 16 -27 12 -56 20 -81 35 -22 18 -46 33 -69 51 -6 9 -12 21 -7 33 3 16 20 35 39 30 4 -4 22 -11 13 -1 -7 7 -17 14 -28 11</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+            <node name="Stroke16" uid="21" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">76.7439</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-154.66318</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">373.0</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">202.0</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M340 292c-15 -7 5 -13 14 -7 11 -4 17 -11 17 -21 4 -13 7 -26 10 -39 4 -13 7 -27 10 -40s7 -27 10 -40c3 -10 6 -20 6 -30 14 -7 9 9 7 16 -3 13 -7 26 -10 39 -4 14 -7 27 -11 41 -3 13 -7 26 -10 39 -4 11 -4 23 -10 33 -10 5 -20 13 -33 9</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+            <node name="Stroke17" uid="22" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">65.5789</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-146.6318</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">389.0</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">191.0</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M358 282c2 -10 17 -14 17 -25 6 -14 11 -27 16 -41 6 -11 7 -25 11 -37 3 -11 1 -24 4 -36 -3 -10 0 -22 0 -32 -1 -11 14 -4 10 5 -1 10 -2 20 0 29 -3 12 -1 26 -5 37 -4 13 -6 27 -12 39 -7 14 -13 29 -19 43 -4 7 -13 17 -22 18</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+            <node name="Stroke18" uid="23" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">99.07388</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-109.3954</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">341.0</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">140.0</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M250 171c5 -15 21 -30 39 -26 44 -2 91 -10 127 -36 16 0 0 14 -7 16 -41 24 -91 29 -137 30 -8 4 -13 14 -22 16</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+            <node name="Stroke19" uid="24" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">287.13422</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-137.50523</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">71.5</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">178.5</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M84 253c7 -10 7 -22 7 -34 0 -13 -7 -23 -9 -34 -5 -14 -10 -27 -18 -39 -6 -12 -16 -22 -21 -34 9 -9 13 8 18 13 10 14 18 28 24 43 4 13 8 26 13 40 2 12 2 26 -4 37 -3 2 -4 9 -10 8</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+            <node name="Stroke20" uid="25" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">283.29626</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-149.18724</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">77.0</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">194.5</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M94 264c-14 -8 -21 -23 -26 -36 -4 -11 -7 -23 -8 -36 -2 -11 -3 -23 -5 -35s-1 -26 -6 -37c8 0 10 13 10 21 3 12 5 25 7 37s4 25 7 37c5 14 11 28 24 40 8 -1 5 14 -3 9</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+            <node name="Stroke21" uid="26" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">245.61441</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-120.71234</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">131.0</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">155.5</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M177 181c-15 -1 -32 -11 -36 -25 -27 8 -49 -3 -69 -19 1 -12 17 2 23 5 16 13 41 -4 54 7 1 17 23 22 37 25 4 4 -4 12 -9 7</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+            <node name="Stroke22" uid="27" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">295.15906</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-96.6182</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">60.0</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">122.5</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M78 144c-16 -5 -23 -18 -34 -28 -11 -3 -4 -17 4 -7 12 9 18 22 31 30 0 2 8 7 -1 5</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+            <node name="Stroke23" uid="28" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">155.94556</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-153.93304</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">259.5</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">201.0</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M285 243c-9 -9 10 -15 10 -21 -8 -13 -22 -22 -30 -35 -6 -6 -14 -21 -23 -16 -8 10 -16 21 -23 31 -9 -1 2 -12 3 -17 7 -9 13 -25 27 -26 15 10 25 24 36 37 10 8 18 18 24 29 -6 7 -14 16 -24 18</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+            <node name="Stroke24" uid="29" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">261.3152</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-151.37762</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">108.5</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">197.5</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M73 229c-6 -10 12 -17 15 -25 12 -11 16 -26 30 -36 13 -4 13 13 20 20 2 6 12 16 4 19 -9 -8 -14 -21 -21 -29 -13 15 -21 31 -37 45 -3 2 -5 8 -11 6</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+            <node name="Stroke25" uid="30" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">280.85394</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-173.64645</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">80.5</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">228.0</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M82 238c-4 -6 -7 -15 -3 -21 7 2 5 13 7 20q-2 2 -4 1</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+            <node name="Stroke26" uid="31" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">139.54698</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-359.46338</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">283.0</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">482.5</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M244 565c-11 -2 -7 -22 3 -12 23 2 42 -17 55 -34 9 -12 13 -26 17 -41 -11 -6 -25 -16 -26 -29 -6 -12 -5 -29 -1 -42 0 -6 11 -10 7 -1 -4 14 -3 30 3 42 3 13 17 19 29 22 2 8 -5 16 -5 24 -5 13 -10 26 -20 37 -14 18 -36 37 -62 34</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+            <node name="Stroke27" uid="32" class="com.kitfox.raven.editor.node.scene.RavenNodePath">
+                <property name="visible">
+                    <direct style="inline">true</direct>
+                </property>
+                <property name="opacity">
+                    <direct style="inline">1.0</direct>
+                </property>
+                <property name="transX">
+                    <direct style="inline">179.67117</direct>
+                </property>
+                <property name="transY">
+                    <direct style="inline">-380.27197</direct>
+                </property>
+                <property name="rotation">
+                    <direct style="inline">0.0</direct>
+                </property>
+                <property name="skewAngle">
+                    <direct style="inline">90.0</direct>
+                </property>
+                <property name="scaleX">
+                    <direct style="inline">0.30218792</direct>
+                </property>
+                <property name="scaleY">
+                    <direct style="inline">0.26987448</direct>
+                </property>
+                <property name="pivotX">
+                    <direct style="inline">225.5</direct>
+                </property>
+                <property name="pivotY">
+                    <direct style="inline">511.0</direct>
+                </property>
+                <property name="filter">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="paint">
+                    <direct style="inline">color(0.0,0.0,0.0)</direct>
+                </property>
+                <property name="paintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="stroke">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaint">
+                    <direct style="inline"></direct>
+                </property>
+                <property name="strokePaintLayout">
+                    <direct style="inline">linear{sx:0.0;sy:0.0;ex:1.0;ey:0.0}</direct>
+                </property>
+                <property name="path">
+                    <direct style="inline">M242 571c-20 -6 -39 -21 -45 -40 -5 -9 10 -12 7 -22 2 -11 6 -22 6 -34 4 -9 -2 -19 0 -27 11 2 9 17 9 26 1 13 -4 24 -5 37 0 7 -6 14 -7 19 7 20 31 30 51 34 1 7 -12 10 -16 7</direct>
+                </property>
+                <child name="vertexPlanes"/>
+            </node>
+        </child>
+    </root>
+</RavenDocument>
