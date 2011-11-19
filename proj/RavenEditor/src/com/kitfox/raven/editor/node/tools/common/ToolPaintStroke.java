@@ -518,7 +518,10 @@ public class ToolPaintStroke extends ToolDisplay
             prop.setProperty(PROP_STROKE_WIDTH_MIN, "" + strokeWidthMin);
             prop.setProperty(PROP_STROKE_SPACING, "" + strokeSpacing);
             prop.setProperty(PROP_STROKE_SMOOTHING, "" + strokeSmoothing);
-            prop.setProperty(PROP_VERTEX_SMOOTH, "" + vertexSmooth.name());
+            if (vertexSmooth != null)
+            {
+                prop.setProperty(PROP_VERTEX_SMOOTH, "" + vertexSmooth.name());
+            }
             prop.setProperty(PROP_VERTEX_SMOOTH_ANGLE, "" + vertexSmoothAngle);
             return prop;
         }
