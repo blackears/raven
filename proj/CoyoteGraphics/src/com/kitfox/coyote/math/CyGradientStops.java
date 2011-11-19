@@ -242,9 +242,10 @@ public class CyGradientStops
      * Sample this gradient at given stop fraction.  Ignores cycle
      * information.
      *
-     * @param fraction
-     * @param color
-     * @return
+     * @param fraction Value on [0 1] of point to sample in this gradient.
+     * @param color Array that will be assigned value.  If null, a new
+     * array will be created.
+     * @return Sampled RGBA value
      */
     public float[] sampleRaw(float fraction, float[] color)
     {

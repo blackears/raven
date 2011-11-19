@@ -298,7 +298,7 @@ public class SWFDataReader extends FilterInputStream
 
     /**
      * http://www.psc.edu/general/software/packages/ieee/ieee.php
-     * @return
+     * @return Next 16 bit floating point value
      * @throws IOException
      */
     public float getFLOAT16() throws IOException

@@ -160,7 +160,7 @@ public class ShapeWithStyle
      * Build a set of Path2D strokes and filled areas based on the shape mesh.
      * These can be used directly by the Java2D API to render this mesh.
      *
-     * @return
+     * @return Set of strokes parsed from the mesh.
      */
     public ShapeInfo buildShapes()
     {

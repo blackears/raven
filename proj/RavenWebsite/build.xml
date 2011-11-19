@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="RavenWebsite" default="default" basedir=".">
+    <description>Builds and uploads Raven project.</description>
+
+    <path id="lib.path">
+        <pathelement location="../../lib/apache-ant-1.8.2/lib/ant.jar"/>
+        <pathelement location="../../lib/freemarker-2.3.18/lib/freemarker.jar"/>        
+        <pathelement location="../../lib/jogamp-windows-i586/jar/jogl.all.jar"/>        
+        <pathelement location="../../lib/jpen/jpen-2.jar"/>        
+    </path>
+
+    <target name="clean">
+        <deltree dir="build"/>
+    </target>
+
+    <target name="javadoc">
+        <javadoc
+            destdir="build/docs/api/RavenService"
+            author="true"
+            version="true"
+            use="true"
+            windowtitle="Raven Service API">
+              
+            <classpath>
+                <path refid="lib.path"/>
+            </classpath>
+                
+            <fileset dir="../RavenService/src">
+                <include name="**/*.java"/>
+            </fileset>
+
+            <doctitle><![CDATA[<h1>Raven Service</h1>]]></doctitle>
+            <bottom><![CDATA[<i>Copyright &#169; 2011 Mark McKay</i>]]></bottom>
+            <link href="http://download.oracle.com/javase/6/docs/api/"/>
+            <!--
+            <link offline="true" href="http://download.oracle.com/javase/6/docs/api/" packagelistLoc="C:\tmp"/>
+            <link href="http://raven.java.net"/>
+            -->
+        </javadoc>
+        
+        <javadoc
+            destdir="build/docs/api/SVGRabbit"
+            author="true"
+            version="true"
+            use="true"
+            windowtitle="Raven Service API">
+              
+            <classpath>
+                <pathelement location="../RavenService/dist/RavenService.jar"/>
+                <path refid="lib.path"/>
+            </classpath>
+                
+            <fileset dir="../SVGRabbit">
+                <include name="src/**/*.java"/>
+                <include name="gen/**/*.java"/>
+            </fileset>
+
+            <doctitle><![CDATA[<h1>SVG Rabbit</h1>]]></doctitle>
+            <bottom><![CDATA[<i>Copyright &#169; 2011 Mark McKay</i>]]></bottom>
+            <link href="http://download.oracle.com/javase/6/docs/api/"/>
+            <link href="../RavenService"/>
+            <!--
+            <link href="http://raven.java.net"/>
+            <link href="http://download.oracle.com/javase/6/docs/api/"/>
+            -->
+        </javadoc>
+        
+        <javadoc
+            destdir="build/docs/api/SWFParser"
+            author="true"
+            version="true"
+            use="true"
+            windowtitle="SWF Parser API">
+              
+            <classpath>
+                <path refid="lib.path"/>
+            </classpath>
+                
+            <fileset dir="../SWFParser">
+                <include name="src/**/*.java"/>
+            </fileset>
+
+            <doctitle><![CDATA[<h1>SWF Parser</h1>]]></doctitle>
+            <bottom><![CDATA[<i>Copyright &#169; 2011 Mark McKay</i>]]></bottom>
+            <link href="http://download.oracle.com/javase/6/docs/api/"/>
+            <link href="../RavenService"/>
+            <!--
+            <link href="http://raven.java.net"/>
+            <link href="http://download.oracle.com/javase/6/docs/api/"/>
+            -->
+        </javadoc>
+        
+        <javadoc
+            destdir="build/docs/api/CoyoteGraphics"
+            author="true"
+            version="true"
+            use="true"
+            windowtitle="Coyote Graphics API">
+              
+            <classpath>
+                <path refid="lib.path"/>
+            </classpath>
+                
+            <fileset dir="../CoyoteGraphics">
+                <include name="src/**/*.java"/>
+            </fileset>
+
+            <doctitle><![CDATA[<h1>Coyote Graphics</h1>]]></doctitle>
+            <bottom><![CDATA[<i>Copyright &#169; 2011 Mark McKay</i>]]></bottom>
+            <link href="http://download.oracle.com/javase/6/docs/api/"/>
+            <link href="../RavenService"/>
+            <!--
+            <link href="http://raven.java.net"/>
+            <link href="http://download.oracle.com/javase/6/docs/api/"/>
+            -->
+        </javadoc>
+        
+        <javadoc
+            destdir="build/docs/api/RavenDocking"
+            author="true"
+            version="true"
+            use="true"
+            windowtitle="Raven Docking API">
+              
+            <classpath>
+                <path refid="lib.path"/>
+            </classpath>
+                
+            <fileset dir="../RavenDocking">
+                <include name="src/**/*.java"/>
+            </fileset>
+
+            <doctitle><![CDATA[<h1>Raven Docking</h1>]]></doctitle>
+            <bottom><![CDATA[<i>Copyright &#169; 2011 Mark McKay</i>]]></bottom>
+            <link href="http://download.oracle.com/javase/6/docs/api/"/>
+        </javadoc>
+        
+        <javadoc
+            destdir="build/docs/api/RavenCore"
+            author="true"
+            version="true"
+            use="true"
+            windowtitle="Raven Core API">
+              
+            <classpath>
+                <pathelement location="../RavenService/dist/RavenService.jar"/>
+                <pathelement location="../SVGRabbit/dist/SVGRabbit.jar"/>
+                <pathelement location="../CoyoteGraphics/dist/CoyoteGraphics"/>
+                <path refid="lib.path"/>
+            </classpath>
+                
+            <fileset dir="../RavenCore">
+                <include name="src/**/*.java"/>
+            </fileset>
+
+            <doctitle><![CDATA[<h1>Raven Core</h1>]]></doctitle>
+            <bottom><![CDATA[<i>Copyright &#169; 2011 Mark McKay</i>]]></bottom>
+            <link href="http://download.oracle.com/javase/6/docs/api/"/>
+            <link href="../RavenService"/>
+            <link href="../SVGRabbit"/>
+            <link href="../CoyoteGraphics"/>
+        </javadoc>
+        
+        <javadoc
+            destdir="build/docs/api/RavenEditor"
+            author="true"
+            version="true"
+            use="true"
+            windowtitle="Raven Editor API">
+              
+            <classpath>
+                <pathelement location="../RavenService/dist/RavenService.jar"/>
+                <pathelement location="../SVGRabbit/dist/SVGRabbit.jar"/>
+                <pathelement location="../CoyoteGraphics/dist/CoyoteGraphics"/>
+                <pathelement location="../RavenCore/dist/RavenCore.jar"/>
+                <path refid="lib.path"/>
+            </classpath>
+                
+            <fileset dir="../RavenEditor">
+                <include name="src/**/*.java"/>
+            </fileset>
+
+            <doctitle><![CDATA[<h1>Raven Editor</h1>]]></doctitle>
+            <bottom><![CDATA[<i>Copyright &#169; 2011 Mark McKay</i>]]></bottom>
+            <link href="http://download.oracle.com/javase/6/docs/api/"/>
+            <link href="../RavenService"/>
+            <link href="../SVGRabbit"/>
+            <link href="../CoyoteGraphics"/>
+            <link href="../RavenCore"/>
+        </javadoc>
+
+        
+    </target>
+</project>
