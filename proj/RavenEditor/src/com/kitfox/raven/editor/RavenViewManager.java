@@ -210,36 +210,39 @@ public class RavenViewManager
         throw new UnsupportedOperationException();
     }
 
-    public void layoutViews(final ViewLayoutType layoutProperties)
+    public void layoutViews(ViewLayoutType layoutProperties)
     {
         //Close all existing views
         frame.getDockingRoot().closeAll();
 
-        //Restore views
+        if (layoutProperties != null)
         {
-            DockingChild root = layoutView(layoutProperties.getRoot());
-            DockingRegionContainer cont = frame.getDockingRoot()
-                    .getDockingRoot().getContainerRoot();
-
-            cont.setRoot(root);
-        }
-
-        for (ViewWindowType winType: layoutProperties.getWindow())
-        {
-            DockingChild root = layoutView(winType.getRoot());
-            if (root instanceof DockingRegionTabbed
-                    && ((DockingRegionTabbed)root).getTabCount() == 0)
+            //Restore views
             {
-                //Skip empty windows.  Not sure why these are being created in
-                // the first place.
-                continue;
+                DockingChild root = layoutView(layoutProperties.getRoot());
+                DockingRegionContainer cont = frame.getDockingRoot()
+                        .getDockingRoot().getContainerRoot();
+
+                cont.setRoot(root);
             }
 
-            DockingRegionWindow win = frame.getDockingRoot().createFloatingWindow();
-            win.setBounds(winType.getX(), winType.getY(), winType.getWidth(), winType.getHeight());
+            for (ViewWindowType winType: layoutProperties.getWindow())
+            {
+                DockingChild root = layoutView(winType.getRoot());
+                if (root instanceof DockingRegionTabbed
+                        && ((DockingRegionTabbed)root).getTabCount() == 0)
+                {
+                    //Skip empty windows.  Not sure why these are being created in
+                    // the first place.
+                    continue;
+                }
 
-            DockingRegionContainer cont = win.getRoot().getContainerRoot();
-            cont.setRoot(root);
+                DockingRegionWindow win = frame.getDockingRoot().createFloatingWindow();
+                win.setBounds(winType.getX(), winType.getY(), winType.getWidth(), winType.getHeight());
+
+                DockingRegionContainer cont = win.getRoot().getContainerRoot();
+                cont.setRoot(root);
+            }
         }
 
         fireViewLayoutChanged();

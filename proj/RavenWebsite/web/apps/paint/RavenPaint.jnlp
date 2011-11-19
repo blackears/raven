@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+" 
+    codebase="http://raven.java.net/apps/paint" 
+    href="RavenPaint.jnlp">
+        
+    <information>
+        <title>Raven Paint</title>
+        <vendor>Mark McKay</vendor>
+        <homepage href="http://raven.java.net/apps/paint/RavenPaint.html"/>
+        <description>A vector drawing and animation applicaton</description>
+        <description kind="short">Create and publish animated graphics with Raven Paint!</description>
+        <offline-allowed/>
+        <icon href="ravenCameo64.gif"/>
+        <!--
+        <icon kind="splash" href="splash.gif"/>
+        -->
+    </information>
+
+    <security>
+        <all-permissions/>
+    </security>
+    
+    <resources>
+        <!-- Application Resources -->
+        <j2se version="1.6+"
+              href="http://java.sun.com/products/autodl/j2se"/>
+        <jar href="../bin/CoyoteGraphics.jar"/>
+        <jar href="../bin/RavenCore.jar"/>
+        <jar href="../bin/RavenDocking.jar"/>
+        <jar href="../bin/RavenEditor.jar"/>
+        <jar href="../bin/RavenEditorApp.jar"/>
+        <jar href="../bin/RavenImportSVG.jar"/>
+        <jar href="../bin/RavenImportSWF.jar"/>
+        <jar href="../bin/RavenService.jar"/>
+        <jar href="../bin/RavenSVGRabbit.jar"/>
+        <jar href="../bin/RavenSWFParser.jar"/>
+
+        <extension name="jogl-all-awt" 
+        href="http://jogamp.org/deployment/jogamp-current/jogl-all-awt.jnlp"/>
+    </resources>
+    
+    <application-desc 
+        name="Raven Editor"
+        main-class="com.kitfox.raven.editor.app.RavenEditorMain"/>
+    
+    <!--
+    <application-desc
+         name="Raven Editor"
+         main-class="webstartComponentArch.DynamicTreeApplication"
+         width="800"
+         height="600">
+     </application-desc>
+     -->
+     
+     <update check="background"/>
+</jnlp>                             

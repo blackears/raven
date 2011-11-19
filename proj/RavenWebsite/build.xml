@@ -2,6 +2,10 @@
 <project name="RavenWebsite" default="default" basedir=".">
     <description>Builds and uploads Raven project.</description>
 
+    <property name="key.location" location="keyStore"/>
+    <property name="key.user" location="kitfox"/>
+    <property name="key.password" location="raven"/>
+
     <path id="lib.path">
         <pathelement location="../../lib/apache-ant-1.8.2/lib/ant.jar"/>
         <pathelement location="../../lib/freemarker-2.3.18/lib/freemarker.jar"/>        
@@ -10,10 +14,73 @@
     </path>
 
     <target name="clean">
-        <deltree dir="build"/>
+        <delete dir="build"/>
     </target>
 
-    <target name="javadoc">
+    <target name="-init-web">
+        <!--
+        <condition property="key.present">
+            <available file="${key.location}"/>
+        </condition>
+        -->
+        
+        <mkdir dir="build"/>
+        <copy todir="build">
+            <fileset dir="web">
+                <include name="**"/>
+            </fileset>
+        </copy>
+        
+        
+    </target>
+
+    <target name="apps" depends="-init-web">
+        <mkdir dir="build/apps/bin"/>
+        
+        <antcall target="-copy-app-jar">
+            <param name="app.jar" location="../CoyoteGraphics/dist/CoyoteGraphics.jar"/>
+        </antcall>
+        <antcall target="-copy-app-jar">
+            <param name="app.jar" location="../RavenCore/dist/RavenCore.jar"/>
+        </antcall>
+        <antcall target="-copy-app-jar">
+            <param name="app.jar" location="../RavenDocking/dist/RavenDocking.jar"/>
+        </antcall>
+        <antcall target="-copy-app-jar">
+            <param name="app.jar" location="../RavenEditor/dist/RavenEditor.jar"/>
+        </antcall>
+        <antcall target="-copy-app-jar">
+            <param name="app.jar" location="../RavenEditorApp/dist/RavenEditorApp.jar"/>
+        </antcall>
+        <antcall target="-copy-app-jar">
+            <param name="app.jar" location="../RavenImportSVG/dist/RavenImportSVG.jar"/>
+        </antcall>
+        <antcall target="-copy-app-jar">
+            <param name="app.jar" location="../RavenImportSWF/dist/RavenImportSWF.jar"/>
+        </antcall>
+        <antcall target="-copy-app-jar">
+            <param name="app.jar" location="../RavenService/dist/RavenService.jar"/>
+        </antcall>
+        <antcall target="-copy-app-jar">
+            <param name="app.jar" location="../SVGRabbit/dist/SVGRabbit.jar"/>
+        </antcall>
+        <antcall target="-copy-app-jar">
+            <param name="app.jar" location="../SWFParser/dist/SWFParser.jar"/>
+        </antcall>
+        
+    </target>
+
+    <target name="-copy-app-jar">
+        <signjar jar="${app.jar}" 
+            alias="${key.user}" 
+            storepass="${key.password}" 
+            keystore="${key.location}"/>
+            
+        <copy file="${app.jar}" todir="build/apps/bin"/>
+                
+    </target>
+
+    <target name="javadoc" depends="-init-web">
         <javadoc
             destdir="build/docs/api/RavenService"
             author="true"
@@ -188,7 +255,20 @@
             <link href="../CoyoteGraphics"/>
             <link href="../RavenCore"/>
         </javadoc>
-
-        
     </target>
+    
+    <target name="genKey">
+        <delete file="${key.location}"/>
+        <genkey alias="${key.user}" storepass="${key.password}" keystore="${key.location}" validity="1000000" verbose="true">
+            <dname>
+                <param name="CN" value="Mark McKay, mark@kitfox.com"/>
+                <param name="OU" value="kitfox.com"/>
+                <param name="O"  value="kitfox"/>
+                <param name="L"  value="Toronto"/>
+                <param name="S"  value="Ontario"/>
+                <param name="C"  value="CA"/>
+            </dname>
+        </genkey>                
+    </target>
+    
 </project>
