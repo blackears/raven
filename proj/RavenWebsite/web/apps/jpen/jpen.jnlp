@@ -12,6 +12,8 @@
     
     <update check="background" policy="always"/>
 
+    <component-desc/>
+
     <security>
         <all-permissions/>
     </security>

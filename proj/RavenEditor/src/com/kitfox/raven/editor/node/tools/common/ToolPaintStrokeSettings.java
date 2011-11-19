@@ -59,8 +59,13 @@ public class ToolPaintStrokeSettings extends javax.swing.JPanel
 
     private void update()
     {
-        updating = true;
+        if (toolProvider == null)
+        {
+            return;
+        }
 
+        updating = true;
+        
         spinner_strokeMaxWidth.setValue(toolProvider.getStrokeWidthMax());
         spinner_strokeMinWidth.setValue(toolProvider.getStrokeWidthMin());
         spinner_strokeSmoothing.setValue(toolProvider.getStrokeSmoothing());

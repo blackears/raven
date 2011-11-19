@@ -24,14 +24,9 @@
     </target>
 
     <target name="-init-web" depends="-init">
-        <!--
-        <condition property="key.present">
-            <available file="${key.location}"/>
-        </condition>
-        -->
-        
         <mkdir dir="build"/>
-        <copy todir="build">
+        
+        <copy todir="build" force="true">
             <fileset dir="web">
                 <include name="**"/>
             </fileset>
@@ -55,7 +50,7 @@
     <target name="jpen" depends="-init-web,-gen-key">
         <mkdir dir="build/apps/jpen"/>
         
-        <copy file="web/apps/jpen/jpen.jnlp" todir="build/apps/jpen"/>
+        <copy file="web/apps/jpen/jpen.jnlp" todir="build/apps/jpen" force="true"/>
         
         <copy file="../../lib/jpen/jpen-2.jar" todir="build/apps/jpen"/>
         <signjar jar="build/apps/jpen/jpen-2.jar" alias="${key.user}" storepass="${key.password}" keystore="${key.location}"/>
