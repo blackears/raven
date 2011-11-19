@@ -16,6 +16,8 @@
         <icon kind="splash" href="splash.gif"/>
         -->
     </information>
+    
+    <update check="background" policy="always"/>
 
     <security>
         <all-permissions/>
@@ -37,7 +39,9 @@
         <jar href="../bin/RavenSWFParser.jar"/>
 
         <extension name="jogl-all-awt" 
-        href="http://jogamp.org/deployment/jogamp-current/jogl-all-awt.jnlp"/>
+            href="http://jogamp.org/deployment/jogamp-current/jogl-all-awt.jnlp"/>
+        <extension name="jpen" 
+            href="http://raven.java.net/apps/jpen/jpen.jnlp"/>
     </resources>
     
     <application-desc 
@@ -52,6 +56,4 @@
          height="600">
      </application-desc>
      -->
-     
-     <update check="background"/>
 </jnlp>                             

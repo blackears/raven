@@ -17,7 +17,13 @@
         <delete dir="build"/>
     </target>
 
-    <target name="-init-web">
+    <target name="-init">
+        <condition property="key.present">
+            <available file="${key.location}"/>
+        </condition>
+    </target>
+
+    <target name="-init-web" depends="-init">
         <!--
         <condition property="key.present">
             <available file="${key.location}"/>
@@ -30,11 +36,67 @@
                 <include name="**"/>
             </fileset>
         </copy>
-        
-        
+    </target>
+    
+    <target name="-gen-key" depends="-init" unless="key.present">
+        <delete file="${key.location}"/>
+        <genkey alias="${key.user}" storepass="${key.password}" keystore="${key.location}" validity="1000000" verbose="true">
+            <dname>
+                <param name="CN" value="Mark McKay, mark@kitfox.com"/>
+                <param name="OU" value="kitfox.com"/>
+                <param name="O"  value="kitfox"/>
+                <param name="L"  value="Toronto"/>
+                <param name="S"  value="Ontario"/>
+                <param name="C"  value="CA"/>
+            </dname>
+        </genkey>                
     </target>
 
-    <target name="apps" depends="-init-web">
+    <target name="jpen" depends="-init-web,-gen-key">
+        <mkdir dir="build/apps/jpen"/>
+        
+        <copy file="web/apps/jpen/jpen.jnlp" todir="build/apps/jpen"/>
+        
+        <copy file="../../lib/jpen/jpen-2.jar" todir="build/apps/jpen"/>
+        <signjar jar="build/apps/jpen/jpen-2.jar" alias="${key.user}" storepass="${key.password}" keystore="${key.location}"/>
+        
+        <jar destfile="build/apps/jpen/jpen-win32.jar">
+            <fileset dir="../../lib/jpen">
+                <include name="jpen-2-3.dll"/>
+            </fileset>
+        </jar>
+        <signjar jar="build/apps/jpen/jpen-win32.jar" alias="${key.user}" storepass="${key.password}" keystore="${key.location}"/>
+        
+        <jar destfile="build/apps/jpen/jpen-win64.jar">
+            <fileset dir="../../lib/jpen">
+                <include name="jpen-2-3-64.dll"/>
+            </fileset>
+        </jar>
+        <signjar jar="build/apps/jpen/jpen-win64.jar" alias="${key.user}" storepass="${key.password}" keystore="${key.location}"/>
+        
+        <jar destfile="build/apps/jpen/jpen-linux32.jar">
+            <fileset dir="../../lib/jpen">
+                <include name="libjpen-2-4.so"/>
+            </fileset>
+        </jar>
+        <signjar jar="build/apps/jpen/jpen-linux32.jar" alias="${key.user}" storepass="${key.password}" keystore="${key.location}"/>
+        
+        <jar destfile="build/apps/jpen/jpen-linux64.jar">
+            <fileset dir="../../lib/jpen">
+                <include name="libjpen-2-4-x86_64.so"/>
+            </fileset>
+        </jar>
+        <signjar jar="build/apps/jpen/jpen-linux64.jar" alias="${key.user}" storepass="${key.password}" keystore="${key.location}"/>
+        
+        <jar destfile="build/apps/jpen/jpen-osx.jar">
+            <fileset dir="../../lib/jpen">
+                <include name="libjpen-2-3.jnilib"/>
+            </fileset>
+        </jar>
+        <signjar jar="build/apps/jpen/jpen-osx.jar" alias="${key.user}" storepass="${key.password}" keystore="${key.location}"/>
+    </target>
+    
+    <target name="apps" depends="-init-web,-gen-key">
         <mkdir dir="build/apps/bin"/>
         
         <antcall target="-copy-app-jar">
@@ -255,20 +317,6 @@
             <link href="../CoyoteGraphics"/>
             <link href="../RavenCore"/>
         </javadoc>
-    </target>
-    
-    <target name="genKey">
-        <delete file="${key.location}"/>
-        <genkey alias="${key.user}" storepass="${key.password}" keystore="${key.location}" validity="1000000" verbose="true">
-            <dname>
-                <param name="CN" value="Mark McKay, mark@kitfox.com"/>
-                <param name="OU" value="kitfox.com"/>
-                <param name="O"  value="kitfox"/>
-                <param name="L"  value="Toronto"/>
-                <param name="S"  value="Ontario"/>
-                <param name="C"  value="CA"/>
-            </dname>
-        </genkey>                
     </target>
     
 </project>

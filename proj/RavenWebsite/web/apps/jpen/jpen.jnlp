@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp codebase="http://raven.java.net/apps/jpen"
+      href="jpen.jnlp">
+    <information>
+        <title>JPen</title>
+        <vendor>JPen Team</vendor>
+        <homepage href="http://jpen.sf.net"/>
+        <description>Java Binding for pen enabled tablets</description>
+        <description kind="short">API for reading input from tablets</description>
+        <offline-allowed/>
+    </information>
+    
+    <update check="background" policy="always"/>
+
+    <security>
+        <all-permissions/>
+    </security>
+  
+    <resources>
+        <jar href="jpen-2.jar"/>
+    </resources>
+    
+    <resources os="Windows" arch="x86">
+        <nativelib href="jpen-win32.jar" />
+    </resources>
+    
+    <resources os="Windows" arch="amd64">
+        <nativelib href="jpen-win64.jar" />
+    </resources>
+    
+    <resources os="Windows" arch="x86_64">
+        <nativelib href="jpen-win64.jar" />
+    </resources>
+    
+    <resources os="SunOS" arch="x86">
+        <nativelib href="jpen-linux32.jar" />
+    </resources>
+    
+    <resources os="SunOS" arch="amd64">
+        <nativelib href="jpen-linux64.jar" />
+    </resources>
+    
+    <resources os="SunOS" arch="x86_64">
+        <nativelib href="jpen-linux64.jar" />
+    </resources>
+    
+    <resources os="Linux" arch="x86">
+        <nativelib href="jpen-linux32.jar" />
+    </resources>
+    
+    <resources os="Linux" arch="amd64">
+        <nativelib href="jpen-linux64.jar" />
+    </resources>
+    
+    <resources os="Linux" arch="x86_64">
+        <nativelib href="jpen-linux64.jar" />
+    </resources>
+    
+    <resources os="Mac OS X">
+        <nativelib href="jpen-osx.jar" />
+    </resources>
+</jnlp>
