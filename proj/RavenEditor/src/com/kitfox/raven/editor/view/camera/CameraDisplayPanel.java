@@ -28,7 +28,7 @@ import com.kitfox.raven.editor.RavenDocument;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.RavenEditorListener;
 import com.kitfox.raven.editor.RavenEditorWeakListener;
-import com.kitfox.raven.editor.node.scene.FrameKey;
+import com.kitfox.raven.util.tree.FrameKey;
 import com.kitfox.raven.editor.node.scene.RenderContext;
 import com.kitfox.raven.editor.view.displayCy.CyRenderService;
 import com.kitfox.raven.util.tree.ChildWrapperEvent;

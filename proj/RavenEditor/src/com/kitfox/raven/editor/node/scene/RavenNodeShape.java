@@ -16,6 +16,7 @@
 
 package com.kitfox.raven.editor.node.scene;
 
+import com.kitfox.raven.util.tree.FrameKey;
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.renderer.CyDrawStack;
 import com.kitfox.coyote.renderer.CyVertexBuffer;
@@ -288,7 +289,7 @@ abstract public class RavenNodeShape extends RavenNodeXformable
     {
         CyDrawStack stack = ctx.getDrawStack();
 
-//        FrameKey key = ctx.getFrame();
+        FrameKey frame = ctx.getFrame();
 //        FrameCache cacheInfo = frameCache.get(key);
 //        if (cacheInfo == null)
 //        {
@@ -299,7 +300,7 @@ abstract public class RavenNodeShape extends RavenNodeXformable
 
 
 
-        CyRectangle2d bounds = getBoundsLocal();
+        CyRectangle2d bounds = getBoundsLocal(frame);
         if (!stack.intersectsFrustum(bounds))
         {
             return;
@@ -307,16 +308,16 @@ abstract public class RavenNodeShape extends RavenNodeXformable
 
         //Gets local shape
 
-        RavenPaint curFillPaint = paint.getValue();
-        PaintLayout curFillLayout = paintLayout.getValue();
-        RavenPaint curStrokePaint = strokePaint.getValue();
-        PaintLayout curStrokeLayout = strokePaintLayout.getValue();
+        RavenPaint curFillPaint = paint.getValue(frame);
+        PaintLayout curFillLayout = paintLayout.getValue(frame);
+        RavenPaint curStrokePaint = strokePaint.getValue(frame);
+        PaintLayout curStrokeLayout = strokePaintLayout.getValue(frame);
 //        RavenStroke curStroke = stroke.getValue();
 
         if (curFillPaint != null)
         {
 //            CyShape shape = getShapePickLocal();
-            CyVertexBuffer mesh = getMeshLocal(ctx.getFrame());
+            CyVertexBuffer mesh = getMeshLocal(frame);
             if (mesh != null)
             {
                 curFillPaint.fillShape(stack, curFillLayout, mesh);
@@ -327,7 +328,7 @@ abstract public class RavenNodeShape extends RavenNodeXformable
         if (curStrokePaint != null)
         {
 //            CyShape shape = calcShapeStrokeLocal();
-            CyVertexBuffer mesh = getMeshStrokeLocal(ctx.getFrame());
+            CyVertexBuffer mesh = getMeshStrokeLocal(frame);
             if (mesh != null)
             {
                 curStrokePaint.fillShape(stack, curStrokeLayout, mesh);

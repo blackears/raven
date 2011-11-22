@@ -426,6 +426,23 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         }
     }
 
+    public PropType getValue(FrameKey frame)
+    {
+        return getValue(frame.getTrackUid(), frame.getAnimFrame());
+    }
+
+    public PropType getValue(int trackUid, int frame)
+    {
+        PropertyData<PropType> data = getData(trackUid, frame);
+        
+        return data == null ? getValue() : data.getValue(node.getDocument());
+    }
+
+    public PropertyData<PropType> getData(FrameKey frame)
+    {
+        return getData(frame.getTrackUid(), frame.getAnimFrame());
+    }
+    
     public PropertyData<PropType> getData(int trackUid, int frame)
     {
         TrackCurve<PropType> curve = trackMap.get(trackUid);

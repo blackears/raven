@@ -16,6 +16,7 @@
 
 package com.kitfox.raven.editor.node.scene;
 
+import com.kitfox.raven.util.tree.FrameKey;
 import com.kitfox.coyote.drawRecord.CyDrawRecordViewport;
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.renderer.CyDrawStack;
@@ -178,7 +179,11 @@ public class RavenNodeRoot extends NodeDocument
         proj.gluOrtho2D(0, rend.getDeviceWidth(), rend.getDeviceHeight(), 0);
         rend.setProjXform(proj);
 
-        ColorStyle col = background.getValue().getColor();
+        FrameKey frame = ctx.getFrame();
+        
+//        ColorStyle col = background.getValue().getColor();
+        RavenPaintColor rcol = background.getValue(frame);
+        ColorStyle col = rcol.getColor();
         CyRendererUtil2D.clear(rend, col.r, col.g, col.b, col.a);
 
         CyMatrix4d view = new CyMatrix4d(viewXform);
@@ -195,6 +200,7 @@ public class RavenNodeRoot extends NodeDocument
     public void renderCamerasAll(RenderContext ctx)
     {
         CyDrawStack rend = ctx.getDrawStack();
+        FrameKey frame = ctx.getFrame();
 
         //Find cameras to draw
         ArrayList<RavenNodeCamera> cams = getNodes(RavenNodeCamera.class);
@@ -222,12 +228,12 @@ public class RavenNodeRoot extends NodeDocument
         for (int i = 0; i < cams.size(); ++i)
         {
             RavenNodeCamera camera = cams.get(i);
-            if (!camera.isVisible())
+            if (!camera.isVisible(frame))
             {
                 continue;
             }
 
-            float opacity = camera.getOpacity();
+            float opacity = camera.getOpacity(frame);
             rend.setOpacity(opacity);
             if (opacity == 0)
             {

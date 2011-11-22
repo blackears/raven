@@ -16,6 +16,7 @@
 
 package com.kitfox.raven.editor.node.scene;
 
+import com.kitfox.raven.util.tree.FrameKey;
 import com.kitfox.coyote.renderer.CyDrawStack;
 
 /**

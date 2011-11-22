@@ -151,6 +151,7 @@ limitations under the License.
             
             <source dir="..">
                 <include name="**/*.java"/>
+                <exclude name="**/gen"/>
             </source>
             
         </setHeader>

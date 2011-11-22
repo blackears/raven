@@ -26,11 +26,13 @@ import com.kitfox.raven.editor.node.renderer.RavenFilter;
 import com.kitfox.raven.editor.node.renderer.RavenRenderer;
 import com.kitfox.raven.util.Intersection;
 import com.kitfox.raven.util.tree.ChildWrapper;
+import com.kitfox.raven.util.tree.FrameKey;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.PropertyWrapper;
 import com.kitfox.raven.util.tree.PropertyWrapperBoolean;
 import com.kitfox.raven.util.tree.PropertyWrapperFloat;
 import java.awt.geom.AffineTransform;
+import java.awt.image.ImageObserver;
 import java.util.ArrayList;
 
 /**
@@ -61,6 +63,11 @@ abstract public class RavenNodeRenderable extends RavenNode
 
     public CyMatrix4d getLocalToParentTransform(CyMatrix4d result)
     {
+        return getLocalToParentTransform(result);
+    }
+
+    public CyMatrix4d getLocalToParentTransform(FrameKey frame, CyMatrix4d result)
+    {
         if (result == null)
         {
             return CyMatrix4d.createIdentity();
@@ -70,6 +77,11 @@ abstract public class RavenNodeRenderable extends RavenNode
     }
 
     public CyMatrix4d getParentToWorldTransform(CyMatrix4d result)
+    {
+        return getParentToWorldTransform(FrameKey.DIRECT, result);
+    }
+    
+    public CyMatrix4d getParentToWorldTransform(FrameKey frame, CyMatrix4d result)
     {
         if (result == null)
         {
@@ -90,8 +102,9 @@ abstract public class RavenNodeRenderable extends RavenNode
         NodeObject node = myParent.getNode();
         if (node instanceof RavenNodeRenderable)
         {
-            RavenNodeRenderable parentNode = (RavenNodeRenderable)node;
-            return parentNode.getLocalToWorldTransform(result);
+            RavenNodeRenderable parentNode = 
+                    (RavenNodeRenderable)node;
+            return parentNode.getLocalToWorldTransform(frame, result);
         }
 
         result.setIdentity();
@@ -100,13 +113,18 @@ abstract public class RavenNodeRenderable extends RavenNode
 
     public CyMatrix4d getLocalToWorldTransform(CyMatrix4d result)
     {
+        return getLocalToWorldTransform(null, result);
+    }
+    
+    public CyMatrix4d getLocalToWorldTransform(FrameKey frame, CyMatrix4d result)
+    {
         if (result == null)
         {
             result = CyMatrix4d.createIdentity();
         }
 
-        CyMatrix4d p2w = getParentToWorldTransform(result);
-        CyMatrix4d l2p = getLocalToParentTransform((CyMatrix4d)null);
+        CyMatrix4d p2w = getParentToWorldTransform(frame, result);
+        CyMatrix4d l2p = getLocalToParentTransform(frame, null);
         p2w.mul(l2p);
         return result;
     }
@@ -114,13 +132,15 @@ abstract public class RavenNodeRenderable extends RavenNode
     public void render(RenderContext ctx)
     {
         CyDrawStack rend = ctx.getDrawStack();
+        FrameKey frame = ctx.getFrame();
 
-        if (visible.getValue() != Boolean.TRUE)
+        if (visible.getValue(frame) != Boolean.TRUE)
         {
             return;
         }
 
-        float curOpacity = Math.max(Math.min(opacity.getValue(), 1), 0);
+        float curOpacity = Math.max(Math.min(
+                opacity.getValue(frame), 1), 0);
         if (curOpacity == 0)
         {
             return;
@@ -128,7 +148,8 @@ abstract public class RavenNodeRenderable extends RavenNode
 
         RavenFilter curFilter = filter.getValue();
 
-        CyMatrix4d xform = getLocalToParentTransform((CyMatrix4d)null);
+        CyMatrix4d xform = getLocalToParentTransform(
+                frame, null);
         if (Math.abs(xform.m00) < EPSILON
                 || Math.abs(xform.m11) < EPSILON)
         {
@@ -191,6 +212,11 @@ abstract public class RavenNodeRenderable extends RavenNode
         return getShapePickLocal().getBounds();
     }
 
+    public CyRectangle2d getBoundsLocal(FrameKey frame)
+    {
+        return getShapePickLocal().getBounds();
+    }
+
     public CyRectangle2d getBoundsWorld()
     {
         CyShape path = getShapePickLocal();
@@ -207,14 +233,14 @@ abstract public class RavenNodeRenderable extends RavenNode
                 getLocalToWorldTransform((CyMatrix4d)null));
     }
 
-    public boolean isVisible()
+    public boolean isVisible(FrameKey frame)
     {
-        return visible.getValue();
+        return visible.getValue(frame);
     }
 
-    public float getOpacity()
+    public float getOpacity(FrameKey frame)
     {
-        return opacity.getValue();
+        return opacity.getValue(frame);
     }
 
     //------------------

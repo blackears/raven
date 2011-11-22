@@ -21,6 +21,7 @@ import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.raven.editor.node.tools.common.ServiceTransformable;
 import com.kitfox.raven.util.tree.EventWrapper;
+import com.kitfox.raven.util.tree.FrameKey;
 import com.kitfox.raven.util.tree.NodeDocument;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.PropertyWrapperAdapter;
@@ -104,23 +105,28 @@ abstract public class RavenNodeXformable extends RavenNodeRenderable
         boundsLocal = null;
     }
 
-
     @Override
     public CyMatrix4d getLocalToParentTransform(CyMatrix4d result)
+    {
+        return getLocalToParentTransform(FrameKey.DIRECT, result);
+    }
+
+    @Override
+    public CyMatrix4d getLocalToParentTransform(FrameKey frame, CyMatrix4d result)
     {
         if (result == null)
         {
             result = CyMatrix4d.createIdentity();
         }
 
-        float tx = transX.getValue();
-        float ty = transY.getValue();
-        float rot = rotation.getValue();
-        float skew = skewAngle.getValue();
-        float sx = scaleX.getValue();
-        float sy = scaleY.getValue();
-        float px = pivotX.getValue();
-        float py = pivotY.getValue();
+        float tx = transX.getValue(frame);
+        float ty = transY.getValue(frame);
+        float rot = rotation.getValue(frame);
+        float skew = skewAngle.getValue(frame);
+        float sx = scaleX.getValue(frame);
+        float sy = scaleY.getValue(frame);
+        float px = pivotX.getValue(frame);
+        float py = pivotY.getValue(frame);
 
         if (tx != 0 || ty != 0
                 || rot != 0 || skew != 90
@@ -155,31 +161,37 @@ abstract public class RavenNodeXformable extends RavenNodeRenderable
 //        return new AffineTransform();
     }
 
-    public CyMatrix4d getBoundingBoxToWorldTransform(CyMatrix4d xform)
-    {
-        if (xform == null)
-        {
-            xform = CyMatrix4d.createIdentity();
-        }
-        getLocalToWorldTransform(xform);
-
-        CyRectangle2d bounds = getBoundsLocal();
-        xform.translate(bounds.getX(), bounds.getY(), 0);
-        xform.scale(bounds.getWidth(), bounds.getHeight(), 1);
-
-        return xform;
-    }
+//    public CyMatrix4d getBoundingBoxToWorldTransform(CyMatrix4d xform)
+//    {
+//        if (xform == null)
+//        {
+//            xform = CyMatrix4d.createIdentity();
+//        }
+//        getLocalToWorldTransform(xform);
+//
+//        CyRectangle2d bounds = getBoundsLocal();
+//        xform.translate(bounds.getX(), bounds.getY(), 0);
+//        xform.scale(bounds.getWidth(), bounds.getHeight(), 1);
+//
+//        return xform;
+//    }
 
     @Override
     public CyMatrix4d getLocalToWorldTransform(CyMatrix4d result)
+    {
+        return getLocalToWorldTransform(FrameKey.DIRECT, result);
+    }
+
+    @Override
+    public CyMatrix4d getLocalToWorldTransform(FrameKey frame, CyMatrix4d result)
     {
         if (result == null)
         {
             result = CyMatrix4d.createIdentity();
         }
 
-        CyMatrix4d p2w = getParentToWorldTransform(result);
-        CyMatrix4d l2p = getLocalToParentTransform((CyMatrix4d)null);
+        CyMatrix4d p2w = getParentToWorldTransform(frame, result);
+        CyMatrix4d l2p = getLocalToParentTransform(frame, null);
         p2w.mul(l2p);
         return result;
     }
@@ -232,89 +244,7 @@ abstract public class RavenNodeXformable extends RavenNodeRenderable
 
         result.setToIdentity();
         return result;
-//        return new AffineTransform();
     }
-
-//    @Deprecated
-//    abstract public Shape getPickShapeLocal();
-//
-//    @Deprecated
-//    @Override
-//    public Shape getClipShapeWorld()
-//    {
-//        AffineTransform xform = getLocalToWorldTransform((AffineTransform)null);
-//        return xform.createTransformedShape(getPickShapeLocal());
-//    }
-//
-//    @Deprecated
-//    public Shape getClipShapeDevice()
-//    {
-//        AffineTransform xform = getLocalToDeviceTransform((AffineTransform)null);
-//        return xform.createTransformedShape(getPickShapeLocal());
-//    }
-//
-//    public Rectangle2D getBoundsLocal()
-//    {
-//        if (boundsLocal == null)
-//        {
-//            boundsLocal = getPickShapeLocal().getBounds2D();
-//        }
-//        return boundsLocal;
-//    }
-//
-//    @Override
-//    public Rectangle2D getBoundsWorld()
-//    {
-//        Shape shapeLocal = getPickShapeLocal();
-//        if (shapeLocal == null)
-//        {
-//            return null;
-//        }
-//
-//        AffineTransform xform = getLocalToWorldTransform((AffineTransform)null);
-//        return xform.createTransformedShape(shapeLocal).getBounds2D();
-//    }
-//
-//    @Override
-//    public void setLocalToParentTransform(AffineTransform newLocal, Point2D pivot, boolean history)
-//    {
-//        double m00 = newLocal.getScaleX();
-//        double m10 = newLocal.getShearY();
-//        double m01 = newLocal.getShearX();
-//        double m11 = newLocal.getScaleY();
-//        double m02 = newLocal.getTranslateX();
-//        double m12 = newLocal.getTranslateY();
-//        double px = pivot.getX();
-//        double py = pivot.getY();
-//
-//        double sx = Math.sqrt(m00 * m00 + m10 * m10);
-//        double sy = Math.sqrt(m01 * m01 + m11 * m11);
-//        double rot = Math.toDegrees(Math.atan2(m10, m00));
-//        double rotSkew = Math.toDegrees(Math.atan2(m11, m01)) - rot;
-//
-//        double tx = m02 - px + px * m00 + py * m01;
-//        double ty = m12 - py + px * m10 + py * m11;
-//
-//        NodeDocument doc = getDocument();
-//        if (history && doc != null)
-//        {
-//            doc.getHistory().beginTransaction("Set transform");
-//        }
-//
-//        transX.setValue((float)tx, history);
-//        transY.setValue((float)ty, history);
-//        rotation.setValue((float)rot, history);
-//        skewAngle.setValue((float)rotSkew, history);
-//        scaleX.setValue((float)sx, history);
-//        scaleY.setValue((float)sy, history);
-//        pivotX.setValue((float)px, history);
-//        pivotY.setValue((float)py, history);
-//
-//        if (history && doc != null)
-//        {
-//            doc.getHistory().commitTransaction();
-//        }
-//    }
 
     @Override
     public void setLocalToParentTransform(CyMatrix4d newLocal, CyVector2d pivot, boolean history)
