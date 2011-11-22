@@ -27,19 +27,19 @@ import com.kitfox.coyote.renderer.CyTextureImage;
 import com.kitfox.coyote.renderer.CyTransparency;
 import com.kitfox.coyote.renderer.CyVertexArrayInfo;
 import com.kitfox.coyote.renderer.CyVertexBuffer;
-import com.kitfox.coyote.renderer.GLContext;
-import com.kitfox.coyote.renderer.GLWrapper;
-import com.kitfox.coyote.renderer.GLWrapper.ActiveTexture;
-import com.kitfox.coyote.renderer.GLWrapper.Capability;
-import com.kitfox.coyote.renderer.GLWrapper.DataType;
-import com.kitfox.coyote.renderer.GLWrapper.IndiciesType;
-import com.kitfox.coyote.renderer.GLWrapper.InternalFormatTex;
-import com.kitfox.coyote.renderer.GLWrapper.ShaderType;
-import com.kitfox.coyote.renderer.GLWrapper.TexParam;
-import com.kitfox.coyote.renderer.GLWrapper.TexParamName;
-import com.kitfox.coyote.renderer.GLWrapper.TexSubTarget;
-import com.kitfox.coyote.renderer.GLWrapper.TexTarget;
-import com.kitfox.coyote.renderer.GLWrapper.VertexDataType;
+import com.kitfox.coyote.renderer.CyGLContext;
+import com.kitfox.coyote.renderer.CyGLWrapper;
+import com.kitfox.coyote.renderer.CyGLWrapper.ActiveTexture;
+import com.kitfox.coyote.renderer.CyGLWrapper.Capability;
+import com.kitfox.coyote.renderer.CyGLWrapper.DataType;
+import com.kitfox.coyote.renderer.CyGLWrapper.IndiciesType;
+import com.kitfox.coyote.renderer.CyGLWrapper.InternalFormatTex;
+import com.kitfox.coyote.renderer.CyGLWrapper.ShaderType;
+import com.kitfox.coyote.renderer.CyGLWrapper.TexParam;
+import com.kitfox.coyote.renderer.CyGLWrapper.TexParamName;
+import com.kitfox.coyote.renderer.CyGLWrapper.TexSubTarget;
+import com.kitfox.coyote.renderer.CyGLWrapper.TexTarget;
+import com.kitfox.coyote.renderer.CyGLWrapper.VertexDataType;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -86,7 +86,7 @@ public class CyMaterialGradient extends CyMaterial
                 gradientTexData);
     }
 
-    private void init(GLWrapper gl)
+    private void init(CyGLWrapper gl)
     {
         try
         {
@@ -120,7 +120,7 @@ public class CyMaterialGradient extends CyMaterial
         }
     }
 
-    public void bind(GLWrapper gl)
+    public void bind(CyGLWrapper gl)
     {
         if (programId == 0)
         {
@@ -132,7 +132,7 @@ public class CyMaterialGradient extends CyMaterial
         gl.glUseProgram(programId);
     }
 
-    public void render(GLContext ctx, GLWrapper gl, CyMaterialGradientDrawRecord rec)
+    public void render(CyGLContext ctx, CyGLWrapper gl, CyMaterialGradientDrawRecord rec)
     {
         float opacity = rec.getOpacity();
 //        CyTextureSource texture = rec.getTexture();
@@ -144,8 +144,8 @@ public class CyMaterialGradient extends CyMaterial
         else
         {
             gl.glEnable(Capability.GL_BLEND);
-            gl.glBlendFunc(GLWrapper.BlendFactor.GL_SRC_ALPHA,
-                    GLWrapper.BlendFactor.GL_ONE_MINUS_SRC_ALPHA);
+            gl.glBlendFunc(CyGLWrapper.BlendFactor.GL_SRC_ALPHA,
+                    CyGLWrapper.BlendFactor.GL_ONE_MINUS_SRC_ALPHA);
         }
 
         CyGradientStops stops = rec.getStops();
@@ -206,6 +206,8 @@ public class CyMaterialGradient extends CyMaterial
         }
         gl.glTexParameter(texture.getTarget(),
                 TexParamName.GL_TEXTURE_WRAP_T, TexParam.GL_CLAMP_TO_EDGE);
+        
+        gl.glGenerateMipmap(texture.getTarget());
 
         switch (stops.getStyle())
         {

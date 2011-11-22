@@ -162,7 +162,7 @@ public class CyRendererUtil2D
         rend.setModelXform(modelCache);
     }
 
-    public static void drawTileImage(GLContext ctx, GLWrapper gl, CyFramebufferTexture img, CyMatrix4d tileXform)
+    public static void drawTileImage(CyGLContext ctx, CyGLWrapper gl, CyFramebufferTexture img, CyMatrix4d tileXform)
     {
         CyVertexBuffer mesh = CyVertexBufferDataSquare.inst().getBuffer();
 

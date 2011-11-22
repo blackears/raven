@@ -17,14 +17,14 @@
 package com.kitfox.coyote.renderer;
 
 import com.kitfox.coyote.math.BufferUtil;
-import com.kitfox.coyote.renderer.GLContext.TextureBufferInfo;
-import com.kitfox.coyote.renderer.GLWrapper.Attachment;
-import com.kitfox.coyote.renderer.GLWrapper.DataType;
-import com.kitfox.coyote.renderer.GLWrapper.InternalFormatTex;
-import com.kitfox.coyote.renderer.GLWrapper.TexParam;
-import com.kitfox.coyote.renderer.GLWrapper.TexParamName;
-import com.kitfox.coyote.renderer.GLWrapper.TexSubTarget;
-import com.kitfox.coyote.renderer.GLWrapper.TexTarget;
+import com.kitfox.coyote.renderer.CyGLContext.TextureBufferInfo;
+import com.kitfox.coyote.renderer.CyGLWrapper.Attachment;
+import com.kitfox.coyote.renderer.CyGLWrapper.DataType;
+import com.kitfox.coyote.renderer.CyGLWrapper.InternalFormatTex;
+import com.kitfox.coyote.renderer.CyGLWrapper.TexParam;
+import com.kitfox.coyote.renderer.CyGLWrapper.TexParamName;
+import com.kitfox.coyote.renderer.CyGLWrapper.TexSubTarget;
+import com.kitfox.coyote.renderer.CyGLWrapper.TexTarget;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -41,9 +41,9 @@ import javax.imageio.ImageIO;
 public class CyFramebufferTexture extends CyFramebufferAttachment
         implements CyTextureSource
 {
-    private final GLWrapper.TexTarget target;
-    private final GLWrapper.InternalFormatTex format;
-    private final GLWrapper.DataType dataType;
+    private final CyGLWrapper.TexTarget target;
+    private final CyGLWrapper.InternalFormatTex format;
+    private final CyGLWrapper.DataType dataType;
     private final int width;
     private final int height;
 
@@ -67,7 +67,7 @@ public class CyFramebufferTexture extends CyFramebufferAttachment
      * @return the target
      */
     @Override
-    public GLWrapper.TexTarget getTarget()
+    public CyGLWrapper.TexTarget getTarget()
     {
         return target;
     }
@@ -76,7 +76,7 @@ public class CyFramebufferTexture extends CyFramebufferAttachment
      * @return the format
      */
     @Override
-    public GLWrapper.InternalFormatTex getFormat()
+    public CyGLWrapper.InternalFormatTex getFormat()
     {
         return format;
     }
@@ -85,7 +85,7 @@ public class CyFramebufferTexture extends CyFramebufferAttachment
      * @return the dataType
      */
     @Override
-    public GLWrapper.DataType getDataType()
+    public CyGLWrapper.DataType getDataType()
     {
         return dataType;
     }
@@ -108,12 +108,12 @@ public class CyFramebufferTexture extends CyFramebufferAttachment
         return height;
     }
 
-    public void setFramebufferTexture(GLWrapper gl, TexSubTarget target, int texId)
+    public void setFramebufferTexture(CyGLWrapper gl, TexSubTarget target, int texId)
     {
         gl.glFramebufferTexture2D(attachment, target, texId, 0);
     }
 
-    private void initTex(GLWrapper gl, TexSubTarget target)
+    private void initTex(CyGLWrapper gl, TexSubTarget target)
     {
         gl.glTexImage2D(target,
                 0, format, width, height,
@@ -169,7 +169,7 @@ public class CyFramebufferTexture extends CyFramebufferAttachment
 //    }
 
     @Override
-    public void bind(GLContext ctx, GLWrapper gl)
+    public void bind(CyGLContext ctx, CyGLWrapper gl)
     {
         TextureBufferInfo info = ctx.getTextureBufferInfo(this, gl);
         int texId = info.getTexId();
@@ -235,7 +235,7 @@ public class CyFramebufferTexture extends CyFramebufferAttachment
 //        id = 0;
 //    }
 
-    public void dumpTexture(GLWrapper gl, File file, String fileFormat)
+    public void dumpTexture(CyGLWrapper gl, File file, String fileFormat)
     {
         ByteBuffer buf = BufferUtil.allocateByte(width * height * 4);
         gl.glGetTexImage(target, 0, format, dataType, buf);
@@ -279,7 +279,7 @@ public class CyFramebufferTexture extends CyFramebufferAttachment
 
     //------------------------------------
 
-    static class Dispose implements GLAction
+    static class Dispose implements CyGLAction
     {
         int id;
 
@@ -289,7 +289,7 @@ public class CyFramebufferTexture extends CyFramebufferAttachment
         }
 
         @Override
-        public void doAction(GLWrapper gl)
+        public void doAction(CyGLWrapper gl)
         {
             IntBuffer ibuf = BufferUtil.allocateInt(1);
             ibuf.put(0, id);

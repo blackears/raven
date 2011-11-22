@@ -18,9 +18,9 @@ package com.kitfox.coyote.text.bitmap.awt;
 
 import com.kitfox.coyote.renderer.CyTextureImage;
 import com.kitfox.coyote.renderer.CyTransparency;
-import com.kitfox.coyote.renderer.GLWrapper.DataType;
-import com.kitfox.coyote.renderer.GLWrapper.InternalFormatTex;
-import com.kitfox.coyote.renderer.GLWrapper.TexTarget;
+import com.kitfox.coyote.renderer.CyGLWrapper.DataType;
+import com.kitfox.coyote.renderer.CyGLWrapper.InternalFormatTex;
+import com.kitfox.coyote.renderer.CyGLWrapper.TexTarget;
 import com.kitfox.coyote.renderer.jogl.TexSourceAWTBufferedImage;
 import com.kitfox.coyote.text.bitmap.BitmapFont;
 import com.kitfox.coyote.text.bitmap.GlyphDef;

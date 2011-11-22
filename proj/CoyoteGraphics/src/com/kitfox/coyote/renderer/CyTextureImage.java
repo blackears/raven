@@ -17,10 +17,10 @@
 package com.kitfox.coyote.renderer;
 
 import com.kitfox.coyote.math.BufferUtil;
-import com.kitfox.coyote.renderer.GLContext.TextureBufferInfo;
-import com.kitfox.coyote.renderer.GLWrapper.TexParam;
-import com.kitfox.coyote.renderer.GLWrapper.TexParamName;
-import com.kitfox.coyote.renderer.GLWrapper.TexSubTarget;
+import com.kitfox.coyote.renderer.CyGLContext.TextureBufferInfo;
+import com.kitfox.coyote.renderer.CyGLWrapper.TexParam;
+import com.kitfox.coyote.renderer.CyGLWrapper.TexParamName;
+import com.kitfox.coyote.renderer.CyGLWrapper.TexSubTarget;
 import java.nio.IntBuffer;
 
 /**
@@ -34,9 +34,9 @@ import java.nio.IntBuffer;
 public class CyTextureImage
         implements CyTextureDataProviderListener, CyTextureSource
 {
-    private final GLWrapper.TexTarget target;
-    private final GLWrapper.InternalFormatTex format;
-    private final GLWrapper.DataType dataType;
+    private final CyGLWrapper.TexTarget target;
+    private final CyGLWrapper.InternalFormatTex format;
+    private final CyGLWrapper.DataType dataType;
     private final int width;
     private final int height;
     private final CyTransparency transparency;
@@ -46,9 +46,9 @@ public class CyTextureImage
 //    int surfInst;
     int dirty;
 
-    public CyTextureImage(GLWrapper.TexTarget target,
-            GLWrapper.InternalFormatTex format,
-            GLWrapper.DataType dataType,
+    public CyTextureImage(CyGLWrapper.TexTarget target,
+            CyGLWrapper.InternalFormatTex format,
+            CyGLWrapper.DataType dataType,
             int width, int height, CyTransparency transparency,
             CyTextureDataProvider dataProvider)
     {
@@ -64,7 +64,7 @@ public class CyTextureImage
     }
 
     @Override
-    public GLWrapper.InternalFormatTex getFormat()
+    public CyGLWrapper.InternalFormatTex getFormat()
     {
         return format;
     }
@@ -88,7 +88,7 @@ public class CyTextureImage
     }
 
     @Override
-    public GLWrapper.DataType getDataType()
+    public CyGLWrapper.DataType getDataType()
     {
         return dataType;
     }
@@ -97,7 +97,7 @@ public class CyTextureImage
      * @return the target
      */
     @Override
-    public GLWrapper.TexTarget getTarget()
+    public CyGLWrapper.TexTarget getTarget()
     {
         return target;
     }
@@ -110,7 +110,7 @@ public class CyTextureImage
         return dataProvider;
     }
 
-    private void initTex(GLWrapper gl, TexSubTarget target)
+    private void initTex(CyGLWrapper gl, TexSubTarget target)
     {
         gl.glTexImage2D(target,
                 0, format, width, height,
@@ -171,7 +171,7 @@ public class CyTextureImage
 //    }
 
     @Override
-    public void bind(GLContext ctx, GLWrapper gl)
+    public void bind(CyGLContext ctx, CyGLWrapper gl)
     {
         TextureBufferInfo info = ctx.getTextureBufferInfo(this, gl);
 //        if (id == 0 || gl.getSurfaceInstanceNumber() != surfInst)
@@ -232,7 +232,7 @@ public class CyTextureImage
 
     //------------------------------------
 
-    static class Dispose implements GLAction
+    static class Dispose implements CyGLAction
     {
         int id;
 
@@ -242,7 +242,7 @@ public class CyTextureImage
         }
 
         @Override
-        public void doAction(GLWrapper gl)
+        public void doAction(CyGLWrapper gl)
         {
             IntBuffer ibuf = BufferUtil.allocateInt(1);
             ibuf.put(0, id);

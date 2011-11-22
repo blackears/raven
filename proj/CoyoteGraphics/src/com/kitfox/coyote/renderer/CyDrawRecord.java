@@ -22,7 +22,7 @@ package com.kitfox.coyote.renderer;
  */
 abstract public class CyDrawRecord
 {
-    abstract public void render(GLContext ctx, GLWrapper gl, CyDrawRecord prevRecord);
+    abstract public void render(CyGLContext ctx, CyGLWrapper gl, CyDrawRecord prevRecord);
 //    abstract public void recycle();
     abstract public void dispose();
 }

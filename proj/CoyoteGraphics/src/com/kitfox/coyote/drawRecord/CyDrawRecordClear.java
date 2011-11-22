@@ -17,8 +17,8 @@
 package com.kitfox.coyote.drawRecord;
 
 import com.kitfox.coyote.renderer.CyDrawRecord;
-import com.kitfox.coyote.renderer.GLContext;
-import com.kitfox.coyote.renderer.GLWrapper;
+import com.kitfox.coyote.renderer.CyGLContext;
+import com.kitfox.coyote.renderer.CyGLWrapper;
 
 /**
  *
@@ -46,7 +46,7 @@ public class CyDrawRecordClear extends CyDrawRecord
     }
 
     @Override
-    public void render(GLContext ctx, GLWrapper gl, CyDrawRecord prevRecord)
+    public void render(CyGLContext ctx, CyGLWrapper gl, CyDrawRecord prevRecord)
     {
         if (color)
         {

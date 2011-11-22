@@ -20,8 +20,8 @@ import com.kitfox.coyote.material.CyDrawRecordMaterialSimple;
 import com.kitfox.coyote.math.CyGradientStops;
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.renderer.CyDrawRecord;
-import com.kitfox.coyote.renderer.GLContext;
-import com.kitfox.coyote.renderer.GLWrapper;
+import com.kitfox.coyote.renderer.CyGLContext;
+import com.kitfox.coyote.renderer.CyGLWrapper;
 
 /**
  *
@@ -34,7 +34,7 @@ public class CyMaterialGradientDrawRecord extends CyDrawRecordMaterialSimple
     private CyGradientStops stops;
 
     @Override
-    public void render(GLContext ctx, GLWrapper gl, CyDrawRecord prevRecord)
+    public void render(CyGLContext ctx, CyGLWrapper gl, CyDrawRecord prevRecord)
     {
         CyMaterialGradient mat = ctx.getMaterial(CyMaterialGradient.class);
         if (mat == null)

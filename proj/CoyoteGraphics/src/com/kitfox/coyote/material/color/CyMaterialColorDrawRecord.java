@@ -19,8 +19,8 @@ package com.kitfox.coyote.material.color;
 import com.kitfox.coyote.material.CyDrawRecordMaterialSimple;
 import com.kitfox.coyote.math.CyColor4f;
 import com.kitfox.coyote.renderer.CyDrawRecord;
-import com.kitfox.coyote.renderer.GLContext;
-import com.kitfox.coyote.renderer.GLWrapper;
+import com.kitfox.coyote.renderer.CyGLContext;
+import com.kitfox.coyote.renderer.CyGLWrapper;
 
 /**
  *
@@ -41,7 +41,7 @@ public class CyMaterialColorDrawRecord extends CyDrawRecordMaterialSimple
 //        }
 
     @Override
-    public void render(GLContext ctx, GLWrapper gl, CyDrawRecord prevRecord)
+    public void render(CyGLContext ctx, CyGLWrapper gl, CyDrawRecord prevRecord)
     {
         CyMaterialColor mat = ctx.getMaterial(CyMaterialColor.class);
         if (mat == null)

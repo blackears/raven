@@ -18,9 +18,9 @@ package com.kitfox.coyote.renderer;
 
 import com.kitfox.coyote.math.BufferUtil;
 import com.kitfox.coyote.math.d3.BoundingBox3d;
-import com.kitfox.coyote.renderer.GLContext.VertexBufferInfo;
-import com.kitfox.coyote.renderer.GLWrapper.BufferTarget;
-import com.kitfox.coyote.renderer.GLWrapper.DrawMode;
+import com.kitfox.coyote.renderer.CyGLContext.VertexBufferInfo;
+import com.kitfox.coyote.renderer.CyGLWrapper.BufferTarget;
+import com.kitfox.coyote.renderer.CyGLWrapper.DrawMode;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
@@ -53,7 +53,7 @@ public class CyVertexBuffer
         return dataProv.getIndexCount();
     }
 
-    public void bind(GLContext ctx, GLWrapper gl)
+    public void bind(CyGLContext ctx, CyGLWrapper gl)
     {
         VertexBufferInfo info = ctx.getVertexBufferInfo(this, gl);
 

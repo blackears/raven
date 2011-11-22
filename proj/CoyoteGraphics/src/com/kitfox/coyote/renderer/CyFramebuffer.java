@@ -17,8 +17,8 @@
 package com.kitfox.coyote.renderer;
 
 import com.kitfox.coyote.math.BufferUtil;
-import com.kitfox.coyote.renderer.GLContext.FramebufferInfo;
-import com.kitfox.coyote.renderer.GLWrapper.FramebufferStatus;
+import com.kitfox.coyote.renderer.CyGLContext.FramebufferInfo;
+import com.kitfox.coyote.renderer.CyGLWrapper.FramebufferStatus;
 import java.nio.IntBuffer;
 
 /**
@@ -66,7 +66,7 @@ public class CyFramebuffer
 //        }
 //    }
 
-    public void bind(GLContext ctx, GLWrapper gl)
+    public void bind(CyGLContext ctx, CyGLWrapper gl)
     {
         FramebufferInfo info = ctx.getFramebufferInfo(this, gl);
         int fboId = info.getFboId();

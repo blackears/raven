@@ -20,9 +20,9 @@ import com.kitfox.coyote.material.CyDrawRecordMaterialSimple;
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.renderer.CyDrawRecord;
 import com.kitfox.coyote.renderer.CyTextureSource;
-import com.kitfox.coyote.renderer.GLContext;
-import com.kitfox.coyote.renderer.GLWrapper;
-import com.kitfox.coyote.renderer.GLWrapper.TexParam;
+import com.kitfox.coyote.renderer.CyGLContext;
+import com.kitfox.coyote.renderer.CyGLWrapper;
+import com.kitfox.coyote.renderer.CyGLWrapper.TexParam;
 
 /**
  *
@@ -41,7 +41,7 @@ public class CyMaterialTextureBlitDrawRecord extends CyDrawRecordMaterialSimple
     private TexParam wrapT = TexParam.GL_CLAMP_TO_EDGE;
 
     @Override
-    public void render(GLContext ctx, GLWrapper gl, CyDrawRecord prevRecord)
+    public void render(CyGLContext ctx, CyGLWrapper gl, CyDrawRecord prevRecord)
     {
         CyMaterialTextureBlit mat = ctx.getMaterial(CyMaterialTextureBlit.class);
         if (mat == null)

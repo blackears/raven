@@ -20,7 +20,7 @@ package com.kitfox.coyote.renderer;
  *
  * @author kitfox
  */
-public interface GLAction
+public interface CyGLAction
 {
-    public void doAction(GLWrapper gl);
+    public void doAction(CyGLWrapper gl);
 }

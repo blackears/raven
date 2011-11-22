@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <RavenEditorPreferences xmlns="http://xml.kitfox.com/ns/RavenEditorPreferences">
     <recentFiles>
-        <file>C:\dev\kitfox.com\gameTools4\proj\RavenEditorTesting\work\testManyShapes.raven</file>
         <file>C:\dev\kitfox.com\gameTools4\proj\RavenEditorTesting\work\testShapes.raven</file>
+        <file>C:\dev\kitfox.com\gameTools4\proj\RavenEditorTesting\work\testManyShapes.raven</file>
         <file>C:\dev\hyena\adventure\art\level\titleScreen.xml</file>
         <file>C:\dev\kitfox.com\gameTools4\proj\TileWorld\work\ellipse.raven.raven</file>
         <file>C:\dev\hyena\adventure\art\level\villageMarket.xml</file>
@@ -109,5 +109,17 @@
         </properties>
         <properties class="com.kitfox.raven.svg.importer.SVGImporter"/>
     </importerProperties>
-    <exporterProperties/>
+    <exporterProperties>
+        <properties class="com.kitfox.raven.movie.exporter.MovieExporter">
+            <property name="seqFile">movie</property>
+            <property name="width">640</property>
+            <property name="framesDir">C:\Users\kitfox\Documents\raven</property>
+            <property name="framesPrefix">frame</property>
+            <property name="framesNumberPadding">4</property>
+            <property name="seqFormat">avi</property>
+            <property name="format">FRAMES</property>
+            <property name="framesImageFormat">png</property>
+            <property name="height">480</property>
+        </properties>
+    </exporterProperties>
 </RavenEditorPreferences>

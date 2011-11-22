@@ -16,7 +16,7 @@
 
 package com.kitfox.coyote.renderer;
 
-import com.kitfox.coyote.renderer.GLWrapper.Attachment;
+import com.kitfox.coyote.renderer.CyGLWrapper.Attachment;
 
 /**
  *
@@ -24,12 +24,12 @@ import com.kitfox.coyote.renderer.GLWrapper.Attachment;
  */
 abstract public class CyFramebufferAttachment
 {
-    GLWrapper.Attachment attachment;
+    CyGLWrapper.Attachment attachment;
 
     public CyFramebufferAttachment(Attachment attachment)
     {
         this.attachment = attachment;
     }
 
-    abstract public void bind(GLContext ctx, GLWrapper gl);
+    abstract public void bind(CyGLContext ctx, CyGLWrapper gl);
 }

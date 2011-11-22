@@ -17,8 +17,8 @@
 package com.kitfox.coyote.renderer;
 
 import com.kitfox.coyote.math.d3.BoundingBox3d;
-import com.kitfox.coyote.renderer.GLWrapper.BufferUsage;
-import com.kitfox.coyote.renderer.GLWrapper.DrawMode;
+import com.kitfox.coyote.renderer.CyGLWrapper.BufferUsage;
+import com.kitfox.coyote.renderer.CyGLWrapper.DrawMode;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;

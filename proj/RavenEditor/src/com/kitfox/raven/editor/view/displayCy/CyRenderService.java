@@ -35,4 +35,9 @@ public interface CyRenderService
      * @param rend
      */
     public void renderCamerasAll(RenderContext ctx);
+    
+    /**
+     * @return Number of cameras available
+     */
+    public int getNumCameras();
 }

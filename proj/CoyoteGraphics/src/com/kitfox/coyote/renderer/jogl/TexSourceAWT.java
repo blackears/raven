@@ -19,7 +19,7 @@ package com.kitfox.coyote.renderer.jogl;
 import com.kitfox.coyote.math.BufferUtil;
 import com.kitfox.coyote.renderer.CyTextureDataProvider;
 import com.kitfox.coyote.renderer.CyTransparency;
-import com.kitfox.coyote.renderer.GLWrapper.TexSubTarget;
+import com.kitfox.coyote.renderer.CyGLWrapper.TexSubTarget;
 import java.awt.Color;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;

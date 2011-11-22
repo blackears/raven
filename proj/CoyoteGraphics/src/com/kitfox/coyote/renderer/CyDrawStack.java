@@ -34,15 +34,15 @@ public class CyDrawStack
     private final int deviceWidth;
     private final int deviceHeight;
 
-    //May be used by some components to judge passage of time
-    private final long startTime; //Time in ms for first rendering pass
-    private final long curTime;  //Time in ms for this rendering pass
-    private final int curPass;  //Index of current pass.  Increments each pass
-
-    //Indicates current track/animation frame to draw.  If trackUid == 0,
-    // property's direct value is rendered
-    private final int trackUid;
-    private final int animFrame;
+//    //May be used by some components to judge passage of time
+//    private final long startTime; //Time in ms for first rendering pass
+//    private final long curTime;  //Time in ms for this rendering pass
+//    private final int curPass;  //Index of current pass.  Increments each pass
+//
+//    //Indicates current track/animation frame to draw.  If trackUid == 0,
+//    // property's direct value is rendered
+//    private final int trackUid;
+//    private final int animFrame;
 
     ArrayList<CyMatrix4d> matrixPool = new ArrayList<CyMatrix4d>();
 
@@ -63,21 +63,21 @@ public class CyDrawStack
             int deviceWidth,
             int deviceHeight,
 
-            int trackUid,
-            int animFrame,
-
-            long startTime, long curTime, int curPass,
+//            int trackUid,
+//            int animFrame,
+//
+//            long startTime, long curTime, int curPass,
             CyDrawGroup drawGroup)
     {
         this.deviceWidth = deviceWidth;
         this.deviceHeight = deviceHeight;
 
-        this.trackUid = trackUid;
-        this.animFrame = animFrame;
-
-        this.startTime = startTime;
-        this.curTime = curTime;
-        this.curPass = curPass;
+//        this.trackUid = trackUid;
+//        this.animFrame = animFrame;
+//
+//        this.startTime = startTime;
+//        this.curTime = curTime;
+//        this.curPass = curPass;
 
         curFrame = new CyDrawStackFrame(this, drawGroup);
     }
@@ -243,29 +243,29 @@ public class CyDrawStack
 //        return tileCache;
 //    }
 
-    /**
-     * @return the startTime
-     */
-    public long getStartTime()
-    {
-        return startTime;
-    }
-
-    /**
-     * @return the curTime
-     */
-    public long getCurTime()
-    {
-        return curTime;
-    }
-
-    /**
-     * @return the curPass
-     */
-    public int getCurPass()
-    {
-        return curPass;
-    }
+//    /**
+//     * @return the startTime
+//     */
+//    public long getStartTime()
+//    {
+//        return startTime;
+//    }
+//
+//    /**
+//     * @return the curTime
+//     */
+//    public long getCurTime()
+//    {
+//        return curTime;
+//    }
+//
+//    /**
+//     * @return the curPass
+//     */
+//    public int getCurPass()
+//    {
+//        return curPass;
+//    }
 
 //    /**
 //     * @return the material
@@ -388,20 +388,20 @@ public class CyDrawStack
         return place != PartitionPlacement.OUTSIDE;
     }
 
-    /**
-     * @return the trackUid
-     */
-    public int getTrackUid()
-    {
-        return trackUid;
-    }
-
-    /**
-     * @return the animFrame
-     */
-    public int getAnimFrame()
-    {
-        return animFrame;
-    }
+//    /**
+//     * @return the trackUid
+//     */
+//    public int getTrackUid()
+//    {
+//        return trackUid;
+//    }
+//
+//    /**
+//     * @return the animFrame
+//     */
+//    public int getAnimFrame()
+//    {
+//        return animFrame;
+//    }
 
 }

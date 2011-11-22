@@ -261,6 +261,13 @@ public class RavenNodeRoot extends NodeDocument
         }
     }
 
+    @Override
+    public int getNumCameras()
+    {
+        ArrayList<RavenNodeCamera> cams = getNodes(RavenNodeCamera.class);
+        return cams.size();
+    }
+
     @Deprecated
     @Override
     public void render(RavenRenderer renderer)

@@ -30,13 +30,12 @@ import com.kitfox.coyote.renderer.CyFramebufferRenderbuffer;
 import com.kitfox.coyote.renderer.CyFramebufferTexture;
 import com.kitfox.coyote.renderer.CyRendererListener;
 import com.kitfox.coyote.renderer.CyRendererUtil2D;
-import com.kitfox.coyote.renderer.GLActionQueue;
-import com.kitfox.coyote.renderer.GLContext;
-import com.kitfox.coyote.renderer.GLWrapper.Attachment;
-import com.kitfox.coyote.renderer.GLWrapper.DataType;
-import com.kitfox.coyote.renderer.GLWrapper.InternalFormatBuf;
-import com.kitfox.coyote.renderer.GLWrapper.InternalFormatTex;
-import com.kitfox.coyote.renderer.GLWrapper.TexTarget;
+import com.kitfox.coyote.renderer.CyGLContext;
+import com.kitfox.coyote.renderer.CyGLWrapper.Attachment;
+import com.kitfox.coyote.renderer.CyGLWrapper.DataType;
+import com.kitfox.coyote.renderer.CyGLWrapper.InternalFormatBuf;
+import com.kitfox.coyote.renderer.CyGLWrapper.InternalFormatTex;
+import com.kitfox.coyote.renderer.CyGLWrapper.TexTarget;
 import java.util.ArrayList;
 import javax.media.opengl.DebugGL2;
 import javax.media.opengl.GL;
@@ -78,7 +77,7 @@ public class CoyotePanel extends GLJPanel
     int curPass;
 
     Animator animator;
-    GLContext glContext;
+    CyGLContext glContext;
 
     static final boolean useFBObuffer = false;
 
@@ -158,9 +157,8 @@ public class CoyotePanel extends GLJPanel
         System.err.println("GL version:" + gl.glGetString(GL.GL_VERSION));
 
         //Each time init() is called, the context has been recreated.
-        glContext = new GLContext();
+        glContext = new CyGLContext();
 
-        GLActionQueue.inst().clear();
         ++surfaceInstance;
         // Enable VSync
 //        gl.setSwapInterval(1);
@@ -184,7 +182,8 @@ public class CoyotePanel extends GLJPanel
 //        debugBuffer(drawable.getGL());
 
 //        drawable.getContext().
-        GLWrapperJOGL gl = new GLWrapperJOGL(drawable, surfaceInstance);
+//        GLWrapperJOGL gl = new GLWrapperJOGL(drawable, surfaceInstance);
+        CyGLWrapperJOGL gl = new CyGLWrapperJOGL(drawable);
         //GLActionQueue.inst().processActions(gl);
         glContext.processActions(gl);
 
@@ -195,8 +194,8 @@ public class CoyotePanel extends GLJPanel
         CyDrawGroupZOrder drawGroup = new CyDrawGroupZOrder();
         CyDrawStack rend = new CyDrawStack(
                 deviceWidth, deviceHeight,
-                0, 0,
-                startTime, curTime, curPass,
+//                0, 0,
+//                startTime, curTime, curPass,
                 drawGroup);
 
         //Still need to blit to tile back buffer for speed

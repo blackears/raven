@@ -25,9 +25,9 @@ import com.kitfox.coyote.renderer.CyRendererListener;
 import com.kitfox.coyote.renderer.CyRendererUtil2D;
 import com.kitfox.coyote.renderer.CyTextureImage;
 import com.kitfox.coyote.renderer.CyVertexBuffer;
-import com.kitfox.coyote.renderer.GLWrapper.DataType;
-import com.kitfox.coyote.renderer.GLWrapper.InternalFormatTex;
-import com.kitfox.coyote.renderer.GLWrapper.TexTarget;
+import com.kitfox.coyote.renderer.CyGLWrapper.DataType;
+import com.kitfox.coyote.renderer.CyGLWrapper.InternalFormatTex;
+import com.kitfox.coyote.renderer.CyGLWrapper.TexTarget;
 import com.kitfox.coyote.renderer.jogl.GLWrapperJOGL;
 import com.kitfox.coyote.shape.CyEllipse2d;
 import com.kitfox.coyote.shape.CyPath2d;
@@ -80,7 +80,7 @@ public class SimpleGraph implements CyRendererListener
         rend.clear(new CyColor4f(.2, .3, .3, 1));
 
         {
-            GL gl = ((GLWrapperJOGL)rend.getGl()).getGl();
+            GL gl = ((CyGLWrapperJOGL)rend.getGl()).getGl();
             gl.glUseProgram(0);
             gl.glColor4d(1, 1, 0, 1);
             gl.glBegin(GL.GL_TRIANGLES);

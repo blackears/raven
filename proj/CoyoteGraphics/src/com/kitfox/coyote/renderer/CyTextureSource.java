@@ -22,11 +22,11 @@ package com.kitfox.coyote.renderer;
  */
 public interface CyTextureSource
 {
-    public void bind(GLContext ctx, GLWrapper gl);
+    public void bind(CyGLContext ctx, CyGLWrapper gl);
 
-    public GLWrapper.InternalFormatTex getFormat();
-    public GLWrapper.TexTarget getTarget();
-    public GLWrapper.DataType getDataType();
+    public CyGLWrapper.InternalFormatTex getFormat();
+    public CyGLWrapper.TexTarget getTarget();
+    public CyGLWrapper.DataType getDataType();
 
     public int getWidth();
     public int getHeight();

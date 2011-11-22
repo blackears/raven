@@ -25,16 +25,16 @@ import com.kitfox.coyote.renderer.CyTextureSource;
 import com.kitfox.coyote.renderer.CyTransparency;
 import com.kitfox.coyote.renderer.CyVertexArrayInfo;
 import com.kitfox.coyote.renderer.CyVertexBuffer;
-import com.kitfox.coyote.renderer.GLContext;
-import com.kitfox.coyote.renderer.GLWrapper;
-import com.kitfox.coyote.renderer.GLWrapper.ActiveTexture;
-import com.kitfox.coyote.renderer.GLWrapper.Capability;
-import com.kitfox.coyote.renderer.GLWrapper.IndiciesType;
-import com.kitfox.coyote.renderer.GLWrapper.ShaderType;
-import com.kitfox.coyote.renderer.GLWrapper.TexParam;
-import com.kitfox.coyote.renderer.GLWrapper.TexParamName;
-import com.kitfox.coyote.renderer.GLWrapper.TexTarget;
-import com.kitfox.coyote.renderer.GLWrapper.VertexDataType;
+import com.kitfox.coyote.renderer.CyGLContext;
+import com.kitfox.coyote.renderer.CyGLWrapper;
+import com.kitfox.coyote.renderer.CyGLWrapper.ActiveTexture;
+import com.kitfox.coyote.renderer.CyGLWrapper.Capability;
+import com.kitfox.coyote.renderer.CyGLWrapper.IndiciesType;
+import com.kitfox.coyote.renderer.CyGLWrapper.ShaderType;
+import com.kitfox.coyote.renderer.CyGLWrapper.TexParam;
+import com.kitfox.coyote.renderer.CyGLWrapper.TexParamName;
+import com.kitfox.coyote.renderer.CyGLWrapper.TexTarget;
+import com.kitfox.coyote.renderer.CyGLWrapper.VertexDataType;
 import java.nio.FloatBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -61,7 +61,7 @@ public class CyMaterialTextureBlit extends CyMaterial
     {
     }
 
-    private void init(GLWrapper gl)
+    private void init(CyGLWrapper gl)
     {
         try
         {
@@ -93,7 +93,7 @@ public class CyMaterialTextureBlit extends CyMaterial
         }
     }
 
-    public void bind(GLWrapper gl)
+    public void bind(CyGLWrapper gl)
     {
         if (programId == 0)
         {
@@ -106,7 +106,7 @@ public class CyMaterialTextureBlit extends CyMaterial
     }
 
 
-    public void render(GLContext ctx, GLWrapper gl, CyMaterialTextureBlitDrawRecord rec)
+    public void render(CyGLContext ctx, CyGLWrapper gl, CyMaterialTextureBlitDrawRecord rec)
     {
         float opacity = rec.getOpacity();
         CyTextureSource texture = rec.getTexture();
@@ -118,8 +118,8 @@ public class CyMaterialTextureBlit extends CyMaterial
         else
         {
             gl.glEnable(Capability.GL_BLEND);
-            gl.glBlendFunc(GLWrapper.BlendFactor.GL_SRC_ALPHA,
-                    GLWrapper.BlendFactor.GL_ONE_MINUS_SRC_ALPHA);
+            gl.glBlendFunc(CyGLWrapper.BlendFactor.GL_SRC_ALPHA,
+                    CyGLWrapper.BlendFactor.GL_ONE_MINUS_SRC_ALPHA);
         }
 
         //Upload uniforms
@@ -155,6 +155,9 @@ public class CyMaterialTextureBlit extends CyMaterial
                 TexParamName.GL_TEXTURE_WRAP_S, wrapS);
         gl.glTexParameter(texture.getTarget(),
                 TexParamName.GL_TEXTURE_WRAP_T, wrapT);
+
+        gl.glGenerateMipmap(texture.getTarget());
+
 
         //Bind vertex buffers
         CyVertexBuffer mesh = rec.getMesh();

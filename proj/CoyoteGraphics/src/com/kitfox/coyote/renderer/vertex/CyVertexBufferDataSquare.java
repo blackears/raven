@@ -21,8 +21,8 @@ import com.kitfox.coyote.math.d3.BoundingBox3d;
 import com.kitfox.coyote.renderer.CyMaterial;
 import com.kitfox.coyote.renderer.CyVertexBuffer;
 import com.kitfox.coyote.renderer.CyVertexBufferDataProvider;
-import com.kitfox.coyote.renderer.GLWrapper.BufferUsage;
-import com.kitfox.coyote.renderer.GLWrapper.DrawMode;
+import com.kitfox.coyote.renderer.CyGLWrapper.BufferUsage;
+import com.kitfox.coyote.renderer.CyGLWrapper.DrawMode;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 

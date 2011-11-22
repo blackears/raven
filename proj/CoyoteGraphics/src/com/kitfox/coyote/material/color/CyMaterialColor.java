@@ -25,12 +25,12 @@ import com.kitfox.coyote.renderer.CyProgramException;
 import com.kitfox.coyote.renderer.CyShaderException;
 import com.kitfox.coyote.renderer.CyVertexArrayInfo;
 import com.kitfox.coyote.renderer.CyVertexBuffer;
-import com.kitfox.coyote.renderer.GLContext;
-import com.kitfox.coyote.renderer.GLWrapper;
-import com.kitfox.coyote.renderer.GLWrapper.Capability;
-import com.kitfox.coyote.renderer.GLWrapper.IndiciesType;
-import com.kitfox.coyote.renderer.GLWrapper.ShaderType;
-import com.kitfox.coyote.renderer.GLWrapper.VertexDataType;
+import com.kitfox.coyote.renderer.CyGLContext;
+import com.kitfox.coyote.renderer.CyGLWrapper;
+import com.kitfox.coyote.renderer.CyGLWrapper.Capability;
+import com.kitfox.coyote.renderer.CyGLWrapper.IndiciesType;
+import com.kitfox.coyote.renderer.CyGLWrapper.ShaderType;
+import com.kitfox.coyote.renderer.CyGLWrapper.VertexDataType;
 import java.nio.FloatBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,7 +55,7 @@ public class CyMaterialColor extends CyMaterial
     {
     }
 
-    private void init(GLWrapper gl)
+    private void init(CyGLWrapper gl)
     {
         try
         {
@@ -86,7 +86,7 @@ public class CyMaterialColor extends CyMaterial
     }
 
 //    @Override
-    protected void bind(GLWrapper gl)
+    protected void bind(CyGLWrapper gl)
     {
 //        super.bind(gl);
 
@@ -101,7 +101,7 @@ public class CyMaterialColor extends CyMaterial
         gl.glUseProgram(programId);
     }
 
-    protected void render(GLContext ctx, GLWrapper gl, CyMaterialColorDrawRecord rec)
+    protected void render(CyGLContext ctx, CyGLWrapper gl, CyMaterialColorDrawRecord rec)
     {
         CyColor4f color = rec.getColor();
         float alpha = color.a * rec.getOpacity();
@@ -113,8 +113,8 @@ public class CyMaterialColor extends CyMaterial
         else
         {
             gl.glEnable(Capability.GL_BLEND);
-            gl.glBlendFunc(GLWrapper.BlendFactor.GL_SRC_ALPHA,
-                    GLWrapper.BlendFactor.GL_ONE_MINUS_SRC_ALPHA);
+            gl.glBlendFunc(CyGLWrapper.BlendFactor.GL_SRC_ALPHA,
+                    CyGLWrapper.BlendFactor.GL_ONE_MINUS_SRC_ALPHA);
         }
 
         //Upload uniforms

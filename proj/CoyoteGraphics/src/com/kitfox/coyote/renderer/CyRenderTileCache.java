@@ -16,7 +16,7 @@
 
 package com.kitfox.coyote.renderer;
 
-import com.kitfox.coyote.renderer.GLWrapper.Attachment;
+import com.kitfox.coyote.renderer.CyGLWrapper.Attachment;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -130,13 +130,13 @@ public class CyRenderTileCache
             int height = key.height;
 
             color = new CyFramebufferTexture(Attachment.GL_COLOR_ATTACHMENT0,
-                    GLWrapper.TexTarget.GL_TEXTURE_2D,
-                    GLWrapper.InternalFormatTex.GL_RGBA,
-                    GLWrapper.DataType.GL_UNSIGNED_BYTE,
+                    CyGLWrapper.TexTarget.GL_TEXTURE_2D,
+                    CyGLWrapper.InternalFormatTex.GL_RGBA,
+                    CyGLWrapper.DataType.GL_UNSIGNED_BYTE,
                     width, height);
             depth = new CyFramebufferRenderbuffer(Attachment.GL_DEPTH_ATTACHMENT,
                     width, height,
-                    GLWrapper.InternalFormatBuf.GL_DEPTH_COMPONENT16);
+                    CyGLWrapper.InternalFormatBuf.GL_DEPTH_COMPONENT16);
             buffer = new CyFramebuffer(width, height, color, depth);
         }
 

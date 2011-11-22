@@ -16,7 +16,7 @@
 
 package com.kitfox.coyote.renderer;
 
-import com.kitfox.coyote.renderer.GLWrapper.TexSubTarget;
+import com.kitfox.coyote.renderer.CyGLWrapper.TexSubTarget;
 import java.nio.Buffer;
 import java.util.ArrayList;
 

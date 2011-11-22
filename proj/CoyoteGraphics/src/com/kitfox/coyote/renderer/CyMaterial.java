@@ -17,9 +17,9 @@
 package com.kitfox.coyote.renderer;
 
 import com.kitfox.coyote.math.BufferUtil;
-import com.kitfox.coyote.renderer.GLWrapper.ProgramParamName;
-import com.kitfox.coyote.renderer.GLWrapper.ShaderParamName;
-import com.kitfox.coyote.renderer.GLWrapper.ShaderType;
+import com.kitfox.coyote.renderer.CyGLWrapper.ProgramParamName;
+import com.kitfox.coyote.renderer.CyGLWrapper.ShaderParamName;
+import com.kitfox.coyote.renderer.CyGLWrapper.ShaderType;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ abstract public class CyMaterial<DrawRecord>
 
 //    abstract public void bind(GLWrapper gl);
 
-    protected int loadShader(GLWrapper gl, ShaderType type, String path) throws CyShaderException
+    protected int loadShader(CyGLWrapper gl, ShaderType type, String path) throws CyShaderException
     {
         int id = gl.glCreateShader(type);
         String vertSrc = gl.loadSource(path);
@@ -56,7 +56,7 @@ abstract public class CyMaterial<DrawRecord>
         return id;
     }
 
-    protected void checkShaderValid(GLWrapper gl, int id, String path) throws CyShaderException
+    protected void checkShaderValid(CyGLWrapper gl, int id, String path) throws CyShaderException
     {
         IntBuffer ibuf = BufferUtil.allocateInt(1);
         gl.glGetShaderiv(id, ShaderParamName.GL_COMPILE_STATUS, ibuf);
@@ -74,7 +74,7 @@ abstract public class CyMaterial<DrawRecord>
         }
     }
 
-    protected void checkProgramValid(GLWrapper gl, int id) throws CyProgramException
+    protected void checkProgramValid(CyGLWrapper gl, int id) throws CyProgramException
     {
         IntBuffer ibuf = BufferUtil.allocateInt(1);
         gl.glGetProgramiv(id, ProgramParamName.GL_LINK_STATUS, ibuf);

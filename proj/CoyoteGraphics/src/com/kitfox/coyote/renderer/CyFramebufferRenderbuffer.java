@@ -17,9 +17,9 @@
 package com.kitfox.coyote.renderer;
 
 import com.kitfox.coyote.math.BufferUtil;
-import com.kitfox.coyote.renderer.GLContext.RenderbufferInfo;
-import com.kitfox.coyote.renderer.GLWrapper.Attachment;
-import com.kitfox.coyote.renderer.GLWrapper.InternalFormatBuf;
+import com.kitfox.coyote.renderer.CyGLContext.RenderbufferInfo;
+import com.kitfox.coyote.renderer.CyGLWrapper.Attachment;
+import com.kitfox.coyote.renderer.CyGLWrapper.InternalFormatBuf;
 import java.nio.IntBuffer;
 
 /**
@@ -37,7 +37,7 @@ public class CyFramebufferRenderbuffer extends CyFramebufferAttachment
 //    int surfInst;
 
     public CyFramebufferRenderbuffer(Attachment attachment, int width, int height,
-            GLWrapper.InternalFormatBuf internalFormat)
+            CyGLWrapper.InternalFormatBuf internalFormat)
     {
         super(attachment);
         this.width = width;
@@ -65,7 +65,7 @@ public class CyFramebufferRenderbuffer extends CyFramebufferAttachment
         return height;
     }
 
-    public GLWrapper.InternalFormatBuf getInternalFormat()
+    public CyGLWrapper.InternalFormatBuf getInternalFormat()
     {
         return internalFormat;
     }
@@ -85,7 +85,7 @@ public class CyFramebufferRenderbuffer extends CyFramebufferAttachment
 //    }
 
     @Override
-    public void bind(GLContext ctx, GLWrapper gl)
+    public void bind(CyGLContext ctx, CyGLWrapper gl)
     {
         RenderbufferInfo info = ctx.getRenderbufferInfo(this, gl);
         int rboId = info.getRboId();
@@ -120,7 +120,7 @@ public class CyFramebufferRenderbuffer extends CyFramebufferAttachment
 
     //------------------------------------
 
-    static class Dispose implements GLAction
+    static class Dispose implements CyGLAction
     {
         int id;
 
@@ -129,7 +129,7 @@ public class CyFramebufferRenderbuffer extends CyFramebufferAttachment
             this.id = id;
         }
 
-        public void doAction(GLWrapper gl)
+        public void doAction(CyGLWrapper gl)
         {
             IntBuffer ibuf = BufferUtil.allocateInt(1);
             ibuf.put(0, id);
