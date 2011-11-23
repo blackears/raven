@@ -96,7 +96,7 @@ public class MovieExporterContext
         framesNumberPadding = pref.getInt(PROP_FRAMES_NUM_PAD, 4);
 
         seqFile = pref.getString(PROP_SEQ_FILE, "movie");
-        seqFormat = pref.getString(PROP_SEQ_FORMAT, "avi");
+        seqFormat = pref.getString(PROP_SEQ_FORMAT, JMFExporter.VIDEO_QT);
     }
     
     public void savePreferences()

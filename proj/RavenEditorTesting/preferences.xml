@@ -119,7 +119,7 @@
             <property name="frameCurrent">false</property>
             <property name="framesNumberPadding">4</property>
             <property name="frameStart">0</property>
-            <property name="seqFormat">avi</property>
+            <property name="seqFormat">qt</property>
             <property name="framesImageFormat">png</property>
             <property name="format">SEQ</property>
             <property name="height">480</property>

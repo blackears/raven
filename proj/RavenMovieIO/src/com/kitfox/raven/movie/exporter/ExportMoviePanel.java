@@ -109,7 +109,7 @@ public class ExportMoviePanel extends javax.swing.JPanel
         setLayout(new java.awt.BorderLayout());
 
         buttonGroup_format.add(radio_formatSeq);
-        radio_formatSeq.setText("Sequence");
+        radio_formatSeq.setText("Movie");
         radio_formatSeq.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 radio_formatSeqActionPerformed(evt);
@@ -231,7 +231,7 @@ public class ExportMoviePanel extends javax.swing.JPanel
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(spinner_height, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(81, Short.MAX_VALUE))
+                .addContainerGap(69, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

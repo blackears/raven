@@ -52,6 +52,10 @@ import javax.swing.JOptionPane;
 public class JMFExporter
         implements ControllerListener, DataSinkListener
 {
+    public static final String VIDEO_MPEG = "mpeg";
+    public static final String VIDEO_AVI = "avi";
+    public static final String VIDEO_QT = "qt";
+    public static final String VIDEO_VIVO = "viv";
 
     final MovieExporterContext ctx;
     final Object waitSync = new Object();
@@ -103,7 +107,34 @@ public class JMFExporter
             return;
         }
 
-        p.setContentDescriptor(new ContentDescriptor(FileTypeDescriptor.QUICKTIME));
+//            p.setContentDescriptor(new ContentDescriptor(FileTypeDescriptor.QUICKTIME));
+        String format = ctx.getSeqFormat();
+        
+        //At the moment I have only got this to work for QuickTime
+format = VIDEO_QT;
+        
+        System.err.println("Exporting " + format);
+        if (VIDEO_AVI.equals(format))
+        {
+            p.setContentDescriptor(new ContentDescriptor(FileTypeDescriptor.MSVIDEO));
+        }
+        else if (VIDEO_MPEG.equals(format))
+        {
+            p.setContentDescriptor(new ContentDescriptor(FileTypeDescriptor.MPEG));
+        }
+        else if (VIDEO_QT.equals(format))
+        {
+            p.setContentDescriptor(new ContentDescriptor(FileTypeDescriptor.QUICKTIME));
+        }
+        else if (VIDEO_VIVO.equals(format))
+        {
+            p.setContentDescriptor(new ContentDescriptor(FileTypeDescriptor.VIVO));
+        }
+        else
+        {
+            error("Unknown format " + format);
+            return;
+        }
 
         // Query for the processor for supported formats.
         // Then set it on the processor.
@@ -124,6 +155,11 @@ public class JMFExporter
         }
 
         //Create sink to write data to
+        String fileSuffix = "." + format;
+        if (!outFile.getName().endsWith(fileSuffix))
+        {
+            outFile = new File(outFile.getParentFile(), outFile.getName() + fileSuffix);
+        }
         MediaLocator outML = new MediaLocator(outFile.toURI().toString());
 
         DataSource ds = p.getDataOutput();

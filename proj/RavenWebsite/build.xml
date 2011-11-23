@@ -53,7 +53,7 @@
         </genkey>                
     </target>
 
-    <target name="jpen" depends="-init-web,-gen-key">
+    <target name="build-ws-jpen" depends="-init-web,-gen-key">
         <mkdir dir="build/apps/jpen"/>
         
         <copy file="web/apps/jpen/jpen.jnlp" todir="build/apps/jpen" force="true"/>
@@ -95,6 +95,15 @@
             </fileset>
         </jar>
         <signjar jar="build/apps/jpen/jpen-osx.jar" alias="${key.user}" storepass="${key.password}" keystore="${key.location}"/>
+    </target>
+
+    <target name="build-ws-jmf" depends="-init-web,-gen-key">
+        <mkdir dir="build/apps/jmf"/>
+        
+        <copy file="web/apps/jmf/jmf.jnlp" todir="build/apps/jmf" force="true"/>
+        
+        <copy file="../../lib/jmf/lib/jmf.jar" todir="build/apps/jmf"/>
+        <signjar jar="build/apps/jmf/jmf.jar" alias="${key.user}" storepass="${key.password}" keystore="${key.location}"/>
     </target>
     
     <target name="apps" depends="-init-web,-gen-key">

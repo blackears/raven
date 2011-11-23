@@ -40,6 +40,7 @@
         <jar href="../bin/RavenEditorApp.jar"/>
         <jar href="../bin/RavenImportSVG.jar"/>
         <jar href="../bin/RavenImportSWF.jar"/>
+        <jar href="../bin/RavenMovieIO.jar"/>
         <jar href="../bin/RavenService.jar"/>
         <jar href="../bin/SVGRabbit.jar"/>
         <jar href="../bin/SWFParser.jar"/>
@@ -48,6 +49,8 @@
             href="http://jogamp.org/deployment/jogamp-current/jogl-all-awt.jnlp"/>
         <extension name="jpen" 
             href="http://raven.java.net/apps/jpen/jpen.jnlp"/>
+        <extension name="jmf" 
+            href="http://raven.java.net/apps/jmf/jmf.jnlp"/>
     </resources>
     
     <application-desc 

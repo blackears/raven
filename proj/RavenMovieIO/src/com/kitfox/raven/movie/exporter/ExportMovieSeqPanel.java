@@ -41,10 +41,15 @@ public class ExportMovieSeqPanel extends javax.swing.JPanel
         
 //        chooser.setFileFilter(new ExportMovieFramesPanel.Filter());
         
-//        for (String suf: ImageIO.getReaderFileSuffixes())
-//        {
-//            combo_imgFmt.addItem(suf);
-//        }
+//        combo_type.addItem(JMFExporter.VIDEO_AVI);
+//        combo_type.addItem(JMFExporter.VIDEO_MPEG);
+        combo_type.addItem(JMFExporter.VIDEO_QT);
+//        combo_type.addItem(JMFExporter.VIDEO_VIVO);
+                
+//        combo_type.addItem(FileTypeDescriptor.MPEG);
+//        combo_type.addItem(FileTypeDescriptor.MSVIDEO);
+//        combo_type.addItem(FileTypeDescriptor.QUICKTIME);
+//        combo_type.addItem(FileTypeDescriptor.VIVO);
         
         updateFromContext();
     }
@@ -165,7 +170,31 @@ public class ExportMovieSeqPanel extends javax.swing.JPanel
 
     private void combo_typePropertyChange(java.beans.PropertyChangeEvent evt)//GEN-FIRST:event_combo_typePropertyChange
     {//GEN-HEADEREND:event_combo_typePropertyChange
-        // TODO add your handling code here:
+        String suffix = (String)combo_type.getSelectedItem();
+        ctx.setSeqFormat(suffix);
+        
+        String file = text_file.getText();
+        if (file == null || "".equals(file))
+        {
+            return;
+        }
+        
+        int idx = file.indexOf('.');
+        String newFile;
+        if (idx == -1)
+        {
+            newFile = file + "." + suffix;
+        }
+        else
+        {
+            newFile = file.substring(0, idx) + "." + suffix;
+        }
+        
+        if (!newFile.equalsIgnoreCase(file))
+        {
+            text_file.setText(newFile);
+            ctx.setSeqFile(newFile);
+        }
     }//GEN-LAST:event_combo_typePropertyChange
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
