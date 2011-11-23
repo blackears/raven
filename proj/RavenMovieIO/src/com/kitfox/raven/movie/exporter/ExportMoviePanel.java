@@ -260,13 +260,13 @@ public class ExportMoviePanel extends javax.swing.JPanel
     private void radio_formatFramesActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_radio_formatFramesActionPerformed
     {//GEN-HEADEREND:event_radio_formatFramesActionPerformed
         ctx.setFormat(MovieExporterFormat.FRAMES);
-        
+        updateFromContext();
     }//GEN-LAST:event_radio_formatFramesActionPerformed
 
     private void radio_formatSeqActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_radio_formatSeqActionPerformed
     {//GEN-HEADEREND:event_radio_formatSeqActionPerformed
         ctx.setFormat(MovieExporterFormat.SEQ);
-
+        updateFromContext();
     }//GEN-LAST:event_radio_formatSeqActionPerformed
 
     private void check_frameCurActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_check_frameCurActionPerformed

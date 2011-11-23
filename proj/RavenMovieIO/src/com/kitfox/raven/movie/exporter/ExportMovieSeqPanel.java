@@ -155,11 +155,11 @@ public class ExportMovieSeqPanel extends javax.swing.JPanel
             chooser.setCurrentDirectory(file);
         }
         
-        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
+        if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION)
         {
             file = chooser.getSelectedFile();
             text_file.setText(file.getAbsolutePath());
-            ctx.setFramesDir(text_file.getText());
+            ctx.setSeqFile(text_file.getText());
         }
     }//GEN-LAST:event_bn_fileBrowseActionPerformed
 

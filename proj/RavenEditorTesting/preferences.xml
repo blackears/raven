@@ -111,9 +111,9 @@
     </importerProperties>
     <exporterProperties>
         <properties class="com.kitfox.raven.movie.exporter.MovieExporter">
-            <property name="seqFile">movie</property>
+            <property name="seqFile">C:\Users\kitfox\Documents\raven\m.qt</property>
             <property name="width">640</property>
-            <property name="framesDir">C:\Users\kitfox\Documents\raven</property>
+            <property name="framesDir">C:\Users\kitfox\Documents\raven\</property>
             <property name="framesPrefix">frame</property>
             <property name="frameStride">1</property>
             <property name="frameCurrent">false</property>
@@ -121,7 +121,7 @@
             <property name="frameStart">0</property>
             <property name="seqFormat">avi</property>
             <property name="framesImageFormat">png</property>
-            <property name="format">FRAMES</property>
+            <property name="format">SEQ</property>
             <property name="height">480</property>
             <property name="frameEnd">10</property>
         </properties>

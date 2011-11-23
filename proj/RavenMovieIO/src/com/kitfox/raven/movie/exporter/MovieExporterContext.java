@@ -16,30 +16,16 @@
 
 package com.kitfox.raven.movie.exporter;
 
-import com.kitfox.coyote.drawRecord.CyDrawGroupZOrder;
-import com.kitfox.coyote.math.BufferUtil;
-import com.kitfox.coyote.renderer.CyDrawStack;
-import com.kitfox.coyote.renderer.CyGLContext;
-import com.kitfox.coyote.renderer.CyGLWrapper;
-import com.kitfox.coyote.renderer.jogl.CyGLWrapperJOGL;
 import com.kitfox.raven.util.tree.FrameKey;
-import com.kitfox.raven.editor.node.scene.RenderContext;
-import com.kitfox.raven.editor.node.tools.common.ServiceDeviceCamera;
-import com.kitfox.raven.editor.view.displayCy.CyRenderService;
 import com.kitfox.raven.util.PropertiesData;
 import com.kitfox.raven.util.tree.NodeDocument;
-import com.kitfox.raven.util.tree.Track;
-import com.kitfox.raven.util.tree.TrackLibrary;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import javax.media.nativewindow.AbstractGraphicsDevice;
-import javax.media.opengl.*;
 import javax.swing.JOptionPane;
 
 /**
@@ -147,14 +133,8 @@ public class MovieExporterContext
     
     private void exportSeq()
     {
-//        FormatControl ctrl;
-//        Format[] fmts = ctrl.getSupportedFormats();
-        
-        //FramePositioningControl
-        //FrameGrabbingControl
-        //PlugInManager.getPlugInList(null, null, width)
-        
-        throw new UnsupportedOperationException("Not yet implemented");
+        JMFExporter exporter = new JMFExporter(this);
+        exporter.exportSeq();
     }
     
     private void exportFrames()
@@ -167,107 +147,36 @@ public class MovieExporterContext
                 "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-    
-        FramesExporter exp = new FramesExporter(fileDir);
-        visitFrames(exp);
-    }
-    
-    private void visitFrames(FrameVisitor visitor)
-    {
-        GLDrawableFactory fact = GLDrawableFactory.getDesktopFactory();
+
+        MovieCapture capture = new MovieCapture(doc, width, height);
         
-        if (!fact.canCreateGLPbuffer(null))
+        int trackFrame = doc.getTrackLibrary().getCurFrame();
+        int trackUid = doc.getTrackLibrary().getCurTrackUid();
+        
+        int fBegin = frameCur ? trackFrame : frameStart;
+        int fEnd = frameCur ? trackFrame : frameEnd;
+        
+        for (int i = fBegin; i <= fEnd; i += frameStride)
         {
-            JOptionPane.showMessageDialog(doc.getEnv().getSwingRoot(),
-                "Cannot create pbuffer to accellerate offscreen rendering", 
-                "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        GLCapabilities caps = new GLCapabilities(GLProfile.getDefault());
-        caps.setBackgroundOpaque(false);
-        
-        GLCapabilitiesChooser glCapsChooser = new DefaultGLCapabilitiesChooser();
-        AbstractGraphicsDevice agd = fact.getDefaultDevice();
-        
-        GLPbuffer drawable = 
-                fact.createGLPbuffer(agd, 
-                caps, glCapsChooser, 
-                width, height, 
-                null);
-        GLContext context = drawable.getContext();
-        context.makeCurrent();
-        
-        CyGLContext glContext = new CyGLContext();
-        CyGLWrapperJOGL glWrap = new CyGLWrapperJOGL(drawable);
-        
-        ByteBuffer buf = BufferUtil.allocateByte(width * height * 4);
-            
-        TrackLibrary trackLib = doc.getTrackLibrary();
-        Track track = trackLib.getCurTrack();
-        
-        if (frameCur)
-        {
-            FrameKey key = new FrameKey(track.getUid(), trackLib.getCurFrame());
-            CyDrawGroupZOrder drawgroup = buildDrawlist(key);
-            drawgroup.render(glContext, glWrap, drawgroup);
-            
-            buf.rewind();
-            glWrap.glReadPixels(0, 0, width, height, 
-                    CyGLWrapper.ReadPixelsFormat.GL_RGBA, 
-                    CyGLWrapper.DataType.GL_UNSIGNED_BYTE, buf);
-            
-            visitor.exportFrame(buf, key);
-            
-            drawgroup.dispose();
-        }
-        else
-        {
-            for (int i = frameStart; i <= frameEnd; i += frameStride)
+            String frameStrn = "" + i;
+            while (frameStrn.length() < framesNumberPadding)
             {
-                FrameKey key = new FrameKey(track.getUid(), i);
+                frameStrn = "0" + frameStrn;
+            }
 
-                CyDrawGroupZOrder drawgroup = buildDrawlist(key);
-                drawgroup.render(glContext, glWrap, drawgroup);
+            File fileOut = new File(fileDir, 
+                    framesPrefix + "_" + frameStrn + "." + framesImageFormat);
 
-                buf.rewind();
-                glWrap.glReadPixels(0, 0, width, height, 
-                        CyGLWrapper.ReadPixelsFormat.GL_RGBA, 
-                        CyGLWrapper.DataType.GL_UNSIGNED_BYTE, buf);
+            BufferedImage img = capture.getImage(new FrameKey(trackUid, i), true);
 
-                visitor.exportFrame(buf, key);
-
-                drawgroup.dispose();
+            try
+            {
+                ImageIO.write(img, framesImageFormat, fileOut);
+            } catch (IOException ex)
+            {
+                Logger.getLogger(MovieExporterContext.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
-        context.release();
-    }
-
-
-    private CyDrawGroupZOrder buildDrawlist(FrameKey key)
-    {
-        CyDrawGroupZOrder drawGroup = new CyDrawGroupZOrder();
-        
-        CyDrawStack stack = new CyDrawStack(width, height, 
-                drawGroup);
-        
-        RenderContext ctx = new RenderContext(stack, key);
-
-        CyRenderService serv = doc.getNodeService(CyRenderService.class, false);
-        if (serv != null)
-        {
-            if (serv.getNumCameras() == 0)
-            {
-                serv.renderEditor(ctx);
-            }
-            else
-            {
-                serv.renderCamerasAll(ctx);
-            }
-        }
-        
-        return drawGroup;
     }
 
     //--------------
@@ -510,70 +419,6 @@ public class MovieExporterContext
     public void setFrameStride(int frameStride)
     {
         this.frameStride = frameStride;
-    }
-    
-    //---------------------------------
-    abstract class FrameVisitor
-    {
-        abstract public void exportFrame(ByteBuffer buf, FrameKey key);
-    }
-    
-    class FramesExporter extends FrameVisitor
-    {
-        final File fileDir;
-
-        public FramesExporter(File fileDir)
-        {
-            this.fileDir = fileDir;
-        }
-        
-        @Override
-        public void exportFrame(ByteBuffer buf, FrameKey key)
-        {
-            String frameStrn = "" + key.getAnimFrame();
-            while (frameStrn.length() < framesNumberPadding)
-            {
-                frameStrn = "0" + frameStrn;
-            }
-
-            File fileOut = new File(fileDir, 
-                    framesPrefix + "_" + frameStrn + "." + framesImageFormat);
-
-            BufferedImage img = createImage(buf);
-
-            try
-            {
-                ImageIO.write(img, framesImageFormat, fileOut);
-            } catch (IOException ex)
-            {
-                Logger.getLogger(MovieExporterContext.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    
-        private BufferedImage createImage(ByteBuffer buf)
-        {
-            BufferedImage img = new BufferedImage(
-                    width, height, BufferedImage.TYPE_INT_ARGB);
-            for (int j = 0; j < height; ++j)
-            {
-                for (int i = 0; i < width; ++i)
-                {
-                    byte r = buf.get();
-                    byte g = buf.get();
-                    byte b = buf.get();
-                    byte a = buf.get();
-
-                    int rgba = ((a & 0xff) << 24) 
-                            | ((r & 0xff) << 16) 
-                            | ((g & 0xff) << 8) 
-                            | (b & 0xff);
-
-                    img.setRGB(i, (height - j - 1), rgba);
-                }
-            }
-
-            return img;
-        }
     }
 
 }
