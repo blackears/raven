@@ -11,13 +11,8 @@
         <description>A vector drawing and animation applicaton</description>
         <description kind="short">Create and publish animated graphics with Raven Studio</description>
         <offline-allowed/>
-        <icon href="http://raven.java.net/apps/studio/ravenCameo.png" kind="default"/>
-        <!--
-        <icon href="ravenCameo32.gif" width="32" height="32" kind="default"/>
-        -->
-        <!--
-        <icon kind="splash" href="splash.gif"/>
-        -->
+        <icon kind="default" href="http://raven.java.net/apps/studio/ravenCameo.png"/>
+        <icon kind="splash" href="http://raven.java.net/apps/studio/ravenCameo.png"/>
         <shortcut online="false" install="false">
             <desktop/>
         </shortcut>

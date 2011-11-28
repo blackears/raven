@@ -29,9 +29,10 @@
         </condition>
     </target>
 
-    <target name="-init-web" depends="-init">
+    <target name="build-webpages" depends="-init">
         <mkdir dir="build"/>
 
+<!--
         <taskdef name="fmpp" classname="fmpp.tools.AntTask">
             <classpath>
                 <fileset dir="../../lib/fmpp/lib">
@@ -43,6 +44,7 @@
         <fmpp sourceRoot="web" outputRoot="build">
             <include name="**/*.html"/>
         </fmpp>
+        -->
         <!--
         <taskdef name="freemarker" classname="freemarker.ext.ant.FreemarkerXmlTask">
             <classpath>
@@ -55,14 +57,10 @@
         -->
 
         <copy todir="build" force="true">
-            <fileset dir="web">
-                <include name="**"/>
-                <exclude name="**/*.html"/>
-                <exclude name="**/*.shtml"/>
+            <fileset dir="web2">
+                <exclude name="Templates/**"/>
             </fileset>
         </copy>
-<!--
-        -->
     </target>
     
     <target name="-gen-key" depends="-init" unless="key.present">
@@ -79,7 +77,7 @@
         </genkey>                
     </target>
 
-    <target name="build-ws-jpen" depends="-init-web,-gen-key">
+    <target name="build-ws-jpen" depends="build-webpages,-gen-key">
         <mkdir dir="build/apps/jpen"/>
         
         <copy file="web/apps/jpen/jpen.jnlp" todir="build/apps/jpen" force="true"/>
@@ -123,7 +121,7 @@
         <signjar jar="build/apps/jpen/jpen-osx.jar" alias="${key.user}" storepass="${key.password}" keystore="${key.location}"/>
     </target>
 
-    <target name="build-ws-jmf" depends="-init-web,-gen-key">
+    <target name="build-ws-jmf" depends="build-webpages,-gen-key">
         <mkdir dir="build/apps/jmf"/>
         
         <copy file="web/apps/jmf/jmf.jnlp" todir="build/apps/jmf" force="true"/>
@@ -132,7 +130,7 @@
         <signjar jar="build/apps/jmf/jmf.jar" alias="${key.user}" storepass="${key.password}" keystore="${key.location}"/>
     </target>
     
-    <target name="build-apps" depends="-init-web,-gen-key">
+    <target name="build-apps" depends="build-webpages,-gen-key">
         <mkdir dir="build/apps/bin"/>
         
         <antcall target="-copy-app-jar">
@@ -210,7 +208,7 @@
                 
     </target>
 
-    <target name="javadoc" depends="-init-web">
+    <target name="javadoc" depends="build-webpages">
         <javadoc
             destdir="build/docs/api/RavenService"
             author="true"
