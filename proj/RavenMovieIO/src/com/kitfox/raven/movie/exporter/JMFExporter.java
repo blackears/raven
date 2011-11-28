@@ -16,6 +16,7 @@
 
 package com.kitfox.raven.movie.exporter;
 
+import com.sun.media.util.Registry;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -71,16 +72,23 @@ public class JMFExporter
 
     public void exportSeq()
     {
+        Registry.set("secure.allowSaveFileFromApplets", Boolean.TRUE);
+        
         String seqFile = ctx.getSeqFile();
 
         File outFile = new File(seqFile);
         File parentFile = outFile.getParentFile();
-        if (!parentFile.canWrite())
+        if (parentFile != null)
+        {
+            //Under webstart, parentFile may be null
+            parentFile.mkdirs();
+        }
+        
+        if (outFile.exists() && !outFile.canWrite())
         {
             error("Cannot write to directory " + parentFile.getAbsolutePath());
             return;
         }
-        parentFile.mkdirs();
 
         ImageDataSource ids = new ImageDataSource(ctx);
 

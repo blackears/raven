@@ -106,7 +106,7 @@
         <signjar jar="build/apps/jmf/jmf.jar" alias="${key.user}" storepass="${key.password}" keystore="${key.location}"/>
     </target>
     
-    <target name="apps" depends="-init-web,-gen-key">
+    <target name="build-apps" depends="-init-web,-gen-key">
         <mkdir dir="build/apps/bin"/>
         
         <antcall target="-copy-app-jar">
@@ -120,9 +120,6 @@
         </antcall>
         <antcall target="-copy-app-jar">
             <param name="app.jar" location="../RavenEditor/dist/RavenEditor.jar"/>
-        </antcall>
-        <antcall target="-copy-app-jar">
-            <param name="app.jar" location="../RavenEditorApp/dist/RavenEditorApp.jar"/>
         </antcall>
         <antcall target="-copy-app-jar">
             <param name="app.jar" location="../RavenMovieIO/dist/RavenMovieIO.jar"/>
@@ -142,6 +139,38 @@
         <antcall target="-copy-app-jar">
             <param name="app.jar" location="../SWFParser/dist/SWFParser.jar"/>
         </antcall>
+        
+        <jar destfile="../RavenEditorApp/dist/RavenEditorApp.jar">
+            <manifest>
+                <attribute name="Main-Class" 
+                    value="com.kitfox.raven.editor.app.RavenEditorMain"/>
+            </manifest>
+        </jar>
+        <antcall target="-copy-app-jar">
+            <param name="app.jar" location="../RavenEditorApp/dist/RavenEditorApp.jar"/>
+        </antcall>
+    </target>
+        
+    <target name="build-standAlone">
+        <taskdef name="izPack" classname="com.izforge.izpack.ant.IzPackTask">
+            <classpath>
+                <path refid="javac.classpath"/>
+                <fileset dir="../../lib/IzPack/lib">
+                    <include name="*.jar"/>
+                </fileset>
+            </classpath>
+        </taskdef>
+        
+        <property name="dist.dir" location="build/apps/standAlone"/>
+        <mkdir dir="${dist.dir}"/>
+
+        <property name="install.dir" location="iz"/>
+        
+        <izPack input="${install.dir}/install.xml"
+            output="${dist.dir}/ravenStudio-install.jar"
+            installerType="standard"
+            basedir="${install.dir}"/>
+        
         
     </target>
 

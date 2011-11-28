@@ -39,6 +39,7 @@ abstract public class BezierCurve
 
     abstract public BezierCurve[] split(double t);
     abstract public void evaluate(double t, CyVector2d pos, CyVector2d tan);
+    abstract public BezierCurve getDerivative();
 
     abstract public double getCurvatureSquared();
 

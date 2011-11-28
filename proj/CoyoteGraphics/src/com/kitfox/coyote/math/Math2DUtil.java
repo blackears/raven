@@ -119,6 +119,25 @@ public class Math2DUtil
     }
 
     /**
+     * Points to right of line segment have negative distance.
+     */
+    public static double distPointLineSigned(double px, double py,
+            double qx, double qy, double rx, double ry)
+    {
+        //Calc eqn of line in Cartesian form
+        
+        //Get normal of line
+        double magI = 1 / Math.sqrt(rx * rx + ry * ry);
+        double nx = -ry * magI;
+        double ny = rx * magI;
+        
+        double c = -(qx * nx + qy * ny);
+        
+        //Eqn of line is a * x + b * y + c = 0, where a == nx and b == ny
+        return px * nx + py * ny + c;
+    }
+
+    /**
      * Find intersection of two line segments.  Lines are input in
      * point-ray form.  They are compared and the result array is filled with
      * scalars for the rays of the respective lines that will cause them to

@@ -135,6 +135,15 @@ public class BezierQuad extends BezierCurve
     }
 
     @Override
+    public BezierLine getDerivative()
+    {
+        return new BezierLine(2 * (ax1 - ax0),
+                2 * (ay1 - ay0),
+                2 * (ax2 - ax1),
+                2 * (ay2 - ay1));
+    }
+
+    @Override
     public double getCurvatureSquared()
     {
         return Math2DUtil.distPointLineSquared(ax1, ay1,
@@ -193,6 +202,15 @@ public class BezierQuad extends BezierCurve
     {
         out.quadTo(ax1, ay1, ax2, ay2);
     }
-
+    
+    public void clip(BezierCurve curve)
+    {
+        //Calculate fat line
+        double d1 = Math2DUtil.distPointLineSigned(ax1, ay1, ax0, ay0, ax2 - ax0, ay2 - ay0);
+        double dmin = Math.min(0, d1 / 2);
+        double dmax = Math.max(0, d1 / 2);
+        
+        
+    }
 
 }

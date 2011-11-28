@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<installation version="1.0">
+
+    <!-- 
+        The info section.
+        The meaning of the tags should be natural ...
+    -->
+    <info>
+        <appname>Raven Studio</appname>
+        <appversion>&lt;unversioned&gt;</appversion>
+        <appsubpath>RavenStudio</appsubpath>
+        <url>http://raven.java.net</url>
+        <authors>
+            <author name="Mark McKay" email="mark@kitfox.com"/>
+        </authors>
+        <javaversion>1.5</javaversion>
+        <run-priviledged/>
+    </info>
+
+    <!-- 
+        The gui preferences indication.
+        Sets the installer window to 640x480. It will not be able to change the size.
+    -->
+    <guiprefs width="640" height="480" resizable="yes"/>
+
+    <!-- 
+        The locale section.
+        Asks here to include the English and French langpacks.
+    -->
+    <locale>
+        <langpack iso3="eng"/>
+    </locale>
+
+    <!-- 
+        The resources section.
+        The ids must be these ones if you want to use the LicencePanel and/or the InfoPanel.
+    -->
+    <resources>
+        <res id="LicencePanel.licence" src="licence.txt"/>
+        <!--
+        <res id="InfoPanel.info" src="readme.txt"/>
+        -->
+        <res id="Installer.image" src="ravenCameo64.png"/>
+    </resources>
+
+    <!-- 
+        The panels section.
+        We indicate here which panels we want to use. The order will be respected.
+    -->
+    <panels>
+        <panel classname="HelloPanel"/>
+        <!--
+        <panel classname="InfoPanel"/>
+        -->
+        <panel classname="LicencePanel"/>
+        <panel classname="TargetPanel"/>
+        <panel classname="ShortcutPanel"/>
+        <!--
+        <panel classname="PacksPanel"/>
+        -->
+        <panel classname="InstallPanel"/>
+        <panel classname="FinishPanel"/>
+    </panels>
+
+    <native type="izpack" name="ShellLink.dll"/>
+
+    <!-- 
+        The packs section.
+        We specify here our packs.
+    -->
+    <packs>
+        <pack name="core" required="yes">
+            <description>The core files</description>
+            <file src="readme.txt" targetdir="$INSTALL_PATH"/>
+            <file src="licence.txt" targetdir="$INSTALL_PATH"/>
+            <file src="ravenStudio.bat" targetdir="$INSTALL_PATH/bin"/>
+
+            <fileset dir="../build/apps/bin" targetdir="$INSTALL_PATH/lib/raven">
+                <include name="**/*.jar"/>
+            </fileset>
+            <fileset dir="../../../lib/jmf" targetdir="$INSTALL_PATH/lib/jmf">
+                <include name="**/*"/>
+            </fileset>
+            <fileset dir="../../../lib/jogamp" targetdir="$INSTALL_PATH/lib/jogamp">
+                <include name="**/*"/>
+            </fileset>
+            <fileset dir="../../../lib/jpen" targetdir="$INSTALL_PATH/lib/jpen">
+                <include name="**/*"/>
+            </fileset>
+            
+            <!--
+            <parsable targetfile="$INSTALL_PATH/script.bat"/>
+            -->
+            <!-- The file will be parsed -->
+        </pack>
+        <!--
+        <pack name="win32" required="yes">
+            <os family="windows" arch="x86"/>
+            <description>Files for Win32</description>
+        </pack>
+        -->
+        
+        <!--
+        <pack name="Docs" required="no">
+            <description>The documentation</description>
+            <file src="doc" targetdir="$INSTALL_PATH"/>
+        </pack>
+        <pack name="Sources" required="no">
+            <description>The sources</description>
+            <file src="src" targetdir="$INSTALL_PATH"/>
+        </pack>
+        -->
+    </packs>
+
+    <shortcuts>
+        <skipIfNotSupported/>
+        <programGroup defaultName="Raven\Raven Studio"
+            location="applications"/>
+        <shortcut
+            name="Start Raven Studio"
+            target="$INSTALL_PATH\bin\ravenStudio.bat"
+            commandLine=""
+            workingDirectory="$USER_HOME"
+            description="Raven Studio - for creating and animating images"
+            iconFile="../art/ravenCameo64.ico"
+            iconIndex="0"
+            initialState="normal"
+            programGroup="yes"
+            desktop="yes"
+            applications="no"
+            startMenu="no"
+            startup="no">
+                
+            <createForPack name="core"/>
+        </shortcut>
+    </shortcuts>
+
+</installation>

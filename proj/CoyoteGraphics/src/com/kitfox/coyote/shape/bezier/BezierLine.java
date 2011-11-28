@@ -122,6 +122,12 @@ public class BezierLine extends BezierCurve
     }
 
     @Override
+    public BezierPoint getDerivative()
+    {
+        return new BezierPoint(ax1 - ax0, ay1 - ay0);
+    }
+
+    @Override
     public double getCurvatureSquared()
     {
         return 0;

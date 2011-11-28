@@ -157,6 +157,17 @@ public class BezierCubic extends BezierCurve
     }
 
     @Override
+    public BezierQuad getDerivative()
+    {
+        return new BezierQuad(3 * (ax1 - ax0),
+                3 * (ay1 - ay0),
+                3 * (ax2 - ax1),
+                3 * (ay2 - ay1),
+                3 * (ax3 - ax2),
+                3 * (ay3 - ay2));
+    }
+
+    @Override
     public void evaluate(double t, CyVector2d pos, CyVector2d tan)
     {
         double bx0 = ax0 + t * (ax1 - ax0);
@@ -282,6 +293,27 @@ public class BezierCubic extends BezierCurve
     public void append(PathConsumer out)
     {
         out.cubicTo(ax1, ay1, ax2, ay2, ax3, ay3);
+    }
+
+    public void clip(BezierCurve curve)
+    {
+        //Calculate fat line
+        double d1 = Math2DUtil.distPointLineSigned(ax1, ay1, ax0, ay0, ax3 - ax0, ay3 - ay0);
+        double d2 = Math2DUtil.distPointLineSigned(ax2, ay2, ax0, ay0, ax3 - ax0, ay3 - ay0);
+
+        double dmin, dmax;
+        if (d1 * d2 > 0)
+        {
+            dmin = Math.min(0, Math.min(d1, d2)) * 3 / 4;
+            dmax = Math.max(0, Math.max(d1, d2)) * 3 / 4;
+        }
+        else
+        {
+            dmin = Math.min(0, Math.min(d1, d2)) * 4 / 9;
+            dmax = Math.max(0, Math.max(d1, d2)) * 4 / 9;
+        }
+
+        
     }
 
 

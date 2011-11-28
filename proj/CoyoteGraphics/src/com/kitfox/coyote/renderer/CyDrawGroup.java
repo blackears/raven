@@ -16,7 +16,6 @@
 
 package com.kitfox.coyote.renderer;
 
-import com.kitfox.coyote.renderer.jogl.GLWrapperJOGL;
 import java.util.ArrayList;
 
 /**
