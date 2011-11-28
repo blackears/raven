@@ -31,12 +31,38 @@
 
     <target name="-init-web" depends="-init">
         <mkdir dir="build"/>
+
+        <taskdef name="fmpp" classname="fmpp.tools.AntTask">
+            <classpath>
+                <fileset dir="../../lib/fmpp/lib">
+                    <include name="*.jar"/>
+                </fileset>
+            </classpath>
+        </taskdef>
+
+        <fmpp sourceRoot="web" outputRoot="build">
+            <include name="**/*.html"/>
+        </fmpp>
+        <!--
+        <taskdef name="freemarker" classname="freemarker.ext.ant.FreemarkerXmlTask">
+            <classpath>
+                <pathelement location="../../lib/freemarker/freemarker.jar" />
+            </classpath>
+        </taskdef>
+        <mkdir dir="html"/>
         
+        <freemarker basedir="xml" destdir="html" includes="**/*.xml" template="xml2html.ftl"/>
+        -->
+
         <copy todir="build" force="true">
             <fileset dir="web">
                 <include name="**"/>
+                <exclude name="**/*.html"/>
+                <exclude name="**/*.shtml"/>
             </fileset>
         </copy>
+<!--
+        -->
     </target>
     
     <target name="-gen-key" depends="-init" unless="key.present">
