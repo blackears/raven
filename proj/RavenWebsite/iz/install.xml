@@ -14,7 +14,7 @@
             <author name="Mark McKay" email="mark@kitfox.com"/>
         </authors>
         <javaversion>1.5</javaversion>
-        <run-priviledged/>
+        <run-privileged uninstaller="yes"/>
     </info>
 
     <!-- 
