@@ -14,6 +14,7 @@
             <author name="Mark McKay" email="mark@kitfox.com"/>
         </authors>
         <javaversion>1.5</javaversion>
+        <uninstaller>yes</uninstaller>
         <run-privileged uninstaller="yes"/>
     </info>
 
@@ -54,12 +55,13 @@
         -->
         <panel classname="LicencePanel"/>
         <panel classname="TargetPanel"/>
-        <panel classname="ShortcutPanel"/>
         <!--
         <panel classname="PacksPanel"/>
         -->
         <panel classname="InstallPanel"/>
-        <panel classname="FinishPanel"/>
+        <panel classname="ShortcutPanel"/>
+        <!--<panel classname="FinishPanel"/>-->
+        <panel classname="SimpleFinishPanel"/>
     </panels>
 
     <native type="izpack" name="ShellLink.dll"/>
@@ -74,6 +76,7 @@
             <file src="readme.txt" targetdir="$INSTALL_PATH"/>
             <file src="licence.txt" targetdir="$INSTALL_PATH"/>
             <file src="ravenStudio.bat" targetdir="$INSTALL_PATH/bin"/>
+            <file src="../art/ravenCameo64.ico" targetdir="$INSTALL_PATH"/>
 
             <fileset dir="../build/apps/bin" targetdir="$INSTALL_PATH/lib/raven">
                 <include name="**/*.jar"/>
@@ -114,24 +117,40 @@
 
     <shortcuts>
         <skipIfNotSupported/>
-        <programGroup defaultName="Raven\Raven Studio"
+        <programGroup defaultName="Raven Studio"
             location="applications"/>
+            
         <shortcut
-            name="Start Raven Studio"
-            target="$INSTALL_PATH\bin\ravenStudio.bat"
-            commandLine=""
-            workingDirectory="$USER_HOME"
-            description="Raven Studio - for creating and animating images"
-            iconFile="../art/ravenCameo64.ico"
-            iconIndex="0"
-            initialState="normal"
+            name="Raven Studio"
             programGroup="yes"
             desktop="yes"
             applications="no"
             startMenu="no"
-            startup="no">
-                
+            startup="no"
+            target="$INSTALL_PATH\bin\ravenStudio.bat"
+            commandLine=""
+            description="Raven Studio - create and animate!"
+            iconFile="$INSTALL_PATH\ravenCameo64.ico"
+            iconIndex="0"
+            initialState="noShow"
+            >
+<!--                
+            workingDirectory="$USER_HOME"
             <createForPack name="core"/>
+            -->
+        </shortcut>
+        
+        <shortcut
+            name="Uninstaller"
+            programGroup="yes"
+            desktop="no"
+            applications="no"
+            startMenu="no"
+            startup="no"
+            target="$INSTALL_PATH\Uninstaller\uninstaller.jar"
+            commandLine=""
+            description="Raven Studio uninstaller"
+            >
         </shortcut>
     </shortcuts>
 
