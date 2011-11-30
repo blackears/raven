@@ -29,6 +29,7 @@ import java.awt.Rectangle;
  *
  * @author kitfox
  */
+@Deprecated
 public class PathCurveEditor extends PropertyWrapperEditor<PathCurve>
 {
     public PathCurveEditor(PropertyWrapper wrapper)

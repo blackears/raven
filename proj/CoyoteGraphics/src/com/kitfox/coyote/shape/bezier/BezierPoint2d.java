@@ -23,49 +23,45 @@ import com.kitfox.coyote.shape.PathConsumer;
  *
  * @author kitfox
  */
-public class BezierLine extends BezierCurve
+public class BezierPoint2d extends BezierCurve2d
 {
     final double ax0;
     final double ay0;
-    final double ax1;
-    final double ay1;
 
-    public BezierLine(double ax0, double ay0, double ax1, double ay1)
+    public BezierPoint2d(double ax0, double ay0)
     {
         this.ax0 = ax0;
         this.ay0 = ay0;
-        this.ax1 = ax1;
-        this.ay1 = ay1;
     }
 
     @Override
-    public BezierLine reverse()
+    public BezierPoint2d reverse()
     {
-        return new BezierLine(ax1, ay1, ax0, ay0);
+        return new BezierPoint2d(ax0, ay0);
     }
 
     @Override
     public double getTanInX()
     {
-        return ax1 - ax0;
+        return 0;
     }
 
     @Override
     public double getTanInY()
     {
-        return ay1 - ay0;
+        return 0;
     }
 
     @Override
     public double getTanOutX()
     {
-        return ax1 - ax0;
+        return 0;
     }
 
     @Override
     public double getTanOutY()
     {
-        return ay1 - ay0;
+        return 0;
     }
 
     @Override
@@ -83,48 +79,66 @@ public class BezierLine extends BezierCurve
     @Override
     public double getEndX()
     {
-        return ax1;
+        return ax0;
     }
 
     @Override
     public double getEndY()
     {
-        return ay1;
+        return ay0;
+    }
+    
+    @Override
+    public double getMinX()
+    {
+        return ax0;
+    }
+    
+    @Override
+    public double getMinY()
+    {
+        return ay0;
+    }
+    
+    @Override
+    public double getMaxX()
+    {
+        return ax0;
+    }
+    
+    @Override
+    public double getMaxY()
+    {
+        return ay0;
     }
 
     @Override
-    public BezierLine[] split(double t)
+    public BezierPoint2d[] split(double t)
     {
-        double bx0 = ax0 + t * (ax1 - ax0);
-        double by0 = ay0 + t * (ay1 - ay0);
-
-        return new BezierLine[]{
-            new BezierLine(ax0, ay0, bx0, by0),
-            new BezierLine(bx0, by0, ax1, ay1)
+        return new BezierPoint2d[]{
+            new BezierPoint2d(ax0, ay0),
+            new BezierPoint2d(ax0, ay0)
         };
     }
 
     @Override
     public void evaluate(double t, CyVector2d pos, CyVector2d tan)
     {
-        double bx0 = ax0 + t * (ax1 - ax0);
-        double by0 = ay0 + t * (ay1 - ay0);
-
         if (pos != null)
         {
-            pos.set(bx0, by0);
+            pos.set(ax0, ay0);
         }
 
         if (tan != null)
         {
-            tan.set(ax1 - ax0, ay1 - ay0);
+            tan.set(0, 0);
         }
     }
 
     @Override
-    public BezierPoint getDerivative()
+    public BezierPoint2d getDerivative()
     {
-        return new BezierPoint(ax1 - ax0, ay1 - ay0);
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -134,21 +148,15 @@ public class BezierLine extends BezierCurve
     }
 
     @Override
-    public BezierLine offset(double width)
+    public BezierPoint2d offset(double width)
     {
-        CyVector2d v = new CyVector2d(ax1 - ax0, ay1 - ay0);
-        v.normalize();
-        v.rotCCW90();
-        v.scale(width);
-
-        return new BezierLine(ax0 + v.x, ay0 + v.y,
-                ax1 + v.x, ay1 + v.y);
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void append(PathConsumer out)
     {
-        out.lineTo(ax1, ay1);
+        throw new UnsupportedOperationException();
     }
 
 

@@ -23,9 +23,9 @@ import com.kitfox.coyote.shape.PathConsumer;
  *
  * @author kitfox
  */
-abstract public class BezierCurve
+abstract public class BezierCurve2d
 {
-    abstract public BezierCurve reverse();
+    abstract public BezierCurve2d reverse();
 
     abstract public double getTanInX();
     abstract public double getTanInY();
@@ -36,14 +36,46 @@ abstract public class BezierCurve
     abstract public double getStartY();
     abstract public double getEndX();
     abstract public double getEndY();
+    
+    //Bounding box of hull
+    abstract public double getMinX();
+    abstract public double getMinY();
+    abstract public double getMaxX();
+    abstract public double getMaxY();
+    
+    public boolean boundingBoxIntersects(BezierCurve2d curve)
+    {
+        return curve.getMaxX() >= getMinX()
+                && curve.getMinX() <= getMaxX()
+                && curve.getMaxY() >= getMinY()
+                && curve.getMinY() <= getMaxY();
+    }
 
-    abstract public BezierCurve[] split(double t);
+    public boolean boundingBoxContains(BezierCurve2i curve)
+    {
+        return curve.getMinX() >= getMinX()
+                && curve.getMaxX() <= getMaxX()
+                && curve.getMinY() >= getMinY()
+                && curve.getMaxY() <= getMaxY();
+    }
+
+    public double getBoundingBoxWidth()
+    {
+        return getMaxX() - getMinX();
+    }
+
+    public double getBoundingBoxHeight()
+    {
+        return getMaxY() - getMinY();
+    }
+
+    abstract public BezierCurve2d[] split(double t);
     abstract public void evaluate(double t, CyVector2d pos, CyVector2d tan);
-    abstract public BezierCurve getDerivative();
+    abstract public BezierCurve2d getDerivative();
 
     abstract public double getCurvatureSquared();
 
-    abstract public BezierCurve offset(double width);
+    abstract public BezierCurve2d offset(double width);
 
     abstract public void append(PathConsumer out);
 }

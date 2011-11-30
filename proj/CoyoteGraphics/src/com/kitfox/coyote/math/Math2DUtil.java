@@ -262,4 +262,9 @@ public class Math2DUtil
     {
         return v0x * v1y - v0y * v1x;
     }
+
+    public static int cross(int v0x, int v0y, int v1x, int v1y)
+    {
+        return v0x * v1y - v0y * v1x;
+    }
 }

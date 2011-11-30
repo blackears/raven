@@ -46,6 +46,7 @@ import java.util.Iterator;
  *
  * @author kitfox
  */
+@Deprecated
 abstract public class BezierNetwork
 {
     final double flatnessSquared;
@@ -129,144 +130,6 @@ abstract public class BezierNetwork
 
         return keySet;
     }
-
-//    abstract public ArrayList<BezierEdge> getEdgesSorted();
-//
-//    public  ArrayList<BezierVertex> getVerticesSorted()
-//    {
-//        ArrayList<BezierVertex> list = new ArrayList<BezierVertex>();
-//
-//        ArrayList<BezierEdge> edges = getEdgesSorted();
-//        for (BezierEdge edge: edges)
-//        {
-//            if (!list.contains(edge.start))
-//            {
-//                list.add(edge.start);
-//            }
-//            if (!list.contains(edge.end))
-//            {
-//                list.add(edge.end);
-//            }
-//        }
-//        return list;
-//    }
-//
-//    public ArrayList<BezierFace> getFacesSorted()
-//    {
-//        ArrayList<BezierFace> list = new ArrayList<BezierFace>();
-//        list.add(faceOutside);
-//
-//        ArrayList<BezierEdge> edges = getEdgesSorted();
-//        for (BezierEdge edge: edges)
-//        {
-//            if (!list.contains(edge.faceLeft))
-//            {
-//                list.add(edge.faceLeft);
-//            }
-//            if (!list.contains(edge.faceRight))
-//            {
-//                list.add(edge.faceRight);
-//            }
-//        }
-//        return list;
-//    }
-//
-//    public ArrayList<BezierFaceVertex> getFacesVerticesSorted()
-//    {
-//        ArrayList<BezierFaceVertex> list = new ArrayList<BezierFaceVertex>();
-//
-//        ArrayList<BezierFace> faces = getFacesSorted();
-//        ArrayList<BezierVertex> vertices = getVerticesSorted();
-//
-//        for (BezierFace face: faces)
-//        {
-//            for (BezierVertex vtx: vertices)
-//            {
-//                BezierFaceVertex fv = face.faceVertexMap.get(vtx);
-//                if (fv == null)
-//                {
-//                    continue;
-//                }
-//                list.add(fv);
-//            }
-//        }
-//
-//        return list;
-//    }
-//
-//    public <T extends PlaneDataProvider> ArrayList<T> buildDataPlaneVertex(Class<T> key)
-//    {
-//        ArrayList list = new ArrayList();
-//        ArrayList<BezierVertex> vertices = getVerticesSorted();
-//
-//        for (BezierVertex vtx: vertices)
-//        {
-//            list.add(vtx.getData(key));
-//        }
-//
-//        return list;
-//    }
-//
-//    public <T extends PlaneDataProvider> ArrayList<T> buildDataPlaneEdge(Class<T> key)
-//    {
-//        ArrayList list = new ArrayList();
-//        ArrayList<BezierEdge> edges = getEdgesSorted();
-//
-//        for (BezierEdge edge: edges)
-//        {
-//            list.add(edge.getData(key));
-//        }
-//
-//        return list;
-//    }
-//
-//    public <T extends PlaneDataProvider> ArrayList<T> buildDataPlaneFace(Class<T> key)
-//    {
-//        ArrayList list = new ArrayList();
-//        ArrayList<BezierFace> faces = getFacesSorted();
-//
-//        for (BezierFace face: faces)
-//        {
-//            list.add(face.getData(key));
-//        }
-//
-//        return list;
-//    }
-//
-//    public <T extends PlaneDataProvider> ArrayList<T> buildDataPlaneFaceVertex(Class<T> key)
-//    {
-//        ArrayList list = new ArrayList();
-//        ArrayList<BezierFaceVertex> fvs = getFacesVerticesSorted();
-//
-//        for (BezierFaceVertex fv: fvs)
-//        {
-//            list.add(fv.getData(key));
-//        }
-//
-//        return list;
-//    }
-
-    /**
-     * Exports bezier data as a curve.  Both meshes an paths will return
-     * data in the form of a PathCurve, but these two systems will
-     * interpret the data differently.
-     *
-     * There is a relationship between the data returned in the path curve
-     * and the lists returned by the buildDataPlane* methods.  An ordering
-     * is imposed as follows:
-     *
-     * Vertices are indexed as they are encountered
-     * Edges are indexed as they are encountered.
-     * Faces are indexed as they are encountered as edges are
-     * traveresed in order, and looking first to the left and then right of
-     * the edge.
-     * FaceVertices are indexed as encountered as faces are traversed and
-     * starting with the lowest indexed vertex associated with the face,
-     * and then as vertices they are encountered in indexed order.
-     *
-     * @return
-     */
-//    abstract public PathCurve buildPathCurve();
 
     protected MeshPointRecord getClosestPoint(int px, int py)
     {
@@ -641,9 +504,6 @@ abstract public class BezierNetwork
 
     abstract protected void applyManip(BezierNetworkManipulator manip);
 
-//    abstract public BezierEdge getSmoothingEdgeOut(BezierVertex vtx);
-//    abstract public BezierEdge getSmoothingEdgeIn(BezierVertex vtx);
-
     public void applyVertexSmoothing(VertexSmooth smooth, BezierVertex vtx)
     {
         if (vtx.edgeIn.size() != 1 || vtx.edgeOut.size() != 1)
@@ -742,20 +602,6 @@ abstract public class BezierNetwork
         }
     }
 
-    /**
-     * Some vertices may be positionally linked.  This will return a list of all
-     * other vertices that are forced to match this one's potition.
-     *
-     * @param pickVtx
-     * @return
-     */
-//    public ArrayList<BezierVertex> getLinkedVertices(BezierVertex pickVtx)
-//    {
-//        return new ArrayList<BezierVertex>();
-//    }
-
-//    abstract public ArrayList<BezierEdge> getAllEdges();
-
     public ArrayList<BezierVertex> getVerticesByUid(ArrayList<Integer> vertUids)
     {
         ArrayList<BezierVertex> list = getVertices();
@@ -805,24 +651,6 @@ abstract public class BezierNetwork
 
     public static interface NetworkUpdateCallback
     {
-        /**
-         * The edge being replaced
-         * @param edge
-         */
-//        public void startReplaceExistingEdge(BezierEdge edge);
-        /**
-         * One or more segments that are replacing the replaced edge.  Called
-         * after startReplaceExistingEdge()
-         * @param tOffset
-         * @param tSpan
-         * @param newEdge
-         */
-//        public void replaceExistingEdge(double tOffset, double tSpan, BezierEdge edge);
-        /**
-         * Finished updating the edge started with startReplaceExistingEdge()
-         */
-//        public void endReplaceExistingEdge();
-
         /**
          * New edge segment added as part of the
          * @param tOffset

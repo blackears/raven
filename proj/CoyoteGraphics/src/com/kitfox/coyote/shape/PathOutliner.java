@@ -17,10 +17,10 @@
 package com.kitfox.coyote.shape;
 
 import com.kitfox.coyote.math.CyVector2d;
-import com.kitfox.coyote.shape.bezier.BezierCubic;
-import com.kitfox.coyote.shape.bezier.BezierCurve;
-import com.kitfox.coyote.shape.bezier.BezierLine;
-import com.kitfox.coyote.shape.bezier.BezierQuad;
+import com.kitfox.coyote.shape.bezier.BezierCubic2d;
+import com.kitfox.coyote.shape.bezier.BezierCurve2d;
+import com.kitfox.coyote.shape.bezier.BezierLine2d;
+import com.kitfox.coyote.shape.bezier.BezierQuad2d;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,8 +48,7 @@ public class PathOutliner extends PathConsumer
     double sx;
     double sy;
 
-    ArrayList<BezierCurve> pathCore = new ArrayList<BezierCurve>();
-
+    ArrayList<BezierCurve2d> pathCore = new ArrayList<BezierCurve2d>();
 
     public PathOutliner(PathConsumer out, double radius, CyStrokeCap cap, CyStrokeJoin join, double miterLimit)
     {
@@ -81,7 +80,7 @@ public class PathOutliner extends PathConsumer
     @Override
     public void lineTo(double x0, double y0)
     {
-        pathCore.add(new BezierLine(mx, my, x0, y0));
+        pathCore.add(new BezierLine2d(mx, my, x0, y0));
 
         mx = x0;
         my = y0;
@@ -90,7 +89,7 @@ public class PathOutliner extends PathConsumer
     @Override
     public void quadTo(double x0, double y0, double x1, double y1)
     {
-        pathCore.add(new BezierQuad(mx, my, x0, y0, x1, y1));
+        pathCore.add(new BezierQuad2d(mx, my, x0, y0, x1, y1));
 
         mx = x1;
         my = y1;
@@ -99,7 +98,7 @@ public class PathOutliner extends PathConsumer
     @Override
     public void cubicTo(double x0, double y0, double x1, double y1, double x2, double y2)
     {
-        pathCore.add(new BezierCubic(mx, my, x0, y0, x1, y1, x2, y2));
+        pathCore.add(new BezierCubic2d(mx, my, x0, y0, x1, y1, x2, y2));
 
         mx = x2;
         my = y2;
@@ -129,27 +128,27 @@ public class PathOutliner extends PathConsumer
             return;
         }
 
-        ArrayList<BezierCurve> pathLeft = new ArrayList<BezierCurve>();
-        ArrayList<BezierCurve> pathRight = new ArrayList<BezierCurve>();
+        ArrayList<BezierCurve2d> pathLeft = new ArrayList<BezierCurve2d>();
+        ArrayList<BezierCurve2d> pathRight = new ArrayList<BezierCurve2d>();
 
         for (int i = 0; i < pathCore.size(); ++i)
         {
-            BezierCurve curve = pathCore.get(i);
+            BezierCurve2d curve = pathCore.get(i);
             addOffsetWidth(curve, true, pathLeft);
         }
 
         for (int i = pathCore.size() - 1; i >= 0; --i)
         {
-            BezierCurve curve = pathCore.get(i).reverse();
+            BezierCurve2d curve = pathCore.get(i).reverse();
             addOffsetWidth(curve, true, pathRight);
         }
 
         //Prepare paths for export
-        BezierCurve cl0 = pathLeft.get(0);
-        BezierCurve cl1 = pathLeft.get(pathLeft.size() - 1);
+        BezierCurve2d cl0 = pathLeft.get(0);
+        BezierCurve2d cl1 = pathLeft.get(pathLeft.size() - 1);
 
-        BezierCurve cr0 = pathRight.get(0);
-        BezierCurve cr1 = pathRight.get(pathRight.size() - 1);
+        BezierCurve2d cr0 = pathRight.get(0);
+        BezierCurve2d cr1 = pathRight.get(pathRight.size() - 1);
 
         if (close)
         {
@@ -187,7 +186,7 @@ public class PathOutliner extends PathConsumer
     CyVector2d pOff = new CyVector2d();
     private static final double PARALLEL_EPSILON = .01;
 
-    private boolean isParallelEnough(double t, BezierCurve base, BezierCurve off)
+    private boolean isParallelEnough(double t, BezierCurve2d base, BezierCurve2d off)
     {
         base.evaluate(t, pBase, tBase);
         off.evaluate(t, pOff, null);
@@ -200,17 +199,17 @@ public class PathOutliner extends PathConsumer
         return pBase.distanceSquared(pOff) < PARALLEL_EPSILON * PARALLEL_EPSILON;
     }
 
-    private void addOffsetWidth(BezierCurve base, boolean join, ArrayList<BezierCurve> list)
+    private void addOffsetWidth(BezierCurve2d base, boolean join, ArrayList<BezierCurve2d> list)
     {
-        BezierCurve off = base.offset(radius);
+        BezierCurve2d off = base.offset(radius);
 
-        if (base instanceof BezierLine ||
+        if (base instanceof BezierLine2d ||
                 (isParallelEnough(.25, base, off)
                 && isParallelEnough(.75, base, off)))
         {
             if (join && !list.isEmpty())
             {
-                BezierCurve prev = list.get(list.size() - 1);
+                BezierCurve2d prev = list.get(list.size() - 1);
                 addJoin(
                         new CyVector2d(prev.getEndX(), prev.getEndY()),
                         new CyVector2d(off.getStartX(), off.getStartY()),
@@ -221,12 +220,12 @@ public class PathOutliner extends PathConsumer
             return;
         }
 
-        BezierCurve[] curves = base.split(.5);
+        BezierCurve2d[] curves = base.split(.5);
         addOffsetWidth(curves[0], join, list);
         addOffsetWidth(curves[1], false, list);
     }
 
-    private void addJoin(CyVector2d p0, CyVector2d p1, List<BezierCurve> list)
+    private void addJoin(CyVector2d p0, CyVector2d p1, List<BezierCurve2d> list)
     {
         if (p0.distanceSquared(p1) < PARALLEL_EPSILON * PARALLEL_EPSILON)
         {
@@ -237,13 +236,13 @@ public class PathOutliner extends PathConsumer
         switch (join)
         {
             case BEVEL:
-                list.add(new BezierLine(p0.x, p0.y, p1.x, p1.y));
+                list.add(new BezierLine2d(p0.x, p0.y, p1.x, p1.y));
                 return;
             case MITER:
             {
                 if (miterLimit <= 0)
                 {
-                    list.add(new BezierLine(p0.x, p0.y, p1.x, p1.y));
+                    list.add(new BezierLine2d(p0.x, p0.y, p1.x, p1.y));
                     return;
                 }
 
@@ -273,8 +272,8 @@ public class PathOutliner extends PathConsumer
                 if (miterLimit >= miterDist)
                 {
                     //Not clamping miter
-                    list.add(new BezierLine(p0.x, p0.y, miter.x, miter.y));
-                    list.add(new BezierLine(miter.x, miter.y, p1.x, p1.y));
+                    list.add(new BezierLine2d(p0.x, p0.y, miter.x, miter.y));
+                    list.add(new BezierLine2d(miter.x, miter.y, p1.x, p1.y));
                     return;
                 }
 
@@ -291,9 +290,9 @@ public class PathOutliner extends PathConsumer
                 miterOff1.scale(ratio);
                 miterOff1.add(p1);
 
-                list.add(new BezierLine(p0.x, p0.y, miterOff0.x, miterOff0.y));
-                list.add(new BezierLine(miterOff0.x, miterOff0.y, miterOff1.x, miterOff1.y));
-                list.add(new BezierLine(miterOff1.x, miterOff1.y, p1.x, p1.y));
+                list.add(new BezierLine2d(p0.x, p0.y, miterOff0.x, miterOff0.y));
+                list.add(new BezierLine2d(miterOff0.x, miterOff0.y, miterOff1.x, miterOff1.y));
+                list.add(new BezierLine2d(miterOff1.x, miterOff1.y, p1.x, p1.y));
                 return;
             }
             case ROUND:
@@ -339,7 +338,7 @@ public class PathOutliner extends PathConsumer
                     tan.rotCCW90();
                     
                     final double ratio = 4 / 3.0;
-                    list.add(new BezierCubic(p0.x, p0.y,
+                    list.add(new BezierCubic2d(p0.x, p0.y,
                             p0.x + tan.x * ratio, p0.y + tan.y * ratio,
                             p1.x + tan.x * ratio, p1.y + tan.y * ratio,
                             p1.x, p1.y));
@@ -347,14 +346,14 @@ public class PathOutliner extends PathConsumer
                 }
 
                 //Tangents form a basis.  Solve for curve of best fit
-                BezierCubic curve = BezierCubic.create(p0, pm, p1, t0, t1);
+                BezierCubic2d curve = BezierCubic2d.create(p0, pm, p1, t0, t1);
                 list.add(curve);
                 return;
             }
         }
     }
 
-    private void addCap(CyVector2d p0, CyVector2d p1, List<BezierCurve> list)
+    private void addCap(CyVector2d p0, CyVector2d p1, List<BezierCurve2d> list)
     {
         if (p0.distanceSquared(p1) < PARALLEL_EPSILON * PARALLEL_EPSILON)
         {
@@ -365,7 +364,7 @@ public class PathOutliner extends PathConsumer
         switch (cap)
         {
             case BUTT:
-                list.add(new BezierLine(p0.x, p0.y, p1.x, p1.y));
+                list.add(new BezierLine2d(p0.x, p0.y, p1.x, p1.y));
                 return;
             case SQUARE:
             {
@@ -375,12 +374,12 @@ public class PathOutliner extends PathConsumer
                 d.scale(.5);
                 d.rotCCW90();
 
-                list.add(new BezierLine(p0.x, p0.y,
+                list.add(new BezierLine2d(p0.x, p0.y,
                         p0.x + d.x, p0.y + d.y));
-                list.add(new BezierLine(
+                list.add(new BezierLine2d(
                         p0.x + d.x, p0.y + d.y,
                         p1.x + d.x, p1.y + d.y));
-                list.add(new BezierLine(
+                list.add(new BezierLine2d(
                         p1.x + d.x, p1.y + d.y,
                         p1.x, p1.y));
                 return;
@@ -396,7 +395,7 @@ public class PathOutliner extends PathConsumer
                 tan.rotCCW90();
 
                 final double ratio = 4 / 3.0;
-                list.add(new BezierCubic(p0.x, p0.y,
+                list.add(new BezierCubic2d(p0.x, p0.y,
                         p0.x + tan.x * ratio, p0.y + tan.y * ratio,
                         p1.x + tan.x * ratio, p1.y + tan.y * ratio,
                         p1.x, p1.y));
@@ -405,15 +404,15 @@ public class PathOutliner extends PathConsumer
         }
     }
 
-    private void exportLoop(ArrayList<BezierCurve> path)
+    private void exportLoop(ArrayList<BezierCurve2d> path)
     {
-        BezierCurve first = path.get(0);
+        BezierCurve2d first = path.get(0);
 
         double px = first.getStartX();
         double py = first.getStartY();
         out.beginSubpath(px, py);
 
-        for (BezierCurve curve: path)
+        for (BezierCurve2d curve: path)
         {
             curve.append(out);
         }

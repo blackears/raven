@@ -23,77 +23,101 @@ import com.kitfox.coyote.shape.PathConsumer;
  *
  * @author kitfox
  */
-public class BezierPoint extends BezierCurve
+public class BezierPoint2i extends BezierCurve2i
 {
-    final double ax0;
-    final double ay0;
+    final int ax0;
+    final int ay0;
 
-    public BezierPoint(double ax0, double ay0)
+    public BezierPoint2i(int ax0, int ay0)
     {
         this.ax0 = ax0;
         this.ay0 = ay0;
     }
 
     @Override
-    public BezierPoint reverse()
+    public BezierPoint2i reverse()
     {
-        return new BezierPoint(ax0, ay0);
+        return new BezierPoint2i(ax0, ay0);
     }
 
     @Override
-    public double getTanInX()
-    {
-        return 0;
-    }
-
-    @Override
-    public double getTanInY()
+    public int getTanInX()
     {
         return 0;
     }
 
     @Override
-    public double getTanOutX()
+    public int getTanInY()
     {
         return 0;
     }
 
     @Override
-    public double getTanOutY()
+    public int getTanOutX()
     {
         return 0;
     }
 
     @Override
-    public double getStartX()
+    public int getTanOutY()
+    {
+        return 0;
+    }
+
+    @Override
+    public int getStartX()
     {
         return ax0;
     }
 
     @Override
-    public double getStartY()
+    public int getStartY()
     {
         return ay0;
     }
 
     @Override
-    public double getEndX()
+    public int getEndX()
     {
         return ax0;
     }
 
     @Override
-    public double getEndY()
+    public int getEndY()
+    {
+        return ay0;
+    }
+    
+    @Override
+    public int getMinX()
+    {
+        return ax0;
+    }
+    
+    @Override
+    public int getMinY()
+    {
+        return ay0;
+    }
+    
+    @Override
+    public int getMaxX()
+    {
+        return ax0;
+    }
+    
+    @Override
+    public int getMaxY()
     {
         return ay0;
     }
 
     @Override
-    public BezierPoint[] split(double t)
+    public BezierPoint2i[] split(double t)
     {
-        return new BezierPoint[]{
-            new BezierPoint(ax0, ay0),
-            new BezierPoint(ax0, ay0)
+        return new BezierPoint2i[]{
+            new BezierPoint2i(ax0, ay0),
+            new BezierPoint2i(ax0, ay0)
         };
     }
 
@@ -112,9 +136,15 @@ public class BezierPoint extends BezierCurve
     }
 
     @Override
-    public BezierPoint getDerivative()
+    public BezierPoint2i getDerivative()
     {
         throw new UnsupportedOperationException();
+    }
+    
+    @Override
+    public boolean isColinear()
+    {
+        return true;
     }
 
     @Override
@@ -124,7 +154,13 @@ public class BezierPoint extends BezierCurve
     }
 
     @Override
-    public BezierPoint offset(double width)
+    public boolean convexHullSelfIsect()
+    {
+        return false;
+    }
+
+    @Override
+    public BezierPoint2i offset(double width)
     {
         throw new UnsupportedOperationException();
     }
@@ -133,6 +169,38 @@ public class BezierPoint extends BezierCurve
     public void append(PathConsumer out)
     {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == null)
+        {
+            return false;
+        }
+        if (getClass() != obj.getClass())
+        {
+            return false;
+        }
+        final BezierPoint2i other = (BezierPoint2i) obj;
+        if (this.ax0 != other.ax0)
+        {
+            return false;
+        }
+        if (this.ay0 != other.ay0)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = 31 * hash + this.ax0;
+        hash = 31 * hash + this.ay0;
+        return hash;
     }
 
 

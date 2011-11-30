@@ -25,7 +25,7 @@ import com.kitfox.coyote.shape.PathConsumer;
  *
  * @author kitfox
  */
-public class BezierCubic extends BezierCurve
+public class BezierCubic2d extends BezierCurve2d
 {
     final double ax0;
     final double ay0;
@@ -36,7 +36,7 @@ public class BezierCubic extends BezierCurve
     final double ax3;
     final double ay3;
 
-    public BezierCubic(double ax0, double ay0, double ax1, double ay1, double ax2, double ay2, double ax3, double ay3)
+    public BezierCubic2d(double ax0, double ay0, double ax1, double ay1, double ax2, double ay2, double ax3, double ay3)
     {
         this.ax0 = ax0;
         this.ay0 = ay0;
@@ -49,9 +49,9 @@ public class BezierCubic extends BezierCurve
     }
 
     @Override
-    public BezierCubic reverse()
+    public BezierCubic2d reverse()
     {
-        return new BezierCubic(ax3, ay3, ax2, ay2, ax1, ay1, ax0, ay0);
+        return new BezierCubic2d(ax3, ay3, ax2, ay2, ax1, ay1, ax0, ay0);
     }
 
     @Override
@@ -133,9 +133,33 @@ public class BezierCubic extends BezierCurve
     {
         return ay3;
     }
+    
+    @Override
+    public double getMinX()
+    {
+        return Math.min(Math.min(Math.min(ax0, ax1), ax2), ax3);
+    }
+    
+    @Override
+    public double getMinY()
+    {
+        return Math.min(Math.min(Math.min(ay0, ay1), ay2), ay3);
+    }
+    
+    @Override
+    public double getMaxX()
+    {
+        return Math.max(Math.max(Math.max(ax0, ax1), ax2), ax3);
+    }
+    
+    @Override
+    public double getMaxY()
+    {
+        return Math.max(Math.max(Math.max(ay0, ay1), ay2), ay3);
+    }
 
     @Override
-    public BezierCubic[] split(double t)
+    public BezierCubic2d[] split(double t)
     {
         double bx0 = ax0 + t * (ax1 - ax0);
         double by0 = ay0 + t * (ay1 - ay0);
@@ -150,16 +174,16 @@ public class BezierCubic extends BezierCurve
         double dx0 = cx0 + t * (cx1 - cx0);
         double dy0 = cy0 + t * (cy1 - cy0);
 
-        return new BezierCubic[]{
-            new BezierCubic(ax0, ay0, bx0, by0, cx0, cy0, dx0, dy0),
-            new BezierCubic(dx0, dy0, cx1, cy1, bx2, by2, ax3, ay3)
+        return new BezierCubic2d[]{
+            new BezierCubic2d(ax0, ay0, bx0, by0, cx0, cy0, dx0, dy0),
+            new BezierCubic2d(dx0, dy0, cx1, cy1, bx2, by2, ax3, ay3)
         };
     }
 
     @Override
-    public BezierQuad getDerivative()
+    public BezierQuad2d getDerivative()
     {
-        return new BezierQuad(3 * (ax1 - ax0),
+        return new BezierQuad2d(3 * (ax1 - ax0),
                 3 * (ay1 - ay0),
                 3 * (ax2 - ax1),
                 3 * (ay2 - ay1),
@@ -206,7 +230,7 @@ public class BezierCubic extends BezierCurve
     }
 
     @Override
-    public BezierCubic offset(double width)
+    public BezierCubic2d offset(double width)
     {
         //Find points and tangents offset line will need to match
         //Initial points of offset curve displaced perpendicular
@@ -247,7 +271,7 @@ public class BezierCubic extends BezierCurve
      * @param t1 Curve tangent will be parallel to this at t = 1
      * @return
      */
-    public static BezierCubic create(
+    public static BezierCubic2d create(
             CyVector2d p0, CyVector2d pm, CyVector2d p1,
             CyVector2d t0, CyVector2d t1)
     {
@@ -282,7 +306,7 @@ public class BezierCubic extends BezierCurve
         s.scale(1 / 3.0);
         T.transform(s);
 
-        return new BezierCubic(
+        return new BezierCubic2d(
                 p0.x, p0.y,
                 p0.x + t0.x * s.x, p0.y + t0.y * s.x,
                 p1.x + t1.x * s.y, p1.y + t1.y * s.y,
@@ -295,6 +319,7 @@ public class BezierCubic extends BezierCurve
         out.cubicTo(ax1, ay1, ax2, ay2, ax3, ay3);
     }
 
+    /*
     public void clip(BezierCurve curve)
     {
         //Calculate fat line
@@ -315,6 +340,6 @@ public class BezierCubic extends BezierCurve
 
         
     }
-
+*/
 
 }

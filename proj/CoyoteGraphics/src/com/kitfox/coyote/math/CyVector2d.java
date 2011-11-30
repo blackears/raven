@@ -115,7 +115,7 @@ public class CyVector2d
         x -= v.x;
         y -= v.y;
     }
-
+    
     public void normalize()
     {
         scale(1 / length());
@@ -197,6 +197,12 @@ public class CyVector2d
     public double distance(CyVector2d v)
     {
         return Math.sqrt(distanceSquared(v));
+    }
+
+    public CyVector2d projectOnto(CyVector2d v)
+    {
+        double scalar = dot(v) / v.dot(v);
+        return new CyVector2d(v.x * scalar, v.y * scalar);
     }
 
 }

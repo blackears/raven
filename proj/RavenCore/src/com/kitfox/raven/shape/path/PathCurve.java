@@ -28,6 +28,7 @@ import java.util.Arrays;
  *
  * @author kitfox
  */
+@Deprecated
 public class PathCurve
 {
     private final PathSeg[] segments;
