@@ -6,8 +6,11 @@ package com.kitfox.coyote.shape.bezier.mesh;
 
 import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.math.Math2DUtil;
+import com.kitfox.coyote.shape.bezier.BezierCubic2i;
 import com.kitfox.coyote.shape.bezier.BezierCurve2i;
 import com.kitfox.coyote.shape.bezier.BezierLine2i;
+import com.kitfox.coyote.shape.bezier.BezierQuad2i;
+import java.util.ArrayList;
 
 /**
  * A loop is a single chain of connected vertices.  Each vertex has 
@@ -94,22 +97,39 @@ public class BezierLoop2i<VertexData, EdgeData>
         return head.getX() == tail.getX() && head.getY() == tail.getY();
     }
 
-    public void cutAgainst(BezierLoop2i loop)
+    private ArrayList<BezierEdge2i> getEdges(ArrayList<BezierEdge2i> edges)
     {
+        if (edges == null)
+        {
+            edges = new ArrayList<BezierEdge2i>();
+        }
+        
         BezierVertex2i v0 = head;
         do
         {
             BezierEdge2i e0 = v0.getEdgeOut(0);
+            edges.add(e0);
+            v0 = getNext(v0);
+        } while (v0 != head);
+        return edges;
+    }
+    
+    public void cutAgainst(BezierLoop2i loop)
+    {
+        ArrayList<BezierEdge2i> edges0 = getEdges(null);
+        
+        for (int i = 0; i < edges0.size(); ++i)
+        {
+            BezierEdge2i e0 = edges0.get(i);
             BezierCurve2i c0 = e0.asCurve();
             if (c0.isUnitBoundingBox())
             {
                 continue;
             }
             
-            BezierVertex2i v1 = loop.head;
-            do
+            ArrayList<BezierEdge2i> edges1 = loop.getEdges(null);
+            for (BezierEdge2i e1: edges1)
             {
-                BezierEdge2i e1 = v1.getEdgeOut(0);
                 BezierCurve2i c1 = e1.asCurve();
                 
                 if (c1.isUnitBoundingBox())
@@ -128,37 +148,59 @@ public class BezierLoop2i<VertexData, EdgeData>
                 }
                 
                 //Check for crossover
+                CutRecord rec = null;
                 if (c0.isColinear() && c1.isColinear())
                 {
-//                    cutLines(e0, c0.getBaseline(), e1, c1.getBaseline());
+                    rec = cutLines(
+                            e0, c0.getBaseline(), e1, c1.getBaseline());
                 }
                 else
                 {
-//                    cutCurves(e0, c0, e1, c1);
+//                    rec = cutCurves(e0, c0, e1, c1);
                 }
                 
-                v1 = getNext(v1);
-            } while (v1 != head);
-            v0 = getNext(v0);
-        } while (v0 != head);
-        //for (BezierVertex2i v0 = head; 
+                if (rec != null && rec.newSrc != null && rec.newSrc.length > 0)
+                {
+                    //We've cut the curve, replacing it with new curves.
+                    // Update current source stack of curves to reflect
+                    // new path.  Also update iteration pointers.
+                    edges0.remove(i);
+                    
+                    for (int j = 0; j < rec.newSrc.length; ++j)
+                    {
+                        edges0.add(i + j, rec.newSrc[j]);
+                    }
+                    e0 = rec.newSrc[0];
+                    c0 = e0.asCurve();
+                }
+            }
+        }
     }
 
-    /*
-    private void cutLines(BezierEdge2i e0, BezierLine2i b0, BezierEdge2i e1, BezierLine2i b1)
+    private CutRecord cutLines(
+            BezierEdge2i e0, BezierLine2i c0, BezierEdge2i e1, BezierLine2i c1)
     {
-        if (b0.equals(b1))
+        if (c0.equals(c1))
         {
-            return;
+            return null;
         }
         
         //Renaming the points of the lines:
         // Line 0 runs from a to b
         // Line 1 runs from c to d
         
-        CyVector2d ab = new CyVector2d(b0.getEndX() - b0.getStartX(), b0.getEndY() - b0.getStartY());
-        CyVector2d ac = new CyVector2d(b1.getStartX() - b0.getStartX(), b1.getStartY() - b0.getStartY());
-        CyVector2d ad = new CyVector2d(b1.getEndX() - b0.getStartX(), b1.getEndY() - b0.getStartY());
+        int ax = c0.getStartX();
+        int ay = c0.getStartY();
+        int bx = c0.getEndX();
+        int by = c0.getEndY();
+        int cx = c1.getStartX();
+        int cy = c1.getStartY();
+        int dx = c1.getEndX();
+        int dy = c1.getEndY();
+        CyVector2d ab = new CyVector2d(bx - ax, by - ay);
+        CyVector2d ac = new CyVector2d(cx - ax, cy - ay);
+        CyVector2d ad = new CyVector2d(dx - ax, dy - ay);
+        CyVector2d cd = new CyVector2d(dx - cx, dy - cy);
         
         //Project ac, ad onto ab
         double acPabScalar = ac.dot(ab) / ab.dot(ab);
@@ -168,83 +210,175 @@ public class BezierLoop2i<VertexData, EdgeData>
         
         double dist2Ac = ac.distanceSquared(acPab);
         double dist2Ad = ad.distanceSquared(adPab);
-        
-        if (b0.getStartX() == b1.getStartX() 
-                && b0.getStartY() == b1.getStartY())
+
+        if (dist2Ac <= 1 && dist2Ad <= 1)
         {
-            if (dist2Ad <= 1)
+            BezierEdge2i[] newSrc = null;
+            BezierEdge2i[] newDst = null;
+            
+            //Lines are close enough to be coincident
+            boolean sameDir = ab.dot(cd) >= 0;
+            
+            //Split at C if a, b bound c
+            boolean splitC = acPabScalar > 0 && acPabScalar < 1
+                    && !(cx == ax && cy == ay) 
+                    && !(cx == bx && cy == by);
+            
+            //Split at C if a, b bound d
+            boolean splitD = adPabScalar > 0 && adPabScalar < 1
+                    && !(dx == ax && dy == ay) 
+                    && !(dx == bx && dy == by);
+
+            //Update curve in this loop
+            if (splitC && splitD)
             {
-                //Close enough to be parallel
-                if (adPabScalar > 0 && adPabScalar < 1)
+                if (sameDir)
                 {
-                    //ad shorter than ab
-                    e0.setDegree(2);
-                    //Arbitrarily add vertex
-                    BezierVertex2i v = e0.splitAt(.5);
-                    v.setX(b1.getEndX());
-                    v.setY(b1.getEndY());
-                    return;
+                    newSrc = replaceEdge(e0, 
+                            new BezierLine2i(ax, ay, cx, cy),
+                            new BezierLine2i(cx, cy, dx, dy),
+                            new BezierLine2i(dx, dy, bx, by));
                 }
-                else if (adPabScalar > 1)
+                else
                 {
-                    //ab shorter than ad
-                    e1.setDegree(2);
-                    //Arbitrarily add vertex
-                    BezierVertex2i v = e1.splitAt(.5);
-                    v.setX(b0.getEndX());
-                    v.setY(b0.getEndY());
-                    return;                    
+                    newSrc = replaceEdge(e0, 
+                            new BezierLine2i(ax, ay, dx, dy),
+                            new BezierLine2i(dx, dy, cx, cy),
+                            new BezierLine2i(cx, cy, bx, by));
+                }
+            }
+            else if (splitC)
+            {
+                newSrc = replaceEdge(e0, 
+                        new BezierLine2i(ax, ay, cx, cy),
+                        new BezierLine2i(cx, cy, bx, by));
+            }
+            else if (splitD)
+            {
+                newSrc = replaceEdge(e0, 
+                        new BezierLine2i(ax, ay, dx, dy),
+                        new BezierLine2i(dx, dy, bx, by));
+            }
+            
+            //Update curve in other loop
+            boolean splitA = acPabScalar * adPabScalar < 0
+                    && !(ax == cx && ay == cy) 
+                    && !(ax == dx && ay == dy);
+            
+            //Split at B if c, d have values on opposite sides of 1
+            boolean splitB = (acPabScalar - 1) * (adPabScalar - 1) < 0
+                    && !(bx == cx && by == cy) 
+                    && !(bx == dx && by == dy);
+            
+            if (splitA && splitB)
+            {
+                if (sameDir)
+                {
+                    newDst = replaceEdge(e1, 
+                            new BezierLine2i(cx, cy, ax, ay),
+                            new BezierLine2i(ax, ay, bx, by),
+                            new BezierLine2i(bx, by, dx, dy));
+                }
+                else
+                {
+                    newDst = replaceEdge(e1, 
+                            new BezierLine2i(cx, cy, bx, by),
+                            new BezierLine2i(bx, by, ax, ay),
+                            new BezierLine2i(ax, ay, dx, dy));
+                }
+            }
+            else if (splitA)
+            {
+                newDst = replaceEdge(e1, 
+                        new BezierLine2i(cx, cy, ax, ay),
+                        new BezierLine2i(ax, ay, dx, dy));
+            }
+            else if (splitB)
+            {
+                newDst = replaceEdge(e1, 
+                        new BezierLine2i(cx, cy, bx, by),
+                        new BezierLine2i(bx, by, dx, dy));
+            }
+            
+            return new CutRecord(newSrc, newDst);
+        }
+        
+        //Lines are not coincident.  Solve a plain old linear system of
+        // equations
+        double[] t = Math2DUtil.lineIsectFractions(
+                ax, ay, bx - ax, by - ay, 
+                cx, cy, dx - cx, dy - cy, null);
+        
+        if (t != null && t[0] > 0 && t[0] < 1 && t[1] > 0 && t[1] < 1)
+        {
+            BezierEdge2i[] newSrc = 
+                    replaceEdge(e0, c0.split(t[0]));
+            BezierEdge2i[] newDst = 
+                replaceEdge(e1, c1.split(t[1]));
+            return new CutRecord(newSrc, newDst);
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Segment an edge into the given pieces.  Pieces must be continuous
+     * and start and end at the same points as the existing edge.
+     * 
+     * @param edge
+     * @param curves 
+     */
+    private BezierEdge2i[] replaceEdge(BezierEdge2i edge, BezierCurve2i... curves)
+    {
+        BezierVertex2i vStart = edge.getStart();
+        BezierVertex2i vEnd = edge.getEnd();
+        vStart.edgesOut.remove(edge);
+        vEnd.edgesIn.remove(edge);
+        
+        BezierEdge2i[] newEdges = new BezierEdge2i[curves.length];
+        BezierEdge2i lastEdge = null;
+        for (int i = 0; i < curves.length; ++i)
+        {
+            BezierCurve2i curve = curves[i];
+            
+            BezierVertex2i v0 = i == 0 ? vStart : lastEdge.getEnd();
+            BezierVertex2i v1 = i == curves.length - 1 ? vEnd 
+                    : new BezierVertex2i(curve.getEndX(), curve.getEndY());
+            
+            int degree = curve.getDegree();
+            BezierEdge2i curEdge = new BezierEdge2i(
+                    v0, v1, null, null, edge.getData(), 
+                    degree);
+            newEdges[i] = curEdge;
+            
+            switch (degree)
+            {
+                case 3:
+                {
+                    BezierQuad2i quad = (BezierQuad2i)curve;
+                    curEdge.setK0x(quad.getAx1());
+                    curEdge.setK0y(quad.getAy1());
+                    break;
+                }
+                case 4:
+                {
+                    BezierCubic2i quad = (BezierCubic2i)curve;
+                    curEdge.setK0x(quad.getAx1());
+                    curEdge.setK0y(quad.getAy1());
+                    curEdge.setK1x(quad.getAx2());
+                    curEdge.setK1y(quad.getAy2());
+                    break;
                 }
             }
             
-            //Lines are not coincident
-            return;
+            //Connect
+            v0.edgesOut.add(curEdge);
+            v1.edgesIn.add(curEdge);
+            lastEdge = curEdge;
         }
         
-        
-        
-        CyVector2d r0 = new CyVector2d(b0.getTanInX(), b0.getTanInY());
-        CyVector2d r1 = new CyVector2d(b1.getTanInX(), b1.getTanInY());
-        
-        CyVector2d rb00b10 = new CyVector2d(b1.getStartX() - b0.getStartX(), b1.getStartY() - b0.getStartY());
-        CyVector2d rb00b11 = new CyVector2d(b1.getEndX() - b0.getStartX(), b1.getEndY() - b0.getStartY());
-        
-        if (b0.getStartX() == b1.getStartX() && b0.getStartY() == b1.getStartY())
-        {
-            
-        }
-        
-        CyVector2d b0p0 = new CyVector2d(b0.get);
-        
-        int dx0 = b0.getTanInX();
-        int dy0 = b0.getTanInY();
-        int dx1 = b0.getTanInX();
-        int dy1 = b0.getTanInY();
-        
-        double projScalar0 = Math2DUtil.dot(dx0, dy0, dx1, dy1)
-                / Math2DUtil.dot(dx0, dy0, dx0, dy0);
-        double projScalar1 = Math2DUtil.dot(dx0, dy0, dx1, dy1)
-                / Math2DUtil.dot(dx1, dy1, dx1, dy1);
-        
-        //Find projection of line 1 onto line 0
-        double dx0p = dx0 * projScalar0;
-        double dy0p = dy0 * projScalar0;
-        
-        
-        
-        
-        double d0 = Math2DUtil.distPointLineSquared(b0.getStartX(), b0.getStartY(), 
-                b1.getStartX(), b1.getStartY(), b1.getTanInX(), b1.getTanInY());
-        double d1 = Math2DUtil.distPointLineSquared(b1.getStartX(), b1.getStartY(), 
-                b1.getStartX(), b1.getStartY(), b1.getTanInX(), b1.getTanInY());
-
-        if (d0 <= 1 && d1 <= 1)
-        {
-            //Treat lines as parallel and coincident
-            
-        }
+        return newEdges;
     }
-    */
     
     /**
      * @return the closure
@@ -260,6 +394,23 @@ public class BezierLoop2i<VertexData, EdgeData>
     public void setClosure(BezierLoopClosure closure)
     {
         this.closure = closure;
+    }
+
+    //----------------------------
+    private class CutRecord
+    {
+        BezierEdge2i[] newSrc;
+        BezierEdge2i[] newDst;
+
+        public CutRecord()
+        {
+        }
+
+        public CutRecord(BezierEdge2i[] newSrc, BezierEdge2i[] newDst)
+        {
+            this.newSrc = newSrc;
+            this.newDst = newDst;
+        }
     }
     
 }

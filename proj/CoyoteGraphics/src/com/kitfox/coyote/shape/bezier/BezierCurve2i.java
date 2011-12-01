@@ -25,6 +25,7 @@ import com.kitfox.coyote.shape.PathConsumer;
  */
 abstract public class BezierCurve2i
 {
+    abstract public int getDegree();
     abstract public BezierCurve2i reverse();
 
     abstract public int getTanInX();
@@ -95,4 +96,5 @@ abstract public class BezierCurve2i
     abstract public BezierCurve2i offset(double width);
     
     abstract public void append(PathConsumer out);
+
 }

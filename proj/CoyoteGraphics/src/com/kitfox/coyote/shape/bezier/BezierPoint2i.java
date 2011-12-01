@@ -35,6 +35,12 @@ public class BezierPoint2i extends BezierCurve2i
     }
 
     @Override
+    public int getDegree()
+    {
+        return 1;
+    }
+
+    @Override
     public BezierPoint2i reverse()
     {
         return new BezierPoint2i(ax0, ay0);
