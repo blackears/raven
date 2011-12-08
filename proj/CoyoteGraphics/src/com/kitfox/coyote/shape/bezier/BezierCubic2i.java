@@ -239,6 +239,12 @@ public class BezierCubic2i extends BezierCurve2i
     }
 
     @Override
+    public BezierCubic2i asCubic()
+    {
+        return this;
+    }
+
+    @Override
     public double getCurvatureSquared()
     {
         return Math.max(Math2DUtil.distPointLineSquared(
@@ -475,6 +481,18 @@ public class BezierCubic2i extends BezierCurve2i
     public int getAy3()
     {
         return ay3;
+    }
+
+    @Override
+    public BezierCubic2i setStart(int x, int y)
+    {
+        return new BezierCubic2i(x, y, ax1, ay1, ax2, ay2, ax3, ay3);
+    }
+
+    @Override
+    public BezierCubic2i setEnd(int x, int y)
+    {
+        return new BezierCubic2i(ax0, ay0, ax1, ay1, ax2, ay2, x, y);
     }
 
 }

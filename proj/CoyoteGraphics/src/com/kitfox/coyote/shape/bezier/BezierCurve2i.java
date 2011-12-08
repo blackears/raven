@@ -90,11 +90,46 @@ abstract public class BezierCurve2i
     {
         return new BezierLine2i(getStartX(), getStartY(), getEndX(), getEndY());
     }
+    abstract public BezierCubic2i asCubic();
     
     abstract public double getCurvatureSquared();
 
     abstract public BezierCurve2i offset(double width);
     
     abstract public void append(PathConsumer out);
+
+    /**
+     * Split curve at a set of t values.  Values must be arranged in ascending
+     * order.
+     * 
+     * @param t
+     * @return 
+     */
+    public BezierCurve2i[] split(double[] t)
+    {
+        BezierCurve2i[] ret = new BezierCurve2i[t.length + 1];
+        BezierCurve2i curve = this;
+        double offset = 0;
+        for (int i = 0; i < t.length; ++i)
+        {
+            BezierCurve2i[] curSplit = curve.split((t[i] - offset) / (1 - offset));
+            ret[i] = curSplit[0];
+            curve = curSplit[1];
+        }
+        
+        ret[t.length] = curve;
+        return ret;
+    }
+
+    /**
+     * Rebuild this curve with a new starting point.  Since BezierCurve*
+     * is immutable, will create a new object rather than changing this one.
+     * 
+     * @param x
+     * @param y
+     * @return New curve with altered starting point.
+     */
+    abstract public BezierCurve2i setStart(int x, int y);
+    abstract public BezierCurve2i setEnd(int x, int y);
 
 }

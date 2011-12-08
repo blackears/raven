@@ -39,6 +39,12 @@ public class BezierLine2d extends BezierCurve2d
     }
 
     @Override
+    public int getOrder()
+    {
+        return 2;
+    }
+
+    @Override
     public BezierLine2d reverse()
     {
         return new BezierLine2d(ax1, ay1, ax0, ay0);
@@ -149,6 +155,15 @@ public class BezierLine2d extends BezierCurve2d
     public BezierPoint2d getDerivative()
     {
         return new BezierPoint2d(ax1 - ax0, ay1 - ay0);
+    }
+
+    @Override
+    public BezierCubic2d asCubic()
+    {
+        return new BezierCubic2d(ax0, ay0, 
+                (2 * ax0 + ax1) / 3, (2 * ay0 + ay1) / 3, 
+                (ax0 + 2 * ax1) / 3, (ay0 + 2 * ay1) / 3, 
+                ax1, ay1);
     }
 
     @Override

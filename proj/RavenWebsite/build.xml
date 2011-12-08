@@ -193,7 +193,8 @@
         <izPack input="${install.dir}/install.xml"
             output="${dist.dir}/ravenStudio-install.jar"
             installerType="standard"
-            basedir="${install.dir}"/>
+            basedir="${install.dir}"
+            />
         
         
     </target>

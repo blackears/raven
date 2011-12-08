@@ -17,7 +17,12 @@
         <uninstaller>yes</uninstaller>
         <run-privileged uninstaller="yes"/>
     </info>
-
+    
+    <variables>
+        <variable name="JVM_REQ" value="Java VM (JRE) 1.5 or higher"/>
+        <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
+    </variables>
+ 
     <!-- 
         The gui preferences indication.
         Sets the installer window to 640x480. It will not be able to change the size.
@@ -42,6 +47,8 @@
         <res id="InfoPanel.info" src="readme.txt"/>
         -->
         <res id="Installer.image" src="ravenCameo64.png"/>
+        <res id="Unix_shortcutSpec.xml" src="shortcuts_unix.xml" />
+        <res id="shortcutSpec.xml" src="shortcuts_windows.xml" />
     </resources>
 
     <!-- 
@@ -65,6 +72,7 @@
     </panels>
 
     <native type="izpack" name="ShellLink.dll"/>
+    <native type="izpack" name="ShellLink_x64.dll"/>
 
     <!-- 
         The packs section.
@@ -114,44 +122,5 @@
         </pack>
         -->
     </packs>
-
-    <shortcuts>
-        <skipIfNotSupported/>
-        <programGroup defaultName="Raven Studio"
-            location="applications"/>
-            
-        <shortcut
-            name="Raven Studio"
-            programGroup="yes"
-            desktop="yes"
-            applications="no"
-            startMenu="no"
-            startup="no"
-            target="$INSTALL_PATH\bin\ravenStudio.bat"
-            commandLine=""
-            description="Raven Studio - create and animate!"
-            iconFile="$INSTALL_PATH\ravenCameo64.ico"
-            iconIndex="0"
-            initialState="noShow"
-            >
-<!--                
-            workingDirectory="$USER_HOME"
-            <createForPack name="core"/>
-            -->
-        </shortcut>
-        
-        <shortcut
-            name="Uninstaller"
-            programGroup="yes"
-            desktop="no"
-            applications="no"
-            startMenu="no"
-            startup="no"
-            target="$INSTALL_PATH\Uninstaller\uninstaller.jar"
-            commandLine=""
-            description="Raven Studio uninstaller"
-            >
-        </shortcut>
-    </shortcuts>
 
 </installation>

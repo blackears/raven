@@ -8,6 +8,7 @@ import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.math.Math2DUtil;
 import com.kitfox.coyote.shape.bezier.BezierCubic2i;
 import com.kitfox.coyote.shape.bezier.BezierCurve2i;
+import com.kitfox.coyote.shape.bezier.BezierCutCurve2i;
 import com.kitfox.coyote.shape.bezier.BezierLine2i;
 import com.kitfox.coyote.shape.bezier.BezierQuad2i;
 import java.util.ArrayList;
@@ -114,7 +115,7 @@ public class BezierLoop2i<VertexData, EdgeData>
         return edges;
     }
     
-    public void cutAgainst(BezierLoop2i loop)
+    public void cutAgainst(BezierLoop2i loop, int resolution)
     {
         ArrayList<BezierEdge2i> edges0 = getEdges(null);
         
@@ -156,7 +157,7 @@ public class BezierLoop2i<VertexData, EdgeData>
                 }
                 else
                 {
-//                    rec = cutCurves(e0, c0, e1, c1);
+                    rec = cutCurves(e0, c0, e1, c1, resolution);
                 }
                 
                 if (rec != null && rec.newSrc != null && rec.newSrc.length > 0)
@@ -176,7 +177,42 @@ public class BezierLoop2i<VertexData, EdgeData>
             }
         }
     }
+    
+    private CutRecord cutCurves(
+            BezierEdge2i e0, BezierCurve2i c0, 
+            BezierEdge2i e1, BezierCurve2i c1,
+            int resolution)
+    {
+        //Finds crossovers by subdividing down to a given resolution.
+        // Does not go all the way to the smallest unit, since this would
+        // allow for a lot of false positives due to round off error in
+        // sections of the curve that are nearly tangent.
+        //Curves that are near tangent or very small may not be cut in
+        // all overlapping places.  Routines that rely on this should take
+        // this into account.
 
+        BezierCutCurve2i cut = new BezierCutCurve2i(c0, c1, resolution);
+        
+        BezierEdge2i[] newSrc = replaceEdge(e0, 
+                    cut.getSegs0());
+        BezierEdge2i[] newDst = replaceEdge(e1, 
+                    cut.getSegs1());
+        
+        return new CutRecord(newSrc, newDst);
+
+        //New plan for cutting loops:
+        //First, cut all curve-curve and curve-line intersetcions.  
+        // Ignore line-line intersections.  Don't
+        // worry if there are points missed due to tangency or bumping into
+        // minimum resolution.
+        //Next, treat all segments as straight lines according to their base
+        // lines.  Find all line-line intersections.
+        //Determine interior/exterior sets for both shapes.  Use for boolean
+        // ops.
+        
+        
+    }
+        
     private CutRecord cutLines(
             BezierEdge2i e0, BezierLine2i c0, BezierEdge2i e1, BezierLine2i c1)
     {
@@ -200,7 +236,10 @@ public class BezierLoop2i<VertexData, EdgeData>
         CyVector2d ab = new CyVector2d(bx - ax, by - ay);
         CyVector2d ac = new CyVector2d(cx - ax, cy - ay);
         CyVector2d ad = new CyVector2d(dx - ax, dy - ay);
+        
         CyVector2d cd = new CyVector2d(dx - cx, dy - cy);
+        CyVector2d ca = new CyVector2d(ax - cx, ay - cy);
+        CyVector2d cb = new CyVector2d(bx - cx, by - cy);
         
         //Project ac, ad onto ab
         double acPabScalar = ac.dot(ab) / ab.dot(ab);
@@ -208,24 +247,36 @@ public class BezierLoop2i<VertexData, EdgeData>
         double adPabScalar = ad.dot(ab) / ab.dot(ab);
         CyVector2d adPab = new CyVector2d(ab.x * adPabScalar, ab.y * adPabScalar);
         
-        double dist2Ac = ac.distanceSquared(acPab);
-        double dist2Ad = ad.distanceSquared(adPab);
+        //Distances from c, d to line of ab
+        double dist2c = ac.distanceSquared(acPab);
+        double dist2d = ad.distanceSquared(adPab);
 
-        if (dist2Ac <= 1 && dist2Ad <= 1)
+        double caPcdScalar = ca.dot(cd) / cd.dot(cd);
+        CyVector2d caPcd = new CyVector2d(cd.x * caPcdScalar, cd.y * caPcdScalar);
+        double cbPcdScalar = cb.dot(cd) / cd.dot(cd);
+        CyVector2d cbPcd = new CyVector2d(cd.x * cbPcdScalar, cd.y * cbPcdScalar);
+        
+        //Dinstances from a, b to line cd
+        double dist2a = ca.distanceSquared(caPcd);
+        double dist2b = cb.distanceSquared(cbPcd);
+
+        BezierEdge2i[] newSrc = null;
+        BezierEdge2i[] newDst = null;
+
+        boolean sameDir = ab.dot(cd) >= 0;
+        
+        //Divide ab
+        if (dist2a <= 1 || dist2b <= 1 || dist2c <= 1 || dist2d <= 1)
         {
-            BezierEdge2i[] newSrc = null;
-            BezierEdge2i[] newDst = null;
-            
-            //Lines are close enough to be coincident
-            boolean sameDir = ab.dot(cd) >= 0;
-            
             //Split at C if a, b bound c
-            boolean splitC = acPabScalar > 0 && acPabScalar < 1
+            boolean splitC = dist2c <= 1
+                    && acPabScalar > 0 && acPabScalar < 1
                     && !(cx == ax && cy == ay) 
                     && !(cx == bx && cy == by);
             
             //Split at C if a, b bound d
-            boolean splitD = adPabScalar > 0 && adPabScalar < 1
+            boolean splitD = dist2d <= 1
+                    && adPabScalar > 0 && adPabScalar < 1
                     && !(dx == ax && dy == ay) 
                     && !(dx == bx && dy == by);
 
@@ -259,16 +310,18 @@ public class BezierLoop2i<VertexData, EdgeData>
                         new BezierLine2i(ax, ay, dx, dy),
                         new BezierLine2i(dx, dy, bx, by));
             }
+
+        
+            //Divide cd
+            boolean splitA = dist2a <= 1
+                    && caPcdScalar > 0 && caPcdScalar < 1
+                    && !(cx == ax && cy == ay) 
+                    && !(cx == bx && cy == by);
             
-            //Update curve in other loop
-            boolean splitA = acPabScalar * adPabScalar < 0
-                    && !(ax == cx && ay == cy) 
-                    && !(ax == dx && ay == dy);
-            
-            //Split at B if c, d have values on opposite sides of 1
-            boolean splitB = (acPabScalar - 1) * (adPabScalar - 1) < 0
-                    && !(bx == cx && by == cy) 
-                    && !(bx == dx && by == dy);
+            boolean splitB = dist2b <= 1
+                    && cbPcdScalar > 0 && cbPcdScalar < 1
+                    && !(dx == ax && dy == ay) 
+                    && !(dx == bx && dy == by);
             
             if (splitA && splitB)
             {
@@ -299,22 +352,29 @@ public class BezierLoop2i<VertexData, EdgeData>
                         new BezierLine2i(cx, cy, bx, by),
                         new BezierLine2i(bx, by, dx, dy));
             }
-            
+
             return new CutRecord(newSrc, newDst);
         }
         
-        //Lines are not coincident.  Solve a plain old linear system of
-        // equations
+        //Lines do not touch end-to-end or end-to-middle.
+        // Solve a plain old linear system of equations
         double[] t = Math2DUtil.lineIsectFractions(
                 ax, ay, bx - ax, by - ay, 
                 cx, cy, dx - cx, dy - cy, null);
         
         if (t != null && t[0] > 0 && t[0] < 1 && t[1] > 0 && t[1] < 1)
         {
-            BezierEdge2i[] newSrc = 
-                    replaceEdge(e0, c0.split(t[0]));
-            BezierEdge2i[] newDst = 
-                replaceEdge(e1, c1.split(t[1]));
+            CyVector2d pos = new CyVector2d();
+            c0.evaluate(t[0], pos, null);
+            int mx = (int)pos.x;
+            int my = (int)pos.y;
+            
+            newSrc = replaceEdge(e0, 
+                    new BezierLine2i(c0.getStartX(), c0.getStartY(), mx, my),
+                    new BezierLine2i(mx, my, c0.getEndX(), c0.getEndY()));
+            newDst = replaceEdge(e1, 
+                    new BezierLine2i(c1.getStartX(), c1.getStartY(), mx, my),
+                    new BezierLine2i(mx, my, c1.getEndX(), c1.getEndY()));
             return new CutRecord(newSrc, newDst);
         }
         

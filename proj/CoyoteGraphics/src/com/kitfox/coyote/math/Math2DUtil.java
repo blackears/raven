@@ -118,6 +118,30 @@ public class Math2DUtil
         return sqrt(distPointLineSquared(px, py, qx, qy, rx, ry));
     }
 
+    public static double distPointSegmentSquared(double px, double py,
+            double qx, double qy, double rx, double ry)
+    {
+        double sx = px - qx;
+        double sy = py - qy;
+
+        //Multiplying r by this value will create r', 
+        // the projection of s onto r
+        double rScalar = dot(rx, ry, sx, sy) / dot(sx, sy, sx, sy);
+        if (rScalar <= 0)
+        {
+            //before first point
+            return distSquared(px, py, qx, qy);
+        }
+        else if (rScalar >= 1)
+        {
+            //After last point
+            return distSquared(px, py, qx + rx, qy + ry);
+        }
+        
+        return dot(sx, sy, sx, sy) - rScalar * rScalar * dot(rx, ry, rx, ry);
+    }
+
+
     /**
      * Points to right of line segment have negative distance.
      */

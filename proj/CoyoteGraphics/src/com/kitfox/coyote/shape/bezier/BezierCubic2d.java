@@ -49,6 +49,12 @@ public class BezierCubic2d extends BezierCurve2d
     }
 
     @Override
+    public int getOrder()
+    {
+        return 4;
+    }
+
+    @Override
     public BezierCubic2d reverse()
     {
         return new BezierCubic2d(ax3, ay3, ax2, ay2, ax1, ay1, ax0, ay0);
@@ -189,6 +195,12 @@ public class BezierCubic2d extends BezierCurve2d
                 3 * (ay2 - ay1),
                 3 * (ax3 - ax2),
                 3 * (ay3 - ay2));
+    }
+
+    @Override
+    public BezierCubic2d asCubic()
+    {
+        return this;
     }
 
     @Override

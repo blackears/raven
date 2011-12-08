@@ -4,6 +4,10 @@
  */
 package com.kitfox.coyote.shape.bezier;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
 /**
  * Finds intersections of two Bezier curves.
  * 
@@ -20,57 +24,62 @@ package com.kitfox.coyote.shape.bezier;
 public class BezierIntersection2i
 {
     public static void findIntersections(Callback callback, 
-            BezierCurve2i c0, BezierCurve2i c1)
+            BezierCurve2i c0, BezierCurve2i c1, int resolution)
     {
-        findIntersections(callback, c0, 0, 1, c1, 0, 1);
+        findIntersections(callback, c0, 0, 1, c1, 0, 1, resolution);
         callback.done();
     }
     
     private static void findIntersections(Callback callback, 
             BezierCurve2i c0, double t0Min, double t0Max,
-            BezierCurve2i c1, double t1Min, double t1Max)
+            BezierCurve2i c1, double t1Min, double t1Max, 
+            int resolution)
     {
         if (!c0.boundingBoxIntersects(c1))
         {
             return;
         }
         
-        boolean c0Unit = c0.isUnitBoundingBox();
-        boolean c1Unit = c1.isUnitBoundingBox();
-        if (c0Unit && c1Unit)
+//        boolean c0Done = c0.isUnitBoundingBox();
+//        boolean c1Done = c1.isUnitBoundingBox();
+        boolean c0Done = c0.getBoundingBoxWidth() <= resolution 
+                && c0.getBoundingBoxHeight() <= resolution;
+        boolean c1Done = c1.getBoundingBoxWidth() <= resolution
+                && c1.getBoundingBoxHeight() <= resolution;
+        if (c0Done && c1Done)
         {
             callback.emitCrossover(
                     t0Max == 1 ? 1 : t0Min, t1Max == 1 ? 1 : t1Min,
                     c1.getMinX(), c1.getMinY());
         }
-        else if (c0Unit)
+        else if (c0Done)
         {
             double t1Mid = (t1Min + t1Max) / 2;
             BezierCurve2i[] curves1 = c1.split(.5);
             if (!isDegenerate(curves1[0], curves1[1]))
             {
                 findIntersections(callback, 
-                        c0, t0Min, t0Max, curves1[0], t1Min, t1Mid);
+                        c0, t0Min, t0Max, curves1[0], t1Min, t1Mid, resolution);
             }
             if (!isDegenerate(curves1[1], curves1[0]))
             {
                 findIntersections(callback, 
-                        c0, t0Min, t0Max, curves1[1], t1Mid, t1Max);
+                        c0, t0Min, t0Max, curves1[1], t1Mid, t1Max, resolution);
             }
         }
-        else if (c1Unit)
+        else if (c1Done)
         {
             double t0Mid = (t0Min + t0Max) / 2;
             BezierCurve2i[] curves0 = c1.split(.5);
             if (!isDegenerate(curves0[0], curves0[1]))
             {
                 findIntersections(callback, 
-                        curves0[0], t0Min, t0Mid, c1, t1Min, t1Max);
+                        curves0[0], t0Min, t0Mid, c1, t1Min, t1Max, resolution);
             }
             if (!isDegenerate(curves0[1], curves0[0]))
             {
                 findIntersections(callback, 
-                        curves0[1], t0Mid, t0Max, c1, t1Min, t1Max);
+                        curves0[1], t0Mid, t0Max, c1, t1Min, t1Max, resolution);
             }
         }
         else
@@ -83,22 +92,22 @@ public class BezierIntersection2i
             if (!isDegenerate(curves0[0], curves0[1]) && !isDegenerate(curves1[0], curves1[1]))
             {
                 findIntersections(callback, 
-                        curves0[0], t0Min, t0Mid, curves1[0], t1Min, t1Mid);
+                        curves0[0], t0Min, t0Mid, curves1[0], t1Min, t1Mid, resolution);
             }
             if (!isDegenerate(curves0[1], curves0[0]) && !isDegenerate(curves1[0], curves1[1]))
             {
                 findIntersections(callback, 
-                        curves0[1], t0Mid, t0Max, curves1[0], t1Min, t1Mid);
+                        curves0[1], t0Mid, t0Max, curves1[0], t1Min, t1Mid, resolution);
             }
             if (!isDegenerate(curves0[0], curves0[1]) && !isDegenerate(curves1[1], curves1[0]))
             {
                 findIntersections(callback, 
-                        curves0[0], t0Min, t0Mid, curves1[1], t1Mid, t1Max);
+                        curves0[0], t0Min, t0Mid, curves1[1], t1Mid, t1Max, resolution);
             }
             if (!isDegenerate(curves0[1], curves0[0]) && !isDegenerate(curves1[1], curves1[0]))
             {
                 findIntersections(callback, 
-                        curves0[1], t0Mid, t0Max, curves1[1], t1Mid, t1Max);
+                        curves0[1], t0Mid, t0Max, curves1[1], t1Mid, t1Max, resolution);
             }
         }
     }
@@ -116,7 +125,7 @@ public class BezierIntersection2i
      * @return 
      */
     public static void findSelfIntersection(Callback callback, 
-            BezierCurve2i curve)
+            BezierCurve2i curve, int resolution)
     {
         if (!curve.convexHullSelfIsect())
         {
@@ -144,7 +153,8 @@ public class BezierIntersection2i
                 
                 findIntersections(callback, 
                         curves[0], 0, t,
-                        curves[1], t, 1);
+                        curves[1], t, 1, 
+                        resolution);
                 callback.done();
                 return;
             }
@@ -203,4 +213,5 @@ public class BezierIntersection2i
             wrapped.done();
         }
     }
+
 }

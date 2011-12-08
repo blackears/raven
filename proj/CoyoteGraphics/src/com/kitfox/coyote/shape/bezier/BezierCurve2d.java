@@ -25,6 +25,7 @@ import com.kitfox.coyote.shape.PathConsumer;
  */
 abstract public class BezierCurve2d
 {
+    abstract public int getOrder();
     abstract public BezierCurve2d reverse();
 
     abstract public double getTanInX();
@@ -72,6 +73,11 @@ abstract public class BezierCurve2d
     abstract public BezierCurve2d[] split(double t);
     abstract public void evaluate(double t, CyVector2d pos, CyVector2d tan);
     abstract public BezierCurve2d getDerivative();
+    public BezierLine2d getBaseline()
+    {
+        return new BezierLine2d(getStartX(), getStartY(), getEndX(), getEndY());
+    }
+    abstract public BezierCubic2d asCubic();
 
     abstract public double getCurvatureSquared();
 

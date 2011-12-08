@@ -184,6 +184,15 @@ public class BezierQuad2i extends BezierCurve2i
     }
 
     @Override
+    public BezierCubic2i asCubic()
+    {
+        return new BezierCubic2i(ax0, ay0, 
+                (ax0 + 2 * ax1) / 3, (ay0 + 2 * ay1) / 3, 
+                (ax2 + 2 * ax1) / 3, (ay2 + 2 * ay1) / 3, 
+                ax2, ay2);
+    }
+
+    @Override
     public double getCurvatureSquared()
     {
         return Math2DUtil.distPointLineSquared(ax1, ay1,
@@ -347,6 +356,18 @@ public class BezierQuad2i extends BezierCurve2i
     public int getAy2()
     {
         return ay2;
+    }
+
+    @Override
+    public BezierQuad2i setStart(int x, int y)
+    {
+        return new BezierQuad2i(x, y, ax1, ay1, ax2, ay2);
+    }
+
+    @Override
+    public BezierQuad2i setEnd(int x, int y)
+    {
+        return new BezierQuad2i(ax0, ay0, ax1, ay1, x, y);
     }
 
 }

@@ -146,6 +146,15 @@ public class BezierPoint2i extends BezierCurve2i
     {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public BezierCubic2i asCubic()
+    {
+        return new BezierCubic2i(ax0, ay0, 
+                ax0, ay0,
+                ax0, ay0,
+                ax0, ay0);
+    }
     
     @Override
     public boolean isColinear()
@@ -207,6 +216,18 @@ public class BezierPoint2i extends BezierCurve2i
         hash = 31 * hash + this.ax0;
         hash = 31 * hash + this.ay0;
         return hash;
+    }
+
+    @Override
+    public BezierPoint2i setStart(int x, int y)
+    {
+        return new BezierPoint2i(x, y);
+    }
+
+    @Override
+    public BezierPoint2i setEnd(int x, int y)
+    {
+        return new BezierPoint2i(x, y);
     }
 
 
