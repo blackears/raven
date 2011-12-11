@@ -18,6 +18,7 @@ package com.kitfox.coyote.shape.bezier;
 
 import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.shape.PathConsumer;
+import java.util.ArrayList;
 
 /**
  *
@@ -132,4 +133,29 @@ abstract public class BezierCurve2i
     abstract public BezierCurve2i setStart(int x, int y);
     abstract public BezierCurve2i setEnd(int x, int y);
 
+    public BezierLine2i[] flatten(double curvatureSquared)
+    {
+        if (getCurvatureSquared() <= curvatureSquared)
+        {
+            return new BezierLine2i[]{getBaseline()};
+        }
+        
+        ArrayList<BezierLine2i> segs = new ArrayList<BezierLine2i>();
+        flatten(curvatureSquared, segs);
+        
+        return segs.toArray(new BezierLine2i[segs.size()]);
+    }
+
+    private void flatten(double curvatureSquared, ArrayList<BezierLine2i> segs)
+    {
+        if (getCurvatureSquared() <= curvatureSquared)
+        {
+            segs.add(getBaseline());
+            return;
+        }
+        
+        BezierCurve2i[] curves = split(.5);
+        curves[0].flatten(curvatureSquared, segs);
+        curves[1].flatten(curvatureSquared, segs);
+    }
 }

@@ -14,13 +14,20 @@
  * limitations under the License.
  */
 
-package com.kitfox.coyote.shape.bezier.mesh;
+package com.kitfox.coyote.shape.bezier.cutgraph;
 
 /**
  *
  * @author kitfox
  */
-public enum BezierVertexSmooth
+public class CutRecord
 {
-    CORNER, SMOOTH, CUSP
+    Edge[] newSrc;
+    Edge[] newDst;
+
+    public CutRecord(Edge[] newSrc, Edge[] newDst)
+    {
+        this.newSrc = newSrc;
+        this.newDst = newDst;
+    }
 }

@@ -14,36 +14,23 @@
  * limitations under the License.
  */
 
-package com.kitfox.coyote.shape.bezier.mesh;
+package com.kitfox.coyote.shape.bezier.cutgraph;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  *
  * @author kitfox
  */
-public class BezierFace2i<FaceData, FaceVertexData>
+public class Vertex
 {
-    final ArrayList<BezierVertex2i> vertices = new ArrayList<BezierVertex2i>();
-    final ArrayList<BezierEdge2i> edges = new ArrayList<BezierEdge2i>();
-    private FaceData data;
-    HashMap<BezierVertex2i, FaceVertexData> faceVertexData 
-            = new HashMap<BezierVertex2i, FaceVertexData>();
+    Coord coord;
+    ArrayList<Edge> edgesIn = new ArrayList<Edge>();
+    ArrayList<Edge> edgesOut = new ArrayList<Edge>();
 
-    /**
-     * @return the data
-     */
-    public FaceData getData()
+    public Vertex(Coord coord)
     {
-        return data;
+        this.coord = coord;
     }
-
-    /**
-     * @param data the data to set
-     */
-    public void setData(FaceData data)
-    {
-        this.data = data;
-    }
+    
 }

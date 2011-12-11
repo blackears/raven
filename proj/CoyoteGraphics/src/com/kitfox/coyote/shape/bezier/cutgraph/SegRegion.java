@@ -14,36 +14,39 @@
  * limitations under the License.
  */
 
-package com.kitfox.coyote.shape.bezier.mesh;
-
-import java.util.ArrayList;
-import java.util.HashMap;
+package com.kitfox.coyote.shape.bezier.cutgraph;
 
 /**
  *
  * @author kitfox
  */
-public class BezierFace2i<FaceData, FaceVertexData>
+public class SegRegion implements Comparable<SegRegion>
 {
-    final ArrayList<BezierVertex2i> vertices = new ArrayList<BezierVertex2i>();
-    final ArrayList<BezierEdge2i> edges = new ArrayList<BezierEdge2i>();
-    private FaceData data;
-    HashMap<BezierVertex2i, FaceVertexData> faceVertexData 
-            = new HashMap<BezierVertex2i, FaceVertexData>();
+    Segment seg;
+    double t0;
+    double t1;
+    
+    //Characteristic point of this segment
+    Coord coord;
 
-    /**
-     * @return the data
-     */
-    public FaceData getData()
+    public SegRegion(Segment s0, double t0, double t1, Coord coord)
     {
-        return data;
+        this.seg = s0;
+        this.t0 = t0;
+        this.t1 = t1;
+        this.coord = coord;
+        assert t1 >= t0;
     }
 
-    /**
-     * @param data the data to set
-     */
-    public void setData(FaceData data)
+    @Override
+    public int compareTo(SegRegion oth)
     {
-        this.data = data;
+        int value = Double.compare(seg.t0, oth.seg.t0);
+        if (value != 0)
+        {
+            return value;
+        }
+        return Double.compare(t0, oth.t0);
     }
+    
 }

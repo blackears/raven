@@ -293,6 +293,4 @@ public class BezierLine2i extends BezierCurve2i
     {
         return new BezierLine2i(ax0, ay0, x, y);
     }
-
-
 }

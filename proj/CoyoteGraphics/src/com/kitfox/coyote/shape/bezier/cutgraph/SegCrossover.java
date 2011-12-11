@@ -14,13 +14,22 @@
  * limitations under the License.
  */
 
-package com.kitfox.coyote.shape.bezier.mesh;
+package com.kitfox.coyote.shape.bezier.cutgraph;
 
 /**
  *
  * @author kitfox
  */
-public enum BezierVertexSmooth
+public class SegCrossover
 {
-    CORNER, SMOOTH, CUSP
+    final double t0;
+    final double t1;
+    Coord coord;
+
+    public SegCrossover(double t0, double t1, Coord coord)
+    {
+        this.t0 = t0;
+        this.t1 = t1;
+        this.coord = coord;
+    }
 }
