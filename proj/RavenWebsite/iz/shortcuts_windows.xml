@@ -13,15 +13,12 @@
         startup="no"
         target="$INSTALL_PATH\bin\ravenStudio.bat"
         commandLine=""
+        workingDirectory="$USER_HOME"
         description="Raven Studio - create and animate!"
         iconFile="$INSTALL_PATH\ravenCameo64.ico"
         iconIndex="0"
         initialState="noShow"
         >
-<!--                
-        workingDirectory="$USER_HOME"
-        <createForPack name="core"/>
-        -->
     </shortcut>
 
     <shortcut

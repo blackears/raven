@@ -132,6 +132,7 @@ abstract public class BezierCurve2i
      */
     abstract public BezierCurve2i setStart(int x, int y);
     abstract public BezierCurve2i setEnd(int x, int y);
+    abstract public BezierCurve2i setBounds(int x0, int y0, int x1, int y1);
 
     public BezierLine2i[] flatten(double curvatureSquared)
     {
@@ -158,4 +159,5 @@ abstract public class BezierCurve2i
         curves[0].flatten(curvatureSquared, segs);
         curves[1].flatten(curvatureSquared, segs);
     }
+
 }

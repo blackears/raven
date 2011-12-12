@@ -84,7 +84,9 @@
             <file src="readme.txt" targetdir="$INSTALL_PATH"/>
             <file src="licence.txt" targetdir="$INSTALL_PATH"/>
             <file src="ravenStudio.bat" targetdir="$INSTALL_PATH/bin"/>
+            <file src="ravenStudio.sh" targetdir="$INSTALL_PATH/bin"/>
             <file src="../art/ravenCameo64.ico" targetdir="$INSTALL_PATH"/>
+            <file src="../art/ravenCameo64.png" targetdir="$INSTALL_PATH"/>
 
             <fileset dir="../build/apps/bin" targetdir="$INSTALL_PATH/lib/raven">
                 <include name="**/*.jar"/>

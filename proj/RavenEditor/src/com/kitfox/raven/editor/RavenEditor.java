@@ -52,7 +52,8 @@ public class RavenEditor
     private final RavenExportManager exportManager;
     private final ResourceCache resourceCache;
 
-    File prefFile = new File("preferences.xml");
+    final File homeDir;
+    final File prefFile;
 
     private final int MAX_RECENT_FILES = 20;
     private final ArrayList<File> recentFiles = new ArrayList<File>();
@@ -69,6 +70,14 @@ public class RavenEditor
         exportManager = new RavenExportManager(this);
         resourceCache = new ResourceCache();
         documentIOHelper = new DocumentIOHelper(viewManager);
+        
+        //Find and create our Raven home directory
+        String home = System.getProperty("user.home");
+        homeDir = new File(home, ".raven");
+        homeDir.mkdirs();
+        
+        prefFile = new File(homeDir, "preferences.xml");
+        
         loadPreferences();
     }
 

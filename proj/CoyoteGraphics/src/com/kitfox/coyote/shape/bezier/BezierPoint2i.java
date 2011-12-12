@@ -230,5 +230,11 @@ public class BezierPoint2i extends BezierCurve2i
         return new BezierPoint2i(x, y);
     }
 
+    @Override
+    public BezierPoint2i setBounds(int x0, int y0, int x1, int y1)
+    {
+        return new BezierPoint2i(x0, y0);
+    }
+
 
 }

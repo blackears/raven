@@ -370,4 +370,10 @@ public class BezierQuad2i extends BezierCurve2i
         return new BezierQuad2i(ax0, ay0, ax1, ay1, x, y);
     }
 
+    @Override
+    public BezierQuad2i setBounds(int x0, int y0, int x1, int y1)
+    {
+        return new BezierQuad2i(x0, y0, ax1, ay1, x1, y1);
+    }
+
 }

@@ -132,7 +132,31 @@
     
     <target name="build-apps" depends="build-webpages,-gen-key">
         <mkdir dir="build/apps/bin"/>
+
+        <copy todir="build/apps/bin" flatten="true">
+            <fileset dir="..">
+                <include name="*/dist/*.jar"/>
+                <exclude name="**/RavenEditorTesting.jar"/>
+            </fileset>
+        </copy>
         
+        <jar destfile="build/apps/bin/RavenEditorApp.jar" update="true">
+            <manifest>
+                <attribute name="Main-Class" 
+                    value="com.kitfox.raven.editor.app.RavenEditorMain"/>
+            </manifest>
+        </jar>
+
+        <signjar jar="${app.jar}" 
+            alias="${key.user}" 
+            storepass="${key.password}" 
+            keystore="${key.location}">
+                <fileset dir="build/apps/bin">
+                    <include name="*.jar"/>
+                </fileset>
+        </signjar>
+        
+        <!--
         <antcall target="-copy-app-jar">
             <param name="app.jar" location="../CoyoteGraphics/dist/CoyoteGraphics.jar"/>
         </antcall>
@@ -173,8 +197,19 @@
         <antcall target="-copy-app-jar">
             <param name="app.jar" location="../RavenEditorApp/dist/RavenEditorApp.jar"/>
         </antcall>
+        -->
     </target>
-        
+<!--
+    <target name="-copy-app-jar">
+        <signjar jar="${app.jar}" 
+            alias="${key.user}" 
+            storepass="${key.password}" 
+            keystore="${key.location}"/>
+            
+        <copy file="${app.jar}" todir="build/apps/bin"/>
+                
+    </target>
+    -->    
     <target name="build-standAlone">
         <taskdef name="izPack" classname="com.izforge.izpack.ant.IzPackTask">
             <classpath>
@@ -195,18 +230,6 @@
             installerType="standard"
             basedir="${install.dir}"
             />
-        
-        
-    </target>
-
-    <target name="-copy-app-jar">
-        <signjar jar="${app.jar}" 
-            alias="${key.user}" 
-            storepass="${key.password}" 
-            keystore="${key.location}"/>
-            
-        <copy file="${app.jar}" todir="build/apps/bin"/>
-                
     </target>
 
     <target name="javadoc" depends="build-webpages">

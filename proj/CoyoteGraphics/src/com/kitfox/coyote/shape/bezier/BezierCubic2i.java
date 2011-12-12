@@ -495,4 +495,10 @@ public class BezierCubic2i extends BezierCurve2i
         return new BezierCubic2i(ax0, ay0, ax1, ay1, ax2, ay2, x, y);
     }
 
+    @Override
+    public BezierCubic2i setBounds(int x0, int y0, int x1, int y1)
+    {
+        return new BezierCubic2i(x0, y0, ax1, ay1, ax2, ay2, x1, y1);
+    }
+
 }
