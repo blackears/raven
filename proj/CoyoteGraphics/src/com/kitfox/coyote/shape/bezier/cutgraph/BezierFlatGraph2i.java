@@ -176,17 +176,33 @@ public class BezierFlatGraph2i<DataType>
                         double s1t0 = s0.pointOnLineT(s1.x0, s1.y0);
                         double s1t1 = s0.pointOnLineT(s1.x1, s1.y1);
                         
-                        if ((s0t0 < 0 && s0t1 < 0) 
-                                || (s0t0 > 1 && s0t1 > 1))
+//                        if ((s0t0 < 0 && s0t1 < 0) 
+//                                || (s0t0 > 1 && s0t1 > 1))
+//                        {
+//                            //Lines do not overlap
+//                            continue;
+//                        }
+
+                        //If inside neighboring line, emit point
+                        if (s1t0 >= 0 && s1t0 <= 1)
                         {
-                            //Lines do not overlap
-                            continue;
+                            tracker.addPoint(s0, s1t0, s1, 0, new Coord(s1.x0, s1.y0));
                         }
                         
-                        tracker.addRegion(s0, saturate(s1t0), saturate(s1t1),
-                                s1, saturate(s0t0), saturate(s0t1),
-                                new Coord((int)Math2DUtil.lerp(s0.x0, s0.x1, s0t0), 
-                                (int)Math2DUtil.lerp(s0.y0, s0.y1, s0t0)));
+                        if (s1t1 >= 0 && s1t1 <= 1)
+                        {
+                            tracker.addPoint(s0, s1t1, s1, 1, new Coord(s1.x1, s1.y1));
+                        }
+                        
+                        if (s0t0 >= 0 && s0t0 <= 1)
+                        {
+                            tracker.addPoint(s0, 0, s1, s0t0, new Coord(s0.x0, s0.y0));
+                        }
+                        
+                        if (s0t1 >= 0 && s0t1 <= 1)
+                        {
+                            tracker.addPoint(s0, 1, s1, s0t1, new Coord(s0.x1, s0.y1));
+                        }
                     }
                     else
                     {
@@ -327,11 +343,63 @@ public class BezierFlatGraph2i<DataType>
         return newEdges;
     }
     
-    private double saturate(double value)
+//    private double saturate(double value)
+//    {
+//        return value <= 0 ? 0 : (value >= 1 ? 1 : value);
+//    }
+
+    public boolean isVertexAt(Coord coord)
     {
-        return value <= 0 ? 0 : (value >= 1 ? 1 : value);
+        return vertices.containsKey(coord);
     }
     
+    /**
+     * Find all edges in this graph that are also within the bounds of graph B.
+     * This graph must have already been cut against graph B to ensure that
+     * there are no overlapping line segments.
+     * 
+     * @param graphB
+     * @return 
+     */
+    public ArrayList<Edge> getInternalEdges(BezierFlatGraph2i graphB)
+    {
+        ArrayList<Edge> aInB = new ArrayList<Edge>();
+        
+        for (Vertex v: vertices.values())
+        {
+            for (Edge e: v.edgesOut)
+            {
+                if (graphB.isVertexAt(e.v0.coord) && graphB.isVertexAt(e.v1.coord))
+                {
+                    aInB.add(e);
+                }
+            }
+        }
+        
+        return aInB;
+    }
+    
+    public BezierFlatGraph2i combine(BezierFlatGraph2i graphB, BooleanOp op)
+    {
+        //Make sure both graphs have matching verts at crossover points
+        cutAgainst(graphB);
+        
+        //Determine which segments of A are also in B and visa versa
+        ArrayList<Edge> aInB = new ArrayList<Edge>();
+        ArrayList<Edge> bInA = new ArrayList<Edge>();
+        
+        for (Vertex v: vertices.values())
+        {
+            for (Edge e: v.edgesOut)
+            {
+                if (graphB.isVertexAt(e.v0.coord) && graphB.isVertexAt(e.v1.coord))
+                {
+                    aInB.add(e);
+                }
+            }
+        }
+        
+    }
     
     
 }

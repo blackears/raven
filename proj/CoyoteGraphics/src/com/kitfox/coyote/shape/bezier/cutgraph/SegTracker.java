@@ -42,6 +42,7 @@ public class SegTracker
      * Coordinates input here are used as the coordinates in
      * the final SegCrossovers.
      */
+    /*
     public void addRegion(Segment s0, double s0t0, double s0t1,
             Segment s1, double s1t0, double s1t1,
             Coord coord)
@@ -52,6 +53,8 @@ public class SegTracker
         regions1.add(new SegRegion(s1, 
                 Math.min(s1t0, s1t1), Math.max(s1t0, s1t1), coord));
     }
+    * 
+    */
 
     /**
      * Add point of crossover.
@@ -85,6 +88,23 @@ public class SegTracker
     {
         Collections.sort(regions);
 
+        ArrayList<SegCrossover> crossovers = new ArrayList<SegCrossover>();
+        SegCrossover lastCross = null;
+        for (int i = 0; i < regions.size(); ++i)
+        {
+            SegRegion region = regions.get(i);
+            
+            if (lastCross != null && lastCross.coord.equals(region.coord))
+            {
+                continue;
+            }
+            
+            lastCross = new SegCrossover(region.t0, region.t1, region.coord);
+            crossovers.add(lastCross);
+        }
+        
+        return crossovers;
+        /*
         ArrayList<SegCrossover> crossovers = new ArrayList<SegCrossover>();
         double tStart = 0, tEnd = 0;
         SegRegion unfinished = null;
@@ -152,6 +172,8 @@ public class SegTracker
         }
 
         return crossovers;
+        * 
+        */
     }
     
 }
