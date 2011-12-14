@@ -361,6 +361,7 @@ public class BezierFlatGraph2i<DataType>
      * @param graphB
      * @return 
      */
+    /*
     public ArrayList<Edge> getInternalEdges(BezierFlatGraph2i graphB)
     {
         ArrayList<Edge> aInB = new ArrayList<Edge>();
@@ -400,6 +401,6 @@ public class BezierFlatGraph2i<DataType>
         }
         
     }
-    
+    */
     
 }
