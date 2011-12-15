@@ -417,7 +417,7 @@ public class BezierLoop2i<VertexData, EdgeData>
             BezierVertex2i v1 = i == curves.length - 1 ? vEnd 
                     : new BezierVertex2i(curve.getEndX(), curve.getEndY());
             
-            int degree = curve.getDegree();
+            int degree = curve.getOrder();
             BezierEdge2i curEdge = new BezierEdge2i(
                     v0, v1, null, null, edge.getData(), 
                     degree);

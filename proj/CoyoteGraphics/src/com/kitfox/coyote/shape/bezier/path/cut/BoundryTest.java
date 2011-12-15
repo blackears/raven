@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.kitfox.coyote.shape.bezier.cutgraph;
+package com.kitfox.coyote.shape.bezier.path.cut;
 
 /**
  *
  * @author kitfox
  */
-public enum BooleanOp
+public enum BoundryTest
 {
-    UNION, A_SUB_B, B_SUB_A, INTERSECTION, XOR
+    OUTSIDE, BOUNDARY, INSIDE
 }

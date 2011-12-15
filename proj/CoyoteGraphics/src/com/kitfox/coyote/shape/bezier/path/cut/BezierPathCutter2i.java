@@ -1,11 +1,29 @@
 /*
- * To change this template, choose Tools | Templates and open the template in
- * the editor.
+ * Copyright 2011 Mark McKay
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-package com.kitfox.coyote.shape.bezier.path;
 
+package com.kitfox.coyote.shape.bezier.path.cut;
+
+import com.kitfox.coyote.shape.bezier.BezierCubic2i;
 import com.kitfox.coyote.shape.bezier.BezierCurve2i;
-import com.kitfox.coyote.shape.bezier.path.Segment.CutRecord;
+import com.kitfox.coyote.shape.bezier.BezierLine2i;
+import com.kitfox.coyote.shape.bezier.BezierQuad2i;
+import com.kitfox.coyote.shape.bezier.path.BezierLoop2i;
+import com.kitfox.coyote.shape.bezier.path.BezierPath2i;
+import com.kitfox.coyote.shape.bezier.path.BezierPathEdge2i;
+import com.kitfox.coyote.shape.bezier.path.cut.Segment.CutRecord;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -299,7 +317,7 @@ public class BezierPathCutter2i<DataType>
      * @return List of results.
      */
     public ArrayList<Segment> getSegments(BezierPathCutter2i graph, 
-            boolean inside, boolean boundary, boolean outside,
+            boolean outside, boolean boundary, boolean inside,
             ArrayList<Segment> retList)
     {
         if (retList == null)
@@ -338,5 +356,285 @@ public class BezierPathCutter2i<DataType>
         }
 
         return retList;
+    }
+    
+    public static BezierPath2i segmentsToEdges(ArrayList<Segment> segs)
+    {
+        ArrayList<EdgeBuilder> edges = new ArrayList<EdgeBuilder>();
+        
+        for (int i = 0; i < segs.size(); ++i)
+        {
+            Segment s = segs.get(i);
+            
+            EdgeBuilder e0 = null;
+            EdgeBuilder e1 = null;
+            for (int j = 0; j < edges.size(); ++j)
+            {
+                EdgeBuilder e = edges.get(j);
+                if (e.canAppend(s))
+                {
+                    e.t1 = s.t1;
+                    e.c1 = s.c1;
+                    e0 = e;
+                    edges.remove(j);
+                    --j;
+                }
+                else if (e.canPrepend(s))
+                {
+                    e.t0 = s.t0;
+                    e.c0 = s.c0;
+                    e1 = e;
+                    edges.remove(j);
+                    --j;
+                }
+            }
+            
+            if (e0 == null && e1 == null)
+            {
+                EdgeBuilder e = new EdgeBuilder(s);
+                edges.add(e);
+            }
+            else if (e0 != null && e1 != null)
+            {
+                //Merge
+                e0.t1 = e1.t1;
+                edges.add(e0);
+            }
+            else if (e0 != null)
+            {
+                edges.add(e0);
+            }
+            else
+            {
+                edges.add(e1);
+            }
+        }
+
+        //Turn into edges
+        ArrayList<EdgeItem> edgeItems = new ArrayList<EdgeItem>();
+        for (EdgeBuilder e: edges)
+        {
+            EdgeItem ei = e.asItem();
+            edgeItems.add(ei);
+        }
+        
+        //Create loops
+        ArrayList<EdgeLoop> loops = new ArrayList<EdgeLoop>();
+        while (!edgeItems.isEmpty())
+        {
+            EdgeItem ei = edgeItems.remove(edgeItems.size() - 1);
+
+            EdgeLoop curLoop = new EdgeLoop(ei);
+            loops.add(curLoop);
+            
+            boolean checkAgain = true;
+            while (checkAgain)
+            {
+                checkAgain = false;
+                
+                for (int j = 0; j < edgeItems.size(); ++j)
+                {
+                    EdgeItem item = edgeItems.get(j);
+                    if (curLoop.attach(item))
+                    {
+                        edgeItems.remove(j);
+                        --j;
+                        checkAgain = true;
+                    }
+                }
+            }
+        }
+        
+        //Build graph from loops
+        BezierPath2i path = new BezierPath2i();
+        for (EdgeLoop loop: loops)
+        {
+            path.addLoop(loop.asBezierLoop());
+        }
+        
+        return path;
+    }
+    
+    //----------------
+    static class EdgeLoop
+    {
+        ArrayList<EdgeItem> items = new ArrayList<EdgeItem>();
+
+        private EdgeLoop(EdgeItem ei)
+        {
+            items.add(ei);
+        }
+        
+        public BezierLoop2i asBezierLoop()
+        {
+            EdgeItem head = getHead();
+            BezierLoop2i loop = new BezierLoop2i(head.c0.x, head.c0.y);
+            
+            for (EdgeItem item: items)
+            {
+                switch (item.curve.getOrder())
+                {
+                    case 2:
+                    {
+                        BezierLine2i c = (BezierLine2i)item.curve;
+                        BezierPathEdge2i e = 
+                                loop.appendLine(
+                                c.getAx1(), c.getAy1());
+                        e.setData(item.data);
+                        break;
+                    }
+                    case 3:
+                    {
+                        BezierQuad2i c = (BezierQuad2i)item.curve;
+                        BezierPathEdge2i e = 
+                                loop.appendQuad(
+                                c.getAx1(), c.getAy1(), 
+                                c.getAx2(), c.getAy2());
+                        e.setData(item.data);
+                        break;
+                    }
+                    case 4:
+                    {
+                        BezierCubic2i c = (BezierCubic2i)item.curve;
+                        BezierPathEdge2i e = 
+                                loop.appendCubic(
+                                c.getAx1(), c.getAy1(), 
+                                c.getAx2(), c.getAy2(),
+                                c.getAx3(), c.getAy3());
+                        e.setData(item.data);
+                        break;
+                    }
+                }
+            }
+            
+            return loop;
+        }
+        
+        public EdgeItem getHead()
+        {
+            return items.get(0);
+        }
+        
+        public EdgeItem getTail()
+        {
+            return items.get(items.size() - 1);
+        }
+        
+        boolean isComplete()
+        {
+            return getHead().c0.equals(getTail().c1);
+        }
+
+        private boolean attach(EdgeItem item)
+        {
+            Coord c0 = getHead().c0;
+            Coord c1 = getTail().c1;
+            
+            if (item.c0.equals(c1))
+            {
+                items.add(item);
+                return true;
+            }
+            else if (item.c1.equals(c1))
+            {
+                item.reverse();
+                items.add(item);
+                return true;
+            }
+            else if (item.c1.equals(c0))
+            {
+                items.add(0, item);
+                return true;
+            }
+            else if (item.c0.equals(c0))
+            {
+                item.reverse();
+                items.add(0, item);
+                return true;
+            }
+            return false;
+        }
+    }
+    
+    static class EdgeItem<DataType>
+    {
+        Coord c0;
+        Coord c1;
+        BezierCurve2i curve;
+        DataType data;
+
+        public EdgeItem(Coord c0, Coord c1, BezierCurve2i curve, DataType data)
+        {
+            this.c0 = c0;
+            this.c1 = c1;
+            this.curve = curve;
+            this.data = data;
+        }
+        
+        public void reverse()
+        {
+            this.curve = curve.reverse();
+            Coord tmp = c0;
+            c0 = c1;
+            c1 = tmp;
+        }
+    }
+    
+    static class EdgeBuilder<DataType>
+    {
+        double t0;
+        double t1;
+        Coord c0;
+        Coord c1;
+        BezierCurve2i curve;
+        DataType data;
+
+        private EdgeBuilder(Segment s)
+        {
+            this.t0 = s.t0;
+            this.t1 = s.t1;
+            this.c0 = s.c0;
+            this.c1 = s.c1;
+            this.curve = s.curve;
+            this.data = (DataType)s.data;
+        }
+        
+        private EdgeItem asItem()
+        {
+            BezierCurve2i curvePart = curve;
+            if (t0 != 0 && t1 != 1)
+            {
+                BezierCurve2i[] split = curve.split(new double[]{t0, t1});
+                curvePart = split[1];
+            }
+            else if (t0 != 0)
+            {
+                BezierCurve2i[] split = curve.split(t0);
+                curvePart = split[1];
+            }
+            else if (t1 != 0)
+            {
+                BezierCurve2i[] split = curve.split(t1);
+                curvePart = split[0];
+            }
+            
+            return new EdgeItem(c0, c1,
+                    curvePart.setEndPoints(c0.x, c0.y, c1.x, c1.y), 
+                    data);
+        }
+
+        private boolean canAppend(Segment s)
+        {
+            return t1 == s.t0 
+                    && c1.equals(s.c0)
+                    && curve.equals(s.curve);
+        }
+
+        private boolean canPrepend(Segment s)
+        {
+            return t0 == s.t1 
+                    && c0.equals(s.c1)
+                    && curve.equals(s.curve);
+        }
     }
 }

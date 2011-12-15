@@ -26,7 +26,7 @@ import java.util.ArrayList;
  */
 abstract public class BezierCurve2i
 {
-    abstract public int getDegree();
+    abstract public int getOrder();
     abstract public BezierCurve2i reverse();
 
     abstract public int getTanInX();
@@ -132,7 +132,7 @@ abstract public class BezierCurve2i
      */
     abstract public BezierCurve2i setStart(int x, int y);
     abstract public BezierCurve2i setEnd(int x, int y);
-    abstract public BezierCurve2i setBounds(int x0, int y0, int x1, int y1);
+    abstract public BezierCurve2i setEndPoints(int x0, int y0, int x1, int y1);
 
     public BezierLine2i[] flatten(double curvatureSquared)
     {

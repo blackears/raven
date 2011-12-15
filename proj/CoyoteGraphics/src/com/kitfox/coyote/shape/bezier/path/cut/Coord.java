@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.kitfox.coyote.shape.bezier.path;
+package com.kitfox.coyote.shape.bezier.path.cut;
 
 
 /**
@@ -23,8 +23,8 @@ package com.kitfox.coyote.shape.bezier.path;
  */
 public class Coord implements Comparable<Coord>
 {
-    final int x;
-    final int y;
+    public final int x;
+    public final int y;
 
     public Coord(int x, int y)
     {

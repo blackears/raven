@@ -34,8 +34,8 @@ public class BezierEdge2i<EdgeData>
     private BezierFace2i right;
     private EdgeData data;
 
-    //Degree of curve: 2 -> line, 3 -> quad, 4 -> cubic    
-    private int degree;
+    //Order of curve: 2 -> line, 3 -> quad, 4 -> cubic    
+    private int order;
     //Knot values.  Will only be used if degree of curve requires them
     private int k0x;
     private int k0y;
@@ -44,28 +44,28 @@ public class BezierEdge2i<EdgeData>
 
     public BezierEdge2i(BezierVertex2i start, BezierVertex2i end,
             BezierFace2i left, BezierFace2i right, EdgeData data, 
-            int degree)
+            int order)
     {
-        this(start, end, left, right, data, degree, 0, 0);
+        this(start, end, left, right, data, order, 0, 0);
     }
 
     public BezierEdge2i(BezierVertex2i start, BezierVertex2i end,
             BezierFace2i left, BezierFace2i right, EdgeData data, 
-            int degree, int k0x, int k0y)
+            int order, int k0x, int k0y)
     {
-        this(start, end, left, right, data, degree, k0x, k0y, 0, 0);
+        this(start, end, left, right, data, order, k0x, k0y, 0, 0);
     }
     
     public BezierEdge2i(BezierVertex2i start, BezierVertex2i end,
             BezierFace2i left, BezierFace2i right, EdgeData data, 
-            int degree, int k0x, int k0y, int k1x, int k1y)
+            int order, int k0x, int k0y, int k1x, int k1y)
     {
         this.start = start;
         this.end = end;
         this.left = left;
         this.right = right;
         this.data = data;
-        this.degree = degree;
+        this.order = order;
         this.k0x = k0x;
         this.k0y = k0y;
         this.k1x = k1x;
@@ -157,7 +157,7 @@ public class BezierEdge2i<EdgeData>
      */
     public int getDegree()
     {
-        return degree;
+        return order;
     }
 
     /**
@@ -165,7 +165,7 @@ public class BezierEdge2i<EdgeData>
      */
     public void setDegree(int degree)
     {
-        this.degree = degree;
+        this.order = degree;
     }
 
     /**
@@ -238,7 +238,7 @@ public class BezierEdge2i<EdgeData>
         int p0y = start.getY();
         int p1x = end.getX();
         int p1y = end.getY();
-        switch (degree)
+        switch (order)
         {
             case 1:
                 return new BezierPoint2i(p0x, p0y);
@@ -258,7 +258,7 @@ public class BezierEdge2i<EdgeData>
         int p0y = start.getY();
         int p1x = end.getX();
         int p1y = end.getY();
-        switch (degree)
+        switch (order)
         {
             case 1:
             {

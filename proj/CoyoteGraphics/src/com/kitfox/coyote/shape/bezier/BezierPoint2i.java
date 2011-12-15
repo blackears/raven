@@ -35,7 +35,7 @@ public class BezierPoint2i extends BezierCurve2i
     }
 
     @Override
-    public int getDegree()
+    public int getOrder()
     {
         return 1;
     }
@@ -231,7 +231,7 @@ public class BezierPoint2i extends BezierCurve2i
     }
 
     @Override
-    public BezierPoint2i setBounds(int x0, int y0, int x1, int y1)
+    public BezierPoint2i setEndPoints(int x0, int y0, int x1, int y1)
     {
         return new BezierPoint2i(x0, y0);
     }

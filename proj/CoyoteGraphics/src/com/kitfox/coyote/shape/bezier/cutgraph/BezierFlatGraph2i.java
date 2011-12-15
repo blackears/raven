@@ -329,7 +329,7 @@ public class BezierFlatGraph2i<DataType>
             
             Vertex v0 = getOrCreateVertex(c0);
             Vertex v1 = getOrCreateVertex(c1);
-            BezierCurve2i curve = newCurves[i].setBounds(
+            BezierCurve2i curve = newCurves[i].setEndPoints(
                         c0.x, c0.y, c1.x, c1.y);
             
             Edge e = new Edge(v0, v1, curve, 

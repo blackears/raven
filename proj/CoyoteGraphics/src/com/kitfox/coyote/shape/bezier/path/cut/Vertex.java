@@ -14,13 +14,28 @@
  * limitations under the License.
  */
 
-package com.kitfox.coyote.shape.bezier.cutgraph;
+package com.kitfox.coyote.shape.bezier.path.cut;
+
+import java.util.ArrayList;
 
 /**
  *
  * @author kitfox
  */
-public enum BooleanOp
+public class Vertex
 {
-    UNION, A_SUB_B, B_SUB_A, INTERSECTION, XOR
+    Coord coord;
+    
+    ArrayList<Segment> segOut = new ArrayList<Segment>();
+    ArrayList<Segment> segIn = new ArrayList<Segment>();
+
+    public Vertex(Coord coord)
+    {
+        this.coord = coord;
+    }
+
+    public boolean isEmpty()
+    {
+        return segOut.isEmpty() && segIn.isEmpty();
+    }
 }
