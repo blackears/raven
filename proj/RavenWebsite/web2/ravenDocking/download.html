@@ -1,22 +1,11 @@
+<%@LANGUAGE="JAVASCRIPT" CODEPAGE="65001"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><!-- InstanceBegin template="/Templates/mainTmplt.dwt" codeOutsideHTMLIsLocked="false" -->
+<html xmlns="http://www.w3.org/1999/xhtml"><!-- InstanceBegin template="/Templates/ravenDockingTmplt.dwt" codeOutsideHTMLIsLocked="false" -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <!-- InstanceBeginEditable name="doctitle" -->
-<title>Raven Studio</title>
+<title>Raven Docking - Download</title>
 <!-- InstanceEndEditable -->
-        
-        <script type="text/javascript">
-          var _gaq = _gaq || [];
-          _gaq.push(['_setAccount', 'UA-17414889-5']);
-          _gaq.push(['_trackPageview']);
-
-          (function() {
-            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-          })();
-        </script>
 <!-- InstanceBeginEditable name="head" -->
 <!-- InstanceEndEditable -->
 <style type="text/css"> 
@@ -76,6 +65,22 @@ body  {
     font-size: 1px;
     line-height: 0px;
 }
+.code {
+	font-family: "Courier New", Courier, monospace;
+	font-size: 12px;
+	color: #090;
+	border-top-style: dotted;
+	border-right-style: dotted;
+	border-bottom-style: dotted;
+	border-left-style: dotted;
+	border-top-color: #093;
+	border-right-color: #093;
+	border-bottom-color: #093;
+	border-left-color: #093;
+	white-space:pre;
+	border-width: 2px;
+	background-color: #EEF7F1;
+}
 --> 
 </style><!--[if IE 5]>
 <style type="text/css"> 
@@ -95,49 +100,35 @@ body  {
 
 <div id="container">
   <div id="header">
-    
-      <h1><img src="ravenCameo64.png" alt="Rave Studio Logo" width="64" height="64" align="bottom"/> Raven Studio</h1>
+    <h1>Raven Docking</h1>
   <!-- end #header --></div>
   <div id="sidebar1">
-    <p><a href="index.html">Home</a><a href="index.html"></a></p>
-<p><a href="apps/studio/index.html">Webstart</a></p>
-    <p><a href="docsApi.html">Documentation</a></p>
-    <p><a href="http://java.net/projects/raven">Project</a></p>
-    <h3>Subprojects</h3>
-    <p><a href="ravenDocking/index.html">Raven Docking</a></p>
+    <p><a href="index.html">Overview</a></p>
+    <p><a href="usage.html">Usage</a></p>
+    <p><a href="download.html">Download</a></p>
+    <p><a href="../docs/api/RavenDocking">API Documentation</a></p>
+    <p><a href="../index.html">Raven Studio</a></p>
   <!-- end #sidebar1 --></div>
-  <div id="mainContent"><!-- InstanceBeginEditable name="pageContent" -->
-            <h1>API Docs</h1>
-            
-            <p><a href="docs/api/RavenEditor">Raven Editor</a> - Contains the
-            editor itself and the main scenegraph used by the Raven project.</p>
-            
-            <p><a href="docs/api/RavenCore">Raven Core</a> - Core data structures
-            and utilities that allow the creation and use of Raven scenes.</p>
-            
-            <p><a href="docs/api/CoyoteGraphics">Coyote Graphics</a> - A fast,
-            platform independent library for rendering in Java.  Built to
-            be compatible with the OpenGL ES 2.0 standard.</p>
-
-            <p><a href="docs/api/RavenDocking">Raven Docking</a> - A window docking
-            system that allows multiple Swing components to share the same
-            container without overlapping.</p>
-            
-            <p><a href="docs/api/RavenService">Raven Service</a> - A handy tool
-            that uses annotations to identify and create indexes for classes 
-            that will be used as services.</p>
-            
-            <p><a href="docs/api/SVGRabbit">SVG Rabbit</a> - An under development
-            SVG parser/engine used to import and export data.</p>
-            
-            <p><a href="docs/api/SWFParser">SWF Parser</a> - A parser for the SWF
-            file format.</p>
-<!-- InstanceEndEditable -->
-    <!-- end #mainContent -->
-  </div>
+  <div id="mainContent">
+    <!-- InstanceBeginEditable name="mainText" -->
+    <h2>Downloads</h2>
+    <h3>Binaries</h3>
+<p>Get the latest binary here:</p>
+<p><a href="http://raven.java.net/apps/bin/RavenDocking.jar">http://raven.java.net/apps/bin/RavenDocking.jar</a></p>
+<p>&nbsp;</p>
+<h3>Source</h3>
+<p>You can also get the source by checking out the RavenDocking subproject from the repository:</p>
+<p><a href="http://java.net/projects/raven/sources">http://java.net/projects/raven/sources</a></p>
+<p>Browse the latest sources:</p>
+<p><a href="http://java.net/projects/raven/sources/svn/show/trunk/proj/RavenDocking">http://java.net/projects/raven/sources/svn/show/trunk/proj/RavenDocking</a></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+    <!-- InstanceEndEditable -->
+  <!-- end #mainContent --></div>
 	<!-- This clearing element should immediately follow the #mainContent div in order to force the #container div to contain all child floats --><br class="clearfloat" />
   <div id="footer">
     <p>Copyright Mark McKay 2011</p>
+    <p>Return to <a href="../index.html">Raven Studio</a></p>
   <!-- end #footer --></div>
 <!-- end #container --></div>
 </body>

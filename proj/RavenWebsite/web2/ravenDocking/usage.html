@@ -1,0 +1,173 @@
+<%@LANGUAGE="JAVASCRIPT" CODEPAGE="65001"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><!-- InstanceBegin template="/Templates/ravenDockingTmplt.dwt" codeOutsideHTMLIsLocked="false" -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- InstanceBeginEditable name="doctitle" -->
+<title>Raven Docking - Usage</title>
+<!-- InstanceEndEditable -->
+<!-- InstanceBeginEditable name="head" -->
+<!-- InstanceEndEditable -->
+<style type="text/css"> 
+<!-- 
+body  {
+	font: 100% Verdana, Arial, Helvetica, sans-serif;
+	background: #666666;
+	margin: 0; /* it's good practice to zero the margin and padding of the body element to account for differing browser defaults */
+	padding: 0;
+	text-align: center; /* this centers the container in IE 5* browsers. The text is then set to the left aligned default in the #container selector */
+	color: #000000;
+}
+.twoColFixRtHdr #container { 
+	width: 780px;  /* using 20px less than a full 800px width allows for browser chrome and avoids a horizontal scroll bar */
+	background: #FFFFFF;
+	margin: 0 auto; /* the auto margins (in conjunction with a width) center the page */
+	border: 1px solid #000000;
+	text-align: left; /* this overrides the text-align: center on the body element. */
+} 
+.twoColFixRtHdr #header { 
+	background: #DDDDDD; 
+	padding: 0 10px 0 20px;  /* this padding matches the left alignment of the elements in the divs that appear beneath it. If an image is used in the #header instead of text, you may want to remove the padding. */
+} 
+.twoColFixRtHdr #header h1 {
+	margin: 0; /* zeroing the margin of the last element in the #header div will avoid margin collapse - an unexplainable space between divs. If the div has a border around it, this is not necessary as that also avoids the margin collapse */
+	padding: 10px 0; /* using padding instead of margin will allow you to keep the element away from the edges of the div */
+}
+.twoColFixRtHdr #sidebar1 {
+	float: right; /* since this element is floated, a width must be given */
+	width: 200px; /* the actual width of this div, in standards-compliant browsers, or standards mode in Internet Explorer will include the padding and border in addition to the width */
+	background: #EBEBEB; /* the background color will be displayed for the length of the content in the column, but no further */
+	padding: 15px 10px;
+}
+.twoColFixRtHdr #mainContent { 
+	margin: 0 250px 0 0; /* the right margin on this div element creates the column down the right side of the page - no matter how much content the sidebar1 div contains, the column space will remain. You can remove this margin if you want the #mainContent div's text to fill the #sidebar1 space when the content in #sidebar1 ends. */
+	padding: 0 20px; /* remember that padding is the space inside the div box and margin is the space outside the div box */
+} 
+.twoColFixRtHdr #footer { 
+	padding: 0 10px 0 20px; /* this padding matches the left alignment of the elements in the divs that appear above it. */
+	background:#DDDDDD; 
+} 
+.twoColFixRtHdr #footer p {
+	margin: 0; /* zeroing the margins of the first element in the footer will avoid the possibility of margin collapse - a space between divs */
+	padding: 10px 0; /* padding on this element will create space, just as the the margin would have, without the margin collapse issue */
+}
+.fltrt { /* this class can be used to float an element right in your page. The floated element must precede the element it should be next to on the page. */
+	float: right;
+	margin-left: 8px;
+}
+.fltlft { /* this class can be used to float an element left in your page */
+	float: left;
+	margin-right: 8px;
+}
+.clearfloat { /* this class should be placed on a div or break element and should be the final element before the close of a container that should fully contain a float */
+	clear:both;
+    height:0;
+    font-size: 1px;
+    line-height: 0px;
+}
+.code {
+	font-family: "Courier New", Courier, monospace;
+	font-size: 12px;
+	color: #090;
+	border-top-style: dotted;
+	border-right-style: dotted;
+	border-bottom-style: dotted;
+	border-left-style: dotted;
+	border-top-color: #093;
+	border-right-color: #093;
+	border-bottom-color: #093;
+	border-left-color: #093;
+	white-space:pre;
+	border-width: 2px;
+	background-color: #EEF7F1;
+}
+--> 
+</style><!--[if IE 5]>
+<style type="text/css"> 
+/* place css box model fixes for IE 5* in this conditional comment */
+.twoColFixRtHdr #sidebar1 { width: 220px; }
+</style>
+<![endif]--><!--[if IE]>
+<style type="text/css"> 
+/* place css fixes for all versions of IE in this conditional comment */
+.twoColFixRtHdr #sidebar1 { padding-top: 30px; }
+.twoColFixRtHdr #mainContent { zoom: 1; }
+/* the above proprietary zoom property gives IE the hasLayout it needs to avoid several bugs */
+</style>
+<![endif]--></head>
+
+<body class="twoColFixRtHdr">
+
+<div id="container">
+  <div id="header">
+    <h1>Raven Docking</h1>
+  <!-- end #header --></div>
+  <div id="sidebar1">
+    <p><a href="index.html">Overview</a></p>
+    <p><a href="usage.html">Usage</a></p>
+    <p><a href="download.html">Download</a></p>
+    <p><a href="../docs/api/RavenDocking">API Documentation</a></p>
+    <p><a href="../index.html">Raven Studio</a></p>
+  <!-- end #sidebar1 --></div>
+  <div id="mainContent">
+    <!-- InstanceBeginEditable name="mainText" -->
+    <h2>Usage</h2>
+    <h3>Quick Start</h3>
+    <p>To add docking to your Java Swing project, start by creating a DockingRegionRoot and add it to any Swing component:</p>
+<p class="code">public class DockingTestFrame extends javax.swing.JFrame
+{
+    DockingRegionRoot dockPanel = new DockingRegionRoot();
+    
+    public DockingTestFrame()
+    {
+        getContentPane().add(dockPanel, BorderLayout.CENTER);
+    }
+}
+</p>
+
+    <p>You can new add Java Components to your docking area. This is done by wrapping them in a DockingContent class that provides your component to the docking manager, along with other useful information.</p>
+
+    <p class="code">        MyCustomJPanel panel = new MyCustomJPanel();
+        DockingContent cont = new DockingContent(
+                "uniqueIdentifyingName", "Panel title", panel);
+        dockPanel.getDockingRoot().addDockContent(cont);</p>
+    
+    <p>When you create your DockingContent wrapper, you need to provide it with the information it needs to manage your component:</p>
+    <ul>
+    <li>uid - String uniquely identifying this component within the docking system.  Used for saving and restoring docking layouts.</li>
+    <li>title - String that is displayed in the tabbed pane that contains your component.</li>
+    <li>icon - Optional icon to display to the left of the title.</li>
+    <li>component - A Java component that will be used as the body of the docked window.</li>
+    </ul>
+<p class="code">    public DockingContent(String uid, String title, 
+        Component component);
+  
+    public DockingContent(String uid, String title, 
+        Icon icon, Component component);
+</p>
+    
+    <h3>Advanced Usage</h3>
+    <p>The docking system manages a tree of windows. This structure is updated whenever the user drags and drops, maximizes, minimizes, floats or closes a window. It can also be updated programmatically by adding or removing DockingContent to subregions within the system.</p>
+    <h4>Description of data structure</h4>
+<p>The DockingRegionRoot is the root of the system. It provides the root area inwhich content will be laid out. It also keeps track of all floating windows.</p>
+    <p>The DockingRegionRoot and all floating windows contain a DockingRegionContainer. The DockingRegionContainer is a rectangular region in which zero or more DockingContent will be laid out. The DockingRegionContainer also handles minimized and maximized windows. Minimized windows are displayed as buttons along the bottom of the DockingRegionContainer. When a DockingContent is maximized, it will take up the entire DockingRegionContainer until it is reduced in size again.</p>
+    <p>Within the DockingRegionContainer is a structure made of DockingContainers. Typically, this will consist of a tree of DockingRegionSplit with leaves of DockingRegionTabbed.</p>
+    <p>The DockingRegionSplit divides the workspace using either a horizontal or vertical JSplitPane. Each side of this split may contain child DockingChild, which can be either other DockingRegionSplit or DockingRegionTabbed.</p>
+    <p>A DockingRegionTabbed contains one or more DockingContent. If it has only one child, that child will take up the entire region. If there is more than one, tabs will be created to allow the user to easily switch between them.</p>
+    <h4>Manpulating the tree</h4>
+    <p>If you want to manually adjust the layout, you will need to start by getting the DockingRegionContainer from either the DockingRegionRoot or the floating window you're interested in. From there you can call getRoot() to get the lowest level child region in the container.</p>
+    <p>Once you have a DockingChild, you can navigate the tree by examining its children.</p>
+    <p>Regions which extend DockingContainer (ie, DockingRegionContainer, DockingRegionSplit) can add and remove split areas by calling split() and join().</p>
+    <p>You can add content to a DockingContainer using the split() method. You can add it to a DockingRegionTabbed with addTab().</p>
+    <h4>&nbsp;</h4>
+
+    <!-- InstanceEndEditable -->
+  <!-- end #mainContent --></div>
+	<!-- This clearing element should immediately follow the #mainContent div in order to force the #container div to contain all child floats --><br class="clearfloat" />
+  <div id="footer">
+    <p>Copyright Mark McKay 2011</p>
+    <p>Return to <a href="../index.html">Raven Studio</a></p>
+  <!-- end #footer --></div>
+<!-- end #container --></div>
+</body>
+<!-- InstanceEnd --></html>

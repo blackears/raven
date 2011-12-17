@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+" 
+    codebase="http://raven.java.net/apps/docking" 
+    href="RavenDocking.jnlp">
+        
+    <information>
+        <title>Raven Docking Demo</title>
+        <vendor>Mark McKay</vendor>
+        <homepage href="http://raven.java.net/apps/docking/index.html"/>
+        <description>Window docking manager</description>
+        <description kind="short">Easily layout and organize mulitple Swing windows</description>
+        <offline-allowed/>
+        <shortcut online="false" install="false">
+            <desktop/>
+        </shortcut>
+    </information>
+    
+    <update check="background" policy="always"/>
+
+    <security>
+    <!--
+        <all-permissions/>
+        -->
+    </security>
+    
+    <resources>
+        <!-- Application Resources -->
+        <j2se version="1.6+"
+              href="http://java.sun.com/products/autodl/j2se"/>
+        <jar href="../bin/RavenDocking.jar"/>
+    </resources>
+    
+    <application-desc 
+        name="Raven Docking Demo"
+        main-class="com.kitfox.docking.test.DockingTestFrame2"/>
+</jnlp>                             
