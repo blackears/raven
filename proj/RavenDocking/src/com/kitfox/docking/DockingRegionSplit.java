@@ -101,7 +101,9 @@ public class DockingRegionSplit extends JSplitPane
      * Called when oldChild is no longer valid and should be removed
      * from the docking layout.
      *
-     * @param oldChild
+     * @param oldChild Child to remove
+     * @param newChild Child to replace oldChild with, or null if
+     * pane should simply be removed.
      */
     @Override
     public void join(DockingChild oldChild, DockingChild newChild)

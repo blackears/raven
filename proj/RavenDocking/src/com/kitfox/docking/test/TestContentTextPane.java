@@ -22,10 +22,6 @@
 
 package com.kitfox.docking.test;
 
-import com.kitfox.docking.DockingContent;
-import javax.swing.Icon;
-import javax.swing.JComponent;
-
 /**
  *
  * @author kitfox

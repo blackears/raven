@@ -34,27 +34,6 @@ import javax.swing.JPopupMenu;
  */
 public interface ServiceControlPointEditor extends ToolService
 {
-    /**
-     * Return an object that can be used to modify control points as a
-     * group.  If there are no control points to move, this should
-     * return null.  Returning null will cause the control to enter
-     * selection mode instead of move mode.
-     *
-     * @param minX
-     * @param maxX
-     * @param minY
-     * @param maxY 
-     * @return
-     */
-//    public ControlPointDragSet getControlPointDragSet(double minX, double maxX, double minY, double maxY);
-//    public void clearControlPointSelection();
-//    public void modifyControlPointSelection(Selection.Type selectType, double minX, double maxX, double minY, double maxY);
-//    public JPopupMenu getEditPointMenu(double minX, double maxX, double minY, double maxY);
-//    public void deleteControlPointSelection();
-//    public EdgeControlPoint getBoundaryPoint(double minX, double maxX, double minY, double maxY);
-//
-//    public AffineTransform getLocalToWorldTransform(AffineTransform value);
-
     public Selection<TrackCurveComponent> getSelection();
     public AffineTransform getWorldToDeviceTransform(AffineTransform value);
 

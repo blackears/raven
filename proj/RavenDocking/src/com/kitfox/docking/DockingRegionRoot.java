@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 
 /**
+ * The root window of the Raven docking system.
  *
  * @author kitfox
  */

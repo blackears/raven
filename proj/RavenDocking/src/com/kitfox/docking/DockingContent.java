@@ -39,11 +39,33 @@ public class DockingContent
 
     public static final String PROP_PARENT = "parent";
 
+    /**
+     * Provide a dockable component to the docking system.
+     * 
+     * @param uid String used to uniquely identify this window
+     * within the docking system.
+     * @param title Name of component that will be displayed in 
+     * tabs
+     * @param component The component that will be displayed in the
+     * body of the docked window
+     */
     public DockingContent(String uid, String title, Component component)
     {
         this(uid, title, null, component);
     }
 
+    /**
+     * Provide a dockable component to the docking system.
+     * 
+     * @param uid String used to uniquely identify this window
+     * within the docking system.
+     * @param title Name of component that will be displayed in 
+     * tabs
+     * @param icon Icon that will be displayed to the left of
+     * the title.  If null, no icon is displayed.
+     * @param component The component that will be displayed in the
+     * body of the docked window
+     */
     public DockingContent(String uid, String title, Icon icon, Component component)
     {
         this.uid = uid;

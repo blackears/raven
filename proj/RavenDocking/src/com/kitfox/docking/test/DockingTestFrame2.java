@@ -24,7 +24,6 @@ package com.kitfox.docking.test;
 
 import com.kitfox.docking.DockingContent;
 import com.kitfox.docking.DockingRegionRoot;
-import com.kitfox.docking.DraggingOverlayPanel;
 import java.awt.BorderLayout;
 
 /**
@@ -44,9 +43,6 @@ public class DockingTestFrame2 extends javax.swing.JFrame
 
         getContentPane().add(dockPanel, BorderLayout.CENTER);
         setSize(640, 480);
-
-
-//        setGlassPane(new DraggingOverlayPanel());
     }
 
     /** This method is called from within the constructor to

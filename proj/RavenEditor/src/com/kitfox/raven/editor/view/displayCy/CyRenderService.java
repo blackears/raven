@@ -26,13 +26,15 @@ public interface CyRenderService
 {
     /**
      * Render environment from editor's point of view
-     * @param rend
+     * 
+     * @param ctx Context to render to
      */
     public void renderEditor(RenderContext ctx);
 
     /**
      * Render scene with all enabled cameras
-     * @param rend
+     * 
+     * @param ctx Context to render to
      */
     public void renderCamerasAll(RenderContext ctx);
     

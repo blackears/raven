@@ -16,7 +16,6 @@
 
 package com.kitfox.coyote.renderer;
 
-import com.kitfox.coyote.renderer.CyFramebuffer;
 import com.kitfox.coyote.shape.CyRectangle2i;
 
 /**
@@ -44,8 +43,9 @@ public interface CyFilter
      * with it rather than overwrite it.
      *
      * @param samplingImg Tile of data that is input to this filter
-     * @param srcArea Region samplingImage was calculated from
-     * @param tileImg Destination image to combine filtered image with.
+     * @param sampArea Region samplingImage was calculated from
+     * @param targetImg Destination image to combine filtered image with.
+     * @param tgtArea Region of targetImg that will be written to
      */
     public void apply(CyFramebuffer samplingImg, CyRectangle2i sampArea,
             CyFramebuffer targetImg, CyRectangle2i tgtArea);

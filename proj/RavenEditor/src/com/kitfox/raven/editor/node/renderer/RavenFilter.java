@@ -45,7 +45,7 @@ public interface RavenFilter
      *
      * @param samplingImg Tile of data that is input to this filter
      * @param srcArea Region samplingImage was calculated from
-     * @param tileImg Destination image to combine filtered image with.
+     * @param targetImg Destination image to combine filtered image with.
      */
     public void apply(BufferedImage samplingImg, Rectangle srcArea, BufferedImage targetImg);
 }

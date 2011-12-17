@@ -16,18 +16,25 @@
 
 package com.kitfox.docking;
 
-import com.kitfox.docking.DockingRegionTabbed.PathRecordTabbed;
-
 /**
  *
  * @author kitfox
  */
 public interface DockingContainer
 {
-//    public int getNumDockChildren();
-
-//    public DockingChild getDockChild(int index);
-
+    /**
+     * Divide this container in two
+     * 
+     * @param child The child component which is being split.
+     * Must be a child of this container.
+     * @param content Content to add to the newly created side of the
+     * split
+     * @param right If true, content will be placed on the right 
+     * or bottom of the new split
+     * @param vertical If true, split will divide the panel into a
+     * top and bottom.  Otherwise will divide left and right.
+     * @return The newly created region.
+     */
     public DockingRegionSplit split(DockingChild child,
             DockingContent content,
             boolean right, boolean vertical);
@@ -37,19 +44,13 @@ public interface DockingContainer
      * with newChild.  If newChild is null, indicates oldChild should be
      * removed.
      *
-     * @param oldChild
-     * @param newChild
+     * @param oldChild Child to be removed
+     * @param newChild Child to replace oldChild with.  If null, 
+     * oldChild is simply removed
      */
     public void join(DockingChild oldChild, DockingChild newChild);
 
     public DockingPathRecord buildPath(DockingChild dockChild, DockingPathRecord childPath);
 
     public DockingRegionContainer getContainerRoot();
-
-//    public void minimize(DockingContent content, DockingPathRecord partialPath);
-//
-//    public void maximize(DockingContent content, DockingPathRecord partialPath);
-//
-//    public void floatWindow(DockingContent content, DockingPathRecord path);
-
 }
