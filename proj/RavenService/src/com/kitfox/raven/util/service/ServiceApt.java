@@ -44,7 +44,8 @@ import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 
 /**
- *
+ * Annotation processor for Raven Services.
+ * 
  * @author kitfox
  */
 public class ServiceApt extends AbstractProcessor

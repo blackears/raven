@@ -22,12 +22,25 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- *
+ * This annotation used by the ServiceApt processor to identify classes that
+ * should be compiled into lists of services.  Any file marked with this
+ * class will be added to a list in the META-INF/services directory of the
+ * compiled code.
+ * 
  * @author kitfox
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.TYPE)
 public @interface ServiceInst
 {
+    /**
+     * The service type being implemented.  On compilation, the fully qualified 
+     * name of the annotated class will be added to a text file who's 
+     * name is equal to the fully qualified name of the class specified here.
+     * 
+     * The annotated class must extend or implement this class.
+     * 
+     * @return Class of service type being implemented.
+     */
     public Class service();
 }

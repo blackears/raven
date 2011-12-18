@@ -1,9 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><!-- InstanceBegin template="/Templates/ravenDockingTmplt.dwt" codeOutsideHTMLIsLocked="false" -->
+<html xmlns="http://www.w3.org/1999/xhtml"><!-- InstanceBegin template="/Templates/ravenServicesTmplt.dwt" codeOutsideHTMLIsLocked="false" -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <!-- InstanceBeginEditable name="doctitle" -->
-<title>Raven Docking - Overview</title>
+<title>Raven Services - Overview</title>
 <!-- InstanceEndEditable -->
         <script type="text/javascript">
           var _gaq = _gaq || [];
@@ -18,7 +18,7 @@
         </script>
 <!-- InstanceBeginEditable name="head" -->
 <!-- InstanceEndEditable -->
-<!--[if IE 5]>
+<link href="../ravenStyle.css" rel="stylesheet" type="text/css" /><!--[if IE 5]>
 <style type="text/css"> 
 /* place css box model fixes for IE 5* in this conditional comment */
 .twoColFixRtHdr #sidebar1 { width: 220px; }
@@ -31,34 +31,32 @@
 /* the above proprietary zoom property gives IE the hasLayout it needs to avoid several bugs */
 </style>
 <![endif]-->
-<link href="../ravenStyle.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body class="twoColFixRtHdr">
 
 <div id="container">
   <div id="header">
-    <h1>Raven Docking</h1>
+    <h1>Raven Services</h1>
   <!-- end #header --></div>
   <div id="sidebar1">
     <p><a href="index.html">Overview</a></p>
     <p><a href="usage.html">Usage</a></p>
     <p><a href="download.html">Download</a></p>
-    <p><a href="../docs/api/RavenDocking">API Documentation</a></p>
+    <p><a href="../docs/api/RavenService">API Documentation</a></p>
     <p><a href="../index.html">Raven Studio</a></p>
-  <!-- end #sidebar1 --></div>
-  <div id="mainContent">
-    <!-- InstanceBeginEditable name="mainText" -->
+    <!-- end #sidebar1 -->
+  </div>
+  <div id="mainContent"> <!-- InstanceBeginEditable name="mainText" -->
     <h2>Overview</h2>
-    <p>Raven Docking is a docking window manager used by the <a href="../index.html">Raven Studio</a> project. You can use it to easily lay out multiple windows in a single container.</p>
-    <p>&nbsp;</p>
-    <p><a href="../apps/docking/RavenDocking.jnlp"><img src="screenShot.png" width="496" height="390" alt="Screen Shot" /></a></p>
-    <p align="center"><a href="../apps/docking/RavenDocking.jnlp">Run with webstart</a></p>
-<p align="center">&nbsp;</p>
-    <p>Raven Docking will allow you to divide your main window into multiple smaller regions that can be resized simeltaneously by dragging the region borders. You may also place multiple windows in the same area and use tabs to select between them. Best of all, the user can easily drag and drop windows between regions, providing a natural way to customize their workspace.</p>
-<p>&nbsp;</p>
-    <!-- InstanceEndEditable -->
-  <!-- end #mainContent --></div>
+    <p>Ravens Services is a tiny utility library that makes it easier to create and maintain lists of Java services.</p>
+    <h3>What are services?</h3>
+    <p>Raven is designed around a plugin architecture. Plugins provide an easy way to break up a large project into several smaller, independent projects. Plugins also allow third party developers to extend your application without you having to write a single extra line of code. Java provides plugin functionality via its services API.</p>
+    <h3>What does Raven Services do?</h3>
+    <p>At the heart of Java services is the services list. Every jar which provides services must maintain lists of the services they provide in the META-INF/service subdirectory within their jar. This can be tedious to do by hand, and is hard to maintain. </p>
+    <p>Raven Services uses annotations and the annoation processor to let you mark and automatically generate lists of services whenever you compile your Java source code. It also keeps track of what has already been processed so that you can incrementally compile your code.</p>
+  <!-- InstanceEndEditable -->
+	<!-- end #mainContent --></div>
 	<!-- This clearing element should immediately follow the #mainContent div in order to force the #container div to contain all child floats --><br class="clearfloat" />
   <div id="footer">
     <p>Copyright Mark McKay 2011</p>

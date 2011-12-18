@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><!-- InstanceBegin template="/Templates/ravenServicesTmplt.dwt" codeOutsideHTMLIsLocked="false" -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- InstanceBeginEditable name="doctitle" -->
+<title>Raven Services - Usage</title>
+<!-- InstanceEndEditable -->
+        <script type="text/javascript">
+          var _gaq = _gaq || [];
+          _gaq.push(['_setAccount', 'UA-17414889-5']);
+          _gaq.push(['_trackPageview']);
+
+          (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+          })();
+        </script>
+<!-- InstanceBeginEditable name="head" -->
+<!-- InstanceEndEditable -->
+<link href="../ravenStyle.css" rel="stylesheet" type="text/css" /><!--[if IE 5]>
+<style type="text/css"> 
+/* place css box model fixes for IE 5* in this conditional comment */
+.twoColFixRtHdr #sidebar1 { width: 220px; }
+</style>
+<![endif]--><!--[if IE]>
+<style type="text/css"> 
+/* place css fixes for all versions of IE in this conditional comment */
+.twoColFixRtHdr #sidebar1 { padding-top: 30px; }
+.twoColFixRtHdr #mainContent { zoom: 1; }
+/* the above proprietary zoom property gives IE the hasLayout it needs to avoid several bugs */
+</style>
+<![endif]-->
+</head>
+
+<body class="twoColFixRtHdr">
+
+<div id="container">
+  <div id="header">
+    <h1>Raven Services</h1>
+  <!-- end #header --></div>
+  <div id="sidebar1">
+    <p><a href="index.html">Overview</a></p>
+    <p><a href="usage.html">Usage</a></p>
+    <p><a href="download.html">Download</a></p>
+    <p><a href="../docs/api/RavenService">API Documentation</a></p>
+    <p><a href="../index.html">Raven Studio</a></p>
+    <!-- end #sidebar1 -->
+  </div>
+  <div id="mainContent"> <!-- InstanceBeginEditable name="mainText" -->
+    <h2>Usage</h2>
+    <h3>Creating and using services</h3>
+    <p>Java allows you to create a plugin architecture through their services API. The idea behind services is similar to ordinary class inheritence.  </p>
+    <p>You start by creating an interface or class that will serve as your root service provider. </p>
+    <p>Next you create one or more classes with implement or extend your service provider. Each of these classes must have a no-argument constructor so that it can be constructed without having to pass it any arguments. </p>
+    <p>Finally, each service a jar published must be listed in a text file in the jar's /META-INF/services directory. The name of this file must be the same as the fully qualified name of the service provider.</p>
+    <p>For example, say I was writing a program that let users learn about dinosaurs. Since third party developers might want to extend my core software, I want to use Java services to allow my program to discover allthe different dinosaur types it can work with. I start by creating my service provider base class:</p>
+    <p class="code">package com.kitfox.dinosaur;
+
+interface DinoBase
+{
+    public String name();
+    public Image picture();
+    public String description();
+}</p>
+<p>Next, I would create one or more services that implement my service provider:</p>
+
+    <p class="code">package com.kitfox.dinoTypes;
+
+import com.kitfox.dinosaur.DinoBase;
+import java.awt.Image;
+
+class Triceratops implements DinoBase
+{
+    public String name() { return "Triceratops"; } 
+    public Image picture() { return ...; }
+    public String description() 
+        { return "A dinosaur with three horns"; }
+}
+
+-----------------------------------
+package com.kitfox.dinoTypes;
+
+import com.kitfox.dinosaur.DinoBase;
+import java.awt.Image;
+
+class Stegosaurus implements DinoBase
+{
+    public String name() { return "Stegosaurus"; } 
+    public Image picture() { return ...; }
+    public String description() 
+        { return "A dinosaur with spiky plates running down its back."; }
+}</p>
+
+<p>Finally I would create a text file in the META-INF/services directory named com.kitfox.dinosaur.DinoBase
+and add entries for each service this jar provides:</p>
+    <p class="code">com.kitfox.dinoTypes.Triceratops
+com.kitfox.dinoTypes.Stegosaurus</p>
+    <p>Now that you've created and published all your services, you can easily find them at runtime. All you need to do is search through all the /META-INF/services/&lt;serviceProviderName&gt; files on your application's classpath and load all the services you find. Since Java 1.6, the <a href="http://docs.oracle.com/javase/7/docs/api/java/util/ServiceLoader.html">ServiceLoader</a> class has been added to the standard JRE which will do all this work for you, making loading services even easier.</p>
+    
+
+    
+<h3>Using Raven Services</h3>
+    <p>The one tedious and error prone part of using services is keeping those service lists up to date. Raven Services uses annotation processing to allow you to simply mark a class as being part of a service. Then whenever you compile your code, the service lists will be regenerated.</p>
+    <p>To begin using Raven Services, you will first need to include RavenService.jar in your project's classpath.</p>
+    <p>The example above can be adapted to use Raven Services:</p>
+    <p class="code">package com.kitfox.dinoTypes;
+
+import com.kitfox.dinosaur.DinoBase;
+import com.kitfox.raven.util.service.ServiceInst;
+import java.awt.Image;
+
+<strong>@ServiceInst(service=DinoBase.class)</strong>
+class Triceratops implements DinoBase
+{
+    public String name() { return "Triceratops"; } 
+    public Image picture() { return ...; }
+    public String description() 
+        { return "A dinosaur with three horns"; }
+}
+
+-----------------------------------
+package com.kitfox.dinoTypes;
+
+import com.kitfox.dinosaur.DinoBase;
+import com.kitfox.raven.util.service.ServiceInst;
+import java.awt.Image;
+
+<strong>@ServiceInst(service=DinoBase.class)</strong>
+class Stegosaurus implements DinoBase
+{
+    public String name() { return "Stegosaurus"; } 
+    public Image picture() { return ...; }
+    public String description() 
+        { return "A dinosaur with spiky plates running down its back."; }
+}</p>
+    <p>The @ServiceInst annotation specifies that this particular class will be exported as a service instance. The (service=...) specifies the service provider this service is a member of. The service instance must be derrived from the service provider.</p>
+<p>When you compile your code, you will need to set an option to tell the compiler to use the Raven Services annotation processor:</p>
+    <p class="code">javac -Acom.kitfox.raven.util.service.ServiceApt ...</p>
+    <p>If all goes well, you should find the list of services generated in the same directory where all the compiled .class files are placed.</p>
+    <h3>Using Raven Services with NetBeans</h3>
+    <p>To use Raven Services with NetBeans, the first thing you will need to do is add RavenService.jar to your libraries:</p>
+    <p><img src="usageProjLib.png" width="273" height="220" alt="Project Library" /></p>
+    <p>Then open the project properties and make the following changes:</p>
+    <ul>
+      <li>Sources
+<ul>
+          <li>Make sure your source format is set to 1.6 or higher. Annotation processing does not work with earlier versions of Java.</li>
+        </ul>
+      </li>
+      <li>Build/Compiling
+        <ul>
+          <li>Uncheck Compile on Save. NetBean's automatic code compilation does nasty things to annoation processors.</li>
+          <li>Check Enable Annoation Processing</li>
+          <li>Under Annotation processors, click Add and add the line &quot;com.kitfox.raven.util.service.ServiceApt&quot;</li>
+        </ul>
+      </li>
+    </ul>
+    <p><img src="usageBuildProp.png" width="460" height="296" alt="Project Settings" /></p>
+<p>&nbsp;</p>
+  <!-- InstanceEndEditable -->
+	<!-- end #mainContent --></div>
+	<!-- This clearing element should immediately follow the #mainContent div in order to force the #container div to contain all child floats --><br class="clearfloat" />
+  <div id="footer">
+    <p>Copyright Mark McKay 2011</p>
+    <p>Return to <a href="../index.html">Raven Studio</a></p>
+  <!-- end #footer --></div>
+<!-- end #container --></div>
+</body>
+<!-- InstanceEnd --></html>
