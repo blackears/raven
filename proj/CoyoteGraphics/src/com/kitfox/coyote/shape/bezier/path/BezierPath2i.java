@@ -18,7 +18,6 @@ package com.kitfox.coyote.shape.bezier.path;
 
 import com.kitfox.coyote.shape.CyPathIterator;
 import com.kitfox.coyote.shape.CyShape;
-import com.kitfox.coyote.shape.bezier.mesh.BezierLoopClosure;
 import com.kitfox.coyote.shape.bezier.path.cut.BezierPathCutter2i;
 import com.kitfox.coyote.shape.bezier.path.cut.Segment;
 import java.util.ArrayList;

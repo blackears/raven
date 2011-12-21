@@ -16,7 +16,6 @@
 
 package com.kitfox.coyote.shape.bezier.path;
 
-import com.kitfox.coyote.shape.bezier.mesh.BezierLoopClosure;
 import com.kitfox.coyote.shape.bezier.path.cut.BezierPathCutter2i;
 
 
