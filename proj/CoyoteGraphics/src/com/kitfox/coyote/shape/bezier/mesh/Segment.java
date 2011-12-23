@@ -14,10 +14,10 @@ import java.util.ArrayList;
  */
 public class Segment
 {
-    double t0;
-    double t1;
-    Coord c0;
-    Coord c1;
+    final double t0;
+    final double t1;
+    final Coord c0;
+    final Coord c1;
 
     public Segment(double t0, double t1, Coord c0, Coord c1)
     {
@@ -101,8 +101,8 @@ public class Segment
         {
             if (isPointOnLine(s1.c0))
             {
-                ArrayList<CutItem> cuts0 = new ArrayList<CutItem>();
-                ArrayList<CutItem> cuts1 = new ArrayList<CutItem>();
+                ArrayList<CutPoint> cuts0 = new ArrayList<CutPoint>();
+                ArrayList<CutPoint> cuts1 = new ArrayList<CutPoint>();
                 
                 //Lines are coincident
                 double s0t0 = s1.pointOnLineT(c0);
@@ -113,22 +113,22 @@ public class Segment
                 //If inside neighboring line, emit point
                 if (s1t0 >= 0 && s1t0 <= 1)
                 {
-                    cuts0.add(new CutItem(s1t0, s1.c0));
+                    cuts0.add(new CutPoint(s1t0, s1.c0));
                 }
 
                 if (s1t1 >= 0 && s1t1 <= 1)
                 {
-                    cuts0.add(new CutItem(s1t1, s1.c1));
+                    cuts0.add(new CutPoint(s1t1, s1.c1));
                 }
 
                 if (s0t0 >= 0 && s0t0 <= 1)
                 {
-                    cuts1.add(new CutItem(s0t0, c0));
+                    cuts1.add(new CutPoint(s0t0, c0));
                 }
 
                 if (s0t1 >= 0 && s0t1 <= 1)
                 {
-                    cuts1.add(new CutItem(s0t1, c1));
+                    cuts1.add(new CutPoint(s0t1, c1));
                 }
                 
                 if (cuts0.isEmpty() && cuts1.isEmpty())
@@ -138,9 +138,9 @@ public class Segment
                 
                 return new CutRecord(
                         cuts0.isEmpty() ? null 
-                            : cuts0.toArray(new CutItem[cuts0.size()]),
+                            : cuts0.toArray(new CutPoint[cuts0.size()]),
                         cuts1.isEmpty() ? null 
-                            : cuts1.toArray(new CutItem[cuts1.size()]));
+                            : cuts1.toArray(new CutPoint[cuts1.size()]));
             }
             else
             {
@@ -157,8 +157,8 @@ public class Segment
                 if (t > 0 && t < 1)
                 {
                     return new CutRecord(
-                            new CutItem[]{new CutItem(t, s1.c0)},
-                            new CutItem[]{new CutItem(0, s1.c0)});
+                            new CutPoint[]{new CutPoint(t, s1.c0)},
+                            new CutPoint[]{new CutPoint(0, s1.c0)});
                 }
             }
             else if (isPointOnLine(s1.c1))
@@ -168,8 +168,8 @@ public class Segment
                 if (t >= 0 && t <= 1)
                 {
                     return new CutRecord(
-                            new CutItem[]{new CutItem(t, s1.c1)},
-                            new CutItem[]{new CutItem(1, s1.c1)});
+                            new CutPoint[]{new CutPoint(t, s1.c1)},
+                            new CutPoint[]{new CutPoint(1, s1.c1)});
                 }
             }
             else if (s1.isPointOnLine(c0))
@@ -178,8 +178,8 @@ public class Segment
 
                 if (t >= 0 && t <= 1)
                 {
-                    return new CutRecord(new CutItem[]{new CutItem(0, c0)},
-                            new CutItem[]{new CutItem(t, c0)});
+                    return new CutRecord(new CutPoint[]{new CutPoint(0, c0)},
+                            new CutPoint[]{new CutPoint(t, c0)});
                 }
             }
             else if (s1.isPointOnLine(c1))
@@ -188,8 +188,8 @@ public class Segment
 
                 if (t >= 0 && t <= 1)
                 {
-                    return new CutRecord(new CutItem[]{new CutItem(1, c1)},
-                            new CutItem[]{new CutItem(t, c1)});
+                    return new CutRecord(new CutPoint[]{new CutPoint(1, c1)},
+                            new CutPoint[]{new CutPoint(t, c1)});
                 }
             }
             else
@@ -216,12 +216,12 @@ public class Segment
                             (int)(s0x0 * (1 - t[0]) + s0x1 * t[0]),
                             (int)(s0y0 * (1 - t[0]) + s0y1 * t[0]));
                     
-                    CutItem[] cuts0 = c.equals(c0) || c.equals(c1)
+                    CutPoint[] cuts0 = c.equals(c0) || c.equals(c1)
                             ? null
-                            : new CutItem[]{new CutItem(t[0], c)};
-                    CutItem[] cuts1 = c.equals(s1.c0) || c.equals(s1.c1)
+                            : new CutPoint[]{new CutPoint(t[0], c)};
+                    CutPoint[] cuts1 = c.equals(s1.c0) || c.equals(s1.c1)
                             ? null
-                            : new CutItem[]{new CutItem(t[1], c)};
+                            : new CutPoint[]{new CutPoint(t[1], c)};
                     
                     return new CutRecord(cuts0, cuts1);
                 }
@@ -234,29 +234,29 @@ public class Segment
     //--------------------------------
     public static class CutRecord
     {
-        CutItem[] cuts0;
-        CutItem[] cuts1;
+        CutPoint[] cuts0;
+        CutPoint[] cuts1;
 
-        public CutRecord(CutItem[] cuts0, CutItem[] cuts1)
+        public CutRecord(CutPoint[] cuts0, CutPoint[] cuts1)
         {
             this.cuts0 = cuts0;
             this.cuts1 = cuts1;
         }
     }
         
-    public static class CutItem implements Comparable<CutItem>
+    public static class CutPoint implements Comparable<CutPoint>
     {
         double t; //Relative to segment
         Coord coord;
 
-        public CutItem(double t, Coord coord)
+        public CutPoint(double t, Coord coord)
         {
             this.t = t;
             this.coord = coord;
         }
 
         @Override
-        public int compareTo(CutItem oth)
+        public int compareTo(CutPoint oth)
         {
             return Double.compare(t, oth.t);
         }

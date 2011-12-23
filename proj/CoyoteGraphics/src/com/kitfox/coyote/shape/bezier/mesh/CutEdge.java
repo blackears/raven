@@ -6,7 +6,7 @@ package com.kitfox.coyote.shape.bezier.mesh;
 
 import com.kitfox.coyote.math.Math2DUtil;
 import com.kitfox.coyote.shape.bezier.BezierCurve2i;
-import com.kitfox.coyote.shape.bezier.mesh.Segment.CutItem;
+import com.kitfox.coyote.shape.bezier.mesh.Segment.CutPoint;
 import com.kitfox.coyote.shape.bezier.mesh.Segment.CutRecord;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import java.util.ArrayList;
@@ -20,13 +20,17 @@ public class CutEdge
 {
     BezierCurve2i curve;
     Segment[] segs;
-    final double flatnessSquared;
+
+    private CutEdge(BezierCurve2i curve, Segment[] segs)
+    {
+        this.curve = curve;
+        this.segs = segs;
+    }
 
     public CutEdge(BezierCurve2i curve, double flatnessSquared)
     {
         this.curve = curve;
         segs = flatten(curve, flatnessSquared);
-        this.flatnessSquared = flatnessSquared;
     }
     
     public CutEdgeRecord cutAgainst(CutEdge e1)
@@ -41,9 +45,10 @@ public class CutEdge
             return null;
         }
         
-        ArrayList<CutItem> cuts0 = new ArrayList<CutItem>();
-        ArrayList<CutItem> cuts1 = new ArrayList<CutItem>();
+        ArrayList<CutPointEdge> cuts0 = new ArrayList<CutPointEdge>();
+        ArrayList<CutPointEdge> cuts1 = new ArrayList<CutPointEdge>();
         
+        //Add cut points
         for (int i = 0; i < segs.length; ++i)
         {
             Segment s0 = segs[i];
@@ -63,18 +68,40 @@ public class CutEdge
             }
         }
 
+        if (cuts0.isEmpty() && cuts1.isEmpty())
+        {
+            return null;
+        }
+
+        //Add existing segment points
+        for (int i = 0; i < segs.length; ++i)
+        {
+            Segment s0 = segs[i];
+            
+            if (i == 0)
+            {
+                cuts0.add(new CutPointEdge(s0.t0, s0.c0, false));
+            }
+            cuts0.add(new CutPointEdge(s0.t1, s0.c1, false));
+        }            
+        
+        for (int i = 0; i < e1.segs.length; ++i)
+        {
+            Segment s1 = e1.segs[i];
+            
+            if (i == 0)
+            {
+                cuts0.add(new CutPointEdge(s1.t0, s1.c0, false));
+            }
+            cuts0.add(new CutPointEdge(s1.t1, s1.c1, false));
+        }            
+        
+        //Sort, remove duplicates
         formatCuts(cuts0, getStart(), getEnd());
         formatCuts(cuts1, e1.getStart(), e1.getEnd());
         
-        BezierCurve2i[] curves0 = cutCurve(curve, cuts0.toArray(new CutItem[cuts0.size()]));
-        BezierCurve2i[] curves1 = cutCurve(e1.curve, cuts1.toArray(new CutItem[cuts1.size()]));
-        
-        CutEdge[] edges0 = curves0.length == 1
-                ? new CutEdge[]{this}
-                : buildEdges(curves0);
-        CutEdge[] edges1 = curves1.length == 1
-                ? new CutEdge[]{e1}
-                : buildEdges(curves1);
+        CutEdge[] edges0 = buildEdges(cuts0, curve);
+        CutEdge[] edges1 = buildEdges(cuts1, e1.curve);
         
         return new CutEdgeRecord(edges0, edges1);
     }
@@ -89,55 +116,97 @@ public class CutEdge
         return segs[segs.length - 1].c1;
     }
     
-    private CutEdge[] buildEdges(BezierCurve2i[] curves)
+    private CutEdge[] buildEdges(ArrayList<CutPointEdge> cuts,
+            BezierCurve2i curve)
     {
-        CutEdge[] edges = new CutEdge[curves.length];
+        ArrayList<ArrayList<CutPointEdge>> sections = 
+                new ArrayList<ArrayList<CutPointEdge>>();
+     
+        {
+            ArrayList<CutPointEdge> section = new ArrayList<CutPointEdge>();
+            sections.add(section);
+            for (int i = 0; i < cuts.size(); ++i)
+            {
+                CutPointEdge p = cuts.get(i);
+                if (p.cutPoint && !(i == 0 || i == cuts.size() - 1))
+                {
+                    section.add(p);
+
+                    section = new ArrayList<CutPointEdge>();
+                    sections.add(section);
+                }
+
+                section.add(p);
+            }
+        }
+
+        double[] t = new double[sections.size() - 1];
+        for (int i = 0; i < sections.size() - 1; ++i)
+        {
+            ArrayList<CutPointEdge> section = sections.get(i + 1);
+            CutPointEdge p = section.get(0);
+            t[i] = p.t;
+        }
+
+        BezierCurve2i[] curves = curve.split(t);
+        CutEdge[] edges = new CutEdge[sections.size()];
+        
         for (int i = 0; i < edges.length; ++i)
         {
-            edges[i] = new CutEdge(curves[1], flatnessSquared);
+            ArrayList<CutPointEdge> section = sections.get(i);
+            Coord cMin = section.get(0).coord;
+            Coord cMax = section.get(section.size() - 1).coord;
+            double tMin = section.get(0).t;
+            double tMax = section.get(section.size() - 1).t;
+            
+            double tStart = 0;
+            Segment[] segs = new Segment[section.size() - 1];
+            for (int j = 0; j < segs.length - 1; ++j)
+            {
+                CutPointEdge p0 = section.get(i);
+                CutPointEdge p1 = section.get(i + 1);
+                
+                double tEnd = j == segs.length - 1 
+                        ? 1 : (p1.t - tMin) / (tMax - tMin);
+                segs[j] = new Segment(tStart, tEnd, 
+                        p0.coord, p1.coord);
+                tStart = tEnd;
+            }
+            
+            edges[i] = new CutEdge(curves[i].setEndPoints(
+                    cMin.x, cMin.y, cMax.x, cMax.y),
+                    segs);
         }
+
         return edges;
     }
     
-    private void formatCuts(ArrayList<CutItem> cuts, Coord c0, Coord c1)
+    
+    private void formatCuts(ArrayList<CutPointEdge> cuts, Coord c0, Coord c1)
     {
         Collections.sort(cuts);
-        
-        //Remove cuts at start point
-        while (!cuts.isEmpty())
-        {
-            CutItem item = cuts.get(0);
-            if (item.coord.equals(c0))
-            {
-                cuts.remove(0);
-            }
-        }
-        
-        //Remove cuts at end point
-        while (!cuts.isEmpty())
-        {
-            CutItem item = cuts.get(cuts.size() - 1);
-            if (item.coord.equals(c1))
-            {
-                cuts.remove(cuts.size() - 1);
-            }
-        }
-        
-        //Remove duplicates
+
         for (int i = 0; i < cuts.size() - 1; ++i)
         {
-            CutItem item0 = cuts.get(i);
-            CutItem item1 = cuts.get(i + 1);
+            CutPointEdge p0 = cuts.get(i);
+            CutPointEdge p1 = cuts.get(i + 1);
             
-            if (item0.coord.equals(item1.coord))
+            if (p0.coord.equals(p1.coord))
             {
-                cuts.remove(i + 1);
+                if (p0.cutPoint)
+                {
+                    cuts.remove(i + 1);
+                }
+                else
+                {
+                    cuts.remove(i);
+                }
                 --i;
             }
         }
     }
     
-    private void appendCuts(ArrayList<CutItem> list, Segment s, CutItem[] cuts)
+    private void appendCuts(ArrayList<CutPointEdge> list, Segment s, CutPoint[] cuts)
     {
         if (cuts == null)
         {
@@ -146,7 +215,7 @@ public class CutEdge
         
         for (int i = 0; i < cuts.length; ++i)
         {
-            CutItem item = cuts[i];
+            CutPoint item = cuts[i];
             double t;
             if (item.t == 0)
             {
@@ -160,11 +229,12 @@ public class CutEdge
             {
                 t = Math2DUtil.lerp(s.t0, s.t1, item.t);
             }
-            list.add(new CutItem(t, item.coord));
+            list.add(new CutPointEdge(t, item.coord, true));
         }
     }
     
-    private BezierCurve2i[] cutCurve(BezierCurve2i curve, CutItem[] cuts)
+    private BezierCurve2i[] cutCurve(BezierCurve2i curve, 
+            CutPoint[] cuts)
     {
         double[] arr = new double[cuts.length];
         for (int i = 0; i < arr.length; ++i)
@@ -228,5 +298,26 @@ public class CutEdge
         flatten(curves[1], flatnessSquared, tm, t1, segs);
     }
     
+    //---------------------------------
     
+    class CutPointEdge implements Comparable<CutPointEdge>
+    {
+        final double t;
+        final Coord coord;
+        boolean cutPoint;
+
+        public CutPointEdge(double t, Coord coord, boolean cutPoint)
+        {
+            this.t = t;
+            this.coord = coord;
+            this.cutPoint = cutPoint;
+        }
+
+        @Override
+        public int compareTo(CutPointEdge oth)
+        {
+            return Double.compare(t, oth.t);
+        }
+    }
+
 }

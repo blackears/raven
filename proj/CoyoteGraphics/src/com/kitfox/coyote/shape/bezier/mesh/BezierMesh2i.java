@@ -61,9 +61,10 @@ public class BezierMesh2i<VertexData, EdgeData, FaceData, FaceVertexData>
         return edges;
     }
     
-    /*
     public BezierMeshEdge2i[] addCurve(BezierCurve2i curve)
     {
+        throw new RuntimeException();
+        /*
         CutEdge e0 = new CutEdge(curve, flatnessSquared);
         
         ArrayList<BezierMeshEdge2i> edges = getEdges();
@@ -100,6 +101,7 @@ public class BezierMesh2i<VertexData, EdgeData, FaceData, FaceVertexData>
         
         BezierMeshEdge2i e = new BezierMeshEdge2i(this, v0, v1, 
                 null, null, null, order);
+                * 
+                */
     }
-    */
 }
