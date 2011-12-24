@@ -460,22 +460,22 @@ public class ToolPaintStroke extends ToolDisplay
     @ServiceInst(service=ToolProvider.class)
     static public class Provider extends ToolProvider<ToolPaintStroke>
     {
-        private float strokeWidthMax;
+        private float strokeWidthMax = 4;
         public static final String PROP_STROKE_WIDTH_MAX = "strokeWidthMax";
 
-        private float strokeWidthMin;
+        private float strokeWidthMin = 2;
         public static final String PROP_STROKE_WIDTH_MIN = "strokeWidthMin";
 
-        private float strokeSpacing;
+        private float strokeSpacing = .2f;
         public static final String PROP_STROKE_SPACING = "strokeSpacing";
 
-        private float strokeSmoothing;
+        private float strokeSmoothing = 10;
         public static final String PROP_STROKE_SMOOTHING = "strokeSmoothing";
 
-        private float vertexSmoothAngle;
+        private float vertexSmoothAngle = 10;
         public static final String PROP_VERTEX_SMOOTH_ANGLE = "vertexSmoothAngle";
 
-        private VertexSmooth vertexSmooth;
+        private VertexSmooth vertexSmooth = VertexSmooth.SMOOTH;
         public static final String PROP_VERTEX_SMOOTH = "vertexSmooth";
 
         public Provider()

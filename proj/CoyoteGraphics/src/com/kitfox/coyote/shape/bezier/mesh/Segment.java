@@ -213,8 +213,8 @@ public class Segment
                 if (t[0] >= 0 && t[0] <= 1 && t[1] >= 0 && t[1] <= 1)
                 {
                     Coord c = new Coord(
-                            (int)(s0x0 * (1 - t[0]) + s0x1 * t[0]),
-                            (int)(s0y0 * (1 - t[0]) + s0y1 * t[0]));
+                            (int)Math2DUtil.lerp(s1x0, s1x1, t[1]),
+                            (int)Math2DUtil.lerp(s1y0, s1y1, t[1]));
                     
                     CutPoint[] cuts0 = c.equals(c0) || c.equals(c1)
                             ? null
