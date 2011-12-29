@@ -59,6 +59,7 @@
         <copy todir="build" force="true">
             <fileset dir="web2">
                 <exclude name="Templates/**"/>
+                <exclude name="**/*.psd"/>
             </fileset>
         </copy>
     </target>

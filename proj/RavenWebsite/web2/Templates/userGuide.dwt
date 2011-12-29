@@ -47,8 +47,9 @@
   <div id="sidebar1">
       <ul><li><a href="../guide/user/index.html">User Guide</a></li>
           <li><a href="../guide/user/tutorial/index.html">Tutorials</a></li>
-          <ul><li><a href="../guide/user/firstDrawing.html">Your first drawing</a></li>
-              <li><a href="../guide/user/layout.html">Layouts</a></li>
+          <ul>
+              <li><a href="../guide/user/tutorial/firstDrawing.html">Your first drawing</a></li>
+              <li><a href="../guide/user/tutorial/layout.html">Layouts</a></li>
               <li><a href="../guide/user/tutorial/keyDrivenAnimation.html">Key driven animation</a></li>
           </ul>
       </ul>
