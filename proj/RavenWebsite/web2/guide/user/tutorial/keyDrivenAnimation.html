@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><!-- InstanceBegin template="/Templates/userGuide.dwt" codeOutsideHTMLIsLocked="false" -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- InstanceBeginEditable name="doctitle" -->
+<title>Raven User Guide - Key Driven Animation</title>
+<!-- InstanceEndEditable -->
+        
+        <script type="text/javascript">
+          var _gaq = _gaq || [];
+          _gaq.push(['_setAccount', 'UA-17414889-5']);
+          _gaq.push(['_trackPageview']);
+
+          (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+          })();
+        </script>
+
+<!-- InstanceBeginEditable name="head" -->
+<!-- InstanceEndEditable -->
+<link href="../../../ravenStyle.css" rel="stylesheet" type="text/css" /><!--[if IE 5]>
+<style type="text/css"> 
+/* place css box model fixes for IE 5* in this conditional comment */
+.twoColFixRtHdr #sidebar1 { width: 220px; }
+</style>
+<![endif]--><!--[if IE]>
+<style type="text/css"> 
+/* place css fixes for all versions of IE in this conditional comment */
+.twoColFixRtHdr #sidebar1 { padding-top: 30px; }
+.twoColFixRtHdr #mainContent { zoom: 1; }
+/* the above proprietary zoom property gives IE the hasLayout it needs to avoid several bugs */
+</style>
+<![endif]-->
+</head>
+
+<body class="twoColFixRtHdr">
+
+<div id="container">
+  <div id="header">
+    <h1>Raven Studio - User Guide</h1>
+    <p><a href="../../../index.html">Raven Studio Home</a>
+        <!-- end #sidebar1 -->
+    </p>
+  <!-- end #header --></div>
+  <div id="sidebar1">
+      <ul><li><a href="../index.html">User Guide</a></li>
+          <li><a href="index.html">Tutorials</a></li>
+          <ul><li><a href="../firstDrawing.html">Your first drawing</a></li>
+              <li><a href="../layout.html">Layouts</a></li>
+              <li><a href="keyDrivenAnimation.html">Key driven animation</a></li>
+          </ul>
+      </ul>
+<p>&nbsp; </p>
+  </div> 
+  <div id="mainContent">
+    <!-- InstanceBeginEditable name="mainContent" -->
+    <h2>Key Driven Animation</h2>
+    <h3>Create a new Raven File</h3>
+    <p>Start Raven Studio. Create a new project by selecting File/New... from the main menu.</p>
+    <p>Right click on the 'scenegraph' node in the Outliner window. The node option menu will appear, which will allow you to create new children of this node. Some nodes will also have additional menu options that allow you to modify it.</p>
+    <p><img src="nodeDropDown.png" width="736" height="451" alt="Drop Down Menu" /></p>
+<p>Select the option for Ellipse. A black circle will appear in the Display window and a new node will appear in the Outliner called 'ravenNodeEllipse'. </p>
+<p>Triple click on the new node in the Outliner and the renaming tool will appear. Rename it to something shorter, like 'Ellipse'.</p>
+<h3>Set up your layout</h3>
+<p>You will now need to prepare your workspace for animation. Open the Player and Tracks windows from the View menu and rearrange your workspace to look like this:</p>
+<p><img src="animLayout.png" width="736" height="451" alt="Animation Layout" /></p>
+<h3>Setting Properties</h3>
+<p>Take a look at the properties window. It displays all of the animatable properties of the currently selected object. You can select objects by clicking on them in the Outliner. You can also use the Select tool (looks like a white arrow) in the Display area to do the same thing. </p>
+<p>You can edit the values of node properties directly by typing new values into the property window. </p>
+<p>Find the transX property. Change its value from 0.0 to 100.0 and press enter. The black circle will move 100 units to the right. </p>
+<p>You can scrub the value of numerical properties by positioning the mouse over the property you want to change, holding down the middle mouse button and dragging the mouse. This can provide a convenient way to quickly nudge a property into position.</p>
+<p>Now select the Select tool from the Tools view (it looks like a white arrow). Click on the middle of the black circle - a box with some handles will appear. You can move the circle by clicking and dragging on it. You can resize and rotate it by clicking on one of the handles and dragging.</p>
+<p>Now restore all these properties by setting transX, transY, rotation, pivotX and pivotY to 0, scaleX and scaleY to 1 and skewAngle to 90. You can also do this by pressing ctrl-Z enough times to undo all the changes you've made.</p>
+<h3>Creating a track</h3>
+<p>Next, you will need to create a new track. Do this by pressing the New button in the Player view. Give it a name such as 'MyFirstTrack' and press OK. You are now set up to start animating.</p>
+<h3>Setting Keys</h3>
+<p>Every property of every node is built to handle multiple values. One of these is the 'direct value', which is the value that appears in the Property view and is useful for editing. Each property can also store multiple 'key values'. A property can have at most one key value per track/key frame pair. It is these key nodes that constitute the animation.</p>
+<p>In the example above, the Ellipse node has a property called transX.  The project has also contains the track we added called 'MyFirstTrack'.  So for the track MyFirstTrack, transX could store one key value at frame 0, another at frame 1, frame 2, and so on.  By changing the value of the property slightly from frame to frame, the illusion of motion is created.</p>
+<p>We will start by creating an initial key frame to begin our animation. Make sure the Player has the current frame set to 0. Next set the transY property of the Ellipse to 50. (You can also select and drag it into place using the Select tool, if you wish).</p>
+<p>Now click in the transY property value area as if you were going to edit it. Then right click to bring up the property menu. </p>
+<p><img src="propertyMenu.png" width="736" height="451" alt="Property Menu" /></p>
+<p>Click on Set Key to set a new key at frame 0 of track MyFirstTrack. Also set a key on transX using its current property value. You will notice that the background of the property will have changed to yellow to indicate that a key is set at the current frame in the current track.</p>
+<p>(The drop down menu that appears will also allow you to remove already set keys. Numerical properties will provide an additional list of values - these allow you to adjust the resolution that is used when using the middle mouse button to scrub through property values).</p>
+<p>Next change the current frame to 50. This can be done by clicking and dragging the slider in the Player view or by typing 50 into the Current Frame box in the same window. Set transX to 100 and transY to 80. Set keys on both properties.</p>
+<p><img src="settingFrame50.png" width="736" height="451" alt="Setting frame 50" /></p>
+<p>Now change the current frame to 100 and set transX to 200 and transY to 50. Key both these values.</p>
+<h3>Testing Playback</h3>
+<p>Now that we've set three keys, we can use the animation engine of Raven to blend between them. Click on the slider arrow in the Player view and move it to a different place in the timeline. As you move the arrow, the Display will update to show the animation at this point in time.</p>
+<p>The properties window will also update to show the current value of the properties at the current frame. You will also notice that the background of the transX and transY properties are now mostly purple, with a few flashes of yellow. The yellow backgrounds indicate places where key frames are set, and purple indicates interpolated values calculated by Raven.</p>
+<p><img src="interpolatedValues.png" width="736" height="451" alt="INterpolated values" /></p>
+<p>Click the 'loop' checkbox and press the 'Play Forward' button in the player (has a '&gt;' symbol). Your animation will now be played. You can stop playback by pressing the 'Pause' button (has a '||' symbol).</p>
+<h3>Understanding Property states</h3>
+<p>Animated properties can take some getting used to. If a property is key framed (yellow background) or interpolated (purple background) at a particular time, you can still edit it in the Property view. However, if you then change the current frame to something else, that value will be lost. This is because when you edit the property in this view, you are setting the 'direct value'. When you navigate to another part of the timeline, you overwrite the direct value with the animation value at that particular time. If you want to keep the change you made, you will have to Set Key to copy the direct value into the key values of the track. </p>
+<p>Properties may also not be animated in some frames, in which case they will have a  white background. If you scrub the timeline to a frame that is unanimated, the direct value of the property will not be changed.</p>
+<h3>Extending our Animation</h3>
+<p>It would be nice if we could have the circle travel all the way back to its starting point instead of stopping abruptly at the far end of the display window. To do this, we will need extra frames to work with. In the Player view, change the value of Last Frame from 100 to 200.</p>
+<p>Set the current frame to 150. Set transX to 100 and transY to 20. Set keys on both.</p>
+<p>Finally, set the current frame to 200, transX to 0 and transY to 50. Set keys once more. Now press Play Forward and watch our ellipse travel in a complete circle.</p>
+<h3>Adjusting Animation Curves</h3>
+<p>While our animation now travels in a complete circle, it does seem to slow down when the circle gets close to our key frames and speed up when traveling between them. It would be nice if we could smooth this out. Well, we can using the Tracks view.</p>
+<p><img src="animCurvesInitial.png" width="736" height="451" alt="Animation Curves Initial" /></p>
+<p>Switch to the tracks view. Make sure the Ellipse is selected and then select the ellipse.transX and ellipse.transY properties in the list box on the left. Next click the Fit button to see the animated curves of these tracks in the graph area. The black dots represent the track key frames, and the blue lines represent the interpolated regions.</p>
+<p>Click on Control Point in the Tracks view to switch to the Control Point editing tool. Click on one of the black dots in the grid area. It will turn white and two handles will appear indicating the slope of the curve at that point. If you right click, a drop down menu will appear indicating the type of interpolation that occurs at that key. </p>
+<p><img src="curveKeyMenu.png" width="736" height="451" alt="Curve key menu" /></p>
+<p>We need to change the interpolation type of all keys to Smooth. Click and drag a marquis in the grid area to select all key control points. Then right click on one of them and select Smooth from the drop down menu. The keys will not visibly change, but they have all been converted to smooth control points.</p>
+<p>Now that the points are smooth, it is possible to change their slope. Click and drag on the black tangent handles of the intermediate keys so that the curve is smoothed out. When you're done, the graph should look something like this:</p>
+<p><img src="smoothedCurves.png" width="736" height="451" alt="Smoothed Curves" /></p>
+<p>Finally, switch back to the Player view. When you play back the animation this time, it will be much smoother.</p>
+    <!-- InstanceEndEditable -->
+    
+	<!-- end #mainContent --></div>
+	<!-- This clearing element should immediately follow the #mainContent div in order to force the #container div to contain all child floats --><br class="clearfloat" />
+  <div id="footer">
+    <p>Copyright Mark McKay 2011</p>
+    <p>Return to <a href="../../../index.html">Raven Studio</a></p>
+  <!-- end #footer --></div>
+<!-- end #container --></div>
+</body>
+<!-- InstanceEnd --></html>

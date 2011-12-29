@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <RavenEditorPreferences xmlns="http://xml.kitfox.com/ns/RavenEditorPreferences">
     <recentFiles>
+        <file>C:\Users\kitfox\Documents\raven\animRect.raven</file>
         <file>C:\Users\kitfox\Documents\raven\frame_anim_test.raven</file>
         <file>C:\Users\kitfox\Documents\raven\frame_anim_test.png</file>
         <file>C:\dev\kitfox.com\gameTools4\proj\RavenEditorTesting\work\testShapes.raven</file>
@@ -19,10 +20,9 @@
         <file>C:\dev\kitfox.com\gameTools4\proj\RavenEditorTesting\work\testAnim.xml</file>
         <file>C:\dev\kitfox.com\gameTools4\proj\RavenEditorTesting\work\test.xml</file>
         <file>C:\dev\kitfox.com\gameTools4\proj\RavenEditorTesting\work\testStroke.xml</file>
-        <file>C:\dev\kitfox.com\gameTools4\proj\RavenEditorTesting\work\testSwfImport.xml</file>
     </recentFiles>
     <views>
-        <mainFrame x="54" y="75" width="941" height="806" maximized="false"/>
+        <mainFrame x="61" y="15" width="941" height="688" maximized="false"/>
         <workingLayout>
             <root xsi:type="ViewDockSplitType" divider="724" vertical="false" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 <left xsi:type="ViewDockSplitType" divider="229" vertical="false">
@@ -34,7 +34,7 @@
                             <dockables class="com.kitfox.raven.editor.view.properties.PropertiesViewProvider"/>
                         </right>
                     </left>
-                    <right xsi:type="ViewDockSplitType" divider="572" vertical="true">
+                    <right xsi:type="ViewDockSplitType" divider="466" vertical="true">
                         <left xsi:type="ViewDockTabbedType">
                             <dockables class="com.kitfox.raven.editor.view.displayCy.DisplayCyViewProvider"/>
                         </left>

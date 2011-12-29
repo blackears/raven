@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<RavenEditorPreferences xmlns="http://xml.kitfox.com/ns/RavenEditorPreferences">
+    <recentFiles/>
+    <views>
+        <workingLayout>
+            <root xsi:type="ViewDockSplitType" divider="210" vertical="false" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                <left xsi:type="ViewDockSplitType" divider="259" vertical="true">
+                    <left xsi:type="ViewDockTabbedType">
+                        <dockables class="com.kitfox.raven.editor.view.outliner.OutlinerViewProvider"/>
+                    </left>
+                    <right xsi:type="ViewDockTabbedType">
+                        <dockables class="com.kitfox.raven.editor.view.properties.PropertiesViewProvider"/>
+                    </right>
+                </left>
+                <right xsi:type="ViewDockSplitType" divider="487" vertical="false">
+                    <left xsi:type="ViewDockTabbedType">
+                        <dockables class="com.kitfox.raven.editor.view.displayCy.DisplayCyViewProvider"/>
+                    </left>
+                    <right xsi:type="ViewDockTabbedType">
+                        <dockables class="com.kitfox.raven.editor.view.toolSettings.ToolSettingsViewProvider"/>
+                    </right>
+                </right>
+            </root>
+        </workingLayout>
+    </views>
+</RavenEditorPreferences>

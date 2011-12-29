@@ -16,24 +16,20 @@
 
 package com.kitfox.raven.editor;
 
+import com.kitfox.raven.util.JAXBUtil;
 import com.kitfox.raven.util.resource.ResourceCache;
 import com.kitfox.xml.ns.raveneditorpreferences.FileType;
 import com.kitfox.xml.ns.raveneditorpreferences.ObjectFactory;
 import com.kitfox.xml.ns.raveneditorpreferences.RavenEditorPreferencesType;
 import com.kitfox.xml.ns.raveneditorpreferences.RecentFilesType;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
 
 /**
  *
@@ -112,22 +108,42 @@ public class RavenEditor
 
     private void loadPreferences()
     {
-        if (!prefFile.exists())
+        RavenEditorPreferencesType prefType = null;
+        if (prefFile.exists() && prefFile.canRead())
         {
-            loadPreferences(null);
-            return;
+            prefType =
+                JAXBUtil.loadJAXB(RavenEditorPreferencesType.class, prefFile);
+        }
+        else
+        {
+            InputStream is = 
+                    RavenEditor.class.getResourceAsStream("/com/kitfox/raven/pref/preferencesDefault.xml");
+            if (is != null)
+            {
+                prefType =
+                    JAXBUtil.loadJAXB(RavenEditorPreferencesType.class, is);
+                try
+                {
+                    is.close();
+                } catch (IOException ex)
+                {
+                    Logger.getLogger(RavenEditor.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
 
-        try {
-            JAXBContext context = JAXBContext.newInstance(RavenEditorPreferencesType.class);
-            StreamSource source = new StreamSource(prefFile);
-            Unmarshaller unmarshaller = context.createUnmarshaller();
-
-            JAXBElement<RavenEditorPreferencesType> ele = unmarshaller.unmarshal(source, RavenEditorPreferencesType.class);
-            loadPreferences(ele.getValue());
-        } catch (JAXBException ex) {
-            Logger.getLogger(RavenEditor.class.getName()).log(Level.WARNING, null, ex);
-        }
+        loadPreferences(prefType);
+        
+//        try {
+//            JAXBContext context = JAXBContext.newInstance(RavenEditorPreferencesType.class);
+//            StreamSource source = new StreamSource(prefFile);
+//            Unmarshaller unmarshaller = context.createUnmarshaller();
+//
+//            JAXBElement<RavenEditorPreferencesType> ele = unmarshaller.unmarshal(source, RavenEditorPreferencesType.class);
+//            loadPreferences(ele.getValue());
+//        } catch (JAXBException ex) {
+//            Logger.getLogger(RavenEditor.class.getName()).log(Level.WARNING, null, ex);
+//        }
     }
 
     protected void loadPreferences(RavenEditorPreferencesType pref)
@@ -170,22 +186,23 @@ public class RavenEditor
                 = new ObjectFactory();
         JAXBElement<RavenEditorPreferencesType> value = fact.createRavenEditorPreferences(pref);
 
+        JAXBUtil.saveJAXB(value, prefFile);
 
-        try {
-            FileWriter fw = new FileWriter(prefFile);
-
-            JAXBContext context = JAXBContext.newInstance(RavenEditorPreferencesType.class);
-            Marshaller marshaller = context.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-            marshaller.marshal(value, fw);
-            fw.close();
-        } catch (IOException ex) {
-            Logger.getLogger(RavenEditor.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JAXBException ex) {
-            Logger.getLogger(RavenEditor.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//            FileWriter fw = new FileWriter(prefFile);
+//
+//            JAXBContext context = JAXBContext.newInstance(RavenEditorPreferencesType.class);
+//            Marshaller marshaller = context.createMarshaller();
+//            marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+//            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+//
+//            marshaller.marshal(value, fw);
+//            fw.close();
+//        } catch (IOException ex) {
+//            Logger.getLogger(RavenEditor.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (JAXBException ex) {
+//            Logger.getLogger(RavenEditor.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     protected RavenEditorPreferencesType prefAsJAXB()

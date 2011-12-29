@@ -16,6 +16,7 @@
 
 package com.kitfox.raven.util.index;
 
+import com.kitfox.raven.util.JAXBUtil;
 import com.kitfox.xml.schema.indexlog.IndexBuilderLogType;
 import com.kitfox.xml.schema.indexlog.IndexItemLogType;
 import com.kitfox.xml.schema.indexlog.IndexLog;
@@ -24,7 +25,6 @@ import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -38,12 +38,7 @@ import java.util.Iterator;
 import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.Path;
@@ -355,32 +350,27 @@ System.err.println("Index file " + file);
         IndexBuilderLogType logTable = null;
         if (log.exists())
         {
-            try
+            IndexBuilderLogType logType = JAXBUtil.loadJAXB(IndexBuilderLogType.class, log);
+
+
+//                FileReader is = new FileReader(log);
+//
+//                JAXBContext context = JAXBContext.newInstance(IndexBuilderLogType.class);
+//                StreamSource source = new StreamSource(is);
+//                Unmarshaller unmarshaller = context.createUnmarshaller();
+//
+//                JAXBElement<IndexBuilderLogType> ele = unmarshaller.unmarshal(source, IndexBuilderLogType.class);
+
+            for (IndexLog idx: logType.getIndex())
             {
-                FileReader is = new FileReader(log);
+                String cls = idx.getClazz();
+                IndexItems indexItems = new IndexItems(cls);
+                map.put(cls, indexItems);
 
-                JAXBContext context = JAXBContext.newInstance(IndexBuilderLogType.class);
-                StreamSource source = new StreamSource(is);
-                Unmarshaller unmarshaller = context.createUnmarshaller();
-
-                JAXBElement<IndexBuilderLogType> ele = unmarshaller.unmarshal(source, IndexBuilderLogType.class);
-
-                for (IndexLog idx: ele.getValue().getIndex())
+                for (IndexItemLogType item: idx.getItem())
                 {
-                    String cls = idx.getClazz();
-                    IndexItems indexItems = new IndexItems(cls);
-                    map.put(cls, indexItems);
-
-                    for (IndexItemLogType item: idx.getItem())
-                    {
-                        indexItems.addInit(item.getIndex(), item.getItemClass());
-                    }
+                    indexItems.addInit(item.getIndex(), item.getItemClass());
                 }
-
-            } catch (IOException ex) {
-                Logger.getLogger(IndexBuilderAnt.class.getName()).log(Level.WARNING, null, ex);
-            } catch (JAXBException ex) {
-                Logger.getLogger(IndexBuilderAnt.class.getName()).log(Level.WARNING, null, ex);
             }
         }
 
@@ -410,22 +400,24 @@ System.err.println("Index file " + file);
             }
         }
 
-        try {
-            FileWriter writer = new FileWriter(log);
-
-//            String packg = IndexBuilderLogType.class.getPackage().getName();
-//            JAXBContext context = JAXBContext.newInstance(packg, IndexBuilderLogType.class.getClassLoader());
-            JAXBContext context = JAXBContext.newInstance(IndexBuilderLogType.class);
-            Marshaller marshaller = context.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-            marshaller.marshal(value, writer);
-        } catch (IOException ex) {
-            Logger.getLogger(IndexBuilderAnt.class.getName()).log(Level.WARNING, null, ex);
-        } catch (JAXBException ex) {
-            Logger.getLogger(IndexBuilderAnt.class.getName()).log(Level.WARNING, null, ex);
-        }
+        JAXBUtil.saveJAXB(value, log);
+//        try {
+//            
+//            FileWriter writer = new FileWriter(log);
+//
+////            String packg = IndexBuilderLogType.class.getPackage().getName();
+////            JAXBContext context = JAXBContext.newInstance(packg, IndexBuilderLogType.class.getClassLoader());
+//            JAXBContext context = JAXBContext.newInstance(IndexBuilderLogType.class);
+//            Marshaller marshaller = context.createMarshaller();
+//            marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+//            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+//
+//            marshaller.marshal(value, writer);
+//        } catch (IOException ex) {
+//            Logger.getLogger(IndexBuilderAnt.class.getName()).log(Level.WARNING, null, ex);
+//        } catch (JAXBException ex) {
+//            Logger.getLogger(IndexBuilderAnt.class.getName()).log(Level.WARNING, null, ex);
+//        }
         
     }
 }

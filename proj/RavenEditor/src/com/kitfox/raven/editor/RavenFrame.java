@@ -67,7 +67,7 @@ public class RavenFrame extends javax.swing.JFrame
         add(dockingRoot, BorderLayout.CENTER);
 
         viewManager.getEditor().addRavenEditorListener(this);
-//        viewManager.addRavenViewManagerListener(this);
+        viewManager.addRavenViewManagerListener(this);
         refreshTitle();
 //        refreshRecentFileListSwing();
 //        refreshUndoHistory();
@@ -120,6 +120,12 @@ public class RavenFrame extends javax.swing.JFrame
 
     void setupFrame(MainFrameType mainFrame)
     {
+        if (mainFrame == null)
+        {
+            setExtendedState(Frame.NORMAL);
+            return;
+        }
+        
         if (mainFrame.getMaximized())
         {
             setExtendedState(Frame.MAXIMIZED_BOTH);

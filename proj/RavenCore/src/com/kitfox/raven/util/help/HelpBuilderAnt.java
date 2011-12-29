@@ -16,6 +16,7 @@
 
 package com.kitfox.raven.util.help;
 
+import com.kitfox.raven.util.JAXBUtil;
 import com.kitfox.xml.schema.helpindexschema.HeaderType;
 import com.kitfox.xml.schema.helpindexschema.HelpIndexType;
 import com.kitfox.xml.schema.helpindexschema.OutlineEntryType;
@@ -24,7 +25,6 @@ import com.kitfox.xml.schema.helpindexschema.SubindexType;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -32,11 +32,6 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
@@ -84,7 +79,8 @@ public class HelpBuilderAnt extends Task
     {
         File parentFile = srcFile.getParentFile();
 
-        HelpIndexType indexType = loadHelpIndex(srcFile);
+//        HelpIndexType indexType = loadHelpIndex(srcFile);
+        HelpIndexType indexType = JAXBUtil.loadJAXB(HelpIndexType.class, srcFile);
 
         HeaderType header = indexType.getHeader();
         if (header != null)
@@ -122,28 +118,28 @@ public class HelpBuilderAnt extends Task
         return info;
     }
 
-    private HelpIndexType loadHelpIndex(File file)
-    {
-        try {
-//            JAXBContext context = JAXBContext.newInstance(
-//                    HelpIndexType.class.getPackage().getName(),
-//                    HelpIndexType.class.getClassLoader());
-            JAXBContext context = JAXBContext.newInstance(HelpIndexType.class);
-            FileReader reader = new FileReader(file);
-            StreamSource source = new StreamSource(reader);
-            Unmarshaller unmarshaller = context.createUnmarshaller();
-
-            JAXBElement<HelpIndexType> ele = unmarshaller.unmarshal(
-                    source, HelpIndexType.class);
-
-            return ele.getValue();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(HelpBuilderAnt.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JAXBException ex) {
-            Logger.getLogger(HelpBuilderAnt.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
+//    private HelpIndexType loadHelpIndex(File file)
+//    {
+//        try {
+////            JAXBContext context = JAXBContext.newInstance(
+////                    HelpIndexType.class.getPackage().getName(),
+////                    HelpIndexType.class.getClassLoader());
+//            JAXBContext context = JAXBContext.newInstance(HelpIndexType.class);
+//            FileReader reader = new FileReader(file);
+//            StreamSource source = new StreamSource(reader);
+//            Unmarshaller unmarshaller = context.createUnmarshaller();
+//
+//            JAXBElement<HelpIndexType> ele = unmarshaller.unmarshal(
+//                    source, HelpIndexType.class);
+//
+//            return ele.getValue();
+//        } catch (FileNotFoundException ex) {
+//            Logger.getLogger(HelpBuilderAnt.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (JAXBException ex) {
+//            Logger.getLogger(HelpBuilderAnt.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return null;
+//    }
 
     /**
      * @return the dest

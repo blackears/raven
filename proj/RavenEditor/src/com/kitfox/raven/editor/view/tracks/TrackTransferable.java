@@ -16,6 +16,7 @@
 
 package com.kitfox.raven.editor.view.tracks;
 
+import com.kitfox.raven.util.JAXBUtil;
 import com.kitfox.xml.schema.ravendocumentschema.ObjectFactory;
 import com.kitfox.xml.schema.ravendocumentschema.TrackTransferableType;
 import java.awt.datatransfer.DataFlavor;
@@ -24,14 +25,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
 
 /**
  *
@@ -57,29 +51,30 @@ public class TrackTransferable implements Transferable
     {
         String text = null;
 
-        try {
+//        try {
             //Output
-            JAXBContext context = JAXBContext.newInstance(
-                    TrackTransferableType.class.getPackage().getName(),
-                    TrackTransferableType.class.getClassLoader());
-
-            Marshaller marshaller = context.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+//            JAXBContext context = JAXBContext.newInstance(
+//                    TrackTransferableType.class.getPackage().getName(),
+//                    TrackTransferableType.class.getClassLoader());
+//
+//            Marshaller marshaller = context.createMarshaller();
+//            marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+//            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
             ObjectFactory fact = new ObjectFactory();
 
             JAXBElement<TrackTransferableType> value = fact.createTrackTransferable(track);
 
             StringWriter sw = new StringWriter();
-            marshaller.marshal(value, sw);
+            JAXBUtil.saveJAXB(value, sw);
+//            marshaller.marshal(value, sw);
 
             text = sw.toString();
 
 
-        } catch (JAXBException ex) {
-            Logger.getLogger(TrackTransferable.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        } catch (JAXBException ex) {
+//            Logger.getLogger(TrackTransferable.class.getName()).log(Level.SEVERE, null, ex);
+//        }
 
         layerDefs = text;
     }
@@ -115,20 +110,23 @@ public class TrackTransferable implements Transferable
 
         if (FLAVOR.equals(flavor))
         {
-            try {
-                JAXBContext context = JAXBContext.newInstance(
-                        TrackTransferableType.class.getPackage().getName(),
-                        TrackTransferableType.class.getClassLoader());
-                StringReader reader = new StringReader(layerDefs);
-                StreamSource source = new StreamSource(reader);
-                Unmarshaller unmarshaller = context.createUnmarshaller();
-
-                JAXBElement<TrackTransferableType> ele = unmarshaller.unmarshal(source, TrackTransferableType.class);
-
-                return ele.getValue();
-            } catch (JAXBException ex) {
-                Logger.getLogger(TrackTransferable.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            StringReader reader = new StringReader(layerDefs);
+            return JAXBUtil.loadJAXB(TrackTransferableType.class, reader);
+            
+//            try {
+//                JAXBContext context = JAXBContext.newInstance(
+//                        TrackTransferableType.class.getPackage().getName(),
+//                        TrackTransferableType.class.getClassLoader());
+//                StringReader reader = new StringReader(layerDefs);
+//                StreamSource source = new StreamSource(reader);
+//                Unmarshaller unmarshaller = context.createUnmarshaller();
+//
+//                JAXBElement<TrackTransferableType> ele = unmarshaller.unmarshal(source, TrackTransferableType.class);
+//
+//                return ele.getValue();
+//            } catch (JAXBException ex) {
+//                Logger.getLogger(TrackTransferable.class.getName()).log(Level.SEVERE, null, ex);
+//            }
         }
 
         return null;

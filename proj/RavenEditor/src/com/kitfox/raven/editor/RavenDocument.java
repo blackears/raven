@@ -16,6 +16,7 @@
 
 package com.kitfox.raven.editor;
 
+import com.kitfox.raven.util.JAXBUtil;
 import com.kitfox.raven.util.resource.ResourceCache;
 import com.kitfox.raven.util.tree.NodeDocument;
 import com.kitfox.raven.util.tree.NodeDocumentProvider;
@@ -27,7 +28,6 @@ import com.kitfox.xml.schema.ravendocumentschema.ObjectFactory;
 import com.kitfox.xml.schema.ravendocumentschema.RavenDocumentType;
 import java.awt.Window;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EventObject;
@@ -35,12 +35,7 @@ import java.util.HashMap;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
 
 /**
  *
@@ -193,17 +188,19 @@ public class RavenDocument
             return null;
         }
 
-        try {
-            JAXBContext context = JAXBContext.newInstance(RavenDocumentType.class);
-            StreamSource streamSource = new StreamSource(file);
-            Unmarshaller unmarshaller = context.createUnmarshaller();
-
-            JAXBElement<RavenDocumentType> ele = unmarshaller.unmarshal(streamSource, RavenDocumentType.class);
-            return ele.getValue();
-        } catch (JAXBException ex) {
-            Logger.getLogger(RavenDocument.class.getName()).log(Level.WARNING, null, ex);
-        }
-        return null;
+        return JAXBUtil.loadJAXB(RavenDocumentType.class, file);
+        
+//        try {
+//            JAXBContext context = JAXBContext.newInstance(RavenDocumentType.class);
+//            StreamSource streamSource = new StreamSource(file);
+//            Unmarshaller unmarshaller = context.createUnmarshaller();
+//
+//            JAXBElement<RavenDocumentType> ele = unmarshaller.unmarshal(streamSource, RavenDocumentType.class);
+//            return ele.getValue();
+//        } catch (JAXBException ex) {
+//            Logger.getLogger(RavenDocument.class.getName()).log(Level.WARNING, null, ex);
+//        }
+//        return null;
     }
 
 
@@ -215,21 +212,22 @@ public class RavenDocument
                 = new ObjectFactory();
         JAXBElement<RavenDocumentType> value = fact.createRavenDocument(pref);
 
-        try {
-            FileWriter fw = new FileWriter(file);
-
-            JAXBContext context = JAXBContext.newInstance(RavenDocumentType.class);
-            Marshaller marshaller = context.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-            marshaller.marshal(value, fw);
-            fw.close();
-        } catch (IOException ex) {
-            Logger.getLogger(RavenEditor.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JAXBException ex) {
-            Logger.getLogger(RavenEditor.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        JAXBUtil.saveJAXB(value, file);
+//        try {
+//            FileWriter fw = new FileWriter(file);
+//
+//            JAXBContext context = JAXBContext.newInstance(RavenDocumentType.class);
+//            Marshaller marshaller = context.createMarshaller();
+//            marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+//            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+//
+//            marshaller.marshal(value, fw);
+//            fw.close();
+//        } catch (IOException ex) {
+//            Logger.getLogger(RavenEditor.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (JAXBException ex) {
+//            Logger.getLogger(RavenEditor.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     /**
