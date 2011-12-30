@@ -51,7 +51,7 @@ public class ActionEditDelete extends AbstractAction
         {
             return;
         }
-        doc.getRoot().deleteSelected();
+        doc.getCurDocument().deleteSelected();
     }
 
     //---------------------------------

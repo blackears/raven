@@ -24,6 +24,7 @@ import com.kitfox.raven.util.tree.NodeDocumentProviderIndex;
 import com.kitfox.xml.schema.ravendocumentschema.MetaPropertyEntryType;
 import com.kitfox.xml.schema.ravendocumentschema.MetaPropertySetGroupType;
 import com.kitfox.xml.schema.ravendocumentschema.MetaPropertySetType;
+import com.kitfox.xml.schema.ravendocumentschema.NodeDocumentType;
 import com.kitfox.xml.schema.ravendocumentschema.ObjectFactory;
 import com.kitfox.xml.schema.ravendocumentschema.RavenDocumentType;
 import java.awt.Window;
@@ -32,6 +33,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,8 +51,9 @@ public class RavenDocument
     private final RavenEditor editor;
     private File source;
 
-//    private RavenNodeRoot root;
-    private NodeDocument root;
+    private ArrayList<NodeDocument> documents = new ArrayList<NodeDocument>();
+    public static final String PROP_CURDOCUMENT = "curDocument";
+    NodeDocument curDoc;
 
     ArrayList<RavenDocumentListener> listeners = new ArrayList<RavenDocumentListener>();
 
@@ -58,25 +61,45 @@ public class RavenDocument
     // specific persistent information
     HashMap<String, Properties> metaProperties = new HashMap<String, Properties>();
 
+    public RavenDocument(RavenEditor editor)
+    {
+        this.editor = editor;
+    }
+
     public RavenDocument(RavenEditor editor, NodeDocument root)
     {
         this.editor = editor;
-        this.root = root;
-
-        root.setEnv(this);
+        addDocument(root);
+        curDoc = root;
     }
 
     public RavenDocument(RavenEditor editor, File file)
     {
-        this.editor = editor;
+        this(editor);
 
         //Load document
         RavenDocumentType docTree = load(file);
-        String docClass = docTree.getRoot().getClazz();
-        NodeDocumentProvider prov =
-                NodeDocumentProviderIndex.inst().getProvider(docClass);
-        this.root = prov.loadDocument(docTree);
-        root.setEnv(this);
+        String curDocName = docTree.getCurDocument();
+        for (NodeDocumentType docType: docTree.getRoot())
+        {
+            String docClass = docType.getClazz();
+            NodeDocumentProvider prov =
+                    NodeDocumentProviderIndex.inst().getProvider(docClass);
+            NodeDocument doc = prov.loadDocument(docType);
+            doc.setEnv(this);
+            
+            documents.add(doc);
+            
+            if (curDocName != null && curDocName.equals(doc.getDocumentName()))
+            {
+                curDoc = doc;
+            }
+        }
+
+        if (curDoc == null && !documents.isEmpty())
+        {
+            curDoc = documents.get(0);
+        }
 
         //Load meta properties
         MetaPropertySetGroupType group = docTree.getPropertySetGroups();
@@ -94,6 +117,94 @@ public class RavenDocument
         }
     }
 
+    /**
+     * @return the sceneGraph
+     */
+    public NodeDocument getCurDocument()
+    {
+        return curDoc;
+    }
+
+    public NodeDocument getDocument(String name)
+    {
+        for (NodeDocument doc: documents)
+        {
+            if (name.equals(doc.getDocumentName()))
+            {
+                return doc;
+            }
+        }
+        return null;
+    }
+    
+    public int getNumDocuments()
+    {
+        return documents.size();
+    }
+    
+    public NodeDocument getDocument(int index)
+    {
+        return documents.get(index);
+    }
+    
+    public void setCurrentDocument(int index)
+    {
+        NodeDocument doc = getDocument(index);
+        NodeDocument oldDoc = curDoc;
+        curDoc = doc;
+        fireCurrentDocumentChanged(oldDoc, doc);
+    }
+    
+    public int indexOfCurrentDocument()
+    {
+        for (int i = 0; i < documents.size(); ++i)
+        {
+            if (documents.get(i) == curDoc)
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+    
+    public boolean addDocument(NodeDocument doc)
+    {
+        documents.add(doc);
+        doc.setEnv(this);
+        fireDocumentAdded(doc);
+        return true;
+    }
+    
+    public NodeDocument removeDocument(int index)
+    {
+        NodeDocument doc = documents.remove(index);
+        doc.setEnv(null);
+        fireDocumentRemoved(doc);
+        return doc;
+    }
+    
+    public String getUnusedDocumentName(String rootName)
+    {
+        HashSet<String> names = new HashSet<String>();
+        for (NodeDocument doc: documents)
+        {
+            names.add(doc.getDocumentName());
+        }
+        
+        String name = rootName;
+        int idx = 0;
+        while (names.contains(name))
+        {
+            name = rootName + idx++;
+        }
+        return name;
+    }
+    
+    public ArrayList<NodeDocument> getDocuments()
+    {
+        return new ArrayList<NodeDocument>(documents);
+    }
+    
     public void addRavenDocumentListener(RavenDocumentListener l)
     {
         listeners.add(l);
@@ -110,6 +221,34 @@ public class RavenDocument
         for (int i = 0; i < listeners.size(); ++i)
         {
             listeners.get(i).documentSourceChanged(evt);
+        }
+    }
+
+    private void fireDocumentAdded(NodeDocument doc)
+    {
+        RavenDocumentEvent evt = new RavenDocumentEvent(this, doc);
+        for (int i = 0; i < listeners.size(); ++i)
+        {
+            listeners.get(i).documentAdded(evt);
+        }
+    }
+
+    private void fireDocumentRemoved(NodeDocument doc)
+    {
+        RavenDocumentEvent evt = new RavenDocumentEvent(this, doc);
+        for (int i = 0; i < listeners.size(); ++i)
+        {
+            listeners.get(i).documentRemoved(evt);
+        }
+    }
+
+    private void fireCurrentDocumentChanged(NodeDocument oldDoc, NodeDocument doc)
+    {
+        RavenDocumentEvent evt = 
+                new RavenDocumentEvent(this, doc, oldDoc);
+        for (int i = 0; i < listeners.size(); ++i)
+        {
+            listeners.get(i).currentDocumentChanged(evt);
         }
     }
 
@@ -154,8 +293,13 @@ public class RavenDocument
         }
         pref.setVersion(props.getProperty("version"));
 
-        //Save Document
-        pref.setRoot(root.export());
+        //Save Documents
+        for (NodeDocument doc: documents)
+        {
+            NodeDocumentType type = doc.export();
+            pref.getRoot().add(type);
+        }
+        pref.setCurDocument(curDoc == null ? null : curDoc.getDocumentName());
 
         //Save meta properties
         MetaPropertySetGroupType groups = new MetaPropertySetGroupType();
@@ -189,18 +333,6 @@ public class RavenDocument
         }
 
         return JAXBUtil.loadJAXB(RavenDocumentType.class, file);
-        
-//        try {
-//            JAXBContext context = JAXBContext.newInstance(RavenDocumentType.class);
-//            StreamSource streamSource = new StreamSource(file);
-//            Unmarshaller unmarshaller = context.createUnmarshaller();
-//
-//            JAXBElement<RavenDocumentType> ele = unmarshaller.unmarshal(streamSource, RavenDocumentType.class);
-//            return ele.getValue();
-//        } catch (JAXBException ex) {
-//            Logger.getLogger(RavenDocument.class.getName()).log(Level.WARNING, null, ex);
-//        }
-//        return null;
     }
 
 
@@ -213,29 +345,6 @@ public class RavenDocument
         JAXBElement<RavenDocumentType> value = fact.createRavenDocument(pref);
 
         JAXBUtil.saveJAXB(value, file);
-//        try {
-//            FileWriter fw = new FileWriter(file);
-//
-//            JAXBContext context = JAXBContext.newInstance(RavenDocumentType.class);
-//            Marshaller marshaller = context.createMarshaller();
-//            marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-//            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-//
-//            marshaller.marshal(value, fw);
-//            fw.close();
-//        } catch (IOException ex) {
-//            Logger.getLogger(RavenEditor.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (JAXBException ex) {
-//            Logger.getLogger(RavenEditor.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-    }
-
-    /**
-     * @return the sceneGraph
-     */
-    public NodeDocument getRoot()
-    {
-        return root;
     }
 
     /**

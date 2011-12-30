@@ -17,7 +17,7 @@
 package com.kitfox.raven.util.tree;
 
 import com.kitfox.raven.wizard.RavenWizardPageIterator;
-import com.kitfox.xml.schema.ravendocumentschema.RavenDocumentType;
+import com.kitfox.xml.schema.ravendocumentschema.NodeDocumentType;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
@@ -74,44 +74,7 @@ abstract public class NodeDocumentProvider<T extends NodeDocument>
 
     abstract public RavenWizardPageIterator<T> createDocumentWizard();
 
-    abstract public NodeDocument loadDocument(RavenDocumentType docTree);
-
-//    abstract public T createDocument();
-    
-//    abstract public T createNode(int uid);
-//
-//    final public T createNode(NodeDocument doc)
-//    {
-//        return createNode(doc, null);
-//    }
-//
-//    public T createNode(NodeDocument doc, NodeDocumentType nodeType)
-//    {
-//        int uid;
-//        if (nodeType == null)
-//        {
-//            uid = doc.allocUid();
-//        }
-//        else
-//        {
-//            uid = nodeType.getUid();
-//            //Check if node with this uid already exists in doc
-//            if (doc.getNode(uid) == null)
-//            {
-//                //Make sure this UID will not be allocated to another node
-//                doc.advanceNextUid(uid);
-//            }
-//            else
-//            {
-//                //Collision
-//                uid = doc.allocUid();
-//            }
-//        }
-//
-//        T node = createNode(uid);
-//        node.load(doc, nodeType);
-//        return node;
-//    }
+    abstract public NodeDocument loadDocument(NodeDocumentType docTree);
 
     @Override
     public int compareTo(NodeDocumentProvider obj)

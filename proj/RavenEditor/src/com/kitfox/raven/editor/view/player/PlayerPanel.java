@@ -132,7 +132,7 @@ public class PlayerPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeDocument root = doc.getRoot();
+            NodeDocument root = doc.getCurDocument();
             TrackLibrary trackLib = root.getTrackLibrary();
             trackLibManager = new TrackLibManager(trackLib);
 
@@ -175,7 +175,7 @@ public class PlayerPanel extends javax.swing.JPanel
         }
 
 
-        TrackLibrary trackLib = doc.getRoot().getTrackLibrary();
+        TrackLibrary trackLib = doc.getCurDocument().getTrackLibrary();
         text_curFrame.setText("" + trackLib.curFrame.getValue());
         text_fps.setText("" + trackLib.fps.getValue());
         check_loop.setSelected(trackLib.loop.getValue());

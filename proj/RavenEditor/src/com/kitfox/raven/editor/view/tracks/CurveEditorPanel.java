@@ -640,7 +640,7 @@ public class CurveEditorPanel extends JPanel
     public NodeDocument getDocument()
     {
         RavenDocument doc = editor.getDocument();
-        return doc == null ? null : doc.getRoot();
+        return doc == null ? null : doc.getCurDocument();
     }
 
     @Override

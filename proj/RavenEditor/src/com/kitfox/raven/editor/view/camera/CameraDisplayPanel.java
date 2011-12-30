@@ -42,7 +42,6 @@ import java.util.EventObject;
  * @author kitfox
  */
 public class CameraDisplayPanel
-        //extends JPanel
         extends CoyotePanel
         implements RavenEditorListener, NodeDocumentListener,
         CyRendererListener
@@ -76,8 +75,8 @@ public class CameraDisplayPanel
 
         if (doc != null)
         {
-            listenerDoc = new NodeDocumentWeakListener(this, doc.getRoot());
-            doc.getRoot().addNodeDocumentListener(listenerDoc);
+            listenerDoc = new NodeDocumentWeakListener(this, doc.getCurDocument());
+            doc.getCurDocument().addNodeDocumentListener(listenerDoc);
         }
 
         repaint();
@@ -92,6 +91,11 @@ public class CameraDisplayPanel
     public void documentChanged(EventObject evt)
     {
         updateDocument();
+    }
+
+    @Override
+    public void documentNameChanged(PropertyChangeEvent evt)
+    {
     }
 
     @Override
@@ -119,7 +123,7 @@ public class CameraDisplayPanel
             return;
         }
 
-        CyRenderService serv = doc.getRoot().getNodeService(CyRenderService.class, false);
+        CyRenderService serv = doc.getCurDocument().getNodeService(CyRenderService.class, false);
         if (serv != null)
         {
             RenderContext ctx = new RenderContext(rend, FrameKey.DIRECT);

@@ -69,11 +69,27 @@ abstract public class NodeDocument extends NodeObject
     private final PluginsManager pluginsManager = new PluginsManager();
     private Environment env;
 
+    public static final String PROP_DOCUMENTNAME = "documentName";
+    String documentName;
+    
     protected NodeDocument()
     {
         super(0);
     }
 
+    public String getDocumentName()
+    {
+        return documentName;
+    }
+    
+    public void setDocumentName(String name)
+    {
+        PropertyChangeEvent evt = 
+                new PropertyChangeEvent(this, PROP_DOCUMENTNAME, this.documentName, name);
+        this.documentName = name;
+        fireDocumentNameChanged(evt);
+    }
+    
     /**
      * Optimization to hash node values, since tree search lookup of nodes
      * by UID is taking a lot of CPU time.
@@ -95,6 +111,14 @@ abstract public class NodeDocument extends NodeObject
     public void removeNodeDocumentListener(NodeDocumentListener l)
     {
         docListeners.remove(l);
+    }
+
+    protected void fireDocumentNameChanged(PropertyChangeEvent evt)
+    {
+        for (int i = 0; i < docListeners.size(); ++i)
+        {
+            docListeners.get(i).documentNameChanged(evt);
+        }
     }
 
     protected void fireDocumentPropertyChanged(PropertyChangeEvent evt)
@@ -153,6 +177,7 @@ abstract public class NodeDocument extends NodeObject
 
         if (type != null)
         {
+            documentName = type.getDocumentName();
             documentCode.load(type.getCode());
             pluginsManager.load(type.getPlugins());
         }
@@ -195,6 +220,7 @@ abstract public class NodeDocument extends NodeObject
         export(type);
 
         type.setNextUid(nextUid);
+        type.setDocumentName(documentName);
         type.setCode(documentCode.export());
         type.setPlugins(pluginsManager.export());
 

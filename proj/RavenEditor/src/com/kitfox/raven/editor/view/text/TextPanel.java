@@ -89,7 +89,7 @@ public class TextPanel extends javax.swing.JPanel
             return;
         }
 
-        NodeDocument root = doc.getRoot();
+        NodeDocument root = doc.getCurDocument();
         Selection<SelectionRecord> sel = root.getSelection();
         selListener = new SelectionWeakListener(this, sel);
         sel.addSelectionListener(selListener);
@@ -105,7 +105,7 @@ public class TextPanel extends javax.swing.JPanel
             return;
         }
 
-        NodeDocument root = doc.getRoot();
+        NodeDocument root = doc.getCurDocument();
         Selection<SelectionRecord> sel = root.getSelection();
 
         textRecords.clear();

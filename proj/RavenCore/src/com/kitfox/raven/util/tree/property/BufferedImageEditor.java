@@ -16,6 +16,8 @@
 
 package com.kitfox.raven.util.tree.property;
 
+import com.kitfox.raven.util.Base64DecoderOutputStream;
+import com.kitfox.raven.util.Base64EncoderOutputStream;
 import com.kitfox.raven.util.service.ServiceInst;
 import com.kitfox.raven.util.tree.PropertyCustomEditor;
 import com.kitfox.raven.util.tree.PropertyData;
@@ -39,8 +41,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 import javax.swing.JPopupMenu;
-import sun.misc.UUDecoder;
-import sun.misc.UUEncoder;
 
 /**
  *
@@ -168,11 +168,14 @@ public class BufferedImageEditor extends PropertyWrapperEditor<BufferedImage>
             try
             {
                 ByteArrayOutputStream bout = new ByteArrayOutputStream();
-                ImageIO.write(value, "png", bout);
+                Base64EncoderOutputStream b64out = new Base64EncoderOutputStream(bout);
+                ImageIO.write(value, "png", b64out);
                 bout.close();
 
-                UUEncoder enc = new UUEncoder();
-                String uutext = enc.encode(bout.toByteArray());
+                
+//                UUEncoder enc = new UUEncoder();
+//                String uutext = enc.encode(bout.toByteArray());
+                String uutext = bout.toString();
                 return "data:image/png;base64," + uutext;
             }
             catch (IOException ex)
@@ -194,10 +197,11 @@ public class BufferedImageEditor extends PropertyWrapperEditor<BufferedImage>
 
             int idx = text.indexOf(',');
             String code = text.substring(idx + 1);
-            UUDecoder dec = new UUDecoder();
+//            UUDecoder dec = new UUDecoder();
             try
             {
-                byte[] content = dec.decodeBuffer(code);
+//                byte[] content = dec.decodeBuffer(code);
+                byte[] content = Base64DecoderOutputStream.decode(code);
                 ByteArrayInputStream bin = new ByteArrayInputStream(content);
 
                 BufferedImage img = ImageIO.read(bin);

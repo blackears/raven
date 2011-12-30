@@ -24,6 +24,7 @@ import java.beans.PropertyChangeEvent;
  */
 public interface NodeDocumentListener
 {
+    public void documentNameChanged(PropertyChangeEvent evt);
     public void documentPropertyChanged(PropertyChangeEvent evt);
     public void documentNodeChildAdded(ChildWrapperEvent evt);
     public void documentNodeChildRemoved(ChildWrapperEvent evt);

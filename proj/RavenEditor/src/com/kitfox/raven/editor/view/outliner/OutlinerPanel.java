@@ -88,8 +88,8 @@ public class OutlinerPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            listenerSelection = new SelectionWeakListener(this, doc.getRoot().getSelection());
-            doc.getRoot().getSelection().addSelectionListener(listenerSelection);
+            listenerSelection = new SelectionWeakListener(this, doc.getCurDocument().getSelection());
+            doc.getCurDocument().getSelection().addSelectionListener(listenerSelection);
         }
 
         SwingUtilities.invokeLater(
@@ -114,7 +114,7 @@ public class OutlinerPanel extends javax.swing.JPanel
         }
         else
         {
-            model = new OutlinerTreeModel(doc.getRoot());
+            model = new OutlinerTreeModel(doc.getCurDocument());
             model.addOutlinerTreeModelListener(OutlinerPanel.this);
             tree_outline.setModel(model);
         }
@@ -167,7 +167,7 @@ public class OutlinerPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            Selection<SelectionRecord> sel = doc.getRoot().getSelection();
+            Selection<SelectionRecord> sel = doc.getCurDocument().getSelection();
             ArrayList<SelectionRecord> recList = sel.getSelection();
 
             TreePath[] paths = new TreePath[recList.size()];
@@ -199,7 +199,7 @@ public class OutlinerPanel extends javax.swing.JPanel
                 return;
             }
 
-            Selection<SelectionRecord> sel = doc.getRoot().getSelection();
+            Selection<SelectionRecord> sel = doc.getCurDocument().getSelection();
             ArrayList<SelectionRecord> recList = new ArrayList<SelectionRecord>();
 
             TreePath[] paths = tree_outline.getSelectionPaths();

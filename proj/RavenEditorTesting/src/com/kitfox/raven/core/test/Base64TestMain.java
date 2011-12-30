@@ -14,22 +14,28 @@
  * limitations under the License.
  */
 
-package com.kitfox.raven.editor;
+package com.kitfox.raven.core.test;
 
-import java.util.EventObject;
+import com.kitfox.raven.util.Base64DecoderOutputStream;
+import com.kitfox.raven.util.Base64EncoderOutputStream;
 
 /**
  *
  * @author kitfox
  */
-public interface RavenDocumentListener
+public class Base64TestMain
 {
+
     /**
-     * Indicates file object the Raven project is saved to has changed
+     * @param args the command line arguments
      */
-    public void documentSourceChanged(EventObject evt);
-    
-    public void documentAdded(RavenDocumentEvent evt);
-    public void documentRemoved(RavenDocumentEvent evt);
-    public void currentDocumentChanged(RavenDocumentEvent evt);
+    public static void main(String[] args)
+    {
+        String text = "Yes, we have no bananas!?!";
+        String code = Base64EncoderOutputStream.encode(text.getBytes());
+        System.err.println(code);
+        
+        byte[] text2 = Base64DecoderOutputStream.decode(code);
+        System.err.println(new String(text2));
+    }
 }

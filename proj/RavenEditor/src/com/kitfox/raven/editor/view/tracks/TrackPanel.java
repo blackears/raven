@@ -218,7 +218,7 @@ public class TrackPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeDocument root = doc.getRoot();
+            NodeDocument root = doc.getCurDocument();
 
             TrackLibrary trackLib = root.getTrackLibrary();
             curFrameWatch = new CurFrameWatcher(trackLib.curFrame);
@@ -255,7 +255,7 @@ public class TrackPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeDocument root = doc.getRoot();
+            NodeDocument root = doc.getCurDocument();
 
             TrackLibrary trackLib = root.getTrackLibrary();
             Track track = trackLib.curTrack.getValue();
@@ -272,7 +272,7 @@ public class TrackPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeDocument root = doc.getRoot();
+            NodeDocument root = doc.getCurDocument();
 
             TrackLibrary trackLib = root.getTrackLibrary();
             int frame = trackLib.curFrame.getValue();
@@ -288,7 +288,7 @@ public class TrackPanel extends javax.swing.JPanel
             updatingPropList = true;
             Object[] oldSelection = list_curves.getSelectedValues();
 
-            NodeDocument root = doc.getRoot();
+            NodeDocument root = doc.getCurDocument();
 //            Track track = root.getTrackLibrary().curTrack.getValue();
 
             Selection<SelectionRecord> sel = root.getSelection();

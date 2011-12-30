@@ -109,7 +109,7 @@ public class CodePanel extends javax.swing.JPanel
             textArea_annotations.setText("");
             return;
         }
-        NodeDocument root = doc.getRoot();
+        NodeDocument root = doc.getCurDocument();
         Selection<SelectionRecord> sel = root.getSelection();
         listenerSelection = new SelectionWeakListener(this, sel);
         sel.addSelectionListener(listenerSelection);
@@ -130,7 +130,7 @@ public class CodePanel extends javax.swing.JPanel
         {
             return;
         }
-        NodeDocument root = doc.getRoot();
+        NodeDocument root = doc.getCurDocument();
         Selection<SelectionRecord> sel = root.getSelection();
 
         SelectionRecord top = sel.getTopSelected();
@@ -376,7 +376,7 @@ public class CodePanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeDocument root = doc.getRoot();
+            NodeDocument root = doc.getCurDocument();
             root.getDocumentCode().getImplementsClasses()
                     .setSource(textArea_implements.getText());
         }
@@ -388,7 +388,7 @@ public class CodePanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeDocument root = doc.getRoot();
+            NodeDocument root = doc.getCurDocument();
             root.getDocumentCode().getAnnotations()
                     .setSource(textArea_annotations.getText());
         }
@@ -400,7 +400,7 @@ public class CodePanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeDocument root = doc.getRoot();
+            NodeDocument root = doc.getCurDocument();
             root.getDocumentCode().getExtendsClass()
                     .setSource(text_extends.getText());
         }

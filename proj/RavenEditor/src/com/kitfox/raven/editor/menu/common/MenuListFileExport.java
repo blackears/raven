@@ -78,14 +78,14 @@ public class MenuListFileExport extends MenuListProvider
                 return;
             }
 
-            RavenWizardPageIterator wiz = prov.createWizard(doc.getRoot());
+            RavenWizardPageIterator wiz = prov.createWizard(doc.getCurDocument());
             if (wiz.isEmpty())
             {
                 wiz.finish();
             }
             else
             {
-                RavenWizardDialog dlg = new RavenWizardDialog(doc.getRoot().getEnv().getSwingRoot(), wiz);
+                RavenWizardDialog dlg = new RavenWizardDialog(doc.getCurDocument().getEnv().getSwingRoot(), wiz);
                 dlg.setVisible(true);
             }
         }

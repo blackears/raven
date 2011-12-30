@@ -76,8 +76,8 @@ public class PropertiesPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            selectionListener = new SelectionWeakListener(this, doc.getRoot().getSelection());
-            doc.getRoot().getSelection().addSelectionListener(selectionListener);
+            selectionListener = new SelectionWeakListener(this, doc.getCurDocument().getSelection());
+            doc.getCurDocument().getSelection().addSelectionListener(selectionListener);
         }
 
         SwingUtilities.invokeLater(
@@ -101,7 +101,7 @@ public class PropertiesPanel extends javax.swing.JPanel
         }
         else
         {
-            SelectionRecord top = doc.getRoot().getSelection().getTopSelected();
+            SelectionRecord top = doc.getCurDocument().getSelection().getTopSelected();
             if (top == null)
             {
                 model = null;

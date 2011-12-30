@@ -166,6 +166,11 @@ public class DisplayTileUpdater implements NodeDocumentListener
     }
 
     @Override
+    public void documentNameChanged(PropertyChangeEvent evt)
+    {
+    }
+
+    @Override
     public void documentPropertyChanged(PropertyChangeEvent evt)
     {
         setDirty();

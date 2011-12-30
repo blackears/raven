@@ -34,6 +34,11 @@ public class RavenDocumentWeakListener implements RavenDocumentListener
         this.src = src;
     }
 
+    public void remove()
+    {
+        src.removeRavenDocumentListener(this);
+    }
+
     @Override
     public void documentSourceChanged(EventObject evt)
     {
@@ -46,8 +51,40 @@ public class RavenDocumentWeakListener implements RavenDocumentListener
         l.documentSourceChanged(evt);
     }
 
-    public void remove()
+    @Override
+    public void documentAdded(RavenDocumentEvent evt)
     {
-        src.removeRavenDocumentListener(this);
+        RavenDocumentListener l = ref.get();
+        if (l == null)
+        {
+            remove();
+            return;
+        }
+        l.documentAdded(evt);
     }
+
+    @Override
+    public void documentRemoved(RavenDocumentEvent evt)
+    {
+        RavenDocumentListener l = ref.get();
+        if (l == null)
+        {
+            remove();
+            return;
+        }
+        l.documentRemoved(evt);
+    }
+
+    @Override
+    public void currentDocumentChanged(RavenDocumentEvent evt)
+    {
+        RavenDocumentListener l = ref.get();
+        if (l == null)
+        {
+            remove();
+            return;
+        }
+        l.currentDocumentChanged(evt);
+    }
+    
 }

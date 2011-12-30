@@ -514,9 +514,9 @@ public class RavenNodeRoot extends NodeDocument
         }
 
         @Override
-        public NodeDocument loadDocument(RavenDocumentType docTree)
+        public NodeDocument loadDocument(NodeDocumentType docTree)
         {
-            return create(docTree.getRoot());
+            return create(docTree);
         }
 
         @Override

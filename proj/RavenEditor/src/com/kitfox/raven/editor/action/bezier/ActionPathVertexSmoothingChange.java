@@ -52,7 +52,7 @@ abstract public class ActionPathVertexSmoothingChange extends AbstractAction
         {
             return;
         }
-        Selection<SelectionRecord> sel = doc.getRoot().getSelection();
+        Selection<SelectionRecord> sel = doc.getCurDocument().getSelection();
         for (SelectionRecord rec: sel.getSelection())
         {
             NodeObject nodeObj = rec.getNode();

@@ -49,12 +49,11 @@ import javax.swing.SwingUtilities;
 public class RavenFrame extends javax.swing.JFrame
         implements RavenEditorListener,
         RavenViewManagerListener,
-        RavenDocumentListener, HistoryListener
+        RavenDocumentListener
 {
     private final RavenViewManager viewManager;
 
     RavenDocumentWeakListener projectListener;
-    HistoryWeakListener historyListener;
 
     private DockingRegionRoot dockingRoot = new DockingRegionRoot();
 
@@ -69,8 +68,6 @@ public class RavenFrame extends javax.swing.JFrame
         viewManager.getEditor().addRavenEditorListener(this);
         viewManager.addRavenViewManagerListener(this);
         refreshTitle();
-//        refreshRecentFileListSwing();
-//        refreshUndoHistory();
 
         rebuildMenus();
     }
@@ -82,32 +79,9 @@ public class RavenFrame extends javax.swing.JFrame
 
     public void rebuildMenus()
     {
-//        JMenuBar menu = new JMenuBar();
         menuBar.removeAll();
         viewManager.getMenuManager().buildMenu(menuBar);
-//        setJMenuBar(menu);
         validate();
-    }
-
-    @Override
-    public void historyChanged(EventObject evt)
-    {
-        refreshUndoHistory();
-    }
-
-    private void refreshUndoHistory()
-    {
-//        RavenDocument doc = viewManager.getEditor().getDocument();
-//        if (doc == null)
-//        {
-//            cm_undo.setEnabled(false);
-//            cm_redo.setEnabled(false);
-//            return;
-//        }
-//
-//        History history = doc.getRoot().getHistory();
-//        cm_undo.setEnabled(history.canUndo());
-//        cm_redo.setEnabled(history.canRedo());
     }
 
     public void setDefaultSize()
@@ -138,37 +112,6 @@ public class RavenFrame extends javax.swing.JFrame
         }
     }
 
-//    void setViewMenuItems(Collection<Dockable> values)
-//    {
-//        menu_view.removeAll();
-//        for (Dockable dockable: values)
-//        {
-//            DockableMenuItem item = new DockableMenuItem(dockable);
-//            menu_view.add(item);
-//        }
-//    }
-//
-//    void refreshViewMenuItemSelectedState()
-//    {
-//        for (int i = 0; i < menu_view.getItemCount(); ++i)
-//        {
-//            DockableMenuItem item = (DockableMenuItem)menu_view.getItem(i);
-//            item.refreshSelected();
-//        }
-//    }
-//
-//    @Override
-//    public void viewLayoutChanged(EventObject evt)
-//    {
-//        SwingUtilities.invokeLater(new Runnable()
-//        {
-//            @Override
-//            public void run() {
-//                refreshViewMenuItemSelectedState();
-//            }
-//        });
-//    }
-
     MainFrameType exportPreferences()
     {
         MainFrameType type = new MainFrameType();
@@ -182,23 +125,12 @@ public class RavenFrame extends javax.swing.JFrame
         return type;
     }
 
-//    private void refreshRecentFileListSwing()
-//    {
-//        menu_openRecent.removeAll();
-//
-//        for (File file: viewManager.getEditor().getRecentFileList())
-//        {
-//            menu_openRecent.add(new RecentFileAction(file));
-//        }
-//    }
-
     public void refreshRecentFileList()
     {
         SwingUtilities.invokeLater(new Runnable()
         {
             @Override
             public void run() {
-//                refreshRecentFileListSwing();
                 rebuildMenus();
             }
         });
@@ -211,16 +143,6 @@ public class RavenFrame extends javax.swing.JFrame
     }
 
 
-//    private void refreshLayoutList()
-//    {
-//        menu_layoutList.removeAll();
-//
-//        for (ViewLayoutType info: viewManager.getLayoutList())
-//        {
-//            menu_layoutList.add(new ViewLayoutAction(info));
-//        }
-//    }
-
     @Override
     public void layoutListChanged(EventObject evt)
     {
@@ -228,7 +150,6 @@ public class RavenFrame extends javax.swing.JFrame
         {
             @Override
             public void run() {
-//                refreshLayoutList();
                 rebuildMenus();
             }
         });
@@ -253,15 +174,30 @@ public class RavenFrame extends javax.swing.JFrame
     }
 
     @Override
+    public void documentAdded(RavenDocumentEvent evt)
+    {
+        
+    }
+
+    @Override
+    public void documentRemoved(RavenDocumentEvent evt)
+    {
+        
+    }
+
+    @Override
+    public void currentDocumentChanged(RavenDocumentEvent evt)
+    {
+        
+    }
+
+    @Override
     public void documentChanged(EventObject evt)
     {
         if (projectListener != null)
         {
             projectListener.remove();
             projectListener = null;
-
-            historyListener.remove();
-            historyListener = null;
         }
 
         RavenDocument proj = viewManager.getEditor().getDocument();
@@ -270,10 +206,6 @@ public class RavenFrame extends javax.swing.JFrame
         {
             projectListener = new RavenDocumentWeakListener(this, proj);
             proj.addRavenDocumentListener(this);
-
-            History hist = proj.getRoot().getHistory();
-            historyListener = new HistoryWeakListener(this, hist);
-            hist.addHistoryListener(historyListener);
         }
         refreshTitle();
     }
@@ -298,39 +230,6 @@ public class RavenFrame extends javax.swing.JFrame
 
         setTitle(sb.toString());
     }
-
-//    void setImportActions(ArrayList<ImportAction> actions)
-//    {
-//        menu_import.removeAll();
-//        for (ImportAction action: actions)
-//        {
-//            menu_import.add(action);
-//        }
-//    }
-//
-//    void setExportActions(ArrayList<ExportAction> actions)
-//    {
-//        menu_export.removeAll();
-//        for (ExportAction action: actions)
-//        {
-//            menu_export.add(action);
-//        }
-//    }
-//
-//    private void showWebpage(URI uri)
-//    {
-//        if (Desktop.isDesktopSupported())
-//        {
-//            Desktop desktop = Desktop.getDesktop();
-//            try
-//            {
-//                desktop.browse(uri);
-//            } catch (IOException ex)
-//            {
-//                Logger.getLogger(RavenFrame.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
-//    }
 
     public void exit()
     {
@@ -741,50 +640,4 @@ public class RavenFrame extends javax.swing.JFrame
             viewManager.layoutViews(info);
         }
     }
-
-//	private class DockableMenuItem extends JCheckBoxMenuItem
-//            implements ItemListener, PropertyChangeListener
-//	{
-//		private DockingContent dockable;
-//
-//		public DockableMenuItem(DockingContent dockable)
-//		{
-//			super(dockable.getTitle());
-//
-//			setSelected(dockable.getParent() != null);
-//
-//			dockable.addPropertyChangeListener(this);
-//			addItemListener(this);
-//
-//			this.dockable = dockable;
-//        }
-//
-//        @Override
-//		public void itemStateChanged(ItemEvent itemEvent)
-//		{
-//			if (itemEvent.getStateChange() == ItemEvent.DESELECTED)
-//			{
-//				// Close the dockable.
-//				dockable.getParent().removeTab(dockable);
-//			}
-//			else
-//			{
-//				// Restore the dockable.
-//                DockingPathRecord path = dockable.getRestoreRecord().getPath();
-//                DockingRegionTabbed tab =
-//                        (DockingRegionTabbed)getDockingRoot().getDockingRoot()
-//                        .getDockingChild(path);
-//                tab.restore(dockable, path.getLast());
-//			}
-//		}
-//
-//        @Override
-//        public void propertyChange(PropertyChangeEvent evt)
-//        {
-//            setSelected(dockable.getParent() != null);
-//        }
-//
-//	}
-
-
 }

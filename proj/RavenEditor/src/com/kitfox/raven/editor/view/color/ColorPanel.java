@@ -143,7 +143,7 @@ public class ColorPanel extends javax.swing.JPanel
             return;
         }
 
-        NodeDocument root = doc.getRoot();
+        NodeDocument root = doc.getCurDocument();
         ServiceColors2D service = root.getNodeService(ServiceColors2D.class, false);
 
         if (service != null)
@@ -203,7 +203,7 @@ public class ColorPanel extends javax.swing.JPanel
             return;
         }
 
-        NodeDocument root = doc.getRoot();
+        NodeDocument root = doc.getCurDocument();
         NodeDocument.NodeFilter nodes =
                 new NodeDocument.NodeFilter(RavenNodePaint.class);
         root.visit(nodes);
@@ -234,7 +234,7 @@ public class ColorPanel extends javax.swing.JPanel
             return;
         }
 
-        NodeDocument root = doc.getRoot();
+        NodeDocument root = doc.getCurDocument();
         NodeDocument.NodeFilter nodes =
                 new NodeDocument.NodeFilter(RavenNodeStroke.class);
         root.visit(nodes);
@@ -258,7 +258,7 @@ public class ColorPanel extends javax.swing.JPanel
 
         ++updateCount;
 
-        NodeDocument root = doc.getRoot();
+        NodeDocument root = doc.getCurDocument();
         ServiceColors2D service = root.getNodeService(ServiceColors2D.class, false);
 //        RavenNodeRoot root = doc.getRoot();
 
@@ -292,7 +292,7 @@ public class ColorPanel extends javax.swing.JPanel
 
         ++updateCount;
 
-        NodeDocument root = doc.getRoot();
+        NodeDocument root = doc.getCurDocument();
         ServiceColors2D service = root.getNodeService(ServiceColors2D.class, false);
 //        RavenNodeRoot root = doc.getRoot();
 
@@ -326,7 +326,7 @@ public class ColorPanel extends javax.swing.JPanel
 
         ++updateCount;
 
-        NodeDocument root = doc.getRoot();
+        NodeDocument root = doc.getCurDocument();
         ServiceColors2D service = root.getNodeService(ServiceColors2D.class, false);
 //        RavenNodeRoot root = doc.getRoot();
 
@@ -592,7 +592,7 @@ public class ColorPanel extends javax.swing.JPanel
         }
 
 //        RavenNodeRoot root = doc.getRoot();
-        NodeDocument root = doc.getRoot();
+        NodeDocument root = doc.getCurDocument();
         ServiceColors2D service = root.getNodeService(ServiceColors2D.class, false);
         service.getFillPaintProp().setValue(curFillPaintInline);
     }//GEN-LAST:event_radio_fillPaintInlineActionPerformed
@@ -616,7 +616,7 @@ public class ColorPanel extends javax.swing.JPanel
             return;
         }
 
-        NodeDocument root = doc.getRoot();
+        NodeDocument root = doc.getCurDocument();
         ServiceColors2D service = root.getNodeService(ServiceColors2D.class, false);
 //        RavenNodeRoot root = doc.getRoot();
         service.getFillPaintProp().setData(
@@ -644,7 +644,7 @@ public class ColorPanel extends javax.swing.JPanel
         }
 
         RavenNodePaint node = (RavenNodePaint)item;
-        NodeDocument root = doc.getRoot();
+        NodeDocument root = doc.getCurDocument();
         ServiceColors2D service = root.getNodeService(ServiceColors2D.class, false);
 //        RavenNodeRoot root = doc.getRoot();
         service.getFillPaintProp().setData(new PropertyDataReference<RavenPaint>(
@@ -664,7 +664,7 @@ public class ColorPanel extends javax.swing.JPanel
             return;
         }
 
-        NodeDocument root = doc.getRoot();
+        NodeDocument root = doc.getCurDocument();
         ServiceColors2D service = root.getNodeService(ServiceColors2D.class, false);
 //        RavenNodeRoot root = doc.getRoot();
         service.getStrokePaintProp().setValue(curStrokePaintInline);
@@ -689,7 +689,7 @@ public class ColorPanel extends javax.swing.JPanel
             return;
         }
 
-        NodeDocument root = doc.getRoot();
+        NodeDocument root = doc.getCurDocument();
         ServiceColors2D service = root.getNodeService(ServiceColors2D.class, false);
 //        RavenNodeRoot root = doc.getRoot();
         service.getStrokePaintProp().setData(
@@ -717,7 +717,7 @@ public class ColorPanel extends javax.swing.JPanel
         }
 
         RavenNodePaint node = (RavenNodePaint)item;
-        NodeDocument root = doc.getRoot();
+        NodeDocument root = doc.getCurDocument();
         ServiceColors2D service = root.getNodeService(ServiceColors2D.class, false);
 //        RavenNodeRoot root = doc.getRoot();
         service.getStrokePaintProp().setData(new PropertyDataReference<RavenPaint>(
@@ -737,7 +737,7 @@ public class ColorPanel extends javax.swing.JPanel
             return;
         }
 
-        NodeDocument root = doc.getRoot();
+        NodeDocument root = doc.getCurDocument();
         ServiceColors2D service = root.getNodeService(ServiceColors2D.class, false);
 //        RavenNodeRoot root = doc.getRoot();
         service.getStrokeStyleProp().setValue(curStrokeStyleInline);
@@ -762,7 +762,7 @@ public class ColorPanel extends javax.swing.JPanel
             return;
         }
 
-        NodeDocument root = doc.getRoot();
+        NodeDocument root = doc.getCurDocument();
         ServiceColors2D service = root.getNodeService(ServiceColors2D.class, false);
 //        RavenNodeRoot root = doc.getRoot();
         service.getStrokeStyleProp().setData(
@@ -790,7 +790,7 @@ public class ColorPanel extends javax.swing.JPanel
         }
 
         RavenNodeStroke node = (RavenNodeStroke)item;
-        NodeDocument root = doc.getRoot();
+        NodeDocument root = doc.getCurDocument();
         ServiceColors2D service = root.getNodeService(ServiceColors2D.class, false);
 //        RavenNodeRoot root = doc.getRoot();
         service.getStrokeStyleProp().setData(new PropertyDataReference<RavenStroke>(
@@ -853,7 +853,7 @@ public class ColorPanel extends javax.swing.JPanel
             {
                 return;
             }
-            root = doc.getRoot();
+            root = doc.getCurDocument();
 
             ServiceColors2D service = root.getNodeService(ServiceColors2D.class, false);
             RavenStroke initStroke = service.getStrokeStyleProp().getValue();
@@ -906,7 +906,7 @@ public class ColorPanel extends javax.swing.JPanel
             {
                 return;
             }
-            root = doc.getRoot();
+            root = doc.getCurDocument();
 
             ServiceColors2D service = root.getNodeService(ServiceColors2D.class, false);
             RavenPaint initPaint = service.getStrokePaintProp().getValue();
@@ -959,7 +959,7 @@ public class ColorPanel extends javax.swing.JPanel
             {
                 return;
             }
-            root = doc.getRoot();
+            root = doc.getCurDocument();
 
             ServiceColors2D service = root.getNodeService(ServiceColors2D.class, false);
             RavenPaint initPaint = service.getFillPaintProp().getValue();

@@ -111,8 +111,8 @@ public class DisplayCyPanel extends CoyotePanel
 
         if (doc != null)
         {
-            listenerDoc = new NodeDocumentWeakListener(this, doc.getRoot());
-            doc.getRoot().addNodeDocumentListener(listenerDoc);
+            listenerDoc = new NodeDocumentWeakListener(this, doc.getCurDocument());
+            doc.getCurDocument().addNodeDocumentListener(listenerDoc);
         }
 
         repaint();
@@ -164,7 +164,7 @@ public class DisplayCyPanel extends CoyotePanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            return doc.getRoot().getNodeService(serviceClass, false);
+            return doc.getCurDocument().getNodeService(serviceClass, false);
         }
 
         return null;
@@ -182,7 +182,7 @@ public class DisplayCyPanel extends CoyotePanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            doc.getRoot().getNodeServices(serviceClass, appendList, false);
+            doc.getCurDocument().getNodeServices(serviceClass, appendList, false);
         }
     }
 
@@ -198,27 +198,28 @@ public class DisplayCyPanel extends CoyotePanel
     }
 
     @Override
+    public void documentNameChanged(PropertyChangeEvent evt)
+    {
+    }
+
+    @Override
     public void documentPropertyChanged(PropertyChangeEvent evt)
     {
-//        repaint();
     }
 
     @Override
     public void documentNodeChildAdded(ChildWrapperEvent evt)
     {
-//        repaint();
     }
 
     @Override
     public void documentNodeChildRemoved(ChildWrapperEvent evt)
     {
-//        repaint();
     }
 
     @Override
     public void toolDisplayChanged(EventObject evt)
     {
-//        repaint();
     }
 
     @Override
@@ -239,7 +240,7 @@ public class DisplayCyPanel extends CoyotePanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeDocument root = doc.getRoot();
+            NodeDocument root = doc.getCurDocument();
             ServiceDeviceCamera service = root.getNodeService(ServiceDeviceCamera.class, false);
             return service.getWorldToDeviceTransform(xform);
         }
@@ -255,7 +256,7 @@ public class DisplayCyPanel extends CoyotePanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeDocument root = doc.getRoot();
+            NodeDocument root = doc.getCurDocument();
             ServiceDeviceCamera service = root.getNodeService(ServiceDeviceCamera.class, false);
             service.setWorldToDeviceTransform(xform);
         }
@@ -272,7 +273,7 @@ public class DisplayCyPanel extends CoyotePanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeDocument root = doc.getRoot();
+            NodeDocument root = doc.getCurDocument();
             ServiceDeviceCamera service = root.getNodeService(ServiceDeviceCamera.class, false);
             return service.getWorldToDeviceTransform(xform);
         }
@@ -287,7 +288,7 @@ public class DisplayCyPanel extends CoyotePanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeDocument root = doc.getRoot();
+            NodeDocument root = doc.getCurDocument();
             ServiceDeviceCamera service = root.getNodeService(ServiceDeviceCamera.class, false);
             service.setWorldToDeviceTransform(xform);
         }
@@ -327,7 +328,7 @@ public class DisplayCyPanel extends CoyotePanel
 //        FrameKey.DIRECT;
         RenderContext ctx = new RenderContext(rend, FrameKey.DIRECT);
 
-        CyRenderService serv = doc.getRoot().getNodeService(CyRenderService.class, false);
+        CyRenderService serv = doc.getCurDocument().getNodeService(CyRenderService.class, false);
         if (serv != null)
         {
             serv.renderEditor(ctx);

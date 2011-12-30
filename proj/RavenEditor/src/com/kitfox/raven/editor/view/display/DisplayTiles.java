@@ -207,6 +207,11 @@ public class DisplayTiles implements NodeDocumentListener
     }
 
     @Override
+    public void documentNameChanged(PropertyChangeEvent evt)
+    {
+    }
+
+    @Override
     public void documentPropertyChanged(PropertyChangeEvent evt)
     {
         setAllTilesDirty();

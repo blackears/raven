@@ -79,7 +79,7 @@ public class MenuListFileImport extends MenuListProvider
                 return;
             }
 
-            RavenWizardPageIterator wiz = prov.createWizard(doc.getRoot());
+            RavenWizardPageIterator wiz = prov.createWizard(doc.getCurDocument());
 
             RavenWizardDialog dlg = new RavenWizardDialog(
                     RavenEditor.inst().getDocument().getSwingRoot(), wiz);

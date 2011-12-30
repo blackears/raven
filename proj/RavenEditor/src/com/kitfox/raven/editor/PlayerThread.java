@@ -70,7 +70,7 @@ public class PlayerThread extends Thread
                 continue;
             }
 
-            TrackLibrary lib = doc.getRoot().getTrackLibrary();
+            TrackLibrary lib = doc.getCurDocument().getTrackLibrary();
             Track track = lib.getCurTrack();
             if (track == null)
             {

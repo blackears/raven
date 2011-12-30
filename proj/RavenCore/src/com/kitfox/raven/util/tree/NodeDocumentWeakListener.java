@@ -52,6 +52,18 @@ public class NodeDocumentWeakListener implements NodeDocumentListener
     }
 
     @Override
+    public void documentNameChanged(PropertyChangeEvent evt)
+    {
+        NodeDocumentListener l = ref.get();
+        if (l == null)
+        {
+            remove();
+            return;
+        }
+        l.documentNameChanged(evt);
+    }
+
+    @Override
     public void documentNodeChildAdded(ChildWrapperEvent evt)
     {
         NodeDocumentListener l = ref.get();
