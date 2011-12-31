@@ -38,8 +38,6 @@ import java.util.regex.Pattern;
  */
 abstract public class NodeDocument extends NodeObject
 {
-    private final History history = new History();
-
     int nextUid;
 
     public static final String CHILD_TRACKLIBRARY = "trackLibrary";
@@ -88,6 +86,11 @@ abstract public class NodeDocument extends NodeObject
                 new PropertyChangeEvent(this, PROP_DOCUMENTNAME, this.documentName, name);
         this.documentName = name;
         fireDocumentNameChanged(evt);
+    }
+    
+    public History getHistory()
+    {
+        return env == null ? null : env.getHistory();
     }
     
     /**
@@ -181,8 +184,6 @@ abstract public class NodeDocument extends NodeObject
             documentCode.load(type.getCode());
             pluginsManager.load(type.getPlugins());
         }
-
-        history.clear();
     }
 
 
@@ -225,14 +226,6 @@ abstract public class NodeDocument extends NodeObject
         type.setPlugins(pluginsManager.export());
 
         return type;
-    }
-
-    /**
-     * @return the history
-     */
-    public History getHistory()
-    {
-        return history;
     }
 
     public String createUniqueName(String name)
@@ -326,6 +319,7 @@ abstract public class NodeDocument extends NodeObject
 
     public void deleteSelected()
     {
+        History history = getHistory();
         history.beginTransaction("Delete");
 
         ArrayList<SelectionRecord> list = selection.getSelection();
@@ -393,6 +387,7 @@ abstract public class NodeDocument extends NodeObject
         public File getDocumentSource();
         public Properties getMetaProperties(String key);
         public void setMetaProperties(String key, Properties props);
+        public History getHistory();
     }
 
     public static class NodeFilter implements NodeVisitor

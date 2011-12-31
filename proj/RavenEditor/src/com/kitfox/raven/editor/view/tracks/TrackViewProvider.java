@@ -33,7 +33,7 @@ public class TrackViewProvider extends ViewProvider
     public TrackViewProvider()
     {
 //        super("History", "/icons/view/history.png");
-        super("Tracks");
+        super("Tracks", "/icons/view/animCurves.png");
     }
 
     @Override

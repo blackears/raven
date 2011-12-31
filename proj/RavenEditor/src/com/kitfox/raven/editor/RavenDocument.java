@@ -21,6 +21,7 @@ import com.kitfox.raven.util.resource.ResourceCache;
 import com.kitfox.raven.util.tree.NodeDocument;
 import com.kitfox.raven.util.tree.NodeDocumentProvider;
 import com.kitfox.raven.util.tree.NodeDocumentProviderIndex;
+import com.kitfox.raven.util.undo.History;
 import com.kitfox.xml.schema.ravendocumentschema.MetaPropertyEntryType;
 import com.kitfox.xml.schema.ravendocumentschema.MetaPropertySetGroupType;
 import com.kitfox.xml.schema.ravendocumentschema.MetaPropertySetType;
@@ -60,6 +61,8 @@ public class RavenDocument
     //Meta properties provide a way for views and tools to store document
     // specific persistent information
     HashMap<String, Properties> metaProperties = new HashMap<String, Properties>();
+
+    private final History history = new History();
 
     public RavenDocument(RavenEditor editor)
     {
@@ -115,6 +118,14 @@ public class RavenDocument
                 metaProperties.put(set.getKey(), prop);
             }
         }
+
+        //Remove any history created during load
+        history.clear();
+    }
+    
+    public History getHistory()
+    {
+        return history;
     }
 
     /**
@@ -155,11 +166,11 @@ public class RavenDocument
         fireCurrentDocumentChanged(oldDoc, doc);
     }
     
-    public int indexOfCurrentDocument()
+    public int indexOfDocument(NodeDocument doc)
     {
         for (int i = 0; i < documents.size(); ++i)
         {
-            if (documents.get(i) == curDoc)
+            if (documents.get(i) == doc)
             {
                 return i;
             }

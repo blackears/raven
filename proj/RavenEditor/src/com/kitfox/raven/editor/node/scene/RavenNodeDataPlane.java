@@ -114,7 +114,6 @@ public class RavenNodeDataPlane extends RavenNode
             List<R> data, boolean history)
     {
         NodeDocument doc = getDocument();
-//        History hist = getDocument().getHistory();
         if (history && doc != null)
         {
             doc.getHistory().beginTransaction("Set plane data");

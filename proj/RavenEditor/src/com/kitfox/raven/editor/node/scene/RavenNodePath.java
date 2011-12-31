@@ -263,7 +263,7 @@ public class RavenNodePath extends RavenNodeShape
     {
         public Provider()
         {
-            super(RavenNodePath.class, "Path", "/icons/node/shape.png");
+            super(RavenNodePath.class, "Path", "/icons/node/path.png");
         }
 
         @Override

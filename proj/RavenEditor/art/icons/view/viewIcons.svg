@@ -15,7 +15,7 @@
    version="1.1"
    inkscape:version="0.47 r22583"
    sodipodi:docname="viewIcons.svg"
-   inkscape:export-filename="C:\dev\kitfox.com\gameTools4\proj\RavenEditor\art\icons\view\cameraDisplay.png"
+   inkscape:export-filename="C:\dev\java.net\raven\trunk\proj\RavenEditor\art\icons\view\symbols.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90"
    style="display:inline">
@@ -119,6 +119,27 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3699"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3699-7"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3699-0"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -128,17 +149,18 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="22.14284"
-     inkscape:cx="5.5497719"
-     inkscape:cy="11.073918"
+     inkscape:cx="6.032238"
+     inkscape:cy="7.8083547"
      inkscape:document-units="px"
-     inkscape:current-layer="layer10"
+     inkscape:current-layer="layer11"
      showgrid="true"
      inkscape:snap-global="true"
      inkscape:window-width="1056"
      inkscape:window-height="828"
-     inkscape:window-x="216"
-     inkscape:window-y="27"
-     inkscape:window-maximized="0">
+     inkscape:window-x="260"
+     inkscape:window-y="33"
+     inkscape:window-maximized="0"
+     inkscape:snap-grids="false">
     <inkscape:grid
        type="xygrid"
        id="grid4014"
@@ -525,7 +547,8 @@
   <g
      inkscape:groupmode="layer"
      id="layer10"
-     inkscape:label="Camera Display">
+     inkscape:label="Camera Display"
+     style="display:none">
     <rect
        style="fill:#9f9f9f;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect3665"
@@ -554,9 +577,67 @@
        d="m 14,0.5 a 3.5,3.5 0 1 1 -7,0 3.5,3.5 0 1 1 7,0 z"
        transform="translate(-0.99999952,4.0000002)" />
     <path
-       style="fill:#9f9f9f;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1"
+       style="fill:#9f9f9f;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dashoffset:0"
        d="M 11.91614,10.154831 15,9 l 0,5 -3.08386,-1 0,-2.845169 z"
        id="rect3672"
        sodipodi:nodetypes="ccccc" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer11"
+     inkscape:label="Symbols"
+     style="display:inline">
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
+       d="M 5.5390847,2.5267802 6.6327574,0.55550895 8.8721827,0.50966577 10.174174,2.5267806 8.9242624,4.4063649 l -1.0415931,0.045843 -0.05208,1.1002444 1.0936727,1.054401 -0.05208,2.567237 -0.6249558,1.1002457 2.8643808,1.191931 1.093674,2.750611 1.458231,-0.550122 0.833274,0.962713 -1.197832,1.008557 -1.979027,0.04584 -1.4061504,-3.117359 -2.5519041,-1.146089 -0.4166378,2.521395 -2.2394251,0.09168 -0.1041586,1.558679 -1.4582303,0 -0.05208,-2.933975 L 5.2786864,12.520669 5.5911643,9.6783687 6.6327574,8.0280024 6.5285982,6.9277579 5.1745271,6.9736015 4.0287746,8.25722 4.0287747,9.4491512 2.2267415,9.4498338 2.2580663,8.2113765 4.4974916,5.4149218 6.4903551,5.2780736 6.4244389,4.2229904 5.5390847,2.5267802 z"
+       id="path3731"
+       sodipodi:nodetypes="cccccccccccccccccccccccccccccccccccc" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer12"
+     inkscape:label="Anim Curves"
+     style="display:none">
+    <path
+       style="fill:none;stroke:#0d4eec;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 1.0838718,10.941932 C 1.0838718,10.941932 2,6 5,6 c 3,0 3,3 6,3 3,0 3,-3 4,-7"
+       id="path3672"
+       sodipodi:nodetypes="cssc" />
+    <path
+       style="fill:none;stroke:#00d60c;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 1,13 c 0,0 2,-2 4,-2 2,0 2,2 5,2 3,0 5,-2 5,-2"
+       id="path3674" />
+    <path
+       style="fill:none;stroke:#ff0909;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 1,1 0,14 14,0"
+       id="path2893" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3676"
+       width="1"
+       height="1"
+       x="4.6838708"
+       y="5.4064517" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline"
+       id="rect3676-1"
+       width="1"
+       height="1"
+       x="10.451613"
+       y="8.3161297" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline"
+       id="rect3676-4"
+       width="1"
+       height="1"
+       x="4.5483866"
+       y="10.361291" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline"
+       id="rect3676-9"
+       width="1"
+       height="1"
+       x="9.7290325"
+       y="12.503225" />
   </g>
 </svg>

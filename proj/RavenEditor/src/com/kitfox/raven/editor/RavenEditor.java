@@ -293,13 +293,6 @@ public class RavenEditor
         }
     }
 
-//    /**
-//     * @return the history
-//     */
-//    public History getHistory() {
-//        return history;
-//    }
-
     /**
      * @return the viewManager
      */
