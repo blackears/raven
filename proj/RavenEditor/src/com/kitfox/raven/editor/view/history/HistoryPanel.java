@@ -77,8 +77,8 @@ public class HistoryPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            listenerHistory = new HistoryWeakListener(this, doc.getCurDocument().getHistory());
-            doc.getCurDocument().getHistory().addHistoryListener(listenerHistory);
+            listenerHistory = new HistoryWeakListener(this, doc.getHistory());
+            doc.getHistory().addHistoryListener(listenerHistory);
         }
 
         SwingUtilities.invokeLater(
@@ -104,7 +104,7 @@ public class HistoryPanel extends javax.swing.JPanel
         }
         else
         {
-            History hist = doc.getCurDocument().getHistory();
+            History hist = doc.getHistory();
             list_history.setListData(hist.getActionListAsArray());
 
             int idx = hist.getUndoCursor() - 1;

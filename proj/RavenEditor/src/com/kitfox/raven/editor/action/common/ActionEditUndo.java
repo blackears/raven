@@ -50,7 +50,7 @@ public class ActionEditUndo extends AbstractAction
         {
             return;
         }
-        doc.getCurDocument().getHistory().undo();
+        doc.getHistory().undo();
     }
 
     @ServiceInst(service=ActionProvider.class)

@@ -51,7 +51,6 @@ import com.kitfox.raven.util.tree.PropertyWrapperBoolean;
 import com.kitfox.raven.util.tree.PropertyWrapperFloat;
 import com.kitfox.raven.wizard.RavenWizardPageIterator;
 import com.kitfox.xml.schema.ravendocumentschema.NodeDocumentType;
-import com.kitfox.xml.schema.ravendocumentschema.RavenDocumentType;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.geom.AffineTransform;

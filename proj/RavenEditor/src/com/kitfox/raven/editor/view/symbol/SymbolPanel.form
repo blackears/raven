@@ -48,16 +48,25 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Create"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bn_createActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="bn_rename">
           <Properties>
             <Property name="text" type="java.lang.String" value="Rename"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bn_renameActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="bn_delete">
           <Properties>
             <Property name="text" type="java.lang.String" value="Delete"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bn_deleteActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

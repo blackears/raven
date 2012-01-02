@@ -4,19 +4,25 @@
  */
 package com.kitfox.raven.editor.view.symbol;
 
+import com.kitfox.raven.editor.NewDocumentWizard;
 import com.kitfox.raven.editor.RavenDocument;
+import com.kitfox.raven.editor.RavenDocumentEvent;
+import com.kitfox.raven.editor.RavenDocumentListener;
+import com.kitfox.raven.editor.RavenDocumentWeakListener;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.RavenEditorListener;
 import com.kitfox.raven.editor.RavenEditorWeakListener;
-import com.kitfox.raven.util.SelectionWeakListener;
+import com.kitfox.raven.editor.RavenSwingUtil;
 import com.kitfox.raven.util.tree.NodeDocument;
 import com.kitfox.raven.util.undo.History;
-import com.kitfox.raven.util.undo.HistoryListener;
-import com.kitfox.raven.util.undo.HistoryWeakListener;
+import com.kitfox.raven.util.undo.HistoryAction;
+import com.kitfox.raven.wizard.RavenWizardDialog;
+import java.awt.Color;
 import java.awt.Component;
 import java.util.EventObject;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
 import javax.swing.UIDefaults;
@@ -27,11 +33,12 @@ import javax.swing.UIManager;
  * @author kitfox
  */
 public class SymbolPanel extends javax.swing.JPanel
-        implements RavenEditorListener, HistoryListener
+        implements RavenEditorListener, RavenDocumentListener
 {
     final RavenEditor editor;
     RavenEditorWeakListener listenerEditor;
-    HistoryWeakListener listenerHistory;
+//    HistoryWeakListener listenerHistory;
+    RavenDocumentWeakListener listenerRavenDoc;
 
     boolean updating;
 
@@ -44,41 +51,48 @@ public class SymbolPanel extends javax.swing.JPanel
         
         initComponents();
 
-        listenerEditor = new RavenEditorWeakListener(this, editor);
-        editor.addRavenEditorListener(listenerEditor);
-        updateDocument();
+//        list_symbols.setListData(new Object[]{"aaa", "bbb"});
 
         list_symbols.setCellRenderer(new Renderer());
+
+        listenerEditor = new RavenEditorWeakListener(this, editor);
+        editor.addRavenEditorListener(listenerEditor);
+        
+        updateDocument();
     }
 
     private void updateDocument()
     {
-        if (listenerHistory != null)
+        if (listenerRavenDoc != null)
         {
-            listenerHistory.remove();
-            listenerHistory = null;
+            listenerRavenDoc.remove();
+            listenerRavenDoc = null;
         }
 
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            History hist = doc.getHistory();
-            listenerHistory = new HistoryWeakListener(this, hist);
-            hist.addHistoryListener(listenerHistory);
+            listenerRavenDoc = new RavenDocumentWeakListener(this, doc);
+            doc.addRavenDocumentListener(listenerRavenDoc);
         }
+        
+        updateDisplay();
+    }
 
+    private void updateDisplay()
+    {
         SwingUtilities.invokeLater(
             new Runnable() {
                 @Override
                 public void run()
                 {
-                    updateModelSwing();
+                    updateDisplaySwing();
                 }
             }
         );
     }
-
-    private void updateModelSwing()
+    
+    private void updateDisplaySwing()
     {
         updating = true;
 
@@ -109,9 +123,30 @@ public class SymbolPanel extends javax.swing.JPanel
     }
 
     @Override
-    public void historyChanged(EventObject evt)
+    public void documentSourceChanged(EventObject evt)
     {
-        updateDocument();
+    }
+    
+    @Override
+    public void documentAdded(RavenDocumentEvent evt)
+    {
+        updateDisplay();
+    }
+    
+    @Override
+    public void documentRemoved(RavenDocumentEvent evt)
+    {
+        updateDisplay();
+    }
+    
+    @Override
+    public void currentDocumentChanged(RavenDocumentEvent evt)
+    {
+        if (updating)
+        {
+            return;
+        }
+        updateDisplay();
     }
 
     /** This method is called from within the constructor to
@@ -142,12 +177,27 @@ public class SymbolPanel extends javax.swing.JPanel
         add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
         bn_create.setText("Create");
+        bn_create.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bn_createActionPerformed(evt);
+            }
+        });
         jPanel1.add(bn_create);
 
         bn_rename.setText("Rename");
+        bn_rename.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bn_renameActionPerformed(evt);
+            }
+        });
         jPanel1.add(bn_rename);
 
         bn_delete.setText("Delete");
+        bn_delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bn_deleteActionPerformed(evt);
+            }
+        });
         jPanel1.add(bn_delete);
 
         add(jPanel1, java.awt.BorderLayout.PAGE_END);
@@ -162,8 +212,86 @@ public class SymbolPanel extends javax.swing.JPanel
         
         NodeDocument sym = (NodeDocument)list_symbols.getSelectedValue();
         RavenDocument doc = editor.getDocument();
-        doc.setCurrentDocument(doc.indexOfDocument(sym));
+        doc.setCurrentDocument(sym);
     }//GEN-LAST:event_list_symbolsValueChanged
+
+    private void bn_createActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bn_createActionPerformed
+    {//GEN-HEADEREND:event_bn_createActionPerformed
+        RavenDocument doc = editor.getDocument();
+        if (doc == null)
+        {
+            return;
+        }
+
+//        String newName = doc.getUnusedDocumentName("symbol");
+//                JOptionPane.showInputDialog(
+//                this, "Create new symbol", newName);
+//        if (newName == null)
+//        {
+//            return;
+//        }
+
+        NewDocumentWizard wiz = new NewDocumentWizard(editor);
+
+        RavenWizardDialog dlg = new RavenWizardDialog(
+                editor.getViewManager().getSwingRoot(), wiz);
+        RavenSwingUtil.centerWindow(dlg);
+        dlg.setVisible(true);
+
+        NodeDocument sym = dlg.getNodeDocument();
+
+        if (sym == null)
+        {
+            return;
+        }
+        
+
+        doc.addDocument(sym);
+        
+    }//GEN-LAST:event_bn_createActionPerformed
+
+    private void bn_renameActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bn_renameActionPerformed
+    {//GEN-HEADEREND:event_bn_renameActionPerformed
+        Object val = list_symbols.getSelectedValue();
+        if (val == null)
+        {
+            return;
+        }
+        
+        NodeDocument doc = (NodeDocument)val;
+        String name = doc.getDocumentName();
+        String newName = JOptionPane.showInputDialog(
+                this, "Rename symbol", name == null ? "" : name);
+        
+        if (newName == null)
+        {
+            return;
+        }
+        
+        doc.setDocumentName(newName);
+        repaint();
+    }//GEN-LAST:event_bn_renameActionPerformed
+
+    private void bn_deleteActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bn_deleteActionPerformed
+    {//GEN-HEADEREND:event_bn_deleteActionPerformed
+        RavenDocument doc = editor.getDocument();
+        if (doc == null)
+        {
+            return;
+        }
+
+        Object val = list_symbols.getSelectedValue();
+        if (val == null)
+        {
+            return;
+        }
+        
+//System.err.println("Deleting");        
+        NodeDocument sym = (NodeDocument)val;
+//        int idx = doc.indexOfDocument(sym);
+        doc.removeDocument(sym);
+
+    }//GEN-LAST:event_bn_deleteActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bn_create;
@@ -175,6 +303,7 @@ public class SymbolPanel extends javax.swing.JPanel
     // End of variables declaration//GEN-END:variables
 
     //------------------------------------
+    
     
     class Renderer extends JLabel implements ListCellRenderer
     {
@@ -190,19 +319,14 @@ public class SymbolPanel extends javax.swing.JPanel
                 JList list, Object value, int index, 
                 boolean isSelected, boolean cellHasFocus)
         {
-            if (value instanceof String)
-            {
-                //Empty lists will provide an empty string
-                setText("");
-                return this;
-            }
-
-            NodeDocument doc = (NodeDocument)value;
             UIDefaults def = UIManager.getDefaults();
             setBackground(isSelected
                 ? def.getColor("List.selectionBackground")
                 : def.getColor("List.background"));
-            setText(doc == null ? "" : doc.getDocumentName());
+            
+            NodeDocument doc = (NodeDocument)value;
+            String name = doc.getDocumentName();
+            setText(name == null ? "*" : name);
             return this;
         }
     }

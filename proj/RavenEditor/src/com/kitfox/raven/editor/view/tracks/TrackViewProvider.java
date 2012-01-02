@@ -22,7 +22,7 @@ import com.kitfox.raven.util.service.ServiceInst;
 import java.awt.Component;
 
 /**
- *
+ *0
  * @author kitfox
  */
 @ServiceInst(service=ViewProvider.class)
@@ -32,7 +32,6 @@ public class TrackViewProvider extends ViewProvider
 
     public TrackViewProvider()
     {
-//        super("History", "/icons/view/history.png");
         super("Tracks", "/icons/view/animCurves.png");
     }
 

@@ -16,6 +16,7 @@
 
 package com.kitfox.raven.util.tree;
 
+import com.kitfox.raven.util.undo.History;
 import com.kitfox.raven.util.undo.HistoryAction;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -131,32 +132,35 @@ abstract public class ChildWrapper<NodeType extends NodeObject,
     protected void doAction(HistoryAction action)
     {
         NodeDocument doc = node.getDocument();
-        if (doc == null)
+        History hist = doc == null ? null : doc.getHistory();
+        if (hist == null)
         {
             action.redo(null);
             return;
         }
-        doc.getHistory().doAction(action);
+        hist.doAction(action);
     }
 
     protected void beginTransaction(String name)
     {
         NodeDocument doc = node.getDocument();
-        if (doc == null)
+        History hist = doc == null ? null : doc.getHistory();
+        if (hist == null)
         {
             return;
         }
-        doc.getHistory().beginTransaction(name);
+        hist.beginTransaction(name);
     }
 
     protected void commitTransaction()
     {
         NodeDocument doc = node.getDocument();
-        if (doc == null)
+        History hist = doc == null ? null : doc.getHistory();
+        if (hist == null)
         {
             return;
         }
-        doc.getHistory().commitTransaction();
+        hist.commitTransaction();
     }
 
     public int getPrevKeyFrame(int curFrame, int trackUid)

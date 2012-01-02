@@ -22,6 +22,7 @@ import com.kitfox.raven.util.tree.NodeDocument;
 import com.kitfox.raven.util.tree.NodeDocumentProvider;
 import com.kitfox.raven.util.tree.NodeDocumentProviderIndex;
 import com.kitfox.raven.util.undo.History;
+import com.kitfox.raven.util.undo.HistoryAction;
 import com.kitfox.xml.schema.ravendocumentschema.MetaPropertyEntryType;
 import com.kitfox.xml.schema.ravendocumentschema.MetaPropertySetGroupType;
 import com.kitfox.xml.schema.ravendocumentschema.MetaPropertySetType;
@@ -123,6 +124,7 @@ public class RavenDocument
         history.clear();
     }
     
+    @Override
     public History getHistory()
     {
         return history;
@@ -148,50 +150,62 @@ public class RavenDocument
         return null;
     }
     
-    public int getNumDocuments()
-    {
-        return documents.size();
-    }
+//    public int getNumDocuments()
+//    {
+//        return documents.size();
+//    }
+//    
+//    public NodeDocument getDocument(int index)
+//    {
+//        return documents.get(index);
+//    }
     
-    public NodeDocument getDocument(int index)
+    public void setCurrentDocument(NodeDocument symbol)
     {
-        return documents.get(index);
-    }
-    
-    public void setCurrentDocument(int index)
-    {
-        NodeDocument doc = getDocument(index);
-        NodeDocument oldDoc = curDoc;
-        curDoc = doc;
-        fireCurrentDocumentChanged(oldDoc, doc);
-    }
-    
-    public int indexOfDocument(NodeDocument doc)
-    {
-        for (int i = 0; i < documents.size(); ++i)
+        if (curDoc == symbol)
         {
-            if (documents.get(i) == doc)
-            {
-                return i;
-            }
+            return;
         }
-        return -1;
+        if (!documents.contains(symbol))
+        {
+            return;
+        }
+        
+        SetCurrentSymbolAction action = 
+                new SetCurrentSymbolAction(curDoc, symbol);
+        history.doAction(action);
     }
     
-    public boolean addDocument(NodeDocument doc)
+//    public int indexOfDocument(NodeDocument doc)
+//    {
+//        for (int i = 0; i < documents.size(); ++i)
+//        {
+//            if (documents.get(i) == doc)
+//            {
+//                return i;
+//            }
+//        }
+//        return -1;
+//    }
+    
+    public void addDocument(NodeDocument sym)
     {
-        documents.add(doc);
-        doc.setEnv(this);
-        fireDocumentAdded(doc);
-        return true;
+        if (sym.getEnv() != null)
+        {
+            return;
+        }
+        AddSymbolAction action = new AddSymbolAction(sym);
+        history.doAction(action);
     }
     
-    public NodeDocument removeDocument(int index)
+    public void removeDocument(NodeDocument sym)
     {
-        NodeDocument doc = documents.remove(index);
-        doc.setEnv(null);
-        fireDocumentRemoved(doc);
-        return doc;
+        if (!documents.contains(sym))
+        {
+            return;
+        }
+        RemoveSymbolAction action = new RemoveSymbolAction(sym);
+        history.doAction(action);
     }
     
     public String getUnusedDocumentName(String rootName)
@@ -382,5 +396,140 @@ public class RavenDocument
     public File getDocumentSource()
     {
         return source;
+    }
+    
+    //------------------------------------
+    public class AddSymbolAction implements HistoryAction
+    {
+        final NodeDocument sym;
+        final String name;
+
+        public AddSymbolAction(NodeDocument sym)
+        {
+            this.sym = sym;
+            this.name = sym.getDocumentName();
+        }
+
+        @Override
+        public void redo(History history)
+        {
+            documents.add(sym);
+            sym.setEnv(RavenDocument.this);
+            fireDocumentAdded(sym);
+        }
+
+        @Override
+        public void undo(History history)
+        {
+            documents.remove(sym);
+            sym.setEnv(null);
+            fireDocumentRemoved(sym);
+        }
+
+        @Override
+        public String getTitle()
+        {
+            return "Add Symbol " + name;
+        }
+    }
+    
+    public class RemoveSymbolAction implements HistoryAction
+    {
+        final NodeDocument sym;
+        final String name;
+        boolean updateCurDoc;
+        NodeDocument replaceCurDoc;
+
+        public RemoveSymbolAction(NodeDocument sym)
+        {
+            this.sym = sym;
+            this.name = sym.getDocumentName();
+
+            replaceCurDoc = null;
+            if (sym == curDoc)
+            {
+                updateCurDoc = true;
+                int idx = documents.indexOf(sym);
+                if (idx > 0)
+                {
+                    replaceCurDoc = documents.get(idx - 1);
+                }
+                else if (!documents.isEmpty())
+                {
+                    replaceCurDoc = documents.get(0);
+                }
+            }
+        }
+
+        @Override
+        public void redo(History history)
+        {
+            if (curDoc == sym)
+            {
+                curDoc = null;
+            }
+            
+            if (updateCurDoc)
+            {
+                curDoc = replaceCurDoc;
+                fireCurrentDocumentChanged(sym, replaceCurDoc);
+            }
+            
+            documents.remove(sym);
+            sym.setEnv(null);
+            fireDocumentRemoved(sym);
+        }
+
+        @Override
+        public void undo(History history)
+        {
+            documents.add(sym);
+            sym.setEnv(RavenDocument.this);
+            fireDocumentAdded(sym);
+            
+            if (updateCurDoc)
+            {
+                curDoc = sym;
+                fireCurrentDocumentChanged(replaceCurDoc, sym);
+            }
+        }
+
+        @Override
+        public String getTitle()
+        {
+            return "Remove Symbol " + name;
+        }
+    }
+    
+    public class SetCurrentSymbolAction implements HistoryAction
+    {
+        final NodeDocument symOld;
+        final NodeDocument symNew;
+
+        public SetCurrentSymbolAction(NodeDocument symOld, NodeDocument symNew)
+        {
+            this.symOld = symOld;
+            this.symNew = symNew;
+        }
+
+        @Override
+        public void redo(History history)
+        {
+            curDoc = symNew;
+            fireCurrentDocumentChanged(symOld, symNew);
+        }
+
+        @Override
+        public void undo(History history)
+        {
+            curDoc = symOld;
+            fireCurrentDocumentChanged(symNew, symOld);
+        }
+
+        @Override
+        public String getTitle()
+        {
+            return "Set current symbol: " + symNew.getDocumentName();
+        }
     }
 }

@@ -22,7 +22,7 @@ package com.kitfox.raven.util.undo;
  */
 public interface HistoryAction
 {
-    public void undo(History history);
     public void redo(History history);
+    public void undo(History history);
     public String getTitle();
 }

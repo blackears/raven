@@ -19,6 +19,7 @@ package com.kitfox.raven.util.tree;
 import com.kitfox.raven.util.Selection;
 import com.kitfox.raven.util.resource.ResourceCache;
 import com.kitfox.raven.util.undo.History;
+import com.kitfox.raven.util.undo.HistoryAction;
 import com.kitfox.xml.schema.ravendocumentschema.NodeDocumentType;
 import java.awt.Window;
 import java.beans.PropertyChangeEvent;
@@ -82,10 +83,13 @@ abstract public class NodeDocument extends NodeObject
     
     public void setDocumentName(String name)
     {
-        PropertyChangeEvent evt = 
-                new PropertyChangeEvent(this, PROP_DOCUMENTNAME, this.documentName, name);
-        this.documentName = name;
-        fireDocumentNameChanged(evt);
+        if (name != null && name.equals(documentName))
+        {
+            return;
+        }
+
+        RenameSymbolAction action = new RenameSymbolAction(documentName, name);
+        doAction(action);
     }
     
     public History getHistory()
@@ -183,6 +187,10 @@ abstract public class NodeDocument extends NodeObject
             documentName = type.getDocumentName();
             documentCode.load(type.getCode());
             pluginsManager.load(type.getPlugins());
+        }
+        else
+        {
+            documentName = "rootSymbol";
         }
     }
 
@@ -380,6 +388,43 @@ abstract public class NodeDocument extends NodeObject
     }
 
     //---------------------------------
+    
+    public class RenameSymbolAction implements HistoryAction
+    {
+        final String oldName;
+        final String newName;
+
+        public RenameSymbolAction(String oldName, String newName)
+        {
+            this.oldName = oldName;
+            this.newName = newName;
+        }
+        
+        @Override
+        public void redo(History history)
+        {
+            PropertyChangeEvent evt = 
+                    new PropertyChangeEvent(this, PROP_DOCUMENTNAME, oldName, newName);
+            documentName = newName;
+            fireDocumentNameChanged(evt);
+        }
+
+        @Override
+        public void undo(History history)
+        {
+            PropertyChangeEvent evt = 
+                    new PropertyChangeEvent(this, PROP_DOCUMENTNAME, newName, oldName);
+            documentName = oldName;
+            fireDocumentNameChanged(evt);
+        }
+
+        @Override
+        public String getTitle()
+        {
+            return "Renaming Symbol " + oldName + " -> " + newName;
+        }
+    }
+    
     public static interface Environment
     {
         public Window getSwingRoot();

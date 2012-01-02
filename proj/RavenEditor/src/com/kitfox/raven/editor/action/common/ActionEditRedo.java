@@ -50,7 +50,7 @@ public class ActionEditRedo extends AbstractAction
         {
             return;
         }
-        doc.getCurDocument().getHistory().redo();
+        doc.getHistory().redo();
     }
 
     @ServiceInst(service=ActionProvider.class)
