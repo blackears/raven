@@ -190,7 +190,7 @@ abstract public class NodeDocument extends NodeObject
         }
         else
         {
-            documentName = "rootSymbol";
+            documentName = "symbol";
         }
     }
 

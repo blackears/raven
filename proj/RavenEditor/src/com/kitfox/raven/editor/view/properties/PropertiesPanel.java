@@ -23,6 +23,9 @@
 package com.kitfox.raven.editor.view.properties;
 
 import com.kitfox.raven.editor.RavenDocument;
+import com.kitfox.raven.editor.RavenDocumentEvent;
+import com.kitfox.raven.editor.RavenDocumentListener;
+import com.kitfox.raven.editor.RavenDocumentWeakListener;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.RavenEditorListener;
 import com.kitfox.raven.editor.RavenEditorWeakListener;
@@ -40,10 +43,12 @@ import javax.swing.table.DefaultTableModel;
  * @author kitfox
  */
 public class PropertiesPanel extends javax.swing.JPanel
-        implements RavenEditorListener, SelectionListener
+        implements RavenEditorListener, RavenDocumentListener,
+        SelectionListener
 {
     final RavenEditor editor;
     RavenEditorWeakListener listenerEditor;
+    RavenDocumentWeakListener listenerRavenDoc;
     SelectionWeakListener selectionListener;
 
     PropertyModel model;
@@ -66,6 +71,25 @@ public class PropertiesPanel extends javax.swing.JPanel
     }
 
     private void updateDocument()
+    {
+        if (listenerRavenDoc != null)
+        {
+            listenerRavenDoc.remove();
+            listenerRavenDoc = null;
+        }
+
+        RavenDocument doc = editor.getDocument();
+        if (doc != null)
+        {
+            listenerRavenDoc = new RavenDocumentWeakListener(this, doc);
+            doc.addRavenDocumentListener(listenerRavenDoc);
+        }
+        
+        
+        updateSymbol();
+    }
+
+    private void updateSymbol()
     {
         if (selectionListener != null)
         {
@@ -136,6 +160,27 @@ public class PropertiesPanel extends javax.swing.JPanel
     @Override
     public void subselectionChanged(SelectionSubEvent evt)
     {
+    }
+
+    @Override
+    public void documentSourceChanged(EventObject evt)
+    {
+    }
+
+    @Override
+    public void documentAdded(RavenDocumentEvent evt)
+    {
+    }
+
+    @Override
+    public void documentRemoved(RavenDocumentEvent evt)
+    {
+    }
+
+    @Override
+    public void currentDocumentChanged(RavenDocumentEvent evt)
+    {
+        updateSymbol();
     }
 
 

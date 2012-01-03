@@ -73,8 +73,11 @@ public class RavenDocument
     public RavenDocument(RavenEditor editor, NodeDocument root)
     {
         this.editor = editor;
-        addDocument(root);
+//        addDocument(root);
+        documents.add(root);
+        root.setEnv(this);
         curDoc = root;
+//        history.clear();
     }
 
     public RavenDocument(RavenEditor editor, File file)
@@ -190,10 +193,10 @@ public class RavenDocument
     
     public void addDocument(NodeDocument sym)
     {
-        if (sym.getEnv() != null)
-        {
-            return;
-        }
+//        if (sym.getEnv() != null)
+//        {
+//            return;
+//        }
         AddSymbolAction action = new AddSymbolAction(sym);
         history.doAction(action);
     }

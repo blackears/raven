@@ -23,6 +23,9 @@
 package com.kitfox.raven.editor.view.player;
 
 import com.kitfox.raven.editor.RavenDocument;
+import com.kitfox.raven.editor.RavenDocumentEvent;
+import com.kitfox.raven.editor.RavenDocumentListener;
+import com.kitfox.raven.editor.RavenDocumentWeakListener;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.RavenEditorListener;
 import com.kitfox.raven.editor.RavenEditorWeakListener;
@@ -56,12 +59,14 @@ import javax.swing.UIManager;
  * @author kitfox
  */
 public class PlayerPanel extends javax.swing.JPanel
-        implements RavenEditorListener, PropertyWrapperListener
+        implements RavenEditorListener, RavenDocumentListener,
+        PropertyWrapperListener
 {
     private static final long serialVersionUID = 1;
 
     final RavenEditor editor;
     RavenEditorWeakListener listenerEditor;
+    RavenDocumentWeakListener listenerRavenDoc;
     PropertyWrapperWeakListener listenerTrackLibFrame;
     PropertyWrapperWeakListener listenerTrackLibTrack;
     PropertyWrapperWeakListener listenerTrackLibFps;
@@ -114,6 +119,25 @@ public class PlayerPanel extends javax.swing.JPanel
 
     private void updateDocument()
     {
+        if (listenerRavenDoc != null)
+        {
+            listenerRavenDoc.remove();
+            listenerRavenDoc = null;
+        }
+
+        RavenDocument doc = editor.getDocument();
+        if (doc != null)
+        {
+            listenerRavenDoc = new RavenDocumentWeakListener(this, doc);
+            doc.addRavenDocumentListener(listenerRavenDoc);
+        }
+        
+        
+        updateSymbol();
+    }
+
+    private void updateSymbol()
+    {
         if (trackLibManager != null)
         {
             trackLibManager.dispose();
@@ -156,7 +180,7 @@ public class PlayerPanel extends javax.swing.JPanel
             }
         );
     }
-
+    
     private void updateModelSwing()
     {
         ++updating;
@@ -1031,6 +1055,27 @@ public class PlayerPanel extends javax.swing.JPanel
     private javax.swing.JTextField text_lastFrame;
     // End of variables declaration//GEN-END:variables
     // End of variables declaration
+
+    @Override
+    public void documentSourceChanged(EventObject evt)
+    {
+    }
+
+    @Override
+    public void documentAdded(RavenDocumentEvent evt)
+    {
+    }
+
+    @Override
+    public void documentRemoved(RavenDocumentEvent evt)
+    {
+    }
+
+    @Override
+    public void currentDocumentChanged(RavenDocumentEvent evt)
+    {
+        updateSymbol();
+    }
 
 
     //------------------------------

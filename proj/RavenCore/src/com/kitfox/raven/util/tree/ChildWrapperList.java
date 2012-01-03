@@ -53,7 +53,7 @@ public class ChildWrapperList<NodeType extends NodeObject, ChildType extends Nod
     public void add(ChildType child)
     {
 //        add(size(), child);
-        AppendChildAction action = new AppendChildAction(child);
+        AddChildAction action = new AddChildAction(child);
         doAction(action);
     }
 
@@ -171,6 +171,11 @@ public class ChildWrapperList<NodeType extends NodeObject, ChildType extends Nod
         final int index;
         final ChildType child;
 
+        public AddChildAction(ChildType child)
+        {
+            this(list.size(), child);
+        }
+
         public AddChildAction(int index, ChildType child)
         {
             this.index = index;
@@ -200,38 +205,38 @@ public class ChildWrapperList<NodeType extends NodeObject, ChildType extends Nod
         }
     }
 
-    public class AppendChildAction implements HistoryAction
-    {
-        final ChildType child;
-
-        public AppendChildAction(ChildType child)
-        {
-            this.child = child;
-        }
-
-        @Override
-        public void undo(History history)
-        {
-            child.setParent(null);
-            int index = list.size() - 1;
-            list.remove(index);
-            fireNodeRemoved(index, child);
-        }
-
-        @Override
-        public void redo(History history)
-        {
-            child.setParent(ChildWrapperList.this);
-            int index = list.size();
-            list.add(index, child);
-            fireNodeAdded(index, child);
-        }
-
-        @Override
-        public String getTitle()
-        {
-            return "Append child: " + child.toString();
-        }
-    }
+//    public class AppendChildAction implements HistoryAction
+//    {
+//        final ChildType child;
+//
+//        public AppendChildAction(ChildType child)
+//        {
+//            this.child = child;
+//        }
+//
+//        @Override
+//        public void undo(History history)
+//        {
+//            child.setParent(null);
+//            int index = list.size() - 1;
+//            list.remove(index);
+//            fireNodeRemoved(index, child);
+//        }
+//
+//        @Override
+//        public void redo(History history)
+//        {
+//            child.setParent(ChildWrapperList.this);
+//            int index = list.size();
+//            list.add(index, child);
+//            fireNodeAdded(index, child);
+//        }
+//
+//        @Override
+//        public String getTitle()
+//        {
+//            return "Append child: " + child.toString();
+//        }
+//    }
 
 }

@@ -23,6 +23,9 @@
 package com.kitfox.raven.editor.view.text;
 
 import com.kitfox.raven.editor.RavenDocument;
+import com.kitfox.raven.editor.RavenDocumentEvent;
+import com.kitfox.raven.editor.RavenDocumentListener;
+import com.kitfox.raven.editor.RavenDocumentWeakListener;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.RavenEditorListener;
 import com.kitfox.raven.editor.RavenEditorWeakListener;
@@ -41,20 +44,22 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.EventObject;
+import javax.swing.SwingUtilities;
 
 /**
  *
  * @author kitfox
  */
 public class TextPanel extends javax.swing.JPanel
-        implements RavenEditorListener, PropertyChangeListener,
-        SelectionListener
+        implements RavenEditorListener, RavenDocumentListener,
+        PropertyChangeListener, SelectionListener
 {
     RavenEditor editor;
     TextPropertiesPanel panel = new TextPropertiesPanel();
 
-    RavenEditorWeakListener edListener;
-    SelectionWeakListener selListener;
+    private RavenEditorWeakListener edListener;
+    private RavenDocumentWeakListener listenerRavenDoc;
+    private SelectionWeakListener selListener;
 
     ArrayList<ServiceText> textRecords = new ArrayList<ServiceText>();
 
@@ -72,10 +77,28 @@ public class TextPanel extends javax.swing.JPanel
         panel.addPropertyChangeListener(this);
         add(panel, BorderLayout.CENTER);
 
-        rebuildDocument();
+        updateDocument();
     }
 
-    private void rebuildDocument()
+    private void updateDocument()
+    {
+        if (listenerRavenDoc != null)
+        {
+            listenerRavenDoc.remove();
+            listenerRavenDoc = null;
+        }
+
+        RavenDocument doc = editor.getDocument();
+        if (doc != null)
+        {
+            listenerRavenDoc = new RavenDocumentWeakListener(this, doc);
+            doc.addRavenDocumentListener(listenerRavenDoc);
+        }
+        
+        updateSymbol();
+    }
+
+    private void updateSymbol()
     {
         if (selListener != null)
         {
@@ -94,10 +117,19 @@ public class TextPanel extends javax.swing.JPanel
         selListener = new SelectionWeakListener(this, sel);
         sel.addSelectionListener(selListener);
 
-        updateFromDocument();
+
+        SwingUtilities.invokeLater(
+            new Runnable() {
+                @Override
+                public void run()
+                {
+                    updateSwing();
+                }
+            }
+        );
     }
 
-    private void updateFromDocument()
+    private void updateSwing()
     {
         RavenDocument doc = editor.getDocument();
         if (doc == null)
@@ -181,18 +213,39 @@ public class TextPanel extends javax.swing.JPanel
     @Override
     public void documentChanged(EventObject evt)
     {
-        rebuildDocument();
+        updateDocument();
     }
 
     @Override
     public void selectionChanged(SelectionEvent evt)
     {
-        updateFromDocument();
+        updateSymbol();
     }
 
     @Override
     public void subselectionChanged(SelectionSubEvent evt)
     {
+    }
+
+    @Override
+    public void documentSourceChanged(EventObject evt)
+    {
+    }
+
+    @Override
+    public void documentAdded(RavenDocumentEvent evt)
+    {
+    }
+
+    @Override
+    public void documentRemoved(RavenDocumentEvent evt)
+    {
+    }
+
+    @Override
+    public void currentDocumentChanged(RavenDocumentEvent evt)
+    {
+        updateSymbol();
     }
 
 

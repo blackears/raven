@@ -124,7 +124,7 @@ public class OutlinerNodeChildList extends OutlinerNode
     public void childWrapperNodeAdded(ChildWrapperEvent evt)
     {
         int index = evt.getIndex();
-        OutlinerNode child = wrapNode(getModel(),this, evt.getNode());
+        OutlinerNode child = wrapNode(getModel(), this, evt.getNode());
         childNodes.add(index, child);
 
         getModel().fireTreeNodesInserted(getPath(),

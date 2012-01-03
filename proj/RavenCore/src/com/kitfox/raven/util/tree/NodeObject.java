@@ -664,12 +664,13 @@ public class NodeObject
     protected void doAction(HistoryAction action)
     {
         NodeDocument doc = getDocument();
-        if (doc == null)
+        History hist = doc == null ? null : doc.getHistory();
+        if (hist == null)
         {
             action.redo(null);
             return;
         }
-        doc.getHistory().doAction(action);
+        hist.doAction(action);
     }
 
     public boolean isAncestorOf(NodeObject node)

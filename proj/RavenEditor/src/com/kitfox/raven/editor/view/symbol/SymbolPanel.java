@@ -245,6 +245,12 @@ public class SymbolPanel extends javax.swing.JPanel
             return;
         }
         
+        String name = sym.getDocumentName();
+        String newName = doc.getUnusedDocumentName(name);
+        if (!newName.equals(name))
+        {
+            sym.setDocumentName(newName);
+        }
 
         doc.addDocument(sym);
         

@@ -23,6 +23,9 @@
 package com.kitfox.raven.editor.view.outliner;
 
 import com.kitfox.raven.editor.RavenDocument;
+import com.kitfox.raven.editor.RavenDocumentEvent;
+import com.kitfox.raven.editor.RavenDocumentListener;
+import com.kitfox.raven.editor.RavenDocumentWeakListener;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.RavenEditorListener;
 import com.kitfox.raven.editor.RavenEditorWeakListener;
@@ -47,11 +50,13 @@ import javax.swing.tree.TreePath;
  * @author kitfox
  */
 public class OutlinerPanel extends javax.swing.JPanel
-        implements RavenEditorListener, OutlinerTreeModelListener,
+        implements RavenEditorListener, RavenDocumentListener,
+        OutlinerTreeModelListener,
         ActionManagerListener, SelectionListener
 {
     final RavenEditor editor;
     private RavenEditorWeakListener listenerEditor;
+    private RavenDocumentWeakListener listenerRavenDoc;
     private SelectionWeakListener listenerSelection;
     private OutlinerTreeModel model;
 
@@ -79,6 +84,24 @@ public class OutlinerPanel extends javax.swing.JPanel
 
     private void updateDocument()
     {
+        if (listenerRavenDoc != null)
+        {
+            listenerRavenDoc.remove();
+            listenerRavenDoc = null;
+        }
+
+        RavenDocument doc = editor.getDocument();
+        if (doc != null)
+        {
+            listenerRavenDoc = new RavenDocumentWeakListener(this, doc);
+            doc.addRavenDocumentListener(listenerRavenDoc);
+        }
+        
+        updateSymbol();
+    }
+
+    private void updateSymbol()
+    {
         if (listenerSelection != null)
         {
             listenerSelection.remove();
@@ -88,8 +111,9 @@ public class OutlinerPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            listenerSelection = new SelectionWeakListener(this, doc.getCurDocument().getSelection());
-            doc.getCurDocument().getSelection().addSelectionListener(listenerSelection);
+            Selection sel = doc.getCurDocument().getSelection();
+            listenerSelection = new SelectionWeakListener(this, sel);
+            sel.addSelectionListener(listenerSelection);
         }
 
         SwingUtilities.invokeLater(
@@ -101,8 +125,9 @@ public class OutlinerPanel extends javax.swing.JPanel
                 }
             }
         );
+        
     }
-
+    
     private void updateModelSwing()
     {
         RavenDocument doc = editor.getDocument();
@@ -115,7 +140,7 @@ public class OutlinerPanel extends javax.swing.JPanel
         else
         {
             model = new OutlinerTreeModel(doc.getCurDocument());
-            model.addOutlinerTreeModelListener(OutlinerPanel.this);
+            model.addOutlinerTreeModelListener(this);
             tree_outline.setModel(model);
         }
         tree_outline.setTransferHandler(new OutlinerTransferHandler(model));
@@ -317,6 +342,27 @@ public class OutlinerPanel extends javax.swing.JPanel
     public void subselectionChanged(SelectionSubEvent evt)
     {
 //        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void documentSourceChanged(EventObject evt)
+    {
+    }
+
+    @Override
+    public void documentAdded(RavenDocumentEvent evt)
+    {
+    }
+
+    @Override
+    public void documentRemoved(RavenDocumentEvent evt)
+    {
+    }
+
+    @Override
+    public void currentDocumentChanged(RavenDocumentEvent evt)
+    {
+        updateSymbol();
     }
 
 
