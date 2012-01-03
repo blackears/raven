@@ -20,7 +20,7 @@ import com.kitfox.raven.util.Selection;
 import com.kitfox.raven.util.resource.ResourceCache;
 import com.kitfox.raven.util.undo.History;
 import com.kitfox.raven.util.undo.HistoryAction;
-import com.kitfox.xml.schema.ravendocumentschema.NodeDocumentType;
+import com.kitfox.xml.schema.ravendocumentschema.NodeSymbolType;
 import java.awt.Window;
 import java.beans.PropertyChangeEvent;
 import java.io.File;
@@ -178,7 +178,7 @@ abstract public class NodeDocument extends NodeObject
      * will be produced.  (In the default document, all ChildWrapperSingle
      * will be initialzied).
      */
-    protected void load(NodeDocumentType type)
+    protected void load(NodeSymbolType type)
     {
         super.load(this, type);
 
@@ -223,9 +223,9 @@ abstract public class NodeDocument extends NodeObject
     }
 
     @Override
-    public NodeDocumentType export()
+    public NodeSymbolType export()
     {
-        NodeDocumentType type = new NodeDocumentType();
+        NodeSymbolType type = new NodeSymbolType();
         export(type);
 
         type.setNextUid(nextUid);

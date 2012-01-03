@@ -6,11 +6,11 @@
     elementFormDefault="qualified">
     <xsd:complexType name="RavenDocumentType">
         <xsd:sequence>
-            <xsd:element name="root" type="tns:NodeDocumentType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+            <xsd:element name="symbols" type="tns:NodeSymbolType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
             <xsd:element name="propertySetGroups" type="tns:MetaPropertySetGroupType" minOccurs="1" maxOccurs="1"></xsd:element>
         </xsd:sequence>
         <xsd:attribute name="version" type="xsd:string"/>
-        <xsd:attribute name="curDocument" type="xsd:string"/>
+        <xsd:attribute name="curSymbol" type="xsd:string"/>
     </xsd:complexType>
     <xsd:element name="RavenDocument" type="tns:RavenDocumentType"></xsd:element>
     <xsd:complexType name="NodeObjectType">
@@ -43,7 +43,7 @@
             <xsd:enumeration value="resource"/>
         </xsd:restriction>
     </xsd:simpleType>
-    <xsd:complexType name="NodeDocumentType">
+    <xsd:complexType name="NodeSymbolType">
         <xsd:complexContent>
             <xsd:extension xmlns:tns="http://xml.kitfox.com/schema/RavenDocumentSchema" base="tns:NodeObjectType">
                 <xsd:sequence>

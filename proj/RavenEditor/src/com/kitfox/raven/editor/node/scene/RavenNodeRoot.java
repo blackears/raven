@@ -50,7 +50,7 @@ import com.kitfox.raven.util.tree.PropertyWrapperAdapter;
 import com.kitfox.raven.util.tree.PropertyWrapperBoolean;
 import com.kitfox.raven.util.tree.PropertyWrapperFloat;
 import com.kitfox.raven.wizard.RavenWizardPageIterator;
-import com.kitfox.xml.schema.ravendocumentschema.NodeDocumentType;
+import com.kitfox.xml.schema.ravendocumentschema.NodeSymbolType;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.geom.AffineTransform;
@@ -156,7 +156,7 @@ public class RavenNodeRoot extends NodeDocument
         zoom.addPropertyWrapperListener(update);
     }
 
-    public static RavenNodeRoot create(NodeDocumentType nodeDocumentType)
+    public static RavenNodeRoot create(NodeSymbolType nodeDocumentType)
     {
         RavenNodeRoot root = new RavenNodeRoot();
         root.load(nodeDocumentType);
@@ -513,7 +513,7 @@ public class RavenNodeRoot extends NodeDocument
         }
 
         @Override
-        public NodeDocument loadDocument(NodeDocumentType docTree)
+        public NodeDocument loadDocument(NodeSymbolType docTree)
         {
             return create(docTree);
         }

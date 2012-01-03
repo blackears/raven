@@ -17,7 +17,7 @@
 package com.kitfox.raven.util.tree;
 
 import com.kitfox.raven.wizard.RavenWizardPageIterator;
-import com.kitfox.xml.schema.ravendocumentschema.NodeDocumentType;
+import com.kitfox.xml.schema.ravendocumentschema.NodeSymbolType;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
@@ -74,7 +74,7 @@ abstract public class NodeDocumentProvider<T extends NodeDocument>
 
     abstract public RavenWizardPageIterator<T> createDocumentWizard();
 
-    abstract public NodeDocument loadDocument(NodeDocumentType docTree);
+    abstract public NodeDocument loadDocument(NodeSymbolType docTree);
 
     @Override
     public int compareTo(NodeDocumentProvider obj)

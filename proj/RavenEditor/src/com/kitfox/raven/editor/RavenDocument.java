@@ -26,7 +26,7 @@ import com.kitfox.raven.util.undo.HistoryAction;
 import com.kitfox.xml.schema.ravendocumentschema.MetaPropertyEntryType;
 import com.kitfox.xml.schema.ravendocumentschema.MetaPropertySetGroupType;
 import com.kitfox.xml.schema.ravendocumentschema.MetaPropertySetType;
-import com.kitfox.xml.schema.ravendocumentschema.NodeDocumentType;
+import com.kitfox.xml.schema.ravendocumentschema.NodeSymbolType;
 import com.kitfox.xml.schema.ravendocumentschema.ObjectFactory;
 import com.kitfox.xml.schema.ravendocumentschema.RavenDocumentType;
 import java.awt.Window;
@@ -86,8 +86,8 @@ public class RavenDocument
 
         //Load document
         RavenDocumentType docTree = load(file);
-        String curDocName = docTree.getCurDocument();
-        for (NodeDocumentType docType: docTree.getRoot())
+        String curDocName = docTree.getCurSymbol();
+        for (NodeSymbolType docType: docTree.getSymbols())
         {
             String docClass = docType.getClazz();
             NodeDocumentProvider prov =
@@ -324,10 +324,10 @@ public class RavenDocument
         //Save Documents
         for (NodeDocument doc: documents)
         {
-            NodeDocumentType type = doc.export();
-            pref.getRoot().add(type);
+            NodeSymbolType type = doc.export();
+            pref.getSymbols().add(type);
         }
-        pref.setCurDocument(curDoc == null ? null : curDoc.getDocumentName());
+        pref.setCurSymbol(curDoc == null ? null : curDoc.getDocumentName());
 
         //Save meta properties
         MetaPropertySetGroupType groups = new MetaPropertySetGroupType();
