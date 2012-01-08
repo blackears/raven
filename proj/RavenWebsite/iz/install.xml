@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="windows-1252"?>
 <installation version="1.0">
 
+    <dynamicvariables>
+
+        <variable 
+        name="raven_ver" 
+        checkonce="true"
+        file="$INSTALL_PATH/../../../common/release.properties" 
+        type="options"
+        key="version"/>
+        
+    </dynamicvariables>
+ 
     <!-- 
         The info section.
         The meaning of the tags should be natural ...
     -->
     <info>
         <appname>Raven Studio</appname>
-        <appversion>&lt;unversioned&gt;</appversion>
+        <appversion>${raven_ver}</appversion>
         <appsubpath>RavenStudio</appsubpath>
         <url>http://raven.java.net</url>
         <authors>
@@ -22,7 +33,7 @@
         <variable name="JVM_REQ" value="Java VM (JRE) 1.5 or higher"/>
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
     </variables>
- 
+    
     <!-- 
         The gui preferences indication.
         Sets the installer window to 640x480. It will not be able to change the size.
@@ -71,8 +82,10 @@
         <panel classname="SimpleFinishPanel"/>
     </panels>
 
-    <native type="izpack" name="ShellLink.dll"/>
-    <native type="izpack" name="ShellLink_x64.dll"/>
+    <natives>
+        <native type="izpack" name="ShellLink.dll"/>
+        <native type="izpack" name="ShellLink_x64.dll"/>
+    </natives>
 
     <!-- 
         The packs section.

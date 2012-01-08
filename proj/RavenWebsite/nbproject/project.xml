@@ -33,6 +33,16 @@
                     <location>iz</location>
                     <encoding>windows-1252</encoding>
                 </source-folder>
+                <source-folder>
+                    <label>..\..\common</label>
+                    <type>java</type>
+                    <location>../../common</location>
+                    <encoding>windows-1252</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>..\..\common</label>
+                    <location>../../common</location>
+                </source-folder>
             </folders>
             <ide-actions>
                 <action name="build">
@@ -52,6 +62,10 @@
                     <source-folder style="packages">
                         <label>iz</label>
                         <location>iz</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>..\..\common</label>
+                        <location>../../common</location>
                     </source-folder>
                     <source-file>
                         <location>build.xml</location>
@@ -74,6 +88,10 @@
             </compilation-unit>
             <compilation-unit>
                 <package-root>iz</package-root>
+                <source-level>1.6</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>../../common</package-root>
                 <source-level>1.6</source-level>
             </compilation-unit>
         </java-data>
