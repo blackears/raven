@@ -22,5 +22,16 @@ package com.kitfox.coyote.shape.bezier.mesh;
  */
 public enum BezierVertexSmooth
 {
-    CORNER, SMOOTH, CUSP
+    //Terminates as a corner.  If both ends of edge are corners, is a 
+    // straight line
+    CORNER, 
+    //If the vertex this edge-vertex terminates in has another edge-vertex
+    // with an opposite tangent, both this and opposite tangents should
+    // be adjusted simeltaneously
+    SMOOTH, 
+    //Knots will be automatically calculated to provide a smooth join at
+    // vertices
+    AUTO_SMOOTH, 
+    //Knot is completely independent and set by user
+    FREE
 }

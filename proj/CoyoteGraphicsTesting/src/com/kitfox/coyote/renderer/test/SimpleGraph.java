@@ -28,7 +28,7 @@ import com.kitfox.coyote.renderer.CyVertexBuffer;
 import com.kitfox.coyote.renderer.CyGLWrapper.DataType;
 import com.kitfox.coyote.renderer.CyGLWrapper.InternalFormatTex;
 import com.kitfox.coyote.renderer.CyGLWrapper.TexTarget;
-import com.kitfox.coyote.renderer.jogl.GLWrapperJOGL;
+import com.kitfox.coyote.renderer.jogl.CyGLWrapperJOGL;
 import com.kitfox.coyote.shape.CyEllipse2d;
 import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.ShapeMeshProvider;
@@ -60,53 +60,35 @@ public class SimpleGraph implements CyRendererListener
         texture = new TexSourceURLAWT(getClass().getResource("/forestBase.png"));
 
         {
-//        mat = new CyMaterialShowUv();
-//        mat.setColor(CyColor4f.RED);
-        }
-
-        {
             mat = new CyMaterialTextureBlit();
-            img = new CyTextureImage(TexTarget.GL_TEXTURE_2D,
-                    InternalFormatTex.GL_RGBA, DataType.GL_UNSIGNED_BYTE,
-                    texture.getWidth(), texture.getHeight(), texture);
-            mat.setTexture(img);
+//            img = new CyTextureImage(TexTarget.GL_TEXTURE_2D,
+//                    InternalFormatTex.GL_RGBA, DataType.GL_UNSIGNED_BYTE,
+//                    texture.getWidth(), texture.getHeight(), texture);
+//            mat.setTexture(img);
         }
     }
 
     @Override
     public void render(CyDrawStack rend)
     {
-//        rend.clear(CyColor4f.CYAN);
-        rend.clear(new CyColor4f(.2, .3, .3, 1));
-
-        {
-            GL gl = ((CyGLWrapperJOGL)rend.getGl()).getGl();
-            gl.glUseProgram(0);
-            gl.glColor4d(1, 1, 0, 1);
-            gl.glBegin(GL.GL_TRIANGLES);
-                gl.glVertex2d(-1, -1);
-                gl.glVertex2d(-.8, -1);
-                gl.glVertex2d(-.8, -.8);
-            gl.glEnd();
-        }
+////        rend.clear(CyColor4f.CYAN);
+//        rend.clear(new CyColor4f(.2, .3, .3, 1));
+//
+//        {
+//            GL gl = ((CyGLWrapperJOGL)rend.getGl()).getGl();
+//            gl.glUseProgram(0);
+//            gl.glColor4d(1, 1, 0, 1);
+//            gl.glBegin(GL.GL_TRIANGLES);
+//                gl.glVertex2d(-1, -1);
+//                gl.glVertex2d(-.8, -1);
+//                gl.glVertex2d(-.8, -.8);
+//            gl.glEnd();
+//        }
 
         CyMatrix4d proj = new CyMatrix4d();
-//        proj.gluOrtho2D(0, rend.getViewportWidth(), 0, rend.getViewportHeight());
         proj.gluOrtho2D(0, rend.getDeviceWidth(), rend.getDeviceHeight(), 0);
         rend.setProjXform(proj);
 
-//        {
-//            rend.translate(-1, -1, 0);
-//            CyMatrix4d proj = rend.getModelViewProjTileXform();
-//
-//            mat.setMvpMatrix(proj);
-//            mat.bind(rend.getGl());
-//            mat.draw(rend.getGl(), CyVertexBufferDataSquare.inst().getBuffer());
-//        }
-
-//        renderImage(rend);
-//        renderShape(rend);
-//        renderShapeHole(rend);
         renderGlyph(rend);
     }
 

@@ -45,7 +45,7 @@ public class BezierMeshVertex2i<VertexData>
 
     public BezierMeshVertex2i(BezierMesh2i mesh, int x, int y)
     {
-        this(mesh, new Coord(x, y), BezierVertexSmooth.CUSP, null);
+        this(mesh, new Coord(x, y), BezierVertexSmooth.FREE, null);
     }
 
     public BezierMeshVertex2i(BezierMesh2i mesh)

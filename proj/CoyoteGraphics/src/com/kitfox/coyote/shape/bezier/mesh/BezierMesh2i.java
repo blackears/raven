@@ -45,7 +45,7 @@ public class BezierMesh2i<VertexData, EdgeData, FaceData, FaceVertexData>
         BezierMeshVertex2i v = vertMap.get(c);
         if (v == null)
         {
-            v = new BezierMeshVertex2i(this, c, BezierVertexSmooth.CUSP, null);
+            v = new BezierMeshVertex2i(this, c, BezierVertexSmooth.FREE, null);
             vertMap.put(c, v);
         }
         return v;

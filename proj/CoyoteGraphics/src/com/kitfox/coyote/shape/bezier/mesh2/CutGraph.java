@@ -1,7 +1,19 @@
 /*
- * To change this template, choose Tools | Templates and open the template in
- * the editor.
+ * Copyright 2011 Mark McKay
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package com.kitfox.coyote.shape.bezier.mesh2;
 
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
@@ -18,6 +30,17 @@ import java.util.HashMap;
 public class CutGraph<EdgeData>
 {
     HashMap<Coord, CutVertex> vertMap = new HashMap<Coord, CutVertex>();
+
+    private CutGraph()
+    {
+    }
+    
+    public static CutFaces.FaceLoop createFaces(ArrayList<CutSegment> segsToInsert)
+    {
+        CutGraph graph = new CutGraph();
+        graph.addSegments(segsToInsert);
+        return graph.buildFaces();
+    }
     
     private CutVertex getOrCreateVertex(Coord c)
     {

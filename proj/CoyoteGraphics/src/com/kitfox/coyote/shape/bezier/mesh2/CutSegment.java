@@ -1,11 +1,26 @@
 /*
- * To change this template, choose Tools | Templates and open the template in
- * the editor.
+ * Copyright 2011 Mark McKay
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package com.kitfox.coyote.shape.bezier.mesh2;
 
 import com.kitfox.coyote.math.Math2DUtil;
+import com.kitfox.coyote.shape.bezier.BezierCurve2i;
+import com.kitfox.coyote.shape.bezier.BezierLine2i;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
+import java.util.ArrayList;
 
 /**
  *
@@ -28,6 +43,40 @@ public class CutSegment<EdgeData>
         this.data = data;
     }
 
+    public static ArrayList<CutSegment> createSegments(
+            BezierCurve2i curve, Object data, double flatnessSquared, 
+            ArrayList<CutSegment> list)
+    {
+        if (list == null)
+        {
+            list = new ArrayList<CutSegment>();
+        }
+        createSegments(curve, data, flatnessSquared, 0, 1, list);
+        return list;
+    }
+
+    private static void createSegments(
+            BezierCurve2i curve, Object data, double flatnessSquared,
+            double t0, double t1, ArrayList<CutSegment> list)
+    {
+        if (curve.getCurvatureSquared() <= flatnessSquared)
+        {
+            CutSegment seg = new CutSegment(t0, t1, 
+                    new Coord(curve.getStartX(), curve.getStartY()), 
+                    new Coord(curve.getEndX(), curve.getEndY()),
+                    data);
+            list.add(seg);
+            return;
+        }
+        
+        double tm = (t0 + t1) / 2;
+        BezierCurve2i[] curves = curve.split(.5);
+        createSegments(curves[0], data, flatnessSquared,
+                t0, tm, list);
+        createSegments(curves[1], data, flatnessSquared,
+                tm, t1, list);
+    }
+    
     public int getDx()
     {
         return c1.x - c0.x;

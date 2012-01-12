@@ -14,20 +14,28 @@
  * limitations under the License.
  */
 
-package com.kitfox.coyote.shape.bezier.mesh2;
+package com.kitfox.coyote.shape.bezier.cutgraph;
+
+import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 
 /**
  *
  * @author kitfox
  */
-public class CutRecord
+public class CutPoint implements Comparable<CutPoint>
 {
-    CutSegment[] splitCur;
-    CutSegment[] splitOth;
+    final double t;
+    final Coord c;
 
-    public CutRecord(CutSegment[] splitCur, CutSegment[] splitOth)
+    public CutPoint(double t, Coord c)
     {
-        this.splitCur = splitCur;
-        this.splitOth = splitOth;
+        this.t = t;
+        this.c = c;
+    }
+
+    @Override
+    public int compareTo(CutPoint oth)
+    {
+        return Double.compare(t, oth.t);
     }
 }

@@ -41,7 +41,7 @@ public class BezierPathVertex2i<VertexData>
     
     public BezierPathVertex2i(int x, int y)
     {
-        this(new Coord(x, y), BezierVertexSmooth.CUSP, null);
+        this(new Coord(x, y), BezierVertexSmooth.FREE, null);
     }
 
     /**
