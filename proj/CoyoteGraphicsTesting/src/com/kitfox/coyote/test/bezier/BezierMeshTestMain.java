@@ -18,8 +18,8 @@ package com.kitfox.coyote.test.bezier;
 
 import com.kitfox.coyote.shape.bezier.BezierCubic2i;
 import com.kitfox.coyote.shape.bezier.BezierLine2i;
-import com.kitfox.coyote.shape.bezier.mesh2.BezierMesh2i;
-import com.kitfox.coyote.shape.bezier.mesh2.CutLoop;
+import com.kitfox.coyote.shape.bezier.mesh.BezierMesh2i;
+import com.kitfox.coyote.shape.bezier.mesh.CutLoop;
 
 /**
  *

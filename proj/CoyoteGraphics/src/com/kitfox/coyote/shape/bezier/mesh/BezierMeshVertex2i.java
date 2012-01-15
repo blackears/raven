@@ -16,6 +16,7 @@
 
 package com.kitfox.coyote.shape.bezier.mesh;
 
+import com.kitfox.coyote.shape.bezier.mesh.BezierVertexSmooth;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import java.util.ArrayList;
 
@@ -25,58 +26,33 @@ import java.util.ArrayList;
  */
 public class BezierMeshVertex2i<VertexData>
 {
-    final BezierMesh2i mesh;
-    
     private Coord coord;
-    private BezierVertexSmooth smooth;
     //User defined data stored per vertex
     private VertexData data;
     
     final ArrayList<BezierMeshEdge2i> edgesIn = new ArrayList<BezierMeshEdge2i>();
     final ArrayList<BezierMeshEdge2i> edgesOut = new ArrayList<BezierMeshEdge2i>();
 
-    public BezierMeshVertex2i(BezierMesh2i mesh, Coord coord, BezierVertexSmooth smooth, VertexData data)
+    public BezierMeshVertex2i(Coord coord, VertexData data)
     {
-        this.mesh = mesh;
         this.coord = coord;
-        this.smooth = smooth;
         this.data = data;
     }
 
-    public BezierMeshVertex2i(BezierMesh2i mesh, int x, int y)
+    /**
+     * @return the coord
+     */
+    public Coord getCoord()
     {
-        this(mesh, new Coord(x, y), BezierVertexSmooth.FREE, null);
-    }
-
-    public BezierMeshVertex2i(BezierMesh2i mesh)
-    {
-        this(mesh, 0, 0);
-    }
-
-    public BezierMeshEdge2i getEdgeIn(int index)
-    {
-        return edgesIn.get(index);
-    }
-    
-    public BezierMeshEdge2i getEdgeOut(int index)
-    {
-        return edgesOut.get(index);
+        return coord;
     }
 
     /**
-     * @return the smooth
+     * @param coord the coord to set
      */
-    public BezierVertexSmooth getSmooth()
+    public void setCoord(Coord coord)
     {
-        return smooth;
-    }
-
-    /**
-     * @param smooth the smooth to set
-     */
-    public void setSmooth(BezierVertexSmooth smooth)
-    {
-        this.smooth = smooth;
+        this.coord = coord;
     }
 
     /**
@@ -95,20 +71,9 @@ public class BezierMeshVertex2i<VertexData>
         this.data = data;
     }
 
-    /**
-     * @return the coord
-     */
-    public Coord getCoord()
+    public boolean isEmpty()
     {
-        return coord;
-    }
-
-    /**
-     * @param coord the coord to set
-     */
-    public void setCoord(Coord coord)
-    {
-        this.coord = coord;
+        return edgesIn.isEmpty() && edgesOut.isEmpty();
     }
 
 }

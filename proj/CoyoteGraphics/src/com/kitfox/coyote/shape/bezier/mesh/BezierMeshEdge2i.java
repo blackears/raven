@@ -16,48 +16,146 @@
 
 package com.kitfox.coyote.shape.bezier.mesh;
 
+import com.kitfox.coyote.shape.bezier.BezierCubic2i;
+import com.kitfox.coyote.shape.bezier.BezierCurve2i;
+import com.kitfox.coyote.shape.bezier.BezierLine2i;
+import com.kitfox.coyote.shape.bezier.mesh.BezierVertexSmooth;
+import com.kitfox.coyote.shape.bezier.path.cut.Coord;
+import static java.lang.Math.*;
+
 /**
  *
  * @author kitfox
  */
 public class BezierMeshEdge2i<EdgeData>
 {
-    final BezierMesh2i mesh;
-    
     private BezierMeshVertex2i start;
     private BezierMeshVertex2i end;
-    private BezierMeshFace2i left;
-    private BezierMeshFace2i right;
     private EdgeData data;
-
-    private CutEdge cutEdge;
-    /*
-    //Order of curve: 2 -> line, 3 -> quad, 4 -> cubic    
-    private int order;
-    //Knot values.  Will only be used if degree of curve requires them
-    private int k0x;
-    private int k0y;
-    private int k1x;
-    private int k1y;
-
-    //Representation of this curve as line segments
-    ArrayList<Segment> segments = new ArrayList<Segment>();
-    */
+    private BezierVertexSmooth smooth0;
+    private BezierVertexSmooth smooth1;
     
-    public BezierMeshEdge2i(BezierMesh2i mesh, 
-            BezierMeshVertex2i start, BezierMeshVertex2i end,
-            BezierMeshFace2i left, BezierMeshFace2i right, EdgeData data, 
-            CutEdge cutEdge)
+    private Coord k0;
+    private Coord k1;
+
+    public BezierMeshEdge2i(BezierMeshVertex2i start, BezierMeshVertex2i end)
     {
-        this.mesh = mesh;
+        this(start, end, null);
+    }
+
+    public BezierMeshEdge2i(BezierMeshVertex2i start, BezierMeshVertex2i end, EdgeData data)
+    {
+        this(start, end, data, 
+                BezierVertexSmooth.CORNER, BezierVertexSmooth.CORNER,
+                start.getCoord(), end.getCoord());
+    }
+
+    public BezierMeshEdge2i(BezierMeshVertex2i start, BezierMeshVertex2i end,
+            EdgeData data, 
+            BezierVertexSmooth smooth0, BezierVertexSmooth smooth1, 
+            Coord k0, Coord k1)
+    {
         this.start = start;
         this.end = end;
-        this.left = left;
-        this.right = right;
         this.data = data;
-        this.cutEdge = cutEdge;
+        this.smooth0 = smooth0;
+        this.smooth1 = smooth1;
+        this.k0 = k0;
+        this.k1 = k1;
     }
     
+    public boolean isLine()
+    {
+        return smooth0 == BezierVertexSmooth.CORNER
+                && smooth1 == BezierVertexSmooth.CORNER;
+    }
+    
+    public BezierCurve2i asCurve()
+    {
+        Coord c0 = start.getCoord();
+        Coord c1 = end.getCoord();
+        
+        if (isLine())
+        {
+            return new BezierLine2i(c0.x, c0.y, c1.x, c1.y);
+        }
+
+        return new BezierCubic2i(c0.x, c0.y, 
+                k0.x, k0.y,
+                k1.x, k1.y,
+                c1.x, c1.y);
+    }
+    
+    public boolean isBoundingBoxOverlap(BezierMeshEdge2i e1)
+    {
+        return e1.getMaxX() >= getMinX()
+                && e1.getMinX() <= getMaxX()
+                && e1.getMaxY() >= getMinY()
+                && e1.getMinY() >= getMaxY();
+    }
+
+    boolean isBoundingBoxOverlap(BezierCurve2i c)
+    {
+//        return !(c.getMaxX() < getMinX() 
+//                || c.getMinX() > getMaxX()
+//                || c.getMaxY() < getMinY()
+//                || c.getMinY() > getMaxY()
+//                );
+        
+        return c.getMaxX() >= getMinX()
+                && c.getMinX() <= getMaxX()
+                && c.getMaxY() >= getMinY()
+                && c.getMinY() <= getMaxY();
+    }
+    
+    public int getMinX()
+    {
+        Coord c0 = start.getCoord();
+        Coord c1 = end.getCoord();
+        
+        if (isLine())
+        {
+            return min(c0.x, c1.x);
+        }
+        return min(min(c0.x, c1.x), min(k0.x, k1.x));
+    }
+    
+    public int getMaxX()
+    {
+        Coord c0 = start.getCoord();
+        Coord c1 = end.getCoord();
+        
+        if (isLine())
+        {
+            return max(c0.x, c1.x);
+        }
+        return max(max(c0.x, c1.x), max(k0.x, k1.x));
+    }
+    
+    public int getMinY()
+    {
+        Coord c0 = start.getCoord();
+        Coord c1 = end.getCoord();
+        
+        if (isLine())
+        {
+            return min(c0.y, c1.y);
+        }
+        return min(min(c0.y, c1.y), min(k0.y, k1.y));
+    }
+    
+    public int getMaxY()
+    {
+        Coord c0 = start.getCoord();
+        Coord c1 = end.getCoord();
+        
+        if (isLine())
+        {
+            return max(c0.y, c1.y);
+        }
+        return max(max(c0.y, c1.y), max(k0.y, k1.y));
+    }
+
     /**
      * @return the start
      */
@@ -91,38 +189,6 @@ public class BezierMeshEdge2i<EdgeData>
     }
 
     /**
-     * @return the left
-     */
-    public BezierMeshFace2i getLeft()
-    {
-        return left;
-    }
-
-    /**
-     * @param left the left to set
-     */
-    public void setLeft(BezierMeshFace2i left)
-    {
-        this.left = left;
-    }
-
-    /**
-     * @return the right
-     */
-    public BezierMeshFace2i getRight()
-    {
-        return right;
-    }
-
-    /**
-     * @param right the right to set
-     */
-    public void setRight(BezierMeshFace2i right)
-    {
-        this.right = right;
-    }
-
-    /**
      * @return the data
      */
     public EdgeData getData()
@@ -139,19 +205,78 @@ public class BezierMeshEdge2i<EdgeData>
     }
 
     /**
-     * @return the cutEdge
+     * @return the k0
      */
-    public CutEdge getCutEdge()
+    public Coord getK0()
     {
-        return cutEdge;
+        return k0;
     }
 
     /**
-     * @param cutEdge the cutEdge to set
+     * @param k0 the k0 to set
      */
-    public void setCutEdge(CutEdge cutEdge)
+    public void setK0(Coord k0)
     {
-        this.cutEdge = cutEdge;
+        this.k0 = k0;
     }
-    
+
+    /**
+     * @return the k1
+     */
+    public Coord getK1()
+    {
+        return k1;
+    }
+
+    /**
+     * @param k1 the k1 to set
+     */
+    public void setK1(Coord k1)
+    {
+        this.k1 = k1;
+    }
+
+    /**
+     * @return the smooth0
+     */
+    public BezierVertexSmooth getSmooth0()
+    {
+        return smooth0;
+    }
+
+    /**
+     * @param smooth0 the smooth0 to set
+     */
+    public void setSmooth0(BezierVertexSmooth smooth0)
+    {
+        this.smooth0 = smooth0;
+    }
+
+    /**
+     * @return the smooth1
+     */
+    public BezierVertexSmooth getSmooth1()
+    {
+        return smooth1;
+    }
+
+    /**
+     * @param smooth1 the smooth1 to set
+     */
+    public void setSmooth1(BezierVertexSmooth smooth1)
+    {
+        this.smooth1 = smooth1;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "edge "
+                + start.getCoord() + " "
+                + k0 + " "
+                + k1 + " "
+                + end.getCoord() + " "
+                + smooth0 + " "
+                + smooth1 + " ";
+    }
 }
