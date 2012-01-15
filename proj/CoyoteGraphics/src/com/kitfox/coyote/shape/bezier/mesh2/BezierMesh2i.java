@@ -162,7 +162,7 @@ public class BezierMesh2i<EdgeData>
         }
     }
 
-    public CutFaces.FaceLoop createFaces()
+    public CutLoop createFaces()
     {
         ArrayList<BezierMeshEdge2i> edges = getEdges();
         

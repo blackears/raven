@@ -16,7 +16,7 @@
 
 package com.kitfox.coyote.shape.bezier.cutgraph;
 
-import com.kitfox.coyote.math.Math2DUtil;
+import static com.kitfox.coyote.math.Math2DUtil.*;
 import com.kitfox.coyote.shape.bezier.BezierCurve2i;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import java.util.ArrayList;
@@ -67,6 +67,34 @@ public class CutSegment
                 t0, tm, list);
         createSegments(curves[1], flatnessSquared,
                 tm, t1, list);
+    }
+    
+    public int getMinX()
+    {
+        return Math.min(c0.x, c1.x);
+    }
+    
+    public int getMinY()
+    {
+        return Math.min(c0.y, c1.y);
+    }
+    
+    public int getMaxX()
+    {
+        return Math.max(c0.x, c1.x);
+    }
+    
+    public int getMaxY()
+    {
+        return Math.max(c0.y, c1.y);
+    }
+    
+    boolean isBoundingBoxOverlap(CutSegment c)
+    {
+        return c.getMaxX() >= getMinX()
+                && c.getMinX() <= getMaxX()
+                && c.getMaxY() >= getMinY()
+                && c.getMinY() <= getMaxY();
     }
     
     public int getDx()
@@ -150,7 +178,11 @@ public class CutSegment
     public void cutAgainst(CutSegment s1, 
             ArrayList<CutPoint> cuts0, ArrayList<CutPoint> cuts1)
     {
+        int cuts0size = cuts0.size();
+//        int cuts1size = cuts1.size();
+        
         //Check end points
+        /*
         if (c0.equals(s1.c0) || c0.equals(s1.c1))
         {
             cuts0.add(new CutPoint(t0, c0));
@@ -170,40 +202,55 @@ public class CutSegment
         {
             cuts0.add(new CutPoint(s1.t1, s1.c1));
         }
-        
-        if (isParallelTo(s1))
+        */
+        if (isPointOnLine(s1.c0))
         {
-            //Find relative t points where S0 and s1 should be cut
-            double s0t0 = s1.pointOnLineT(c0);
-            double s0t1 = s1.pointOnLineT(c1);
-            double s1t0 = pointOnLineT(s1.c0);
-            double s1t1 = pointOnLineT(s1.c1);
-
-            if (s0t0 > 0 && s0t0 < 1)
+            double t = pointOnLineT(s1.c0);
+            if (t > 0 && t < 1)
             {
-                cuts1.add(new CutPoint(Math2DUtil.lerp(s1.t0, s1.t1, s0t0),
-                        c0));
-            }
-
-            if (s0t1 > 0 && s0t1 < 1)
-            {
-                cuts1.add(new CutPoint(Math2DUtil.lerp(s1.t0, s1.t1, s0t1),
-                        c1));
-            }
-
-            if (s1t0 > 0 && s1t0 < 1)
-            {
-                cuts0.add(new CutPoint(Math2DUtil.lerp(t0, t1, s1t0),
-                        s1.c0));
-            }
-
-            if (s1t1 > 0 && s1t1 < 1)
-            {
-                cuts0.add(new CutPoint(Math2DUtil.lerp(t0, t1, s1t1),
-                        s1.c1));
+                cuts0.add(new CutPoint(lerp(t0, t1, t), s1.c0));
+                cuts1.add(new CutPoint(s1.t0, s1.c0));
             }
         }
-        else
+        
+        if (isPointOnLine(s1.c1))
+        {
+            double t = pointOnLineT(s1.c1);
+            if (t > 0 && t < 1)
+            {
+                cuts0.add(new CutPoint(lerp(t0, t1, t), s1.c1));
+                cuts1.add(new CutPoint(s1.t1, s1.c1));
+            }
+        }
+        
+        if (s1.isPointOnLine(c0))
+        {
+            double t = s1.pointOnLineT(c0);
+            if (t > 0 && t < 1)
+            {
+                cuts0.add(new CutPoint(t0, c0));
+                cuts1.add(new CutPoint(lerp(s1.t0, s1.t1, t), c0));
+            }
+        }
+        
+        if (s1.isPointOnLine(c1))
+        {
+            double t = s1.pointOnLineT(c1);
+            if (t > 0 && t < 1)
+            {
+                cuts0.add(new CutPoint(t1, c1));
+                cuts1.add(new CutPoint(lerp(s1.t0, s1.t1, t), c1));
+            }
+        }
+
+        if (cuts0size != cuts0.size())
+                //|| cuts1size != cuts1.size())
+        {
+            //Found an endpoint hit
+            return;
+        }
+        
+        if (!isParallelTo(s1))
         {
             //Not parallel.  Solve system of linear eqns
             double s0x0 = c0.x;
@@ -215,23 +262,29 @@ public class CutSegment
             double s1x1 = s1.c1.x;
             double s1y1 = s1.c1.y;
 
-            double[] t = Math2DUtil.lineIsectFractions(
+            double[] t = lineIsectFractions(
                     s0x0, s0y0, s0x1 - s0x0, s0y1 - s0y0,
                     s1x0, s1y0, s1x1 - s1x0, s1y1 - s1y0,
                     null);
 
-            if (t[0] >= 0 && t[0] <= 1 && t[1] >= 0 && t[1] <= 1)
+            if (t[0] > 0 && t[0] < 1 && t[1] > 0 && t[1] < 1)
             {
                 Coord c = new Coord(
-                        (int)Math2DUtil.lerp(s1x0, s1x1, t[1]),
-                        (int)Math2DUtil.lerp(s1y0, s1y1, t[1]));
+                        (int)lerp(s1x0, s1x1, t[1]),
+                        (int)lerp(s1y0, s1y1, t[1]));
 
-                double tp0 = Math2DUtil.lerp(t0, t1, t[0]);
-                double tp1 = Math2DUtil.lerp(s1.t0, s1.t1, t[1]);
+                double tp0 = lerp(t0, t1, t[0]);
+                double tp1 = lerp(s1.t0, s1.t1, t[1]);
                 cuts0.add(new CutPoint(tp0, c));
                 cuts1.add(new CutPoint(tp1, c));
             }
         }
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Seg {" + c0 + " " + c1 + " t[" + t0 + " " + t1 + "]}";
     }
 
 }

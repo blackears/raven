@@ -299,4 +299,11 @@ public class BezierLine2i extends BezierCurve2i
     {
         return new BezierLine2i(x0, y0, x1, y1);
     }
+
+    @Override
+    public String toString()
+    {
+        return String.format("line {(%d, %d)(%d, %d)}",
+                ax0, ay0, ax1, ay1);
+    }
 }

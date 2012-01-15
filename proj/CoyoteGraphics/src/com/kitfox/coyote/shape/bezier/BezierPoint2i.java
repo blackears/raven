@@ -236,5 +236,11 @@ public class BezierPoint2i extends BezierCurve2i
         return new BezierPoint2i(x0, y0);
     }
 
+    @Override
+    public String toString()
+    {
+        return String.format("point {(%d, %d)}",
+                ax0, ay0);
+    }
 
 }

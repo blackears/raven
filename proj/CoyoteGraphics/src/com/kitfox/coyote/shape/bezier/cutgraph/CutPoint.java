@@ -38,4 +38,12 @@ public class CutPoint implements Comparable<CutPoint>
     {
         return Double.compare(t, oth.t);
     }
+
+    @Override
+    public String toString()
+    {
+        return "{" + c + " " + t + "}";
+    }
+    
+    
 }

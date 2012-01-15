@@ -73,7 +73,7 @@ public class BezierMeshEdge2i<EdgeData>
     public BezierCurve2i asCurve()
     {
         Coord c0 = start.getCoord();
-        Coord c1 = start.getCoord();
+        Coord c1 = end.getCoord();
         
         if (isLine())
         {
@@ -96,10 +96,16 @@ public class BezierMeshEdge2i<EdgeData>
 
     boolean isBoundingBoxOverlap(BezierCurve2i c)
     {
+//        return !(c.getMaxX() < getMinX() 
+//                || c.getMinX() > getMaxX()
+//                || c.getMaxY() < getMinY()
+//                || c.getMinY() > getMaxY()
+//                );
+        
         return c.getMaxX() >= getMinX()
                 && c.getMinX() <= getMaxX()
                 && c.getMaxY() >= getMinY()
-                && c.getMinY() >= getMaxY();
+                && c.getMinY() <= getMaxY();
     }
     
     public int getMinX()
@@ -260,5 +266,17 @@ public class BezierMeshEdge2i<EdgeData>
     public void setSmooth1(BezierVertexSmooth smooth1)
     {
         this.smooth1 = smooth1;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "edge "
+                + start.getCoord() + " "
+                + k0 + " "
+                + k1 + " "
+                + end.getCoord() + " "
+                + smooth0 + " "
+                + smooth1 + " ";
     }
 }

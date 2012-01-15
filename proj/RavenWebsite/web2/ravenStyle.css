@@ -71,3 +71,15 @@ body  {
 	background-color: #F8FCF9;
 	padding: 8px;
 }
+.note {
+	font-size: 12px;
+	color: #C00;
+	border-top-style: dotted;
+	border-right-style: dotted;
+	border-bottom-style: dotted;
+	border-left-style: dotted;
+	border-color: #C00;
+	border-width: 2px;
+	background-color: #FFF2F2;
+	padding: 8px;
+}

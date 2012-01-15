@@ -18,7 +18,6 @@ package com.kitfox.coyote.shape.bezier.mesh2;
 
 import com.kitfox.coyote.math.Math2DUtil;
 import com.kitfox.coyote.shape.bezier.BezierCurve2i;
-import com.kitfox.coyote.shape.bezier.BezierLine2i;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import java.util.ArrayList;
 
@@ -76,7 +75,7 @@ public class CutSegment<EdgeData>
         createSegments(curves[1], data, flatnessSquared,
                 tm, t1, list);
     }
-    
+
     public int getDx()
     {
         return c1.x - c0.x;
@@ -385,4 +384,104 @@ public class CutSegment<EdgeData>
         }
         
     }
+
+    @Override
+    public String toString()
+    {
+        return "{" + c0 + " " + c1 + " t[" + t0 + " " + t1 + "]}";
+    }
+
+    /**
+     * True if lines cross at non-vertices
+     * @param s1
+     * @return 
+     */
+    public boolean collidesWith(CutSegment s1)
+    {
+        if (isParallelTo(s1))
+        {
+            if (isPointOnLine(s1.c0))
+            {
+                if ((c0.equals(s1.c0) || c0.equals(s1.c1))
+                        && (c1.equals(s1.c0) || c1.equals(s1.c1)))
+                {
+                    //Spans same region
+                    return true;
+                }
+                
+                {
+                    double t0 = pointOnLineT(s1.c0);
+                    double t1 = pointOnLineT(s1.c1);
+                    if ((t0 > 0 && t0 < 1)
+                            || (t1 > 0 && t1 < 1))
+                    {
+                        return true;
+                    }
+                }
+                
+                {
+                    double t0 = s1.pointOnLineT(c0);
+                    double t1 = s1.pointOnLineT(c1);
+                    if ((t0 > 0 && t0 < 1)
+                            || (t1 > 0 && t1 < 1))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        
+        if (isPointOnLine(s1.c0))
+        {
+            double t = pointOnLineT(s1.c0);
+            return t > 0 && t < 1;
+        }
+        
+        if (isPointOnLine(s1.c1))
+        {
+            double t = pointOnLineT(s1.c1);
+            return t > 0 && t < 1;
+        }
+        
+        if (s1.isPointOnLine(c0))
+        {
+            double t = s1.pointOnLineT(c0);
+            return t > 0 && t < 1;
+        }
+        
+        if (s1.isPointOnLine(c1))
+        {
+            double t = s1.pointOnLineT(c1);
+            return t > 0 && t < 1;
+        }
+        
+        //Check for midpoint collision
+        double s0x0 = c0.x;
+        double s0y0 = c0.y;
+        double s0x1 = c1.x;
+        double s0y1 = c1.y;
+        double s1x0 = s1.c0.x;
+        double s1y0 = s1.c0.y;
+        double s1x1 = s1.c1.x;
+        double s1y1 = s1.c1.y;
+
+        double[] t = Math2DUtil.lineIsectFractions(
+                s0x0, s0y0, s0x1 - s0x0, s0y1 - s0y0,
+                s1x0, s1y0, s1x1 - s1x0, s1y1 - s1y0,
+                null);
+
+        if (t[0] > 0 && t[0] < 1 && t[1] > 0 && t[1] < 1)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public CutSegment reverse()
+    {
+        return new CutSegment(t1, t0, c1, c0, data);
+    }
+    
+
 }

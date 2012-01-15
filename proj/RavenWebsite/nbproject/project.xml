@@ -16,6 +16,10 @@
                     <encoding>windows-1252</encoding>
                 </source-folder>
                 <source-folder>
+                    <label>..\..\common</label>
+                    <location>../../common</location>
+                </source-folder>
+                <source-folder>
                     <label>web</label>
                     <type>java</type>
                     <location>web</location>
@@ -40,8 +44,10 @@
                     <encoding>windows-1252</encoding>
                 </source-folder>
                 <source-folder>
-                    <label>..\..\common</label>
-                    <location>../../common</location>
+                    <label>web2</label>
+                    <type>java</type>
+                    <location>web2</location>
+                    <encoding>windows-1252</encoding>
                 </source-folder>
             </folders>
             <ide-actions>
@@ -66,6 +72,10 @@
                     <source-folder style="packages">
                         <label>..\..\common</label>
                         <location>../../common</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>web2</label>
+                        <location>web2</location>
                     </source-folder>
                     <source-file>
                         <location>build.xml</location>
@@ -92,6 +102,10 @@
             </compilation-unit>
             <compilation-unit>
                 <package-root>../../common</package-root>
+                <source-level>1.6</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>web2</package-root>
                 <source-level>1.6</source-level>
             </compilation-unit>
         </java-data>

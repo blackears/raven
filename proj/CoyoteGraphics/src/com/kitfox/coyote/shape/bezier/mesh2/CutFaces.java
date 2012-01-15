@@ -26,6 +26,7 @@ import java.util.HashMap;
  *
  * @author kitfox
  */
+@Deprecated
 public class CutFaces
 {
     HashMap<Coord, FaceVertex> vertMap = new HashMap<Coord, FaceVertex>();

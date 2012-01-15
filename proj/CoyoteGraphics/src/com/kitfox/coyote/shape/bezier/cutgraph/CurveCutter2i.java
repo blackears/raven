@@ -45,7 +45,10 @@ public class CurveCutter2i
             for (int i = 0; i < segs0.size(); ++i)
             {
                 CutSegment s0 = segs0.get(i);
-                s0.cutAgainst(s1, cuts0, cuts1);
+                if (s0.isBoundingBoxOverlap(s1))
+                {
+                    s0.cutAgainst(s1, cuts0, cuts1);
+                }
             }
         }
         
@@ -76,8 +79,8 @@ public class CurveCutter2i
         //Make sure new segments verts match cut points
         for (int i = 0; i < parts.length; ++i)
         {
-            Coord c0 = i == 0 ? null : cuts.get(i).c;
-            Coord c1 = i == parts.length - 1 ? null : cuts.get(i + 1).c;
+            Coord c0 = i == 0 ? null : cuts.get(i - 1).c;
+            Coord c1 = i == parts.length - 1 ? null : cuts.get(i).c;
             BezierCurve2i p = parts[i];
             
             if (c0 == null)
