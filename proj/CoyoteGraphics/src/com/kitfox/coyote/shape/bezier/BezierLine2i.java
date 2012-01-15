@@ -16,6 +16,7 @@
 
 package com.kitfox.coyote.shape.bezier;
 
+import static java.lang.Math.*;
 import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.shape.PathConsumer;
 
@@ -129,8 +130,11 @@ public class BezierLine2i extends BezierCurve2i
         double by0 = ay0 + t * (ay1 - ay0);
 
         return new BezierLine2i[]{
-            new BezierLine2i(ax0, ay0, (int)bx0, (int)by0),
-            new BezierLine2i((int)bx0, (int)by0, ax1, ay1)
+            new BezierLine2i(ax0, ay0, 
+                (int)round(bx0), (int)round(by0)),
+            
+            new BezierLine2i((int)round(bx0), (int)round(by0),
+                ax1, ay1)
         };
     }
 

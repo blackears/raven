@@ -16,6 +16,7 @@
 
 package com.kitfox.coyote.shape.bezier;
 
+import static java.lang.Math.*;
 import com.kitfox.coyote.math.CyMatrix2d;
 import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.math.Math2DUtil;
@@ -181,8 +182,15 @@ public class BezierCubic2i extends BezierCurve2i
         double dy0 = cy0 + t * (cy1 - cy0);
 
         return new BezierCubic2i[]{
-            new BezierCubic2i(ax0, ay0, (int)bx0, (int)by0, (int)cx0, (int)cy0, (int)dx0, (int)dy0),
-            new BezierCubic2i((int)dx0, (int)dy0, (int)cx1, (int)cy1, (int)bx2, (int)by2, ax3, ay3)
+            new BezierCubic2i(ax0, ay0, 
+                (int)round(bx0), (int)round(by0),
+                (int)round(cx0), (int)round(cy0),
+                (int)round(dx0), (int)round(dy0)),
+            
+            new BezierCubic2i((int)round(dx0), (int)round(dy0),
+                (int)round(cx1), (int)round(cy1),
+                (int)round(bx2), (int)round(by2),
+                ax3, ay3)
         };
     }
 
