@@ -28,6 +28,7 @@ import com.kitfox.rabbit.util.NumberText;
  *
  * @author kitfox
  */
+@Deprecated
 public class Transform2DPanel extends javax.swing.JPanel
 {
 

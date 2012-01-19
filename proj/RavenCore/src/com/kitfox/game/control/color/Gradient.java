@@ -28,6 +28,7 @@ import javax.swing.event.ChangeEvent;
  *
  * @author kitfox
  */
+@Deprecated
 public class Gradient
         implements StopModel<GradientStop>, ColorField, PropertyChangeListener
 {

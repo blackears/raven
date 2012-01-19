@@ -56,7 +56,7 @@ public class NewDocumentWizardPanel extends JPanel
 
         list_providers.setCellRenderer(new ProviderRenderer());
 
-        ArrayList<NodeDocumentProvider> list = NodeDocumentProviderIndex.inst().getProviders();
+        ArrayList<NodeDocumentProvider> list = NodeDocumentProviderIndex.inst().getServices();
         Collections.sort(list);
         list_providers.setListData(list.toArray());
     }

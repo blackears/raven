@@ -29,6 +29,7 @@ import javax.swing.event.ChangeEvent;
  *
  * @author kitfox
  */
+@Deprecated
 public class ColorSliderStopModel implements StopModel<ColorChooserModel>, PropertyChangeListener
 {
     final private ColorField field;

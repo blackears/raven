@@ -539,7 +539,7 @@ public class RavenNodeMesh extends RavenNodeXformable
         }
     }
     
-    @ServiceInst(service=NodeObjectProvider.class)
+//    @ServiceInst(service=NodeObjectProvider.class)
     public static class Provider extends NodeObjectProvider<RavenNodeMesh>
     {
         public Provider()

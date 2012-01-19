@@ -42,9 +42,5 @@ public interface RavenPaint extends BezierPaint
      * @param curFillLayout UV layout matrix for shape
      * @param mesh Mesh to render
      */
-//    public void fillShape(CyDrawStack renderer, PaintLayout curFillLayout, CyShape shape);
     public void fillShape(CyDrawStack renderer, PaintLayout curFillLayout, CyVertexBuffer mesh);
-
-//            CyRendererUtil2D.fillShape(renderer,
-//                    new CyColor4f(col.r, col.g, col.b, col.a), getMesh());
 }

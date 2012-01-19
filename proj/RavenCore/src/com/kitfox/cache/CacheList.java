@@ -144,6 +144,19 @@ public class CacheList extends CacheIdentifier
         return list;
     }
 
+    public double[] toDoubleArray(float defaultValue)
+    {
+        double[] list = new double[cache.size()];
+        for (int i = 0; i < list.length; ++i)
+        {
+            CacheElement ele = cache.get(i);
+            list[i] = ele != null && ele instanceof CacheNumber
+                    ? ((CacheNumber)ele).getValue().floatValue()
+                    : defaultValue;
+        }
+        return list;
+    }
+
     public int[] toIntegerArray(int defaultValue)
     {
         int[] list = new int[cache.size()];

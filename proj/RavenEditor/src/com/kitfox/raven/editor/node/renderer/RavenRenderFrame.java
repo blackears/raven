@@ -16,6 +16,7 @@
 
 package com.kitfox.raven.editor.node.renderer;
 
+import com.kitfox.raven.filter.RavenFilter;
 import com.kitfox.game.control.color.PaintLayout;
 import com.kitfox.game.control.color.PaintLayoutTexture;
 import com.kitfox.raven.editor.paint.RavenPaint;
@@ -37,6 +38,7 @@ import java.awt.image.BufferedImage;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenRenderFrame
 {
     private final RavenRenderFrame parent;

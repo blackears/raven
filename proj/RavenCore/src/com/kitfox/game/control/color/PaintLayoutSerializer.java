@@ -27,6 +27,7 @@ import java.util.logging.Logger;
  *
  * @author kitfox
  */
+@Deprecated
 public class PaintLayoutSerializer
 {
     public static PaintLayout create(String text)

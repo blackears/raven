@@ -22,7 +22,7 @@ import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.coyote.shape.CyShape;
 import com.kitfox.raven.editor.node.RavenNode;
-import com.kitfox.raven.editor.node.renderer.RavenFilter;
+import com.kitfox.raven.filter.RavenFilter;
 import com.kitfox.raven.editor.node.renderer.RavenRenderer;
 import com.kitfox.raven.util.Intersection;
 import com.kitfox.raven.util.tree.ChildWrapper;

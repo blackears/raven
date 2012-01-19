@@ -23,6 +23,7 @@ import java.awt.geom.AffineTransform;
  *
  * @author kitfox
  */
+@Deprecated
 abstract public class PaintStyle
 {
     abstract public Paint getPaint(PaintLayout layout, AffineTransform localToWorld);

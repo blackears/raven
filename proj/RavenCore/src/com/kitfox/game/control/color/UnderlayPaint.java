@@ -29,6 +29,7 @@ import java.awt.image.BufferedImage;
  *
  * @author kitfox
  */
+@Deprecated
 public class UnderlayPaint
 {
     private static final UnderlayPaint instance = new UnderlayPaint();

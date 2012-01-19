@@ -39,6 +39,7 @@ import javax.swing.event.ChangeEvent;
  *
  * @author kitfox
  */
+@Deprecated
 public class StopSliderPanel<StopType> extends javax.swing.JPanel
         implements StopModelListener
 {

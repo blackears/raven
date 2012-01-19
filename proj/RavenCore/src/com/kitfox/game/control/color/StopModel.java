@@ -22,6 +22,7 @@ import java.util.List;
  *
  * @author kitfox
  */
+@Deprecated
 public interface StopModel<StopType>
 {
     public static final String PROP_STOPVALUE = "stopValue";

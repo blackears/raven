@@ -31,6 +31,7 @@ import java.beans.PropertyChangeListener;
  *
  * @author kitfox
  */
+@Deprecated
 public class ColorCustomEditor extends javax.swing.JPanel implements PropertyChangeListener
 {
     private static final long serialVersionUID = 1;

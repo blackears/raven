@@ -33,12 +33,12 @@ import java.beans.PropertyChangeEvent;
 public class PropertyModelLine
         implements PropertyWrapperListener
 {
+
     private final PropertyModel model;
     private final PropertyWrapper wrapper;
     private final int row;
     private final PropertyProvider prov;
     private final PropertyWrapperEditor editor;
-
     PropertyWrapperWeakListener listener;
 
     public PropertyModelLine(PropertyModel model, PropertyWrapper wrapper, int row)
@@ -46,7 +46,7 @@ public class PropertyModelLine
         this.model = model;
         this.wrapper = wrapper;
         this.row = row;
-        
+
         this.prov = PropertyProviderIndex.inst().getProviderBest(wrapper.getPropertyType());
         this.editor = prov == null ? null : prov.createEditor(wrapper);
 
@@ -57,35 +57,40 @@ public class PropertyModelLine
     /**
      * @return the model
      */
-    public PropertyModel getModel() {
+    public PropertyModel getModel()
+    {
         return model;
     }
 
     /**
      * @return the prop
      */
-    public PropertyWrapper getProp() {
+    public PropertyWrapper getProp()
+    {
         return wrapper;
     }
 
     /**
      * @return the row
      */
-    public int getRow() {
+    public int getRow()
+    {
         return row;
     }
 
     /**
      * @return the prov
      */
-    public PropertyProvider getProv() {
+    public PropertyProvider getProv()
+    {
         return prov;
     }
 
     /**
      * @return the ed
      */
-    public PropertyWrapperEditor getEditor() {
+    public PropertyWrapperEditor getEditor()
+    {
         return editor;
     }
 
@@ -106,6 +111,4 @@ public class PropertyModelLine
     {
         model.fireTableRowModified(row);
     }
-
-
 }

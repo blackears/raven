@@ -19,7 +19,6 @@ package com.kitfox.coyote.shape.bezier.mesh;
 import com.kitfox.coyote.shape.bezier.BezierCubic2i;
 import com.kitfox.coyote.shape.bezier.BezierCurve2i;
 import com.kitfox.coyote.shape.bezier.cutgraph.CurveCutter2i;
-import com.kitfox.coyote.shape.bezier.mesh.BezierVertexSmooth;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,7 +28,7 @@ import java.util.HashMap;
  *
  * @author kitfox
  */
-public class BezierMesh2i<EdgeData>
+public class BezierMesh2i<VertexData, EdgeData>
 {
     HashMap<Coord, BezierMeshVertex2i> vertMap = new HashMap<Coord, BezierMeshVertex2i>();
     final double flatnessSquared;

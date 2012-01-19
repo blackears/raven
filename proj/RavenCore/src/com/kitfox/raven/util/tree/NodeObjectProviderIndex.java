@@ -16,23 +16,20 @@
 
 package com.kitfox.raven.util.tree;
 
+import com.kitfox.raven.util.ServiceIndex;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.ServiceLoader;
 
 /**
  *
  * @author kitfox
  */
-public final class NodeObjectProviderIndex
+public final class NodeObjectProviderIndex extends ServiceIndex<NodeObjectProvider>
 {
-    private ArrayList<NodeObjectProvider> nodeList = new ArrayList<NodeObjectProvider>();
-    
     private static NodeObjectProviderIndex instance = new NodeObjectProviderIndex();
 
     private NodeObjectProviderIndex()
     {
-        reload();
+        super(NodeObjectProvider.class);
     }
 
     public static NodeObjectProviderIndex inst()
@@ -40,37 +37,13 @@ public final class NodeObjectProviderIndex
         return instance;
     }
 
-    public void reload()
-    {
-        reload(NodeObjectProviderIndex.class.getClassLoader());
-    }
-
-    public void reload(ClassLoader clsLoader)
-    {
-        nodeList.clear();
-
-        ServiceLoader<NodeObjectProvider> loader = ServiceLoader.load(NodeObjectProvider.class, clsLoader);
-
-        for (Iterator<NodeObjectProvider> it = loader.iterator();
-            it.hasNext();)
-        {
-            NodeObjectProvider fact = it.next();
-            nodeList.add(fact);
-        }
-    }
-
-    public ArrayList<NodeObjectProvider> getProviders()
-    {
-        return new ArrayList<NodeObjectProvider>(nodeList);
-    }
-
     public <T extends NodeObject> ArrayList<NodeObjectProvider> getProvidersExtending(Class<T> cls)
     {
         ArrayList<NodeObjectProvider> list = new ArrayList<NodeObjectProvider>();
 
-        for (int i = 0; i < nodeList.size(); ++i)
+        for (int i = 0; i < serviceList.size(); ++i)
         {
-            NodeObjectProvider prov = nodeList.get(i);
+            NodeObjectProvider prov = serviceList.get(i);
             if (cls.isAssignableFrom(prov.getNodeType()))
             {
                 list.add(prov);
@@ -81,9 +54,9 @@ public final class NodeObjectProviderIndex
 
     public <T extends NodeObject> NodeObjectProvider<T> getProvider(Class<T> cls)
     {
-        for (int i = 0; i < nodeList.size(); ++i)
+        for (int i = 0; i < serviceList.size(); ++i)
         {
-            NodeObjectProvider prov = nodeList.get(i);
+            NodeObjectProvider prov = serviceList.get(i);
             if (prov.getNodeType().equals(cls))
             {
                 return prov;
@@ -94,9 +67,9 @@ public final class NodeObjectProviderIndex
 
     public NodeObjectProvider getProvider(String clazz)
     {
-        for (int i = 0; i < nodeList.size(); ++i)
+        for (int i = 0; i < serviceList.size(); ++i)
         {
-            NodeObjectProvider prov = nodeList.get(i);
+            NodeObjectProvider prov = serviceList.get(i);
             if (prov.getNodeType().getCanonicalName().equals(clazz))
             {
                 return prov;

@@ -23,6 +23,7 @@ import java.beans.PropertyChangeSupport;
  *
  * @author kitfox
  */
+@Deprecated
 public class SimpleColorModel implements ColorChooserModel
 {
     protected ColorStyle color = new ColorStyle();

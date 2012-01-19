@@ -20,6 +20,7 @@ package com.kitfox.game.control.color;
  *
  * @author kitfox
  */
+@Deprecated
 abstract public class ColorModelField1D extends ColorModelColorField
 {
     private boolean horizontal;

@@ -16,6 +16,7 @@
 
 package com.kitfox.raven.editor.node.renderer;
 
+import com.kitfox.raven.filter.RavenFilter;
 import com.kitfox.game.control.color.PaintLayout;
 import com.kitfox.raven.editor.paint.RavenPaint;
 import java.awt.Color;
@@ -33,6 +34,7 @@ import java.util.HashMap;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenRenderer
 {
     final GraphicsConfiguration gc;

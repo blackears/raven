@@ -20,6 +20,7 @@ package com.kitfox.game.control.color;
  *
  * @author kitfox
  */
+@Deprecated
 public enum StopSide
 {
     NORTH, SOUTH, WEST, EAST

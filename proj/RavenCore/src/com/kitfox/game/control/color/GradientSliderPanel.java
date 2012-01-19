@@ -26,6 +26,7 @@ package com.kitfox.game.control.color;
  *
  * @author kitfox
  */
+@Deprecated
 public class GradientSliderPanel extends FieldSliderPanel<GradientStop>
 {
     private static final long serialVersionUID = 0;

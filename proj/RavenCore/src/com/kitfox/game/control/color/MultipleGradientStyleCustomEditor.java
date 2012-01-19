@@ -30,6 +30,7 @@ import java.beans.PropertyChangeListener;
  *
  * @author kitfox
  */
+@Deprecated
 public class MultipleGradientStyleCustomEditor extends javax.swing.JPanel
         implements PropertyChangeListener
 {

@@ -16,23 +16,19 @@
 
 package com.kitfox.raven.util.tree;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.ServiceLoader;
+import com.kitfox.raven.util.ServiceIndex;
 
 /**
  *
  * @author kitfox
  */
-public final class NodeDocumentProviderIndex
+public final class NodeDocumentProviderIndex extends ServiceIndex<NodeDocumentProvider>
 {
-    private ArrayList<NodeDocumentProvider> provList = new ArrayList<NodeDocumentProvider>();
-    
     private static NodeDocumentProviderIndex instance = new NodeDocumentProviderIndex();
 
     private NodeDocumentProviderIndex()
     {
-        reload();
+        super(NodeDocumentProvider.class);
     }
 
     public static NodeDocumentProviderIndex inst()
@@ -40,59 +36,16 @@ public final class NodeDocumentProviderIndex
         return instance;
     }
 
-    public void reload()
-    {
-        reload(NodeDocumentProviderIndex.class.getClassLoader());
-    }
-
-    public void reload(ClassLoader clsLoader)
-    {
-        provList.clear();
-
-        ServiceLoader<NodeDocumentProvider> loader = ServiceLoader.load(NodeDocumentProvider.class, clsLoader);
-
-        for (Iterator<NodeDocumentProvider> it = loader.iterator();
-            it.hasNext();)
-        {
-            NodeDocumentProvider prov = it.next();
-            provList.add(prov);
-        }
-    }
-
-    public ArrayList<NodeDocumentProvider> getProviders()
-    {
-        return new ArrayList<NodeDocumentProvider>(provList);
-    }
-
-    public <T extends NodeDocument> NodeDocumentProvider<T> getProvider(Class<T> cls)
-    {
-        for (int i = 0; i < provList.size(); ++i)
-        {
-            NodeDocumentProvider prov = provList.get(i);
-            if (prov.getNodeType().equals(cls))
-            {
-                return prov;
-            }
-        }
-        return null;
-    }
-
     public NodeDocumentProvider getProvider(String clazz)
     {
-        for (int i = 0; i < provList.size(); ++i)
+        for (int i = 0; i < serviceList.size(); ++i)
         {
-            NodeDocumentProvider prov = provList.get(i);
+            NodeDocumentProvider prov = serviceList.get(i);
             if (prov.getNodeType().getCanonicalName().equals(clazz))
             {
                 return prov;
             }
         }
         return null;
-
     }
-
-//    public <T extends NodeDocument> T createDocument(Class<T> cls)
-//    {
-//        return getProvider(cls).createDocument();
-//    }
 }

@@ -23,6 +23,7 @@ import javax.swing.event.ChangeEvent;
  *
  * @author kitfox
  */
+@Deprecated
 public class ColorFieldWeakListener implements ColorFieldListener
 {
     final WeakReference<ColorFieldListener> ref;

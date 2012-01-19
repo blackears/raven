@@ -33,6 +33,7 @@ import java.awt.geom.Point2D;
  *
  * @author kitfox
  */
+@Deprecated
 public class MultipleGradientStyle extends PaintStyle
 {
 //    protected final static AffineTransform identity = new AffineTransform();

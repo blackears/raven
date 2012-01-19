@@ -22,6 +22,7 @@ import javax.swing.event.ChangeEvent;
  *
  * @author kitfox
  */
+@Deprecated
 public interface StopModelListener
 {
     public void stopModelChanged(ChangeEvent evt);

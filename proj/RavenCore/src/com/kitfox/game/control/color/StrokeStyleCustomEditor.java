@@ -33,6 +33,7 @@ import java.beans.PropertyChangeListener;
  *
  * @author kitfox
  */
+@Deprecated
 public class StrokeStyleCustomEditor extends javax.swing.JPanel implements PropertyChangeListener
 {
     private static final long serialVersionUID = 1;

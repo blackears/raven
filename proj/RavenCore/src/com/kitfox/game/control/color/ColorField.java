@@ -22,6 +22,7 @@ import java.awt.geom.Point2D;
  *
  * @author kitfox
  */
+@Deprecated
 public interface ColorField
 {
     /**

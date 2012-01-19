@@ -22,6 +22,7 @@ import java.beans.PropertyChangeListener;
  *
  * @author kitfox
  */
+@Deprecated
 public interface ColorChooserModel
 {
     public static final String PROP_COLOR = "color";

@@ -428,7 +428,7 @@ abstract public class NodeDocument extends NodeObject
     public static interface Environment
     {
         public Window getSwingRoot();
-        public ResourceCache getResourceCache();
+        //public ResourceCache getResourceCache();
         public File getDocumentSource();
         public Properties getMetaProperties(String key);
         public void setMetaProperties(String key, Properties props);

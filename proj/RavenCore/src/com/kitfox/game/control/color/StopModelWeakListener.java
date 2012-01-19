@@ -23,6 +23,7 @@ import javax.swing.event.ChangeEvent;
  *
  * @author kitfox
  */
+@Deprecated
 public class StopModelWeakListener implements StopModelListener
 {
     final WeakReference<StopModelListener> ref;

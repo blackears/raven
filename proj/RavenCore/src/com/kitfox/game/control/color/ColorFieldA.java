@@ -23,6 +23,7 @@ import java.beans.PropertyChangeEvent;
  *
  * @author kitfox
  */
+@Deprecated
 public class ColorFieldA extends ColorModelField1D
 {
     private float hue;

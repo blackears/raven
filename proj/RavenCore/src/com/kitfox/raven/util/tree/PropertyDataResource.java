@@ -44,7 +44,7 @@ public class PropertyDataResource<T> extends PropertyData<T>
             return null;
         }
 
-        ResourceCache cache = doc.getEnv().getResourceCache();
+        ResourceCache cache = ResourceCache.inst();
 
         if (uri.isAbsolute())
         {

@@ -25,6 +25,7 @@ import java.awt.geom.AffineTransform;
  *
  * @author kitfox
  */
+@Deprecated
 public class PaintLayoutNone extends PaintLayoutAbstract
 {
     public static final String CACHE_NAME = "none";

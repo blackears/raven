@@ -16,79 +16,23 @@
 
 package com.kitfox.raven.util.cursor;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.ServiceLoader;
+import com.kitfox.raven.util.ServiceIndex;
 
 /**
  *
  * @author kitfox
  */
-public final class CursorProviderIndex
+public final class CursorProviderIndex extends ServiceIndex<CursorProvider>
 {
-    private ArrayList<CursorProvider> cursorList = new ArrayList<CursorProvider>();
-    
     private static CursorProviderIndex instance = new CursorProviderIndex();
 
     private CursorProviderIndex()
     {
-        reload();
+        super(CursorProvider.class);
     }
 
     public static CursorProviderIndex inst()
     {
         return instance;
     }
-
-    public void reload()
-    {
-        reload(CursorProviderIndex.class.getClassLoader());
-    }
-
-    public void reload(ClassLoader clsLoader)
-    {
-        cursorList.clear();
-
-        ServiceLoader<CursorProvider> loader = ServiceLoader.load(CursorProvider.class, clsLoader);
-
-        for (Iterator<CursorProvider> it = loader.iterator();
-            it.hasNext();)
-        {
-            CursorProvider fact = it.next();
-            cursorList.add(fact);
-        }
-    }
-
-    public ArrayList<CursorProvider> getProviders()
-    {
-        return new ArrayList<CursorProvider>(cursorList);
-    }
-
-    public CursorProvider getProvider(Class<? extends CursorProvider> cls)
-    {
-        for (int i = 0; i < cursorList.size(); ++i)
-        {
-            CursorProvider prov = cursorList.get(i);
-            if (prov.getClass().equals(cls))
-            {
-                return prov;
-            }
-        }
-        return null;
-    }
-
-    public CursorProvider getProvider(String clazz)
-    {
-        for (int i = 0; i < cursorList.size(); ++i)
-        {
-            CursorProvider prov = cursorList.get(i);
-            if (prov.getClass().getCanonicalName().equals(clazz))
-            {
-                return prov;
-            }
-        }
-        return null;
-
-    }
-
 }

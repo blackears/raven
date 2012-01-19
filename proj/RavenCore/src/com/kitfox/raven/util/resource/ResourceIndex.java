@@ -16,27 +16,22 @@
 
 package com.kitfox.raven.util.resource;
 
-import com.kitfox.raven.util.tree.NodeObject;
+import com.kitfox.raven.util.ServiceIndex;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.ServiceLoader;
 import javax.swing.JFileChooser;
 
 /**
  *
  * @author kitfox
  */
-public final class ResourceIndex
+public final class ResourceIndex extends ServiceIndex<ResourceProvider>
 {
     JFileChooser fileChooser;
-    private ArrayList<ResourceProvider> nodeList = new ArrayList<ResourceProvider>();
-    
     private static ResourceIndex instance = new ResourceIndex();
 
     private ResourceIndex()
     {
-        reload();
+        super(ResourceProvider.class);
     }
 
     public static ResourceIndex inst()
@@ -44,50 +39,11 @@ public final class ResourceIndex
         return instance;
     }
 
-    public void reload()
-    {
-        reload(ResourceIndex.class.getClassLoader());
-    }
-
-    public void reload(ClassLoader clsLoader)
-    {
-        nodeList.clear();
-
-        ServiceLoader<ResourceProvider> loader = ServiceLoader.load(ResourceProvider.class, clsLoader);
-
-        for (Iterator<ResourceProvider> it = loader.iterator();
-            it.hasNext();)
-        {
-            ResourceProvider fact = it.next();
-            nodeList.add(fact);
-        }
-    }
-
-    public ArrayList<ResourceProvider> getProviders()
-    {
-        return new ArrayList<ResourceProvider>(nodeList);
-    }
-
-    public <T extends NodeObject> ArrayList<ResourceProvider> getProvidersExtending(Class<T> cls)
-    {
-        ArrayList<ResourceProvider> list = new ArrayList<ResourceProvider>();
-
-        for (int i = 0; i < nodeList.size(); ++i)
-        {
-            ResourceProvider prov = nodeList.get(i);
-            if (cls.isAssignableFrom(prov.getResourceEditorClass()))
-            {
-                list.add(prov);
-            }
-        }
-        return list;
-    }
-
     public <T> ResourceProvider<T> getProvider(Class<T> cls)
     {
-        for (int i = 0; i < nodeList.size(); ++i)
+        for (int i = 0; i < serviceList.size(); ++i)
         {
-            ResourceProvider prov = nodeList.get(i);
+            ResourceProvider prov = serviceList.get(i);
             if (prov.getResourceEditorClass().equals(cls))
             {
                 return prov;
@@ -101,9 +57,9 @@ public final class ResourceIndex
         if (fileChooser == null)
         {
             fileChooser = new JFileChooser();
-            for (int i = 0; i < nodeList.size(); ++i)
+            for (int i = 0; i < serviceList.size(); ++i)
             {
-                ResourceProvider prov = nodeList.get(i);
+                ResourceProvider prov = serviceList.get(i);
                 fileChooser.addChoosableFileFilter(prov.getFileFilter());
             }
 
@@ -116,7 +72,7 @@ public final class ResourceIndex
 
     public ResourceProvider getProvider(URI uri)
     {
-        for (ResourceProvider prov: nodeList)
+        for (ResourceProvider prov: serviceList)
         {
             if (prov.accepts(uri))
             {

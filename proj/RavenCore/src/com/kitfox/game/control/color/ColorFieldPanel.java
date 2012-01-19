@@ -35,6 +35,7 @@ import javax.swing.event.ChangeEvent;
  *
  * @author kitfox
  */
+@Deprecated
 public class ColorFieldPanel extends javax.swing.JPanel implements ColorFieldListener
 {
     private static final long serialVersionUID = 0;

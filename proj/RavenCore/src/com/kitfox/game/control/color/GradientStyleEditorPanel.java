@@ -40,6 +40,7 @@ import javax.swing.event.ChangeEvent;
  *
  * @author kitfox
  */
+@Deprecated
 public class GradientStyleEditorPanel extends javax.swing.JPanel
         implements StopModelListener, StopEditor
 {

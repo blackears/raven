@@ -41,6 +41,7 @@ import javax.swing.KeyStroke;
  *
  * @author kitfox
  */
+@Deprecated
 public class ColorChooserPanel extends ColorFieldPanel
         implements PropertyChangeListener
 {

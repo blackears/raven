@@ -31,6 +31,7 @@ import javax.swing.BorderFactory;
  *
  * @author kitfox
  */
+@Deprecated
 abstract public class FieldSliderPanel<StopType> extends javax.swing.JPanel
 {
     private static final long serialVersionUID = 0;

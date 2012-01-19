@@ -23,6 +23,7 @@ import com.kitfox.coyote.math.CyVector2d;
  *
  * @author kitfox
  */
+@Deprecated
 abstract public class PaintLayoutAbstract implements PaintLayout
 {
     CyMatrix4d paintToLocal;

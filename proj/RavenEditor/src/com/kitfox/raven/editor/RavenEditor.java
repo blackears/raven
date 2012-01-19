@@ -17,7 +17,6 @@
 package com.kitfox.raven.editor;
 
 import com.kitfox.raven.util.JAXBUtil;
-import com.kitfox.raven.util.resource.ResourceCache;
 import com.kitfox.xml.ns.raveneditorpreferences.FileType;
 import com.kitfox.xml.ns.raveneditorpreferences.ObjectFactory;
 import com.kitfox.xml.ns.raveneditorpreferences.RavenEditorPreferencesType;
@@ -46,7 +45,7 @@ public class RavenEditor
     private final RavenToolManager toolManager;
     private final RavenImportManager importManager;
     private final RavenExportManager exportManager;
-    private final ResourceCache resourceCache;
+//    private final ResourceCache resourceCache;
 
     final File homeDir;
     final File prefFile;
@@ -64,7 +63,7 @@ public class RavenEditor
         toolManager = new RavenToolManager(this);
         importManager = new RavenImportManager(this);
         exportManager = new RavenExportManager(this);
-        resourceCache = new ResourceCache();
+//        resourceCache = new ResourceCache();
         documentIOHelper = new DocumentIOHelper(viewManager);
         
         //Find and create our Raven home directory
@@ -342,12 +341,12 @@ public class RavenEditor
         return exportManager;
     }
 
-    /**
-     * @return the resourceManager
-     */
-    public ResourceCache getResourceCache()
-    {
-        return resourceCache;
-    }
+//    /**
+//     * @return the resourceManager
+//     */
+//    public ResourceCache getResourceCache()
+//    {
+//        return resourceCache;
+//    }
 
 }

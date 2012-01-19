@@ -34,6 +34,7 @@ import java.beans.PropertyChangeListener;
  *
  * @author kitfox
  */
+@Deprecated
 public class PaintStyleCustomEditor extends javax.swing.JPanel
         implements PropertyChangeListener
 {

@@ -16,6 +16,7 @@
 
 package com.kitfox.cache;
 
+import com.kitfox.coyote.math.CyGradientStops.Cycle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -161,6 +162,27 @@ public class CacheMap extends CacheIdentifier
         }
 
         return arr;
+    }
+
+    public <T extends Enum> T getEnum(String name, T defaultValue)
+    {
+        CacheElement ele = get(name);
+        if (ele == null || !(ele instanceof CacheIdentifier))
+        {
+            return defaultValue;
+        }
+        
+        String value = ((CacheIdentifier)ele).getName();
+        Object[] enumConst = defaultValue.getDeclaringClass().getEnumConstants();
+        for (int i = 0; i < enumConst.length; ++i)
+        {
+            Enum e = (Enum)enumConst[i];
+            if (e.name().equals(value))
+            {
+                return (T)e;
+            }
+        }
+        return defaultValue;        
     }
 
     public int getInteger(String name, int defaultValue)

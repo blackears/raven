@@ -31,6 +31,7 @@ import java.util.Arrays;
  *
  * @author kitfox
  */
+@Deprecated
 public class MultipleGradientStops
 {
     public static final String CACHE_NAME = "gradient";

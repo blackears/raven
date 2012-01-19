@@ -36,6 +36,7 @@ import java.util.logging.Logger;
  *
  * @author kitfox
  */
+@Deprecated
 public class ColorStyleEditor implements PropertyEditor
 {
     public static final String PROP_VALUE = "value";

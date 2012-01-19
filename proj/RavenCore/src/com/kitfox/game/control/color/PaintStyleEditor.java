@@ -35,6 +35,7 @@ import java.util.logging.Logger;
  *
  * @author kitfox
  */
+@Deprecated
 public class PaintStyleEditor implements PropertyEditor, PropertyChangeListener
 {
     public static final String PROP_VALUE = "value";

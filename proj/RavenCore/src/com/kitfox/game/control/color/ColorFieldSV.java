@@ -24,6 +24,7 @@ import java.beans.PropertyChangeEvent;
  *
  * @author kitfox
  */
+@Deprecated
 public class ColorFieldSV extends ColorModelColorField
 {
     private float hue;

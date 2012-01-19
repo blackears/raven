@@ -23,6 +23,7 @@ import java.beans.PropertyChangeSupport;
  *
  * @author kitfox
  */
+@Deprecated
 public class GradientStop implements Comparable<GradientStop>
 {
     protected ColorStyle color;

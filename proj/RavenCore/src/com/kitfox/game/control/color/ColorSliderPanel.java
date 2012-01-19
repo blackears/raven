@@ -26,6 +26,7 @@ package com.kitfox.game.control.color;
  *
  * @author kitfox
  */
+@Deprecated
 public class ColorSliderPanel extends FieldSliderPanel<ColorChooserModel>
 {
     private static final long serialVersionUID = 0;

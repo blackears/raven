@@ -25,6 +25,7 @@ import javax.swing.event.ChangeEvent;
  *
  * @author kitfox
  */
+@Deprecated
 abstract public class ColorModelColorField 
         implements ColorField, PropertyChangeListener
 {

@@ -46,7 +46,8 @@ abstract public class PropertyWrapperEditor<PropType>
 
     JPopupMenu menu;
 
-    public PropertyWrapperEditor(PropertyWrapper<? extends NodeObject, PropType> wrapper)
+    public PropertyWrapperEditor(
+            PropertyWrapper<? extends NodeObject, PropType> wrapper)
     {
         this.wrapper = wrapper;
 
@@ -146,14 +147,6 @@ abstract public class PropertyWrapperEditor<PropType>
     public PropType getValueFlat()
     {
         return wrapper.getValue();
-//        PropertyData<PropType> val = getValue();
-//        if (val instanceof PropertyDataReference)
-//        {
-//            NodeDocument doc = wrapper.getNode().getDocument();
-//            NodeObject node = doc.getNode(((PropertyDataReference)val).getUid());
-//            return (PropType)node;
-//        }
-//        return val == null ? null : val.getValue(wrapper.getNode().getDocument());
     }
 
     /**
@@ -164,7 +157,6 @@ abstract public class PropertyWrapperEditor<PropType>
     @Override
     public PropertyData<PropType> getValue()
     {
-//        return value;
         return wrapper.getData();
     }
 
@@ -187,10 +179,6 @@ abstract public class PropertyWrapperEditor<PropType>
     public void setValue(PropertyData<PropType> value, boolean recordHistory)
     {
         wrapper.setData(value, recordHistory);
-
-//        PropertyData<PropType> oldValue = this.value;
-//        this.value = (PropertyData<PropType>)value;
-//        propertyChangeSupport.firePropertyChange(PROP_VALUE, oldValue, value);
     }
 
     protected void setKey()

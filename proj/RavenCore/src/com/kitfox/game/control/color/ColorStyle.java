@@ -24,6 +24,7 @@ import java.awt.geom.AffineTransform;
  *
  * @author kitfox
  */
+@Deprecated
 public class ColorStyle extends PaintStyle
 {
     public static final String CACHE_NAME = "color";

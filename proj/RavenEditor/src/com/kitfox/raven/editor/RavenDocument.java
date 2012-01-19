@@ -17,7 +17,6 @@
 package com.kitfox.raven.editor;
 
 import com.kitfox.raven.util.JAXBUtil;
-import com.kitfox.raven.util.resource.ResourceCache;
 import com.kitfox.raven.util.tree.NodeDocument;
 import com.kitfox.raven.util.tree.NodeDocumentProvider;
 import com.kitfox.raven.util.tree.NodeDocumentProviderIndex;
@@ -389,11 +388,11 @@ public class RavenDocument
         return editor.getViewManager().getSwingRoot();
     }
 
-    @Override
-    public ResourceCache getResourceCache()
-    {
-        return editor.getResourceCache();
-    }
+//    @Override
+//    public ResourceCache getResourceCache()
+//    {
+//        return editor.getResourceCache();
+//    }
 
     @Override
     public File getDocumentSource()

@@ -24,6 +24,7 @@ import java.awt.geom.AffineTransform;
  *
  * @author kitfox
  */
+@Deprecated
 public class Transform2D
 {
     public final double m00;

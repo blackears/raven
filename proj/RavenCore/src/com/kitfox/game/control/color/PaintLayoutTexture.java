@@ -26,6 +26,7 @@ import java.awt.geom.Rectangle2D;
  *
  * @author kitfox
  */
+@Deprecated
 public class PaintLayoutTexture extends PaintLayoutAbstract
 {
     public static final String CACHE_NAME = "matrix";

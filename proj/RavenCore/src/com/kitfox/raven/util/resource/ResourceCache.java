@@ -28,6 +28,17 @@ public class ResourceCache
 {
     HashMap<URI, ResInfo> resMap = new HashMap<URI, ResInfo>();
 
+    private static ResourceCache instance = new ResourceCache();
+
+    private ResourceCache()
+    {
+    }
+    
+    public static ResourceCache inst()
+    {
+        return instance;
+    }
+    
     public Object getResource(URI uri)
     {
         ResInfo info = resMap.get(uri);

@@ -29,6 +29,7 @@ import java.util.HashMap;
  *
  * @author kitfox
  */
+@Deprecated
 public class TileCache<T>
 {
     HashMap<WeakReference<T>, BufferedImage> tilePool

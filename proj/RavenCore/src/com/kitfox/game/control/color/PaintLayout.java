@@ -32,6 +32,7 @@ import com.kitfox.coyote.math.CyVector2d;
  *
  * @author kitfox
  */
+@Deprecated
 public interface PaintLayout
 {
     /**

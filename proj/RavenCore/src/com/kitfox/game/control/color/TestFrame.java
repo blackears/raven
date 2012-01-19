@@ -32,6 +32,7 @@ import javax.swing.JDialog;
  *
  * @author kitfox
  */
+@Deprecated
 public class TestFrame extends javax.swing.JFrame implements StopEditor
 {
     private static final long serialVersionUID = 0;

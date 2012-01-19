@@ -39,6 +39,7 @@ import java.util.logging.Logger;
  *
  * @author kitfox
  */
+@Deprecated
 public class StrokeStyleEditor implements PropertyEditor
 {
     public static final String PROP_VALUE = "value";

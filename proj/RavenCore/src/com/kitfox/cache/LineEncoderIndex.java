@@ -16,27 +16,20 @@
 
 package com.kitfox.cache;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.ServiceLoader;
+import com.kitfox.raven.util.ServiceIndex;
 
 /**
  *
  * @author kitfox
  */
-public class LineEncoderIndex
+public class LineEncoderIndex extends ServiceIndex<LineEncoderFactory>
 {
     static final LineEncoderIndex instance = new LineEncoderIndex();
-
-    ServiceLoader<LineEncoderFactory> loader = ServiceLoader.load(LineEncoderFactory.class);
-
-    HashMap<Class, LineEncoderFactory> factoryByClass = new HashMap<Class, LineEncoderFactory>();
 
 
     private LineEncoderIndex()
     {
-        buildIndex();
+        super(LineEncoderFactory.class);
     }
 
     public static LineEncoderIndex inst()
@@ -44,53 +37,16 @@ public class LineEncoderIndex
         return instance;
     }
 
-    public void setClassLoader(ClassLoader clsLoader)
-    {
-        loader = ServiceLoader.load(LineEncoderFactory.class, clsLoader);
-        buildIndex();
-    }
-
-    public ArrayList<LineEncoderFactory> getComponentFactories()
-    {
-        ArrayList<LineEncoderFactory> facts = new ArrayList<LineEncoderFactory>();
-
-        for (Iterator<LineEncoderFactory> it = loader.iterator(); it.hasNext();)
-        {
-            LineEncoderFactory fact = it.next();
-            facts.add(fact);
-        }
-
-        return facts;
-    }
-
-    public void reload()
-    {
-        loader.reload();
-        buildIndex();
-    }
-
-
-    private void buildIndex()
-    {
-        for (Iterator<LineEncoderFactory> it = loader.iterator(); it.hasNext();)
-        {
-            LineEncoderFactory fact = it.next();
-            factoryByClass.put(fact.getTargetClass(), fact);
-        }
-    }
-
     public LineEncoderFactory getFactory(Class cls)
     {
-        for (Class curCls = cls; curCls != null; curCls = curCls.getSuperclass())
+        for (int i = 0; i < serviceList.size(); ++i)
         {
-            LineEncoderFactory fact = factoryByClass.get(cls);
-            if (fact != null)
+            LineEncoderFactory prov = serviceList.get(i);
+            if (prov.getTargetClass().equals(cls))
             {
-                return fact;
+                return prov;
             }
         }
-
-        //Check interfaces
         return null;
     }
 }

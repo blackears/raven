@@ -16,23 +16,20 @@
 
 package com.kitfox.raven.util.tree;
 
+import com.kitfox.raven.util.ServiceIndex;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.ServiceLoader;
 
 /**
  *
  * @author kitfox
  */
-public final class PropertyProviderIndex
+public final class PropertyProviderIndex extends ServiceIndex<PropertyProvider>
 {
-    private ArrayList<PropertyProvider> propList = new ArrayList<PropertyProvider>();
-    
     private static PropertyProviderIndex instance = new PropertyProviderIndex();
 
     private PropertyProviderIndex()
     {
-        reload();
+        super(PropertyProvider.class);
     }
 
     public static PropertyProviderIndex inst()
@@ -40,37 +37,13 @@ public final class PropertyProviderIndex
         return instance;
     }
 
-    public void reload()
-    {
-        reload(PropertyProviderIndex.class.getClassLoader());
-    }
-
-    public void reload(ClassLoader clsLoader)
-    {
-        propList.clear();
-
-        ServiceLoader<PropertyProvider> loader = ServiceLoader.load(PropertyProvider.class, clsLoader);
-
-        for (Iterator<PropertyProvider> it = loader.iterator();
-            it.hasNext();)
-        {
-            PropertyProvider fact = it.next();
-            propList.add(fact);
-        }
-    }
-
-    public ArrayList<PropertyProvider> getProviders()
-    {
-        return new ArrayList<PropertyProvider>(propList);
-    }
-
     public <T> ArrayList<PropertyProvider> getProvidersExtending(Class<T> cls)
     {
         ArrayList<PropertyProvider> list = new ArrayList<PropertyProvider>();
 
-        for (int i = 0; i < propList.size(); ++i)
+        for (int i = 0; i < serviceList.size(); ++i)
         {
-            PropertyProvider prov = propList.get(i);
+            PropertyProvider prov = serviceList.get(i);
             if (cls.isAssignableFrom(prov.getPropertyType()))
             {
                 list.add(prov);
@@ -83,9 +56,9 @@ public final class PropertyProviderIndex
     {
         PropertyProvider<T> bestProv = null;
 
-        for (int i = 0; i < propList.size(); ++i)
+        for (int i = 0; i < serviceList.size(); ++i)
         {
-            PropertyProvider prov = propList.get(i);
+            PropertyProvider prov = serviceList.get(i);
             if (prov.getPropertyType().isAssignableFrom(cls))
             {
                 //return prov;
@@ -114,17 +87,4 @@ public final class PropertyProviderIndex
         }
         return bestProv;
     }
-//
-//    public PropertyProvider getProvider(String clazz)
-//    {
-//        for (int i = 0; i < nodeList.size(); ++i)
-//        {
-//            PropertyProvider prov = nodeList.get(i);
-//            if (prov.getPropertyType().getCanonicalName().equals(clazz))
-//            {
-//                return prov;
-//            }
-//        }
-//        return null;
-//    }
 }

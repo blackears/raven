@@ -22,6 +22,7 @@ import java.awt.BasicStroke;
  *
  * @author kitfox
  */
+@Deprecated
 public class StrokeStyle
 {
 

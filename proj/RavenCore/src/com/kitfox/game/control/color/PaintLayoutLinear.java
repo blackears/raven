@@ -24,6 +24,7 @@ import com.kitfox.coyote.math.CyVector2d;
  *
  * @author kitfox
  */
+@Deprecated
 public class PaintLayoutLinear extends PaintLayoutAbstract
 {
     public static final String CACHE_NAME = "linear";

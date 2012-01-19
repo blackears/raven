@@ -33,6 +33,7 @@ import java.util.logging.Logger;
  *
  * @author kitfox
  */
+@Deprecated
 public class MultipleGradientStyleEditor
         implements PropertyEditor
 {
