@@ -173,6 +173,7 @@ public class CoyotePanel extends GLJPanel
         animator = new Animator(drawable);
 //        animator.add(drawable);
 //        animator.setRunAsFastAsPossible(true);
+
         animator.start();
     }
 

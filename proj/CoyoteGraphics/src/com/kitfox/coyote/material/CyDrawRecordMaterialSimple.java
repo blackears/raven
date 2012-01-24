@@ -28,15 +28,7 @@ abstract public class CyDrawRecordMaterialSimple extends CyDrawRecord
 {
     protected CyVertexBuffer mesh;
     protected CyMatrix4d mvpMatrix = CyMatrix4d.createIdentity();
-//    protected CyMatrix4d mvpMatrix;
     protected float opacity;
-
-//    public void init(CyDrawStack renderer, CyVertexBuffer mesh)
-//    {
-//        renderer.getModelViewProjXform(mvpMatrix);
-//        this.mesh = mesh;
-//        this.opacity = renderer.getOpacity();
-//    }
 
     /**
      * @return the mvpMatrix
@@ -44,7 +36,6 @@ abstract public class CyDrawRecordMaterialSimple extends CyDrawRecord
     public CyMatrix4d getMvpMatrix()
     {
         return new CyMatrix4d(mvpMatrix);
-//        return mvpMatrix;
     }
 
     /**
@@ -53,7 +44,6 @@ abstract public class CyDrawRecordMaterialSimple extends CyDrawRecord
     public void setMvpMatrix(CyMatrix4d mvpMatrix)
     {
         this.mvpMatrix.set(mvpMatrix);
-//        this.mvpMatrix = mvpMatrix;
     }
 
     /**

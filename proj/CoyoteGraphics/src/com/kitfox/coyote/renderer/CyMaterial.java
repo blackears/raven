@@ -31,8 +31,9 @@ import java.util.ArrayList;
 abstract public class CyMaterial<DrawRecord>
 {
     public static final CyVertexArrayKey KEY_POSITION = new CyVertexArrayKeyPosition();
-    public static final CyVertexArrayKey KEY_TEXCOORD = new CyVertexArrayKeyPosition();
-    public static final CyVertexArrayKey KEY_COLOR = new CyVertexArrayKeyPosition();
+    public static final CyVertexArrayKey KEY_TEXCOORD = new CyVertexArrayKeyTexCoord();
+    public static final CyVertexArrayKey KEY_NORMAL = new CyVertexArrayKeyNormal();
+    public static final CyVertexArrayKey KEY_COLOR = new CyVertexArrayKeyColor();
 
     ArrayList<DrawRecord> recordPool = new ArrayList<DrawRecord>();
 
@@ -92,22 +93,6 @@ abstract public class CyMaterial<DrawRecord>
         }
     }
 
-//    protected DrawRecord createRecord()
-//    {
-//        DrawRecord rec;
-//        if (recordPool.isEmpty())
-//        {
-//            rec = new DrawRecord();
-//        }
-//        else
-//        {
-//            rec = recordPool.remove(recordPool.size() - 1);
-//            rec.recycle();
-//        }
-//
-//        return rec;
-//    }
-
     //------------------------------
     
     public static class CyVertexArrayKeyPosition extends CyVertexArrayKey 
@@ -120,6 +105,13 @@ abstract public class CyMaterial<DrawRecord>
     public static class CyVertexArrayKeyTexCoord extends CyVertexArrayKey 
     {
         private CyVertexArrayKeyTexCoord()
+        {
+        }
+    }
+
+    public static class CyVertexArrayKeyNormal extends CyVertexArrayKey 
+    {
+        private CyVertexArrayKeyNormal()
         {
         }
     }

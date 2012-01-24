@@ -29,14 +29,6 @@ public class CyDrawStackFrame
     private CyDrawStackFrame parent;
     CyDrawStack stack;
 
-//    private CyRectangle2i tileArea;
-//    private final CyFramebuffer tileBuffer;
-//
-//    //If filtering is used, an extra tile buffer is used
-//    private final CyFilter filter;
-//    private CyRectangle2i tileAreaPostFilter;
-//    private final CyFramebuffer tileBufferPostFilter;
-//    private final FilteredTile filteredTile;
     CyDrawGroup drawGroup;
 
     //Local to world
@@ -45,29 +37,20 @@ public class CyDrawStackFrame
     private CyMatrix4d viewXform;
     //Projection
     private CyMatrix4d projXform;
-    //Expands clip to just show the bit our tile needs
-//    private CyMatrix4d tileXform;
 
     //Derrived matrices
-//    boolean viewIDirty;
     boolean modelViewDirty;
     boolean modelViewProjDirty;
     boolean viewProjDirty;
-//    boolean projDirty;
     private CyMatrix4d modelViewXform;
     private CyMatrix4d modelViewProjXform;
     private CyMatrix4d viewProjXform;
     private CyMatrix4d viewIXform;
-//    private CyMatrix4d projTileXform;
 
     boolean frustumDirty;
     private Frustumd frustum;
 
     private float opacity;
-
-//    CyMaterial material;
-//    //Transform applied to tex coords
-//    private CyMatrix4d textureXform;
 
     /**
      * Called by RavenRenderer the when the first frame is allocated
@@ -78,59 +61,23 @@ public class CyDrawStackFrame
      */
     public CyDrawStackFrame(CyDrawStack stack,
             CyDrawGroup drawGroup)
-//            CyRectangle2i tileArea,
-//            CyFramebuffer tileBuffer,
-//            CyFilter filter)
     {
         this.parent = null;
         this.stack = stack;
         this.drawGroup = drawGroup;
-//        this.filter = filter;
-//        if (filter == null)
-//        {
-//            this.tileArea = tileArea;
-//            this.tileBuffer = tileBuffer;
-//            this.tileBufferPostFilter = null;
-//            this.tileAreaPostFilter = null;
-//            this.filteredTile = null;
-//        }
-//        else
-//        {
-//            //Passed in tile will be desination of data after filtering
-//            this.tileAreaPostFilter = tileArea;
-//            this.tileBufferPostFilter = tileBuffer;
-//
-//            //Create a new tile for pre-filter info
-//            this.tileArea =
-//                    filter.calcSampleRegion(tileArea, null);
-//            this.filteredTile = stack.getTileCache().allocTile(
-//                    this.tileArea.getWidth(),
-//                    this.tileArea.getHeight());
-//            this.tileBuffer = filteredTile.getBuffer();
-//        }
-//
-//        //We are now writing to this buffer
-//        tileBuffer.bind(stack.getGl());
 
         //Defaults
         modelXform = CyMatrix4d.createIdentity();
         viewXform = CyMatrix4d.createIdentity();
         projXform = CyMatrix4d.createIdentity();
 
-//        tileXform = calcTileXform(this.tileArea);
-
         modelViewXform = CyMatrix4d.createIdentity();
         viewIXform = CyMatrix4d.createIdentity();
-//        projTileXform = new CyMatrix4d(tileXform);
         modelViewProjXform = CyMatrix4d.createIdentity();
         viewProjXform = CyMatrix4d.createIdentity();
         frustum = Frustumd.create(viewProjXform);
 
         opacity = 1;
-//        material = CyMaterialColor.WHITE;
-//        textureXform = CyMatrix4d.createIdentity();
-
-//        updateLocalXform();
     }
 
     /**
@@ -155,82 +102,22 @@ public class CyDrawStackFrame
             this.drawGroup = drawGroup;
         }
 
-//        this.filter = filter;
-//        if (filter == null)
-//        {
-//            this.tileBuffer = frame.tileBuffer;
-//            this.tileArea = frame.tileArea;
-//            this.tileBufferPostFilter = null;
-//            this.tileAreaPostFilter = null;
-//            this.filteredTile = null;
-//        }
-//        else
-//        {
-//            //Passed in tile will be desination of data after filtering
-//            this.tileAreaPostFilter = frame.tileArea;
-//            this.tileBufferPostFilter = frame.tileBuffer;
-//
-//            //Create a new tile for pre-filter info
-//            this.tileArea =
-//                    filter.calcSampleRegion(frame.tileArea, null);
-//            this.filteredTile = stack.getTileCache().allocTile(
-//                    frame.tileArea.getWidth(),
-//                    frame.tileArea.getHeight());
-//            this.tileBuffer = filteredTile.getBuffer();
-//
-//            //Write to prefilter buffer
-//            tileBuffer.bind(stack.getGl());
-////            renderer.gl.glViewport(0, 0, tileArea.getWidth(), tileArea.getHeight());
-//        }
-
         modelXform = new CyMatrix4d(frame.modelXform);
         viewXform = new CyMatrix4d(frame.viewXform);
         projXform = new CyMatrix4d(frame.projXform);
 
-//        tileXform = calcTileXform(this.tileArea);
-
         modelViewXform = new CyMatrix4d(frame.modelViewXform);
         viewIXform = new CyMatrix4d(frame.viewIXform);
-//        projTileXform = new CyMatrix4d(tileXform);
-//        projTileXform.mul(projXform);
         modelViewProjXform = new CyMatrix4d(frame.modelViewProjXform);
         viewProjXform = new CyMatrix4d(frame.viewProjXform);
         frustum = new Frustumd(frame.frustum);
 
         opacity = frame.opacity;
-//        material = frame.material;
-//        textureXform = new CyMatrix4d(frame.textureXform);
-
-//        viewIDirty = frame.viewIDirty;
         modelViewDirty = frame.modelViewDirty;
         modelViewProjDirty = frame.modelViewProjDirty;
         viewProjDirty = frame.viewProjDirty;
-//        projDirty = true;
         frustumDirty = frame.frustumDirty;
-//        updateLocalXform();
     }
-
-//    private CyMatrix4d calcTileXform(CyRectangle2i tileArea)
-//    {
-//        tileXform = CyMatrix4d.createIdentity();
-//        double tx = tileArea.getMinX() / (double)stack.getViewportWidth();
-//        double ty = tileArea.getMinY() / (double)stack.getViewportHeight();
-//        double tw = tileArea.getWidth() / (double)stack.getViewportWidth();
-//        double th = tileArea.getHeight() / (double)stack.getViewportHeight();
-//
-//        tileXform.translate(-1, -1, 0);
-//        tileXform.scale(2, 2, 1);
-//
-//        tileXform.scale(1 / tw, 1 / th, 1);
-////        tileXform.scale(tw, th, 1);
-//        tileXform.translate(-tx, -ty, 0);
-//
-//        tileXform.scale(.5, .5, 1);
-//        tileXform.translate(1, 1, 0);
-//
-////            renderer.gl.glViewport(0, 0, tileArea.getWidth(), tileArea.getHeight());
-//        return tileXform;
-//    }
 
     public void popping()
     {
@@ -327,17 +214,6 @@ public class CyDrawStackFrame
         frustumDirty = true;
     }
 
-//    CyMatrix4d getViewI()
-//    {
-//        if (viewIDirty)
-//        {
-//            viewIDirty = false;
-//            viewIXform.set(viewXform);
-//            viewIXform.invert();
-//        }
-//        return viewIXform;
-//    }
-
     CyMatrix4d getModelView()
     {
         if (modelViewDirty)
@@ -348,17 +224,6 @@ public class CyDrawStackFrame
         }
         return modelViewXform;
     }
-//
-//    CyMatrix4d getProjTile()
-//    {
-//        if (projDirty)
-//        {
-//            projDirty = false;
-//            projTileXform.set(tileXform);
-//            projTileXform.mul(projXform);
-//        }
-//        return projTileXform;
-//    }
 
     CyMatrix4d getModelViewProj()
     {

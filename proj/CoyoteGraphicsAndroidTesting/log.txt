@@ -1,0 +1,11 @@
+01-23 08:28:23.710: I/System.out(564): +++ View created!
+01-23 08:28:24.190: D/libEGL(564): Emulator without GPU support detected. Fallback to software renderer.
+01-23 08:28:24.190: D/libEGL(564): loaded /system/lib/egl/libGLES_android.so
+01-23 08:28:24.359: D/gralloc_goldfish(564): Emulator without GPU emulation detected.
+01-23 08:28:24.371: W/dalvikvm(564): threadid=12: thread exiting with uncaught exception (group=0x409c01f8)
+01-23 08:28:24.371: E/AndroidRuntime(564): FATAL EXCEPTION: GLThread 76
+01-23 08:28:24.371: E/AndroidRuntime(564): java.lang.IllegalArgumentException: No configs match configSpec
+01-23 08:28:24.371: E/AndroidRuntime(564): 	at android.opengl.GLSurfaceView$BaseConfigChooser.chooseConfig(GLSurfaceView.java:853)
+01-23 08:28:24.371: E/AndroidRuntime(564): 	at android.opengl.GLSurfaceView$EglHelper.start(GLSurfaceView.java:1009)
+01-23 08:28:24.371: E/AndroidRuntime(564): 	at android.opengl.GLSurfaceView$GLThread.guardedRun(GLSurfaceView.java:1362)
+01-23 08:28:24.371: E/AndroidRuntime(564): 	at android.opengl.GLSurfaceView$GLThread.run(GLSurfaceView.java:1216)

@@ -66,6 +66,20 @@ abstract public class CyVertexBufferDataProvider
         infoMap.put(key, info);
     }
 
+    /**
+     * Set data describing portion of vertex data array a particular
+     * key coresponds to.  The vertex array is presumed to be
+     * non-interleaved.
+     * 
+     * Eg, if the vertex data consists of point triples, followed
+     * by texCoord doubles, followed by normal triples, this should
+     * be called with 
+     * 
+     * @param key Key demarcating a subsection of vertex data
+     * @param offset Byte offset within array where this section starts.
+     * @param size Number of components per vertex.  Eg, if defining
+     * a point triple, this should be set to 3.
+     */
     protected void setVertexArrayInfo(CyVertexArrayKey key, long offset, int size)
     {
         CyVertexArrayInfo info = new CyVertexArrayInfo(key, offset, size);

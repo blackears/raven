@@ -1825,6 +1825,7 @@ public class CyMatrix4d
      * This builds the OpenGL gluLookAt matrix.
      * Taken from Mesa 3.5
      */
+    /*
     public void lookAt(double eyeX, double eyeY, double eyeZ,
             double centerX, double centerY, double centerZ,
             double upX, double upY, double upZ)
@@ -1848,6 +1849,58 @@ public class CyMatrix4d
         m10 = y.x; m11 = y.y; m12 = y.z; m13 = -eyeX * y.x + -eyeY * y.y + -eyeZ * y.z;
         m20 = z.x; m21 = z.y; m22 = z.z; m23 = -eyeX * z.x + -eyeY * z.y + -eyeZ * z.z;
         m30 = 0; m31 = 0; m32 = 0; m33 = 1;
+    }
+    */
+
+    public void gluLookAt(double eyeX, double eyeY, double eyeZ, 
+            double centerX, double centerY, double centerZ,
+            double upX, double upY, double upZ)
+    {
+        //http://pyopengl.sourceforge.net/documentation/manual/gluLookAt.3G.html
+        double fx = eyeX - centerX;
+        double fy = eyeY - centerY;
+        double fz = eyeZ - centerZ;
+        
+        double fLenI = 1 / Math.sqrt(fx * fx + fy * fy + fz * fz);
+        
+        fx *= fLenI;
+        fy *= fLenI;
+        fz *= fLenI;
+        
+        //cross(f, up)
+        double sx = upY * fz - upZ * fy;
+        double sy = upZ * fx - upX * fz;
+        double sz = upX * fy - upY * fx;
+        
+        double sLenI = 1 / Math.sqrt(sx * sx + sy * sy + sz * sz);
+        sx *= sLenI;
+        sy *= sLenI;
+        sz *= sLenI;
+        
+        //cross(s, f)
+        double ux = fy * sz - fz * sy;
+        double uy = fz * sx - fx * sz;
+        double uz = fx * sy - fy * sx;
+        
+        m00 = sx;
+        m10 = ux;
+        m20 = fx;
+        m30 = 0;
+        
+        m01 = sy;
+        m11 = uy;
+        m21 = fy;
+        m31 = 0;
+        
+        m02 = sz;
+        m12 = uz;
+        m22 = fz;
+        m32 = 0;
+        
+        m03 = -eyeX * sx + -eyeY * sy + -eyeZ * sz;
+        m13 = -eyeX * ux + -eyeY * uy + -eyeZ * uz;
+        m23 = -eyeX * fx + -eyeY * fy + -eyeZ * fz;
+        m33 = 1;
     }
 
     public void gluOrtho2D(double left, double right, double bottom, double top)

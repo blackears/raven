@@ -52,6 +52,7 @@ public class CyDrawRecordClear extends CyDrawRecord
         {
             gl.glClearColor(r, g, b, a);
         }
+//        gl.glDepthMask(true);
         gl.glClear(color, depth, stencil);
     }
 
