@@ -61,7 +61,7 @@
 	<!-- end #mainContent --></div>
 	<!-- This clearing element should immediately follow the #mainContent div in order to force the #container div to contain all child floats --><br class="clearfloat" />
   <div id="footer">
-    <p>Copyright Mark McKay 2011</p>
+    <p>Copyright <a href="http://www.kitfox.com">Mark McKay</a> 2012</p>
     <p>Return to <a href="../index.html">Raven Studio</a></p>
   <!-- end #footer --></div>
 <!-- end #container --></div>

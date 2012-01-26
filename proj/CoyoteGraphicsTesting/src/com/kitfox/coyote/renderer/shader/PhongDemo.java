@@ -61,7 +61,8 @@ public class PhongDemo implements CyRendererListener
 //            rend.addDrawRecord(new CyDrawRecordClear(0, 1, 1, 1,
 //                    true, true, true));
             rend.addDrawRecord(new CyDrawRecordClear(
-                    rand.nextFloat(), rand.nextFloat(), rand.nextFloat(), 1,
+//                    rand.nextFloat(), rand.nextFloat(), rand.nextFloat(), 1,
+                    .7f, .7f, .7f, 1,
                     true, true, true));
         }
         

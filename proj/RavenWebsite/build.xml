@@ -320,6 +320,28 @@
         </javadoc>
         
         <javadoc
+            destdir="build/docs/api/CoyoteGraphicsAndroid"
+            author="true"
+            version="true"
+            use="true"
+            windowtitle="Coyote Graphics Android API">
+              
+            <classpath>
+                <path refid="lib.path"/>
+            </classpath>
+                
+            <fileset dir="../CoyoteGraphicsAndroid">
+                <include name="src/**/*.java"/>
+            </fileset>
+
+            <doctitle><![CDATA[<h1>Coyote Graphics Android</h1>]]></doctitle>
+            <bottom><![CDATA[<i>Copyright &#169; 2011 Mark McKay</i>]]></bottom>
+            <link href="http://download.oracle.com/javase/6/docs/api/"/>
+            <link href="../CoyoteGraphics"/>
+            <link href="../RavenService"/>
+        </javadoc>
+        
+        <javadoc
             destdir="build/docs/api/RavenDocking"
             author="true"
             version="true"
