@@ -17,14 +17,17 @@
 package com.kitfox.coyote.renderer;
 
 /**
- * This is meant to work like an Enum, but not have one central index
- * anywhere.  This is so that new materials can aribitrarily add new
- * VertexArrayKeys.  Eg, a temperature sensative material might want to
+ * Instances of this class are used to describe the different
+ * flavors of vertex data used in vertex data arrays.
+ * 
+ * This is meant to work like an Enum, but without a central indexing
+ * class.  This is so that new materials can aribitrarily add new
+ * VertexArrayKeys.  Eg, a temperature sensitive material might want to
  * define a special vertex array containing temperature info.  That material
  * could then define its own special VertexArrayKeyTemperature.
  *
  * @author kitfox
  */
-public class CyVertexArrayKey
+final public class CyVertexArrayKey
 {
 }

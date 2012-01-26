@@ -252,10 +252,6 @@
             <doctitle><![CDATA[<h1>Raven Service</h1>]]></doctitle>
             <bottom><![CDATA[<i>Copyright &#169; 2011 Mark McKay</i>]]></bottom>
             <link href="http://download.oracle.com/javase/6/docs/api/"/>
-            <!--
-            <link offline="true" href="http://download.oracle.com/javase/6/docs/api/" packagelistLoc="C:\tmp"/>
-            <link href="http://raven.java.net"/>
-            -->
         </javadoc>
         
         <javadoc
@@ -279,10 +275,6 @@
             <bottom><![CDATA[<i>Copyright &#169; 2011 Mark McKay</i>]]></bottom>
             <link href="http://download.oracle.com/javase/6/docs/api/"/>
             <link href="../RavenService"/>
-            <!--
-            <link href="http://raven.java.net"/>
-            <link href="http://download.oracle.com/javase/6/docs/api/"/>
-            -->
         </javadoc>
         
         <javadoc
@@ -304,10 +296,6 @@
             <bottom><![CDATA[<i>Copyright &#169; 2011 Mark McKay</i>]]></bottom>
             <link href="http://download.oracle.com/javase/6/docs/api/"/>
             <link href="../RavenService"/>
-            <!--
-            <link href="http://raven.java.net"/>
-            <link href="http://download.oracle.com/javase/6/docs/api/"/>
-            -->
         </javadoc>
         
         <javadoc
@@ -329,10 +317,6 @@
             <bottom><![CDATA[<i>Copyright &#169; 2011 Mark McKay</i>]]></bottom>
             <link href="http://download.oracle.com/javase/6/docs/api/"/>
             <link href="../RavenService"/>
-            <!--
-            <link href="http://raven.java.net"/>
-            <link href="http://download.oracle.com/javase/6/docs/api/"/>
-            -->
         </javadoc>
         
         <javadoc
@@ -365,14 +349,37 @@
             <classpath>
                 <pathelement location="../RavenService/dist/RavenService.jar"/>
                 <pathelement location="../SVGRabbit/dist/SVGRabbit.jar"/>
-                <pathelement location="../CoyoteGraphics/dist/CoyoteGraphics"/>
+                <pathelement location="../CoyoteGraphics/dist/CoyoteGraphics.jar"/>
                 <path refid="lib.path"/>
             </classpath>
-                
-            <fileset dir="../RavenCore">
-                <include name="src/**/*.java"/>
-            </fileset>
 
+            <fileset dir="../RavenCore">
+                <!--
+                <exclude name="src/com/kitfox/game/**/PaintStyleCustomEditor.java"/>
+                <include name="src/**/*.java"/>
+                -->
+                <include name="src/com/kitfox/raven/**/*.java"/>
+                <include name="src/com/kitfox/cache/**/*.java"/>
+                
+                <!--
+                <include name="src/com/kitfox/raven/util/**/*.java"/>
+                <include name="src/com/kitfox/raven/shape/**/*.java"/>
+                <include name="src/com/kitfox/raven/paint/**/*.java"/>
+                <include name="src/com/kitfox/raven/wizard/**/*.java"/>
+                <include name="src/com/kitfox/raven/filter/**/*.java"/>
+                <include name="src/com/kitfox/raven/build/**/*.java"/>
+                <include name="src/com/kitfox/cache/**/*.java"/>
+                <include name="src/com/kitfox/game/**/C*.java"/>
+                <include name="src/com/kitfox/game/**/F*.java"/>
+                <include name="src/com/kitfox/game/**/G*.java"/>
+                <include name="src/com/kitfox/game/**/M*.java"/>
+                <include name="src/com/kitfox/game/**/PaintL*.java"/>
+                <include name="src/com/kitfox/game/**/PaintStyle.java"/>
+                <include name="src/com/kitfox/game/**/PaintStyleEditor.java"/>
+                <include name="src/com/kitfox/game/**/PaintStyleCustomEditor.java"/>
+                -->
+            </fileset>
+            
             <doctitle><![CDATA[<h1>Raven Core</h1>]]></doctitle>
             <bottom><![CDATA[<i>Copyright &#169; 2011 Mark McKay</i>]]></bottom>
             <link href="http://download.oracle.com/javase/6/docs/api/"/>

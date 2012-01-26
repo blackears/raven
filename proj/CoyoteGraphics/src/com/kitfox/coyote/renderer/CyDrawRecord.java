@@ -17,12 +17,41 @@
 package com.kitfox.coyote.renderer;
 
 /**
+ * This is a basic unit of rendering used to draw Coyote scenes.
+ * 
+ * <p>CyDrawRecords form an important part of the Coyote rendering
+ * process.  In the first phase of this process, CyDrawRecords are 
+ * created and configured.  They represent the different objects
+ * that can be rendered and OpenGL environment configurations that can
+ * be applied.  These records are collected and queued
+ * (and possibly preprocessed).  The second phase takes place
+ * when the physical drawing surface starts its draw process.  At
+ * this time, the queue of CyDrawRecords is walked and the
+ * render() methods called.</p>
+ * 
+ * <p>Most implementing classes will provide a set a properties
+ * that can be tweaked to adjust the effect.</p>
+ * 
+ * <p>You may wish to
+ * implement memory pooling to avoid reallocating hundreds of these
+ * for every frame of animation.</p>
  *
  * @author kitfox
  */
 abstract public class CyDrawRecord
 {
+    /**
+     * Draw this record to the physical rendering surface.
+     * 
+     * @param ctx Keeps track of allocated resources
+     * @param gl An OpenGL wrapper
+     * @param prevRecord 
+     */
     abstract public void render(CyGLContext ctx, CyGLWrapper gl, CyDrawRecord prevRecord);
-//    abstract public void recycle();
+    
+    /**
+     * Called after rendering the frame completes to indicate that 
+     * resources can be freed.
+     */
     abstract public void dispose();
 }

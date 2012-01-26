@@ -25,6 +25,21 @@ import com.kitfox.coyote.shape.CyRectangle2d;
 import java.util.ArrayList;
 
 /**
+ * Tool to ease the process of building CyDrawRecord trees.
+ * 
+ * <p>CyDrawStack maintains a stack of CyDrawGroups.  Whenever a 
+ * record is submitted to the stack via addDrawRecord(), it is
+ * added to the top level group.  New groups can be added by
+ * calling pushFrame().  When this happens, the submitted group is 
+ * appended as a child to the current top level group, and then 
+ * replaces it.  When popFrame() is called, the topmost group is
+ * taken off the stack and its parent is restored.</p>
+ * 
+ * <p>In addition to tracking groups, information that is typically
+ * sensitive to ancestors is maintained.  Whenever the top group
+ * is pushed, a backup copy of all matrix and opacity 
+ * data is made.  This data is restored when the corresponding
+ * pop call is made.</p>
  *
  * @author kitfox
  */
@@ -34,50 +49,22 @@ public class CyDrawStack
     private final int deviceWidth;
     private final int deviceHeight;
 
-//    //May be used by some components to judge passage of time
-//    private final long startTime; //Time in ms for first rendering pass
-//    private final long curTime;  //Time in ms for this rendering pass
-//    private final int curPass;  //Index of current pass.  Increments each pass
-//
-//    //Indicates current track/animation frame to draw.  If trackUid == 0,
-//    // property's direct value is rendered
-//    private final int trackUid;
-//    private final int animFrame;
-
     ArrayList<CyMatrix4d> matrixPool = new ArrayList<CyMatrix4d>();
 
     /**
      *
      * @param deviceWidth Width of device we are drawing to
      * @param deviceHeight Height of device we are drawing to
-     * @param trackUid Uid of track we are rendering.  If 0, render property
-     * direct value
-     * @param animFrame Animation frame to render.  If trackUid == 0, this
-     * value is ignored.
-     * @param startTime Time in milliseconds when first frame is rendered.
-     * @param curTime Current time in milliseconds
-     * @param curPass Should increment for each pass
-     * @param drawGroup
+     * @param drawGroup Top level group that will be the ancestor of
+     * all draw records submitted
      */
     public CyDrawStack(
             int deviceWidth,
             int deviceHeight,
-
-//            int trackUid,
-//            int animFrame,
-//
-//            long startTime, long curTime, int curPass,
             CyDrawGroup drawGroup)
     {
         this.deviceWidth = deviceWidth;
         this.deviceHeight = deviceHeight;
-
-//        this.trackUid = trackUid;
-//        this.animFrame = animFrame;
-//
-//        this.startTime = startTime;
-//        this.curTime = curTime;
-//        this.curPass = curPass;
 
         curFrame = new CyDrawStackFrame(this, drawGroup);
     }
@@ -164,16 +151,6 @@ public class CyDrawStack
         return new Frustumd(curFrame.getFrustum());
     }
 
-//    public CyMatrix4d getViewIXform()
-//    {
-//        return new CyMatrix4d(curFrame.getViewI());
-//    }
-//
-//    public CyMatrix4d getProjTileXform()
-//    {
-//        return new CyMatrix4d(curFrame.getProjXform());
-//    }
-
     public CyMatrix4d getModelXform(CyMatrix4d m)
     {
         m.set(curFrame.getModelXform());
@@ -224,64 +201,11 @@ public class CyDrawStack
     {
         curFrame.mulProjXform(m);
     }
-//
-//    public void clear(CyColor4f color)
-//    {
-//        curFrame.clear(color);
-//    }
 
     public void dispose()
     {
         curFrame.popping();
     }
-
-//    /**
-//     * @return the tileCache
-//     */
-//    CyRenderTileCache getTileCache()
-//    {
-//        return tileCache;
-//    }
-
-//    /**
-//     * @return the startTime
-//     */
-//    public long getStartTime()
-//    {
-//        return startTime;
-//    }
-//
-//    /**
-//     * @return the curTime
-//     */
-//    public long getCurTime()
-//    {
-//        return curTime;
-//    }
-//
-//    /**
-//     * @return the curPass
-//     */
-//    public int getCurPass()
-//    {
-//        return curPass;
-//    }
-
-//    /**
-//     * @return the material
-//     */
-//    public CyMaterial getMaterial()
-//    {
-//        return material;
-//    }
-//
-//    /**
-//     * @param material the material to set
-//     */
-//    public void setMaterial(CyMaterial material)
-//    {
-//        this.material = material;
-//    }
 
     public void translate(double x, double y, double z)
     {
@@ -307,14 +231,6 @@ public class CyDrawStack
     {
         curFrame.scale(x, y, z);
     }
-//
-//    /**
-//     * @return the gl
-//     */
-//    public GLWrapper getGl()
-//    {
-//        return gl;
-//    }
 
     /**
      * @return the viewportWidth
@@ -337,7 +253,7 @@ public class CyDrawStack
      * model view transform.
      *
      * @param bounds
-     * @return
+     * @return true if intersection occurs
      */
     public boolean intersectsFrustum(BoundingBox3d bounds)
     {
@@ -387,21 +303,5 @@ public class CyDrawStack
 
         return place != PartitionPlacement.OUTSIDE;
     }
-
-//    /**
-//     * @return the trackUid
-//     */
-//    public int getTrackUid()
-//    {
-//        return trackUid;
-//    }
-//
-//    /**
-//     * @return the animFrame
-//     */
-//    public int getAnimFrame()
-//    {
-//        return animFrame;
-//    }
 
 }

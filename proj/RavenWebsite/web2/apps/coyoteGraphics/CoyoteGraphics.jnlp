@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+" 
+    codebase="http://raven.java.net/apps/coyoteGraphics" 
+    href="CoyoteGraphics.jnlp">
+        
+    <information>
+        <title>Coyote Graphics Demo</title>
+        <vendor>Mark McKay</vendor>
+        <homepage href="http://raven.java.net/apps/coyoteGraphics/index.html"/>
+        <description>Coyote Graphics</description>
+        <description kind="short">Demonstration of CoyoteGraphics library</description>
+        <offline-allowed/>
+        <shortcut online="false" install="false">
+            <desktop/>
+        </shortcut>
+    </information>
+    
+    <update check="background" policy="always"/>
+
+    <security>
+    <!--
+        <all-permissions/>
+        -->
+    </security>
+    
+    <resources>
+        <!-- Application Resources -->
+        <j2se version="1.6+"
+              href="http://java.sun.com/products/autodl/j2se"/>
+        <jar href="../bin/CoyoteGraphics.jar"/>
+        <jar href="../bin/CoyoteGraphicsTesting.jar"/>
+        
+        <extension name="jogl-all-awt" 
+            href="http://jogamp.org/deployment/jogamp-current/jogl-all-awt.jnlp"/>
+    </resources>
+    
+    <application-desc 
+        name="Coyote Graphics Demo"
+        main-class="com.kitfox.coyote.renderer.shader.ShaderMainFrame"/>
+</jnlp>                             

@@ -62,7 +62,7 @@ public class CyVertexBufferDataSquare extends CyVertexBufferDataProvider
     {
         setVertexArrayInfo(CyMaterial.KEY_POSITION,
                 0 * BufferUtil.SIZEOF_FLOAT, 2);
-        setVertexArrayInfo(CyMaterial.KEY_TEXCOORD, 
+        setVertexArrayInfo(CyMaterial.KEY_TEXCOORD0, 
                 8 * BufferUtil.SIZEOF_FLOAT, 2);
 
         buffer = new CyVertexBuffer(this);

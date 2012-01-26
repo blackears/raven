@@ -19,6 +19,13 @@ package com.kitfox.coyote.renderer;
 import java.util.ArrayList;
 
 /**
+ * Keeps track of a list of consecutive CyDrawRecords to be drawn.
+ * Since it is itself a CyDrawRecord, can be used to structure records
+ * into trees.
+ * 
+ * <p>A filter can be assigned to a group.  If it is, this indicates
+ * that rendering should be done to an offscreen buffer and then
+ * the filter applied.</p>
  *
  * @author kitfox
  */
@@ -33,12 +40,6 @@ abstract public class CyDrawGroup extends CyDrawRecord
     {
         records.add(rec);
     }
-
-//    /**
-//     * Draw everything to the current render surface.
-//     * @param gl
-//     */
-//    abstract public void render(GLWrapperJOGL gl);
 
     /**
      * @return the filter

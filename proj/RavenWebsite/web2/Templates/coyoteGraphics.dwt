@@ -1,10 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><!-- InstanceBegin template="/Templates/ravenDockingTmplt.dwt" codeOutsideHTMLIsLocked="false" -->
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<!-- InstanceBeginEditable name="doctitle" -->
-<title>Raven Docking - Download</title>
-<!-- InstanceEndEditable -->
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>Coyote Graphics</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
         <script type="text/javascript">
           var _gaq = _gaq || [];
           _gaq.push(['_setAccount', 'UA-17414889-5']);
@@ -16,9 +17,8 @@
             var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
           })();
         </script>
-<!-- InstanceBeginEditable name="head" -->
-<!-- InstanceEndEditable -->
-<!--[if IE 5]>
+<!-- TemplateEndEditable -->
+<link href="../ravenStyle.css" rel="stylesheet" type="text/css" /><!--[if IE 5]>
 <style type="text/css"> 
 /* place css box model fixes for IE 5* in this conditional comment */
 .twoColFixRtHdr #sidebar1 { width: 220px; }
@@ -31,38 +31,25 @@
 /* the above proprietary zoom property gives IE the hasLayout it needs to avoid several bugs */
 </style>
 <![endif]-->
-<link href="../ravenStyle.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body class="twoColFixRtHdr">
 
 <div id="container">
   <div id="header">
-    <h1>Raven Docking</h1>
+    <h1>Coyote Graphics</h1>
   <!-- end #header --></div>
   <div id="sidebar1">
-    <p><a href="index.html">Overview</a></p>
-    <p><a href="usage.html">Usage</a></p>
-    <p><a href="download.html">Download</a></p>
-    <p><a href="../docs/api/RavenDocking">API Documentation</a></p>
+    <p><a href="../coyoteGraphics/index.html">Overview</a></p>
+    <p><a href="../coyoteGraphics/usage.html">Usage</a></p>
+    <p><a href="../coyoteGraphics/demo.html">Demo</a></p>
+    <p><a href="../coyoteGraphics/download.html">Download</a></p>
+    <p><a href="../docs/api/CoyoteGraphics">API Documentation</a></p>
     <p><a href="../index.html">Raven Studio</a></p>
   <!-- end #sidebar1 --></div>
   <div id="mainContent">
-    <!-- InstanceBeginEditable name="mainText" -->
-    <h2>Downloads</h2>
-    <h3>Binaries</h3>
-<p>Get the latest binary here:</p>
-<p><a href="http://raven.java.net/apps/bin/RavenDocking.jar">http://raven.java.net/apps/bin/RavenDocking.jar</a></p>
-<p>&nbsp;</p>
-<h3>Source</h3>
-<p>You can also get the source by checking out the RavenDocking subproject from the repository:</p>
-<p><a href="http://java.net/projects/raven/sources">http://java.net/projects/raven/sources</a></p>
-<p>Browse the latest sources:</p>
-<p><a href="http://java.net/projects/raven/sources/svn/show/trunk/proj/RavenDocking">http://java.net/projects/raven/sources/svn/show/trunk/proj/RavenDocking</a></p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-    <!-- InstanceEndEditable -->
-  <!-- end #mainContent --></div>
+    <!-- TemplateBeginEditable name="mainText" --><p>Main Content</p><!-- TemplateEndEditable -->
+	<!-- end #mainContent --></div>
 	<!-- This clearing element should immediately follow the #mainContent div in order to force the #container div to contain all child floats --><br class="clearfloat" />
   <div id="footer">
     <p>Copyright Mark McKay 2012</p>
@@ -70,4 +57,4 @@
   <!-- end #footer --></div>
 <!-- end #container --></div>
 </body>
-<!-- InstanceEnd --></html>
+</html>

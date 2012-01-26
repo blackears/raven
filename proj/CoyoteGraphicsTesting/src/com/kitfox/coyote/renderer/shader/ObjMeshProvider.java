@@ -62,7 +62,7 @@ public class ObjMeshProvider extends CyVertexBufferDataProvider
             
             setVertexArrayInfo(CyMaterial.KEY_POSITION, 
                     vCount * 0 * BufferUtil.SIZEOF_FLOAT, 3);
-            setVertexArrayInfo(CyMaterial.KEY_TEXCOORD, 
+            setVertexArrayInfo(CyMaterial.KEY_TEXCOORD0, 
                     vCount * 3 * BufferUtil.SIZEOF_FLOAT, 2);
             setVertexArrayInfo(CyMaterial.KEY_NORMAL, 
                     vCount * 5 * BufferUtil.SIZEOF_FLOAT, 3);

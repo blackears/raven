@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><!-- InstanceBegin template="/Templates/coyoteGraphics.dwt" codeOutsideHTMLIsLocked="false" -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- InstanceBeginEditable name="doctitle" -->
+<title>Coyote Graphics - Usage</title>
+<!-- InstanceEndEditable -->
+<!-- InstanceBeginEditable name="head" -->
+        <script type="text/javascript">
+          var _gaq = _gaq || [];
+          _gaq.push(['_setAccount', 'UA-17414889-5']);
+          _gaq.push(['_trackPageview']);
+
+          (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+          })();
+        </script>
+<!-- InstanceEndEditable -->
+<link href="../ravenStyle.css" rel="stylesheet" type="text/css" /><!--[if IE 5]>
+<style type="text/css"> 
+/* place css box model fixes for IE 5* in this conditional comment */
+.twoColFixRtHdr #sidebar1 { width: 220px; }
+</style>
+<![endif]--><!--[if IE]>
+<style type="text/css"> 
+/* place css fixes for all versions of IE in this conditional comment */
+.twoColFixRtHdr #sidebar1 { padding-top: 30px; }
+.twoColFixRtHdr #mainContent { zoom: 1; }
+/* the above proprietary zoom property gives IE the hasLayout it needs to avoid several bugs */
+</style>
+<![endif]-->
+</head>
+
+<body class="twoColFixRtHdr">
+
+<div id="container">
+  <div id="header">
+    <h1>Coyote Graphics</h1>
+  <!-- end #header --></div>
+  <div id="sidebar1">
+    <p><a href="index.html">Overview</a></p>
+    <p><a href="usage.html">Usage</a></p>
+    <p><a href="demo.html">Demo</a></p>
+    <p><a href="download.html">Download</a></p>
+    <p><a href="../docs/api/CoyoteGraphics">API Documentation</a></p>
+    <p><a href="../index.html">Raven Studio</a></p>
+  <!-- end #sidebar1 --></div>
+  <div id="mainContent">
+    <!-- InstanceBeginEditable name="mainText" -->
+    <h2>Usage</h2>
+    <p>CoyoteGraphics is composed of two main sections - a 3D rendering pipeline and a 2D geometry library used for describing shapes. This section will deal with the rendering pipeline.</p>
+    <h2>Graphics Engine</h2>
+    <p>Even though Raven Studio is used to compose 2D graphical animations, it is built on top of a 3D rendering engine. This lets the renderer take advantage of the speed of the modern graphics cards avalilable on most modern machines. It also allows great flexibilty, since programmable shaders can be used to create rich effects not possible with more traditional 2D APIs.</p>
+    <h3>Pipeline</h3>
+    <p>CoyoteGraphics is higher level than most graphics APIs. Rather than giving you unlimited control to take any primitive drawing action at any time, you instead bundle every drawing action into a <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyDrawRecord.html">CyDrawRecord</a>. These records are collected, optionally preprocessed, and finally rendered onto your drawing surface. In this way, it acts more like the pipelines used in game graphics engines and less like a low level drawing API.</p>
+    <p>A typical CoyoteGraphics program will work like this: </p>
+    <ul>
+      <li> create the drawing surface that your scene will be rendered to (such as a <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/jogl/CoyotePanel.html">CoyotePanel</a>)</li>
+      <li>create a list of <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyDrawRecord.html">CyDrawRecord</a>s which describe your scene. You can use <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyDrawGroup.html">CyDrawGroup</a>s to organize your records into a tree structure</li>
+      <li>during your rendering surface's draw phase, wrap its OpenGL context in a  <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyGLWrapper.html">CyGLWrapper</a> and pass it to the root of your <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyDrawRecord.html">CyDrawRecord</a>s.</li>
+    </ul>
+<p>There are a number of advantages in this approach. First, it separates your scene graph from the rendering logic. When you're building your scene, you can focus on what sorts of operations you want to do - clear the background, draw an object with a particular material, apply a filter - without having to worry about the OpenGL details of how this is done. In fact, because this stage does not use OpenGL at all, you can build your entire scene in a separate thread. This gives you quite a bit of flexibility.</p>
+<p>Another advantage is the potential to eliminate redundant operations in a consecutive set of records. By organizing your records into <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyDrawGroup.html">CyDrawGroup</a>s, the group has the opportunity to examine its members and sort them into an order that minimizes the load on the graphics card. <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyDrawGroup.html">CyDrawGroup</a>s also provide convenient ways to apply special processing to a group of <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyDrawRecord.html">CyDrawRecord</a>s, such as drawing them to an offscreen buffer for filter effects.</p>
+<h3>The Stack</h3>
+<p>To ease the process of building a <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyDrawRecord.html">CyDrawRecord</a> tree, a stack is provided. <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyDrawStack.html">CyDrawStack</a> keeps track of information that would typically be influenced by ancestor nodes in a tree. It also organizes your records into trees via its <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyDrawStack.html#pushFrame(com.kitfox.coyote.renderer.CyDrawGroup)">pushFrame</a>(), <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyDrawStack.html#popFrame()">popFrame</a>() and <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyDrawStack.html#addDrawRecord(com.kitfox.coyote.renderer.CyDrawRecord)">addDrawRecord</a>() methods.</p>
+<p>When you first create a <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyDrawStack.html">CyDrawStack</a>, you must provide it with a <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyDrawGroup.html">CyDrawGroup</a>. This will be the root group that will be the ancestor of all records submitted to the stack. As you build your scene, you will typically push and pop this stack to create subgroups of records in your scene.</p>
+<p>The <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyDrawStack.html">CyDrawStack</a> lets you keep track of information that is typically influenced by ancestors. It keeps track of the current model, view and projection matrices, as well as opacity information. As you push and pop subgroups, this information is saved and restored.</p>
+<p>Every time you call <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyDrawStack.html#addDrawRecord(com.kitfox.coyote.renderer.CyDrawRecord)">addDrawRecord</a>(), the record you provide will be appended to the group on the top of the stack. </p>
+<p>You can add a new group to the stack by calling <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyDrawStack.html#pushFrame(com.kitfox.coyote.renderer.CyDrawGroup)">pushFrame</a>(). When you do this, the group you submit is first added as a child to the current top level group. Then the entire stack frame is pushed - a copy is made of all the tracking information, and the group you just pushed becomes the new top level group. When you're finished working in this subgroup, call  <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyDrawStack.html#popFrame()">popFrame</a>() and the state of the stack will be restored.</p>
+<p>In addition to managing your model/view matrix, pushing groups is the preferred way to apply filters. Each <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyDrawGroup.html">CyDrawGroup</a> can optionally have a <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyFilter.html">CyFilter</a> assigned to it. When this happens, the group is rendered to an offscreen texture and then processed with the filter.</p>
+<h3>The Context Manager</h3>
+<p>Many OpenGL operations require you to allocate memory on your graphics card. Textures, shaders, vertex buffer objects and framebuffers all require you to allocate ids from OpenGL, reserve space, and finally delete it when you're done. This can be particularly challenging in a language like Java where objects are tracked by reference and garbage collected when no longer in use.</p>
+<p>The <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyGLContext.html">CyGLContext</a> exists to keep track of all this for you. Coyote has serveral classes which encapsulate the different id-tracked openGL objects. Whenever you need to draw with one of these objects, it will first check with the <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyGLContext.html">CyGLContext</a> to make sure it has been allocated and will update its data if it is out of date. The <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyGLContext.html">CyGLContext</a> will also track all objects which allocated data from it with weak references and will automatically schedule them for deletion when they are no longer in use. (You have to actually call <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyGLContext.html#processActions(com.kitfox.coyote.renderer.CyGLWrapper)">CyGLContext.processActions</a>() to flush this queue and reclaim the resources. The best time to do this is immediately before redrawing your surface).</p>
+<p>There should be one <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyGLContext.html">CyGLContext</a> per physical rendering surface. If the surface is ever lost, the <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyGLContext.html">CyGLContext</a> should be replaced with a new instance. (In JOGL this happens every time the GLEventListener.init() method is called. More stable APIs will likely only need to create one when the surface is first created).</p>
+<h3>Materials</h3>
+<p>While it is possible to create a <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyDrawRecord.html">CyDrawRecord</a> that does anything, the most interesting ones are based around materials. The extreme flexibility provided by programable shaders allows very interesting effects to be achieved.</p>
+<p>Creating a good material is rarely as simple as writing a single shader with a few parameters. Complex effects may require enabling rendering states, rendering multiple passes, writing to offscreen buffers, data preprocessing or even checking the current time! To be as flexible as possible, the <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyDrawRecord.html">CyDrawRecord</a> is given as much leeway as it needs to configure and execute the rendering of each material.</p>
+<p>From the engine's point of view, the <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyDrawRecord.html">CyDrawRecord</a> does all the work. However, the way things are implemented in Coyote, the <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyDrawRecord.html">CyDrawRecord</a>  will actually pass off the rendering responsibilty to a subclass of <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyMaterial.html">CyMaterial</a>. The material class will read the state of the <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyDrawRecord.html">CyDrawRecord</a> and execute the apporpriate OpenGL commands to render the record's mesh.</p>
+<p>The <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyMaterial.html">CyMaterial</a> class itself doesn't do much - it exists to be a base class for all materials and to provide some useful functions most materials will need (such as loading shader programs).</p>
+<h3>Meshes</h3>
+<p>A critical component in a Coyote scene is the mesh. These provide the raw triangles, lines or points the materials draw upon. In Coyote, a mesh is provided via a <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyVertexBuffer.html">CyVertexBuffer</a>.</p>
+<p>The <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyVertexBuffer.html">CyVertexBuffer</a> will wrap a <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyVertexBufferDataProvider.html">CyVertexBufferDataProvider</a> which provides the actual data. The <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyVertexBuffer.html">CyVertexBuffer</a> focuses on managing the OpenGL state which allows the <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyVertexBufferDataProvider.html">CyVertexBufferDataProvider</a> to focus on simply delivering data. Since most vertex data sets will be large and will often be loaded from a storage device, this also allows the <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyVertexBufferDataProvider.html">CyVertexBufferDataProvider</a> to cache its data with a SoftReference so that it can be dropped from memory when it's no longer needed.</p>
+<p>A <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyVertexBufferDataProvider.html">CyVertexBufferDataProvider</a> should be prepared to serve its data whenever asked (for example, after a drawing surface has been lost and has to be rebuilt). Also, if its data ever changes, the <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyVertexBufferDataProvider.html">CyVertexBufferDataProvider</a> can call fireArrayDataChanged() or fireElementDataChanged() to indicate that it should be rebuilt.</p>
+<p>The <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyVertexBufferDataProvider.html">CyVertexBufferDataProvider</a> provides two arrays of data. One is a FloatBuffer returned by <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyVertexBufferDataProvider.html#getVertexData()">getVertexData</a>() that contains a non-interleaved list of the vertex data elements. The other is a ShortBuffer returned by <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyVertexBufferDataProvider.html#getIndexData()">getIndexData</a>() that contains indices into the first array. The setup of these two arrays is similar to what you would expect to pass a call to OpenGL's <a href="http://www.khronos.org/opengles/sdk/docs/man/xhtml/glDrawElements.xml">glDrawElements</a> with non-interleaved data.</p>
+<p>The vertex data array can contain multiple types of information (eg, position, texture coordinate and normal data). To communicate with a material, you will need to call <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyVertexBufferDataProvider.html#setVertexArrayInfo(com.kitfox.coyote.renderer.CyVertexArrayKey,%20long,%20int)">setVertexArrayInfo</a>() to indicate the type and location of the various stretches of data in the vertex data array. </p>
+<p>The first parameter to  <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyVertexBufferDataProvider.html#setVertexArrayInfo(com.kitfox.coyote.renderer.CyVertexArrayKey,%20long,%20int)">setVertexArrayInfo</a>() is <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyVertexArrayKey.html">CyVertexArrayKey</a>. This is simply an instance of a class used to indicate a type of vertex data. Some common <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyVertexArrayKey.html">CyVertexArrayKey</a>s are defined in the <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyMaterial.html">CyMaterial</a> class. Next you need to specify the offset in bytes from the start of the array to place where the data begins. Finally, you must specify a size, which indicates the number of components per pixel. (Eg, a 2D texture coord would put a 2 here. A 3D normal would put 3).</p>
+<p><a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyVertexArrayKey.html">CyVertexArrayKey</a> is an object that represents a flavor of array vertex data. It acts much the same way that a member of a Java enum does - in fact, the <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyVertexArrayKey.html">CyVertexArrayKey</a>s could have been an enum, except that it needs to be possible for third parties to be able to create their own instances of <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyVertexArrayKey.html">CyVertexArrayKey</a>. (Eg, a scientist may want to create a special key flavor to indicate temperature data for their own custom material)</p>
+<h3>Textures</h3>
+<p>Textures are provided via <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyTextureSource.html">CyTextureSource</a>. This interface allows a lot of flexibility, allowing both framebuffers and managed textures to be used as textures. Coyote provides two implementations for this: <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyTextureImage.html">CyTextureImage</a> and <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyFramebufferTexture.html">CyFramebufferTexture</a>.</p>
+<p>The <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyTextureImage.html">CyTextureImage</a> class allows you to build textures from your own data sets. It works much the same way that <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyVertexBuffer.html">CyVertexBuffer</a> does. It receives its data from a <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyTextureDataProvider.html">CyTextureDataProvider</a>. It can be either a regular 2D texture or a cube map.</p>
+<p><a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyFramebufferTexture.html">CyFramebufferTexture</a> is an offscreen texture that can be both read from and written to. You need to specify its format and dimensions when it is constructed. You can write to it by first <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyFramebufferTexture.html#bind(com.kitfox.coyote.renderer.CyGLContext,%20com.kitfox.coyote.renderer.CyGLWrapper)">bind</a>()ing it as a drawing surface. You can render from it by passing it to any material that accepts images as parameters.</p>
+<h3>Adapting CoyoteGraphics to your preferred environment</h3>
+    <p>CoyoteGraphics is 100% pure Java and interacts with your rendering environment of choice via interfaces. The CoyoteGraphics main project includes a JOGL implementation and an Android implementaion is available in the supplimentary CoyoteGraphicsAndroid project.</p>
+    <p>Coyote graphics is designed to run in an OpenGL ES 2.0 environment. To adapt it to your environment of choice, you need to create a wrapper for your OpenGL context that implements <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyGLWrapper.html">CyGLWrapper</a>. You can then pass an instance of this to each <a href="http://raven.java.net/docs/api/CoyoteGraphics/com/kitfox/coyote/renderer/CyDrawRecord.html">CyDrawRecord</a> during your drawing surface's refresh phase.</p>
+    <p>To see this in action, take a look at the source code of JOGL and Android implementations:</p>
+    <ul>
+      <li><a href="http://java.net/projects/raven/sources/svn/content/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/renderer/jogl/CoyotePanel.java">CoyotePanel.java</a> (JOGL rendering surface)</li>
+      <li><a href="http://java.net/projects/raven/sources/svn/content/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/renderer/jogl/CyGLWrapperJOGL.java">CyGLWrapperJOGL.java</a> (JOGL OpenGL wrapper)</li>
+      <li><a href="http://java.net/projects/raven/sources/svn/content/trunk/proj/CoyoteGraphicsAndroid/src/com/kitfox/coyote/renderer/android/CyGLView.java">CyGLView.java</a> (Android rendering surface)</li>
+      <li><a href="http://java.net/projects/raven/sources/svn/content/trunk/proj/CoyoteGraphicsAndroid/src/com/kitfox/coyote/renderer/android/CyGLWrapperAndroid.java">CyGLWrapperAndroid.java</a> (Android OpenGL wrapper)</li>
+    </ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <!-- InstanceEndEditable -->
+<!-- end #mainContent --></div>
+	<!-- This clearing element should immediately follow the #mainContent div in order to force the #container div to contain all child floats --><br class="clearfloat" />
+  <div id="footer">
+    <p>Copyright Mark McKay 2012</p>
+    <p>Return to <a href="../index.html">Raven Studio</a></p>
+  <!-- end #footer --></div>
+<!-- end #container --></div>
+</body>
+<!-- InstanceEnd --></html>

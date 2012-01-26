@@ -43,7 +43,7 @@ public class CyGLView extends GLSurfaceView
     {
         super(context);
 
-        System.out.println("+++ View created!");
+//        System.out.println("+++ View created!");
         setEGLContextClientVersion(2);
 
         setRenderer(new Renderer());
@@ -65,7 +65,7 @@ public class CyGLView extends GLSurfaceView
         @Override
         public void onSurfaceCreated(GL10 unused, EGLConfig config)
         {
-            System.out.println("+++ Surf Created!");
+            //System.out.println("+++ Surf Created!");
             glContext = new CyGLContext();
         }
 
@@ -78,8 +78,8 @@ public class CyGLView extends GLSurfaceView
         @Override
         public void onDrawFrame(GL10 unused)
         {
-            System.out.println("+++ Draw Frame!");
-            /*
+            //System.out.println("+++ Draw Frame!");
+            
             CyGLWrapperAndroid gl = new CyGLWrapperAndroid();
 
             glContext.processActions(gl);
@@ -96,8 +96,6 @@ public class CyGLView extends GLSurfaceView
 
             drawGroup.render(glContext, gl, null);
             drawGroup.dispose();
-            * 
-            */
         }
     }
 }

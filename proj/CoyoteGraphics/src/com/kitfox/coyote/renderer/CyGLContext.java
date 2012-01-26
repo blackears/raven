@@ -26,10 +26,18 @@ import java.util.HashMap;
 import java.util.WeakHashMap;
 
 /**
- * The GLContext is meant to contain information specific to a specific
- * instance of a GL context.  For example, most materials will need to
- * allocate textures, shaders, framebuffers and such, and this information
- * will have  to be allocated independently in each context.
+ * The CyGLContext tracks information specific to a physical GL context.
+ * Mostly this means generating and tracking OpenGL IDs for the
+ * various textures, vertex buffers and other memory consuming
+ * operations.
+ * 
+ * <p>CyGLContext also contains a queue messages can be posted to that 
+ * will be executed and flushed whenever processActions() is
+ * called.  This is typically done at the start of a screen refresh.</p>
+ * 
+ * <p>Most of the functions CyGLContext provides are intended for use
+ * by wrapper objects, so users will typically not need to interact
+ * with this object directly.</p>
  *
  * @author kitfox
  */
@@ -48,11 +56,22 @@ public class CyGLContext
     ReferenceQueue refQueue = new ReferenceQueue();
     HashMap<Reference, CyGLAction> dieMap = new HashMap<Reference, CyGLAction>();
 
+    /**
+     * Post an action to be processed when processActions() is
+     * next called.
+     * 
+     * @param action 
+     */
     public void postAction(CyGLAction action)
     {
         actionList.add(action);
     }
 
+    /**
+     * Process all queued actions and flush the queue.
+     * 
+     * @param wrapper 
+     */
     public void processActions(CyGLWrapper wrapper)
     {
         //For all dead references, trigger their actions
@@ -81,21 +100,45 @@ public class CyGLContext
         }
     }
 
+    /**
+     * Clear the action queue
+     */
     public void clearActions()
     {
         actionList.clear();
     }
 
+    /**
+     * Fetch the material of the given class.
+     * 
+     * @param <T>
+     * @param cls
+     * @return 
+     */
     public <T extends CyMaterial> T getMaterial(Class<T> cls)
     {
         return (T)materialMap.get(cls);
     }
 
+    /**
+     * Materials are treated like services.  Keep track of this
+     * material instance so that it can be shared by all drawing
+     * actions that require the same type of material.
+     * 
+     * @param mat 
+     */
     public void registerMaterial(CyMaterial mat)
     {
         materialMap.put(mat.getClass(), mat);
     }
 
+    /**
+     * Allocate and track a vertex buffer for the given source.
+     * 
+     * @param source
+     * @param gl
+     * @return 
+     */
     public VertexBufferInfo getVertexBufferInfo(CyVertexBuffer source, CyGLWrapper gl)
     {
         VertexBufferInfo info = vboMap.get(source);
@@ -109,6 +152,14 @@ public class CyGLContext
         return info;
     }
 
+
+    /**
+     * Allocate and track a texture buffer for the given source.
+     * 
+     * @param source
+     * @param gl
+     * @return 
+     */
     public TextureBufferInfo getTextureBufferInfo(Object source, CyGLWrapper gl)
     {
         TextureBufferInfo info = texMap.get(source);
@@ -122,6 +173,14 @@ public class CyGLContext
         return info;
     }
 
+
+    /**
+     * Allocate and track a frame buffer for the given source.
+     * 
+     * @param source
+     * @param gl
+     * @return 
+     */
     public FramebufferInfo getFramebufferInfo(Object source, CyGLWrapper gl)
     {
         FramebufferInfo info = fboMap.get(source);
@@ -135,6 +194,14 @@ public class CyGLContext
         return info;
     }
 
+
+    /**
+     * Allocate and track a render buffer for the given source.
+     * 
+     * @param source
+     * @param gl
+     * @return 
+     */
     public RenderbufferInfo getRenderbufferInfo(Object source, CyGLWrapper gl)
     {
         RenderbufferInfo info = rboMap.get(source);
@@ -375,7 +442,5 @@ public class CyGLContext
             ibuf.put(1, eleId);
             gl.glDeleteBuffers(2, ibuf);
         }
-
-        
     }
 }
