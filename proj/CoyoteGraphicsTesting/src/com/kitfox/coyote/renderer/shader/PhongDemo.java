@@ -98,7 +98,7 @@ public class PhongDemo implements CyRendererListener
             CyMaterialPhongDrawRecord rec = 
                     CyMaterialPhongDrawRecordFactory.inst().allocRecord();
             
-            rec.setColor(CyColor4f.RED);
+            rec.setColorDiffuse(CyColor4f.RED);
             rec.setLightPos(new CyVector3d(3, 3, -2));
             rec.setMvMatrix(rend.getModelViewXform());
             rec.setMvpMatrix(rend.getModelViewProjXform());

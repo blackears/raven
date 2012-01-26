@@ -52,6 +52,7 @@ public class CyMaterialPhong extends CyMaterial
     private int u_colorDif;
     private int u_colorSpec;
     private int u_lightPos;
+    private int u_shininess;
     private int u_mvpMatrix;
     private int u_mvMatrix;
     private int u_mvITMatrix;
@@ -87,6 +88,7 @@ public class CyMaterialPhong extends CyMaterial
             u_colorDif = gl.glGetUniformLocation(programId, "u_colorDif");
             u_colorSpec = gl.glGetUniformLocation(programId, "u_colorSpec");
             u_lightPos = gl.glGetUniformLocation(programId, "u_lightPos");
+            u_shininess = gl.glGetUniformLocation(programId, "u_shininess");
             u_mvpMatrix = gl.glGetUniformLocation(programId, "u_mvpMatrix");
             u_mvMatrix = gl.glGetUniformLocation(programId, "u_mvMatrix");
             u_mvITMatrix = gl.glGetUniformLocation(programId, "u_mvITMatrix");
@@ -112,8 +114,10 @@ public class CyMaterialPhong extends CyMaterial
 
     protected void render(CyGLContext ctx, CyGLWrapper gl, CyMaterialPhongDrawRecord rec)
     {
-        CyColor4f color = rec.getColor();
-        float alpha = color.a * rec.getOpacity();
+        CyColor4f colorDif = rec.getColorDiffuse();
+        CyColor4f colorSpec = rec.getColorSpecular();
+        
+        float alpha = colorDif.a * rec.getOpacity();
 
 //        if (alpha >= 1)
 //        {
@@ -147,7 +151,9 @@ public class CyMaterialPhong extends CyMaterial
         mvMatrix.toBufferc(matrixBuf);
         gl.glUniformMatrix4fv(u_mvITMatrix, 1, false, matrixBuf);
 
-        gl.glUniform4f(u_colorDif, color.r, color.g, color.b, alpha);
+        gl.glUniform4f(u_colorDif, colorDif.r, colorDif.g, colorDif.b, alpha);
+        gl.glUniform4f(u_colorSpec, colorSpec.r, colorSpec.g, colorSpec.b, alpha);
+        gl.glUniform1f(u_shininess, rec.getShininess());
         
         {
             CyVector3d lightPos = rec.getLightPos();

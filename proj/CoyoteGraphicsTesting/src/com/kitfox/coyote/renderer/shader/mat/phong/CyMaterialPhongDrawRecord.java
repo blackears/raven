@@ -30,9 +30,11 @@ import com.kitfox.coyote.renderer.CyGLWrapper;
  */
 public class CyMaterialPhongDrawRecord extends CyDrawRecordMaterialSimple
 {
-    protected CyColor4f color = CyColor4f.WHITE;
+    protected CyColor4f colorDiffuse = CyColor4f.GREY;
+    protected CyColor4f colorSpecular = CyColor4f.GREY;
     private CyVector3d lightPos = new CyVector3d();
     protected CyMatrix4d mvMatrix = CyMatrix4d.createIdentity();
+    float shininess = 20;
 
     @Override
     public void render(CyGLContext ctx, CyGLWrapper gl, CyDrawRecord prevRecord)
@@ -74,17 +76,49 @@ public class CyMaterialPhongDrawRecord extends CyDrawRecordMaterialSimple
     /**
      * @return the color
      */
-    public CyColor4f getColor()
+    public CyColor4f getColorDiffuse()
     {
-        return color;
+        return colorDiffuse;
     }
 
     /**
      * @param color the color to set
      */
-    public void setColor(CyColor4f color)
+    public void setColorDiffuse(CyColor4f colorDiffuse)
     {
-        this.color = color;
+        this.colorDiffuse = colorDiffuse;
+    }
+
+    /**
+     * @return the color
+     */
+    public CyColor4f getColorSpecular()
+    {
+        return colorSpecular;
+    }
+
+    /**
+     * @param color the color to set
+     */
+    public void setColorSpecular(CyColor4f colorSpecular)
+    {
+        this.colorSpecular = colorSpecular;
+    }
+
+    /**
+     * @return the color
+     */
+    public float getShininess()
+    {
+        return shininess;
+    }
+
+    /**
+     * @param color the color to set
+     */
+    public void setShininess(float shininess)
+    {
+        this.shininess = shininess;
     }
 
     /**

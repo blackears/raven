@@ -30,6 +30,11 @@ public class CyColor4f
     public static final CyColor4f MAGENTA = new CyColor4f(1, 0, 1, 1);
     public static final CyColor4f CYAN = new CyColor4f(0, 1, 1, 1);
     public static final CyColor4f WHITE = new CyColor4f(1, 1, 1, 1);
+
+    public static final CyColor4f GREY = new CyColor4f(.5f, .5f, .5f, 1);
+    public static final CyColor4f LIGHT_GREY = new CyColor4f(.75f, .75f, .75f, 1);
+    public static final CyColor4f DARK_GREY = new CyColor4f(.25f, .25f, .25f, 1);
+    
     public static final CyColor4f TRANSPARENT = new CyColor4f(0, 0, 0, 0);
 
     public final float r;

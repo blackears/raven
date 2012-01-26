@@ -1,5 +1,3 @@
-#version 140
-
 uniform mat4 u_mvpMatrix;
 uniform mat4 u_mvMatrix;
 uniform mat4 u_mvITMatrix;
