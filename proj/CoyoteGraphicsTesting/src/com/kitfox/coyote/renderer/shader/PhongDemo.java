@@ -76,7 +76,8 @@ public class PhongDemo implements CyRendererListener
         {
             CyMatrix4d xform = new CyMatrix4d();
             
-            xform.gluPerspective(60, 1, .1, 1000);
+            double aspect = rend.getDeviceWidth() / (double)rend.getDeviceHeight();
+            xform.gluPerspective(60, aspect, .1, 1000);
             rend.setProjXform(xform);
             
             double cosPitch = Math.cos(Math.toRadians(pitch));

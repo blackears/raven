@@ -16,12 +16,31 @@
    version="1.1"
    inkscape:version="0.47 r22583"
    sodipodi:docname="toolIcons.svg"
-   inkscape:export-filename="C:\dev\kitfox.com\gameTools4\proj\RavenUtil\art\icons\tools\text.png"
+   inkscape:export-filename="C:\dev\java.net\raven\trunk\proj\RavenEditor\art\icons\tools\colorSampler.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90"
    style="display:inline">
   <defs
      id="defs2870">
+    <linearGradient
+       id="linearGradient3695">
+      <stop
+         id="stop3697"
+         offset="0"
+         style="stop-color:#566ba5;stop-opacity:1;" />
+      <stop
+         style="stop-color:#566ca6;stop-opacity:1;"
+         offset="0.37202382"
+         id="stop3703" />
+      <stop
+         style="stop-color:#ebeaf4;stop-opacity:1;"
+         offset="0.5"
+         id="stop3701" />
+      <stop
+         id="stop3699"
+         offset="1"
+         style="stop-color:#ebeaf4;stop-opacity:1;" />
+    </linearGradient>
     <linearGradient
        id="linearGradient3676">
       <stop
@@ -159,6 +178,15 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3695"
+       id="linearGradient3693"
+       x1="12.080145"
+       y1="24.415922"
+       x2="17.5"
+       y2="8.3977842"
+       gradientUnits="userSpaceOnUse" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -168,10 +196,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="21.077215"
-     inkscape:cx="13.224774"
+     inkscape:cx="6.0606396"
      inkscape:cy="11.710874"
      inkscape:document-units="px"
-     inkscape:current-layer="layer11"
+     inkscape:current-layer="layer12"
      showgrid="true"
      inkscape:snap-global="true"
      inkscape:window-width="1117"
@@ -180,7 +208,8 @@
      inkscape:window-y="36"
      inkscape:window-maximized="0"
      showguides="true"
-     inkscape:guide-bbox="true">
+     inkscape:guide-bbox="true"
+     inkscape:snap-grids="false">
     <inkscape:grid
        type="xygrid"
        id="grid4014"
@@ -518,7 +547,8 @@
   <g
      inkscape:groupmode="layer"
      id="layer11"
-     inkscape:label="Text">
+     inkscape:label="Text"
+     style="display:none">
     <text
        xml:space="preserve"
        style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
@@ -556,5 +586,33 @@
        d="M 19.87232,19.952555 23,20"
        id="path2900-4"
        sodipodi:nodetypes="cc" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer12"
+     inkscape:label="Color Sample">
+    <path
+       style="fill:url(#linearGradient3693);stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
+       d="M 14,7 3,18 3,20 2,21 3,22 4,21 6,21 17,10 14,7 z"
+       id="path2903"
+       sodipodi:nodetypes="ccccccccc" />
+    <path
+       style="fill:#6a5935;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
+       d="m 12,5 7,7 3,-3 -7,-7 -3,3 z"
+       id="path2905"
+       sodipodi:nodetypes="ccccc" />
+    <path
+       style="fill:#6a5935;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
+       d="M 16.985166,4.0258241 19,2 c 2.280083,-0.5467674 3.741337,-0.104116 3,3 L 20,7 16.985166,4.0258241 z"
+       id="path2909"
+       sodipodi:nodetypes="ccccc" />
+    <path
+       style="fill:#f4f1ea;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
+       d="M 13.379377,4.9747161 14.945048,3.4564889 17.791724,5.923608 15.087382,4.8798269 13.379377,4.9747161 z"
+       id="path3683" />
+    <path
+       style="fill:#f4f1ea;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
+       d="m 18.123837,3.9783795 1.186115,-1.3284488 2.182451,0.3321122 -1.850339,0.6167798 -1.518227,0.3795568 z"
+       id="path3685" />
   </g>
 </svg>

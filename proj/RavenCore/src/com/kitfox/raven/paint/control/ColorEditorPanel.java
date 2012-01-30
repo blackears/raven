@@ -25,15 +25,18 @@ package com.kitfox.raven.paint.control;
 import com.kitfox.coyote.math.MathColorUtil;
 import com.kitfox.raven.paint.common.RavenPaintColor;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import javax.swing.JRootPane;
+import javax.swing.SwingUtilities;
 
 /**
  *
  * @author kitfox
  */
 public class ColorEditorPanel extends javax.swing.JPanel
-        implements PropertyChangeListener
+        implements PropertyChangeListener, ColorSamplerOverlayListener
 {
     private static final long serialVersionUID = 0;
 
@@ -58,10 +61,15 @@ public class ColorEditorPanel extends javax.swing.JPanel
     float[] rgb = new float[3];
     boolean updating = true;
 
+    //Used for sampling from the screen
+    ColorSamplerOverlayWindow overlayPanel = new ColorSamplerOverlayWindow();
+    
     /** Creates new form ColorStyleEditorPanel */
     public ColorEditorPanel()
     {
         initComponents();
+        
+        overlayPanel.addColorSamplerOverlayListener(this);
 
         model.addPropertyChangeListener(this);
 
@@ -184,6 +192,7 @@ public class ColorEditorPanel extends javax.swing.JPanel
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         spinner_v = new javax.swing.JSpinner();
+        bn_sampler = new javax.swing.JToggleButton();
         panel_alpha = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         spinner_a = new javax.swing.JSpinner();
@@ -250,6 +259,14 @@ public class ColorEditorPanel extends javax.swing.JPanel
             }
         });
 
+        bn_sampler.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/controls/colorSampler.png"))); // NOI18N
+        bn_sampler.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        bn_sampler.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bn_samplerActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panel_textLayout = new javax.swing.GroupLayout(panel_text);
         panel_text.setLayout(panel_textLayout);
         panel_textLayout.setHorizontalGroup(
@@ -268,7 +285,8 @@ public class ColorEditorPanel extends javax.swing.JPanel
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(spinner_b, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(spinner_b, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(panel_textLayout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -280,20 +298,24 @@ public class ColorEditorPanel extends javax.swing.JPanel
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(spinner_v, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(203, Short.MAX_VALUE))
+                        .addComponent(spinner_v, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 185, Short.MAX_VALUE)
+                        .addComponent(bn_sampler)))
+                .addContainerGap())
         );
         panel_textLayout.setVerticalGroup(
             panel_textLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel_textLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panel_textLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(spinner_h, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5)
-                    .addComponent(spinner_s, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6)
-                    .addComponent(spinner_v, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(panel_textLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(bn_sampler)
+                    .addGroup(panel_textLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel4)
+                        .addComponent(spinner_h, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel5)
+                        .addComponent(spinner_s, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel6)
+                        .addComponent(spinner_v, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(panel_textLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
@@ -328,7 +350,7 @@ public class ColorEditorPanel extends javax.swing.JPanel
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(spinner_a, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panel_alphaSlider, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE))
+                .addComponent(panel_alphaSlider, javax.swing.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE))
         );
         panel_alphaLayout.setVerticalGroup(
             panel_alphaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -380,9 +402,37 @@ public class ColorEditorPanel extends javax.swing.JPanel
     {//GEN-HEADEREND:event_spinner_aStateChanged
         setTextRGB();
     }//GEN-LAST:event_spinner_aStateChanged
+    
+    private void bn_samplerActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bn_samplerActionPerformed
+    {//GEN-HEADEREND:event_bn_samplerActionPerformed
 
+        JRootPane rootPane = SwingUtilities.getRootPane(this);
+
+        overlayPanel.setVisible(true);
+        overlayPanel.requestFocus();
+
+        rootPane.revalidate();
+        rootPane.repaint();
+
+    }//GEN-LAST:event_bn_samplerActionPerformed
+
+
+    @Override
+    public void colorPicked(ColorSamplerOverlayEvent evt)
+    {
+        Color col = evt.getColor();
+        
+        if (col != null)
+        {
+            setColor(new RavenPaintColor(col));
+        }
+        
+        overlayPanel.setVisible(false);
+        bn_sampler.setSelected(false);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JToggleButton bn_sampler;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

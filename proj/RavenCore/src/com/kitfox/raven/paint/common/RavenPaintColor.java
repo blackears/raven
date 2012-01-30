@@ -74,6 +74,14 @@ public class RavenPaintColor implements RavenPaint
         this(color.r, color.g, color.b, color.a);
     }
     
+    public RavenPaintColor(Color color)
+    {
+        this(color.getRed() / 255f, 
+                color.getGreen() / 255f, 
+                color.getBlue() / 255f, 
+                color.getAlpha() / 255f);
+    }
+    
     public static RavenPaintColor create(String text)
     {
         try

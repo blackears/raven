@@ -248,82 +248,6 @@ public class CoyotePanel extends GLJPanel
 
     }
 
-//    @Override
-//    public void display(GLAutoDrawable drawable)
-//    {
-////        debugBuffer(drawable.getGL());
-//
-////        drawable.getContext().
-//        GLWrapperJOGL gl = new GLWrapperJOGL(drawable, surfaceInstance);
-//        GLActionQueue.inst().processActions(gl);
-//
-//        ++curPass;
-//        long curTime = System.currentTimeMillis();
-//        System.err.println(curTime);
-
-//        if (tileBuffer == null)
-//        {
-//            colorBuf = new CyFramebufferTexture(Attachment.GL_COLOR_ATTACHMENT0,
-//                    TexTarget.GL_TEXTURE_2D, InternalFormatTex.GL_RGBA,
-//                    DataType.GL_UNSIGNED_BYTE, tileWidth, tileHeight);
-//            depthBuf = new CyFramebufferRenderbuffer(Attachment.GL_DEPTH_ATTACHMENT,
-//                    tileWidth, tileHeight, InternalFormatBuf.GL_DEPTH_COMPONENT16);
-//            tileBuffer = new CyFramebuffer(tileWidth, tileHeight, colorBuf, depthBuf);
-//        }
-//
-//        int numCol = (viewportWidth - 1) / tileWidth + 1;
-//        int numRow = (viewportHeight - 1) / tileHeight + 1;
-//
-//        CyMatrix4d tileXform = CyMatrix4d.createIdentity();
-//
-//        double tileSpanW = 2 * tileWidth / (double)viewportWidth;
-//        double tileSpanH = 2 * tileHeight / (double)viewportHeight;
-//        tileXform.m00 = tileSpanW;
-//        tileXform.m11 = tileSpanH;
-//
-////numRow = numCol = 1;
-//
-//        for (int j = 0; j < numRow; ++j)
-//        {
-//            int y = j * tileHeight;
-//
-//            tileXform.m13 = tileSpanH * j - 1;
-//
-//            for (int i = 0; i < numCol; ++i)
-//            {
-//                int x = i * tileWidth;
-//
-//                tileXform.m03 = tileSpanW * i - 1;
-//
-//                //Write everything to tile
-//                CyDrawStack rend = new CyDrawStack(gl,
-//                        tileCache,
-//                        viewportWidth, viewportHeight,
-//                        new CyRectangle2i(x, y, tileWidth, tileHeight),
-//                        tileBuffer,
-//                        startTime, curTime, curPass);
-//
-//                for (int k = 0; k < listeners.size(); ++k)
-//                {
-//                    listeners.get(k).render(rend);
-//                }
-//
-//                //Blit tile to screen
-//                gl.glBindFramebuffer(0);
-//                gl.glViewport(0, 0, viewportWidth, viewportHeight);
-////colorBuf.bind(gl);
-////colorBuf.dumpTexture(gl, new File("buffer.png"), "png");
-//                tileMaterial.setTexture(colorBuf);
-//
-//                tileMaterial.setMvpMatrix(tileXform);
-//                tileMaterial.bind(gl);
-//                tileMaterial.draw(gl, CyVertexBufferDataSquare.inst().getBuffer());
-//
-////                int m = 9;
-//            }
-//        }
-//    }
-
     @Override
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height)
     {
@@ -334,27 +258,12 @@ public class CoyotePanel extends GLJPanel
         gl.glViewport(x, y, width, height);
 
         setTileSize(deviceWidth, deviceHeight);
-
-        //Calc projection matrix
-//        Matrix4f proj = new Matrix4f();
-//        if (height <= 0)
-//        {
-//            height = 1;
-//        }
-//        final float scrnAspect = (float)width / height;
-//        MatrixUtil.frustumPersp(proj, fovY, scrnAspect * aspect, nearPlane, farPlane);
-//        cube.setViewerProjMtx(proj);
     }
 
     @Override
     public void dispose(GLAutoDrawable glad)
     {
     }
-
-//    @Override
-//    public void displayChanged(GLAutoDrawable drawable, boolean modeChanged, boolean deviceChanged)
-//    {
-//    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
