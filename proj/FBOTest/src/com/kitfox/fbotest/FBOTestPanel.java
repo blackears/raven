@@ -21,6 +21,7 @@
  */
 package com.kitfox.fbotest;
 
+import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.util.Animator;
 import java.awt.Color;
 import java.awt.Font;
@@ -29,7 +30,6 @@ import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
@@ -41,7 +41,10 @@ import javax.media.opengl.awt.GLJPanel;
  *
  * @author kitfox
  */
-public class FBOTestPanel extends GLJPanel
+public class FBOTestPanel 
+    extends GLJPanel
+//    extends GLCanvas
+//    extends GLWindow
         implements GLEventListener
 {
     Animator animator;
@@ -73,16 +76,20 @@ public class FBOTestPanel extends GLJPanel
 
     private ByteBuffer allocateByte(int size)
     {
-        ByteBuffer bb = ByteBuffer.allocateDirect(size);
-        bb.order(ByteOrder.nativeOrder());
-        return bb;
+        return Buffers.newDirectByteBuffer(size);
+        
+//        ByteBuffer bb = ByteBuffer.allocateDirect(size);
+//        bb.order(ByteOrder.nativeOrder());
+//        return bb;
     }
 
     public static IntBuffer allocateInt(int size)
     {
-        ByteBuffer bb = ByteBuffer.allocateDirect(size * 4);
-        bb.order(ByteOrder.nativeOrder());
-        return bb.asIntBuffer();
+        return Buffers.newDirectIntBuffer(size);
+        
+//        ByteBuffer bb = ByteBuffer.allocateDirect(size * 4);
+//        bb.order(ByteOrder.nativeOrder());
+//        return bb.asIntBuffer();
     }
 
     private int createTileTex(GL2 gl, String text)

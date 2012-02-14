@@ -71,4 +71,37 @@
     nbproject/build-impl.xml file. 
 
     -->
+
+    <target name="run-cmd">
+        <java classname="com.kitfox.fbotest.FBOTestFrame"
+            fork="true"
+            failonerror="true">
+            <arg value="-ea"/>
+            <arg value="-Xms32m"/>
+            <arg value="-Xmx1024m"/>
+            <arg value="-Djava.library.path=../../lib/jogamp/lib"/>
+            
+            <classpath>
+                <pathelement location="dist/FBOTest.jar"/>
+                <fileset dir="../../lib/jogamp/jar">
+                    <include name="**/*.jar"/>
+                </fileset>
+
+                
+                <!--
+                <pathelement path="../../lib/jogamp/jar"/>
+                <pathelement path="../../jogamp/jar"/>
+                <pathelement location="C:\dev\java.net\raven\trunk\lib\jogamp\jar\gluegen-rt-natives-windows-i586.jar"/>
+                <fileset dir="../../lib">
+                    <include name="jogamp/jar/**/*.jar"/>
+                    <include name="jogamp/jar/gluegen-rt.jar"/>
+                    <include name="jogamp/jar/jogl.all.jar"/>
+                </fileset>
+                -->
+            </classpath>
+            
+               
+        </java>
+    </target>
+    
 </project>
