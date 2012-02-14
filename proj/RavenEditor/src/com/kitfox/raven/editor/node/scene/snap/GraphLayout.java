@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  */
 public class GraphLayout
 {
-    //Radius for picking/snapping to points
+    //Radius for picking/snapping to points in screen pixels
     public static final String PROP_RADIUS_PICK = "radiusPick";
     private final int radiusPick;
     public static final String PROP_RADIUS_DISPLAY = "radiusDisplay";
@@ -50,7 +50,7 @@ public class GraphLayout
 
     public GraphLayout()
     {
-        this(6, 4);
+        this(4, 3);
     }
 
     public static GraphLayout create(String text)

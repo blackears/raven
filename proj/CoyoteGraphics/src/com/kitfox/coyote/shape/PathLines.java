@@ -40,11 +40,6 @@ public class PathLines extends PathConsumer
     @Override
     public void beginSubpath(double x0, double y0)
     {
-        if (drawingPath)
-        {
-            closeSubpath();
-        }
-
         bx = mx = x0;
         by = my = y0;
         drawingPath = true;

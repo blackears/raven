@@ -242,10 +242,12 @@ public class ToolPenMesh extends ToolPenDelegate
         
         //Build graph
         CyPath2d path = new CyPath2d();
+        ArrayList<CyVector2d> verts = new ArrayList<CyVector2d>();
         
         Step firstStep = plan.get(0);
         path.moveTo(firstStep.point.x, firstStep.point.y);
-                
+        verts.add(new CyVector2d(firstStep.point.x, firstStep.point.y));
+
         for (int i = 0; i < plan.size() - 1; ++i)
         {
             Step s0 = plan.get(i);
@@ -256,6 +258,7 @@ public class ToolPenMesh extends ToolPenDelegate
             if (curve instanceof BezierLine2i)
             {
                 path.lineTo(curve.getEndX(), curve.getEndY());
+                verts.add(new CyVector2d(curve.getEndX(), curve.getEndY()));
             }
             else
             {
@@ -263,6 +266,7 @@ public class ToolPenMesh extends ToolPenDelegate
                 path.cubicTo(c.getAx1(), c.getAy1(), 
                         c.getAx2(), c.getAy2(), 
                         c.getAx3(), c.getAy3());
+                verts.add(new CyVector2d(c.getAx3(), c.getAy3()));
             }
         }
         
@@ -274,37 +278,101 @@ public class ToolPenMesh extends ToolPenDelegate
             path.lineTo(pt.x, pt.y);
         }
         
-        ShapeLinesProvider prov = new ShapeLinesProvider(path);
-        CyVertexBuffer lineMesh = new CyVertexBuffer(prov);
+        //Add tangents
+        {
+            Step lastStep = plan.get(plan.size() - 1);
+            Step exitStep = lastStep;
+            
+            //Dragging through current line
+            if (mouseStart != null)
+            {
+                //Tangent of dragging
+                CyVector2d p = lastStep.point;
+                CyVector2d t = lastStep.tangent;
+                path.moveTo(p.x - t.x, p.y - t.y);
+                path.lineTo(p.x + t.x, p.y + t.y);
+
+                verts.add(new CyVector2d(p.x - t.x, p.y - t.y));
+                verts.add(new CyVector2d(p.x + t.x, p.y + t.y));
+                
+                exitStep = plan.size() >= 2 ? plan.get(plan.size() - 2) : null;
+            }
+
+            if (exitStep != null && exitStep.tangent != null)
+            {
+                //End tangent of prev point
+                CyVector2d p = exitStep.point;
+                CyVector2d t = exitStep.tangent;
+                path.moveTo(p.x, p.y);
+                path.lineTo(p.x + t.x, p.y + t.y);
+
+                verts.add(new CyVector2d(p.x + t.x, p.y + t.y));
+            }
+        }
         
-        GraphLayout graphLayout = getGraphLayout();
-        CyMatrix4d l2d = getLocalToDevice(null);
-        l2d.scale(1 / 100.0, 1 / 100.0, 1);
         
         CyDrawStack stack = ctx.getDrawStack();
         stack.pushFrame(null);
+
+        GraphLayout graphLayout = getGraphLayout();
         
-        CyMaterialColorDrawRecord rec =
-                CyMaterialColorDrawRecordFactory.inst().allocRecord();
+        //Draw curves and handles
+        {
+            ShapeLinesProvider prov = new ShapeLinesProvider(path);
+            CyVertexBuffer lineMesh = new CyVertexBuffer(prov);
+
+            CyMatrix4d l2d = getLocalToDevice(null);
+            l2d.scale(1 / 100.0, 1 / 100.0, 1);
+
+            CyMaterialColorDrawRecord rec =
+                    CyMaterialColorDrawRecordFactory.inst().allocRecord();
+
+            CyMatrix4d l2w = getLocalToWorld(null);
+            stack.setModelXform(l2w);
+
+            CyMatrix4d mvp = stack.getModelViewProjXform();
+            mvp.scale(1 / 100.0, 1 / 100.0, 1);
+
+            rec.setMesh(lineMesh);
+            rec.setColor(graphLayout.getEdgeColor());
+            rec.setOpacity(1);
+    //mvp.scale(10, 100, 1);
+            rec.setMvpMatrix(mvp);
+
+    //rec.setMesh(CyVertexBufferDataSquare.inst().getBuffer());
+    //l2d.setIdentity();
+    //l2d.scale(10, 100, 1);
+    //rec.setMvpMatrix(l2d);
+
+            stack.addDrawRecord(rec);
+        }
         
-        CyMatrix4d l2w = getLocalToWorld(null);
-        stack.setModelXform(l2w);
-        
-        CyMatrix4d mvp = stack.getModelViewProjXform();
-        mvp.scale(1 / 100.0, 1 / 100.0, 1);
-        
-        rec.setMesh(lineMesh);
-        rec.setColor(graphLayout.getEdgeColor());
-        rec.setOpacity(1);
-//mvp.scale(10, 100, 1);
-        rec.setMvpMatrix(mvp);
-        
-//rec.setMesh(CyVertexBufferDataSquare.inst().getBuffer());
-//l2d.setIdentity();
-//l2d.scale(10, 100, 1);
-//rec.setMvpMatrix(l2d);
-        
-        stack.addDrawRecord(rec);
+        //Draw verts
+        {
+            for (CyVector2d v: verts)
+            {
+                CyMaterialColorDrawRecord rec =
+                        CyMaterialColorDrawRecordFactory.inst().allocRecord();
+
+                CyMatrix4d l2w = getLocalToWorld(null);
+                stack.setModelXform(l2w);
+
+                CyMatrix4d mvp = stack.getModelViewProjXform();
+                mvp.scale(1 / 100.0, 1 / 100.0, 1);
+                
+                mvp.translate(v.x, v.y, 0);
+                int ptRad = graphLayout.getPointRadiusDisplay() * 200;
+                mvp.scale(ptRad, ptRad, ptRad);
+                mvp.translate(-.5, -.5, 0);
+
+                rec.setMesh(CyVertexBufferDataSquare.inst().getBuffer());
+                rec.setColor(graphLayout.getEdgeColor());
+                rec.setOpacity(1);
+                rec.setMvpMatrix(mvp);
+
+                stack.addDrawRecord(rec);                
+            }
+        }
         
         stack.popFrame();
     }
