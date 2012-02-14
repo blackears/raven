@@ -55,6 +55,11 @@ public class CyColor4f
         this((float)r, (float)g, (float)b, (float)a);
     }
 
+    public static CyColor4f randomRGB()
+    {
+        return new CyColor4f(Math.random(), Math.random(), Math.random(), 1);
+    }
+
     public void getColor(float[] color)
     {
         if (color == null)
@@ -68,6 +73,29 @@ public class CyColor4f
         color[3] = a;
     }
 
+    public static CyColor4f parseWebColor(String text)
+    {
+        if (text.charAt(0) == '#')
+        {
+            text = text.substring(1);
+        }
+        
+        int rr = Integer.parseInt(text.substring(0, 2), 16);
+        int gg = Integer.parseInt(text.substring(2, 4), 16);
+        int bb = Integer.parseInt(text.substring(4, 6), 16);
+        
+        return new CyColor4f(rr / 255f, gg / 255f, bb / 255f, 1);
+    }
+    
+    public String toWebColor()
+    {
+        int rr = (int)((r + .5f) * 255);
+        int gg = (int)((g + .5f) * 255);
+        int bb = (int)((b + .5f) * 255);
+
+        return String.format("#%02x%02x%02x", rr, gg, bb);
+    }
+    
     @Override
     public boolean equals(Object obj)
     {

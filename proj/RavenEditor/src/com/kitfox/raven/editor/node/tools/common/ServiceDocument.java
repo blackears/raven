@@ -18,6 +18,8 @@ package com.kitfox.raven.editor.node.tools.common;
 
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.shape.CyRectangle2d;
+import com.kitfox.raven.editor.node.scene.snap.GraphLayout;
+import com.kitfox.raven.editor.node.scene.snap.Snapping;
 import com.kitfox.raven.util.Intersection;
 import com.kitfox.raven.editor.node.tools.ToolService;
 import com.kitfox.raven.util.Selection;
@@ -40,4 +42,7 @@ public interface ServiceDocument extends ToolService
 
     public Selection<SelectionRecord> getSelection();
 
+    public Snapping getSnapping();
+    
+    public GraphLayout getGraphLayout();
 }

@@ -77,7 +77,8 @@
             </dname>
         </genkey>                
     </target>
-
+    
+<!--
     <target name="build-ws-jpen" depends="build-webpages,-gen-key">
         <mkdir dir="build/apps/jpen"/>
         
@@ -130,8 +131,115 @@
         <copy file="../../lib/jmf/lib/jmf.jar" todir="build/apps/jmf"/>
         <signjar jar="build/apps/jmf/jmf.jar" alias="${key.user}" storepass="${key.password}" keystore="${key.location}"/>
     </target>
+    -->
     
+    <target name="build-libs" 
+        depends="build-webpages,-gen-key,-build-libs-jogamp,-build-libs-jpen,-build-libs-jmf">
+       
+        <signjar
+            alias="${key.user}" 
+            storepass="${key.password}" 
+            keystore="${key.location}">
+                <fileset dir="build/apps/bin/lib">
+                    <include name="**/*.jar"/>
+                </fileset>
+        </signjar>
+        
+    </target>
+        
+    <target name="-build-libs-jogamp">
+        <mkdir dir="build/apps/bin/lib/jpen"/>
+        <copy todir="build/apps/bin/lib/jpen">
+            <fileset dir="../../lib/jogamp/jar">
+                <include name="gluegen-rt.jar"/>
+                <include name="jogl.all.jar"/>
+                <include name="joal.jar"/>
+            </fileset>
+        </copy>
+
+        <jar destfile="build/apps/bin/lib/jpen/jpen-win32.jar" update="true">
+            <fileset dir="../../lib/jpen">
+                <include name="jpen-2-3.dll"/>
+            </fileset>
+        </jar>
+        
+        <jar destfile="build/apps/bin/lib/jpen/jpen-win64.jar" update="true">
+            <fileset dir="../../lib/jpen">
+                <include name="jpen-2-3-64.dll"/>
+            </fileset>
+        </jar>
+        
+        <jar destfile="build/apps/bin/lib/jpen/jpen-linux32.jar" update="true">
+            <fileset dir="../../lib/jpen">
+                <include name="libjpen-2-4.so"/>
+            </fileset>
+        </jar>
+        
+        <jar destfile="build/apps/bin/lib/jpen/jpen-linux64.jar" update="true">
+            <fileset dir="../../lib/jpen">
+                <include name="libjpen-2-4-x86_64.so"/>
+            </fileset>
+        </jar>
+        
+        <jar destfile="build/apps/bin/lib/jpen/jpen-osx.jar" update="true">
+            <fileset dir="../../lib/jpen">
+                <include name="libjpen-2-3.jnilib"/>
+            </fileset>
+        </jar>
+    </target>
+        
+    <target name="-build-libs-jpen">
+        <mkdir dir="build/apps/bin/lib/jpen"/>
+        <copy todir="build/apps/bin/lib/jpen">
+            <fileset dir="../../lib/jpen">
+                <include name="**/*.jar"/>
+                <exclude name="**/.svn"/>
+            </fileset>
+        </copy>
+
+        <jar destfile="build/apps/bin/lib/jpen/jpen-win32.jar" update="true">
+            <fileset dir="../../lib/jpen">
+                <include name="jpen-2-3.dll"/>
+            </fileset>
+        </jar>
+        
+        <jar destfile="build/apps/bin/lib/jpen/jpen-win64.jar" update="true">
+            <fileset dir="../../lib/jpen">
+                <include name="jpen-2-3-64.dll"/>
+            </fileset>
+        </jar>
+        
+        <jar destfile="build/apps/bin/lib/jpen/jpen-linux32.jar" update="true">
+            <fileset dir="../../lib/jpen">
+                <include name="libjpen-2-4.so"/>
+            </fileset>
+        </jar>
+        
+        <jar destfile="build/apps/bin/lib/jpen/jpen-linux64.jar" update="true">
+            <fileset dir="../../lib/jpen">
+                <include name="libjpen-2-4-x86_64.so"/>
+            </fileset>
+        </jar>
+        
+        <jar destfile="build/apps/bin/lib/jpen/jpen-osx.jar" update="true">
+            <fileset dir="../../lib/jpen">
+                <include name="libjpen-2-3.jnilib"/>
+            </fileset>
+        </jar>
+    </target>
+        
+    <target name="-build-libs-jmf">
+        <mkdir dir="build/apps/bin/lib/jmf"/>
+        <copy todir="build/apps/bin/lib/jmf">
+            <fileset dir="../../lib/jmf/lib">
+                <include name="**/*.jar"/>
+                <exclude name="**/.svn"/>
+            </fileset>
+        </copy>
+    </target>
+
     <target name="build-apps" depends="build-webpages,-gen-key">
+
         <mkdir dir="build/apps/bin"/>
 
         <copy todir="build/apps/bin" flatten="true">
@@ -148,7 +256,7 @@
             </manifest>
         </jar>
 
-        <signjar jar="${app.jar}" 
+        <signjar
             alias="${key.user}" 
             storepass="${key.password}" 
             keystore="${key.location}">

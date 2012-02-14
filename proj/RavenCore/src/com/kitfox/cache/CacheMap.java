@@ -16,7 +16,7 @@
 
 package com.kitfox.cache;
 
-import com.kitfox.coyote.math.CyGradientStops.Cycle;
+import com.kitfox.coyote.math.CyColor4f;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -223,6 +223,21 @@ public class CacheMap extends CacheIdentifier
                 : ((CacheBoolean)ele).getValue();
     }
 
+    public CyColor4f getCyColor4f(String name, CyColor4f defaultValue)
+    {
+        CacheElement ele = get(name);
+        if (ele == null || !(ele instanceof CacheList))
+        {
+            return null;
+        }
+        CacheList list = (CacheList)ele;
+        float r = list.getFloat(0, 0);
+        float g = list.getFloat(1, 0);
+        float b = list.getFloat(2, 0);
+        float a = list.getFloat(3, 0);
+        return new CyColor4f(r, g, b, a);
+    }
+
     public void put(String name, boolean value)
     {
         put(name, new CacheBoolean(value));
@@ -261,6 +276,16 @@ public class CacheMap extends CacheIdentifier
     public void put(String name, String value)
     {
         put(name, new CacheString(value));
+    }
+
+    public void put(String name, CyColor4f value)
+    {
+        CacheList list = new CacheList();
+        list.add(value.r);
+        list.add(value.g);
+        list.add(value.b);
+        list.add(value.a);
+        put(name, list);
     }
 
 }

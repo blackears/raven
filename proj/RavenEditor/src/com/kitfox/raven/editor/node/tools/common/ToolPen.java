@@ -54,6 +54,7 @@ import java.util.logging.Logger;
  *
  * @author kitfox
  */
+@Deprecated
 public class ToolPen extends ToolDisplay
 {
     static final int flatnessSquared = 10000;
@@ -461,7 +462,7 @@ public class ToolPen extends ToolDisplay
 
     //---------------------------------------
 
-    @ServiceInst(service=ToolProvider.class)
+//    @ServiceInst(service=ToolProvider.class)
     static public class Provider extends ToolProvider<ToolPen>
     {
         public Provider()

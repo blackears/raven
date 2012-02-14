@@ -18,6 +18,7 @@ package com.kitfox.coyote.shape.bezier;
 
 import static java.lang.Math.*;
 import com.kitfox.coyote.math.CyVector2d;
+import com.kitfox.coyote.math.Math2DUtil;
 import com.kitfox.coyote.shape.PathConsumer;
 
 /**
@@ -302,6 +303,18 @@ public class BezierLine2i extends BezierCurve2i
     public BezierLine2i setEndPoints(int x0, int y0, int x1, int y1)
     {
         return new BezierLine2i(x0, y0, x1, y1);
+    }
+
+    @Override
+    public PickPoint getClosestPoint(double x, double y)
+    {
+        //Calculate analytically
+        double t = Math2DUtil.fractionAlongRay(x, y, ax0, ay0, ax1 - ax0, ay1 - ay0);
+        t = Math2DUtil.clamp(t, 0, 1);
+
+        double rx = Math2DUtil.lerp(ax0, ax1, t);
+        double ry = Math2DUtil.lerp(ay0, ay1, t);
+        return new PickPoint(rx, ry, t, Math2DUtil.dist(rx, ry, x, y));
     }
 
     @Override

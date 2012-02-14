@@ -4,7 +4,14 @@
  */
 package com.kitfox.raven.core.test;
 
+import com.kitfox.raven.paint.common.RavenPaintColor;
 import com.kitfox.raven.paint.control.ColorEditorPanel;
+import java.awt.BorderLayout;
+import java.awt.Dialog;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import javax.swing.JDialog;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -32,12 +39,47 @@ public class ColorPickerMainFrame extends javax.swing.JFrame
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
+
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        mi_popup = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jMenu1.setText("File");
+
+        mi_popup.setText("Popup");
+        mi_popup.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                mi_popupActionPerformed(evt);
+            }
+        });
+        jMenu1.add(mi_popup);
+
+        jMenuBar1.add(jMenu1);
+
+        setJMenuBar(jMenuBar1);
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void mi_popupActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_mi_popupActionPerformed
+    {//GEN-HEADEREND:event_mi_popupActionPerformed
+        final ColorEditorPanel colorEditor = new ColorEditorPanel();
+
+        colorEditor.setColor(panel.getColor());
+        JDialog dlg = new JDialog(SwingUtilities.getWindowAncestor(this), "Edit Color", Dialog.ModalityType.APPLICATION_MODAL);
+        dlg.getContentPane().add(colorEditor, BorderLayout.CENTER);
+        dlg.pack();
+        dlg.setVisible(true);
+
+        dlg.dispose();
+        
+    }//GEN-LAST:event_mi_popupActionPerformed
 
     /**
      * @param args the command line arguments
@@ -91,5 +133,8 @@ public class ColorPickerMainFrame extends javax.swing.JFrame
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem mi_popup;
     // End of variables declaration//GEN-END:variables
 }

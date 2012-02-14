@@ -22,12 +22,13 @@ public class ColorSamplerOverlayWindow extends javax.swing.JWindow
     /**
      * Creates new form ColorSamplerOverlayPanel
      */
-    public ColorSamplerOverlayWindow()
+    public ColorSamplerOverlayWindow(Window win)
     {
+        super(win);
+        
         initComponents();
-//        setOpaque(false);
-        Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds(0, 0, size.width, size.height);
+
+        fillScreen();
     }
 
     public void addColorSamplerOverlayListener(ColorSamplerOverlayListener l)
@@ -48,11 +49,19 @@ public class ColorSamplerOverlayWindow extends javax.swing.JWindow
             listeners.get(i).colorPicked(evt);
         }
     }
+    
+    public void fillScreen()
+    {
+        Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
+        setBounds(0, 0, size.width, size.height);
+    }
 
     @Override
     public void paint(Graphics g)
     {
         //Do nothing
+//        g.setColor(Color.RED);
+//        g.fillOval(0, 0, getWidth(), getHeight());
     }
     
     /**

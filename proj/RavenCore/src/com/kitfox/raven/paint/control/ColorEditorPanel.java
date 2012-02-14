@@ -26,9 +26,9 @@ import com.kitfox.coyote.math.MathColorUtil;
 import com.kitfox.raven.paint.common.RavenPaintColor;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Window;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import javax.swing.JRootPane;
 import javax.swing.SwingUtilities;
 
 /**
@@ -62,14 +62,14 @@ public class ColorEditorPanel extends javax.swing.JPanel
     boolean updating = true;
 
     //Used for sampling from the screen
-    ColorSamplerOverlayWindow overlayPanel = new ColorSamplerOverlayWindow();
+//    ColorSamplerOverlayWindow overlayPanel = new ColorSamplerOverlayWindow();
     
     /** Creates new form ColorStyleEditorPanel */
     public ColorEditorPanel()
     {
         initComponents();
         
-        overlayPanel.addColorSamplerOverlayListener(this);
+//        overlayPanel.addColorSamplerOverlayListener(this);
 
         model.addPropertyChangeListener(this);
 
@@ -406,13 +406,19 @@ public class ColorEditorPanel extends javax.swing.JPanel
     private void bn_samplerActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bn_samplerActionPerformed
     {//GEN-HEADEREND:event_bn_samplerActionPerformed
 
-        JRootPane rootPane = SwingUtilities.getRootPane(this);
+        //JRootPane rootPane = SwingUtilities.getRootPane(this);
 
+        Window win = SwingUtilities.getWindowAncestor(this);
+        ColorSamplerOverlayWindow overlayPanel = new ColorSamplerOverlayWindow(win);
+
+        overlayPanel.addColorSamplerOverlayListener(this);
+        overlayPanel.fillScreen();
         overlayPanel.setVisible(true);
+        overlayPanel.toFront();
         overlayPanel.requestFocus();
 
-        rootPane.revalidate();
-        rootPane.repaint();
+//        rootPane.revalidate();
+//        rootPane.repaint();
 
     }//GEN-LAST:event_bn_samplerActionPerformed
 
@@ -427,7 +433,9 @@ public class ColorEditorPanel extends javax.swing.JPanel
             setColor(new RavenPaintColor(col));
         }
         
+        ColorSamplerOverlayWindow overlayPanel = evt.getSource();
         overlayPanel.setVisible(false);
+        overlayPanel.dispose();
         bn_sampler.setSelected(false);
     }
 

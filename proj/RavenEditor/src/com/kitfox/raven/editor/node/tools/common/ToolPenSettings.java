@@ -30,6 +30,7 @@ import com.kitfox.raven.editor.stroke.RavenStrokeEditor;
  *
  * @author kitfox
  */
+@Deprecated
 public class ToolPenSettings extends javax.swing.JPanel
 {
     RavenEditor editor;

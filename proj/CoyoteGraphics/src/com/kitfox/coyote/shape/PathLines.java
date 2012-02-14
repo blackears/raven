@@ -98,10 +98,7 @@ public class PathLines extends PathConsumer
     @Override
     public void endPath()
     {
-        if (drawingPath)
-        {
-            closeSubpath();
-        }
+        drawingPath = false;
     }
 
     /**

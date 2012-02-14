@@ -25,14 +25,34 @@ import java.util.HashMap;
 public class NetworkDataEdge extends NetworkData
 {
     //Edge data
-    HashMap<Class<? extends NetworkDataType>, Object> dataMap 
-            = new HashMap<Class<? extends NetworkDataType>, Object>();
+    HashMap<Class<? extends NetworkDataType>, Object> dataMapEdge;
     
     //Left side of edge
-    HashMap<Class<? extends NetworkDataType>, Object> dataMapLeft 
-            = new HashMap<Class<? extends NetworkDataType>, Object>();
+    HashMap<Class<? extends NetworkDataType>, Object> dataMapLeft;
 
     //Right side of edge
-    HashMap<Class<? extends NetworkDataType>, Object> dataMapRight 
-            = new HashMap<Class<? extends NetworkDataType>, Object>();
+    HashMap<Class<? extends NetworkDataType>, Object> dataMapRight;
+
+    public NetworkDataEdge(HashMap<Class<? extends NetworkDataType>, Object> dataMapEdge, HashMap<Class<? extends NetworkDataType>, Object> dataMapLeft, HashMap<Class<? extends NetworkDataType>, Object> dataMapRight)
+    {
+        this.dataMapEdge = dataMapEdge;
+        this.dataMapLeft = dataMapLeft;
+        this.dataMapRight = dataMapRight;
+    }
+    
+    public NetworkDataEdge()
+    {
+        this(new HashMap<Class<? extends NetworkDataType>, Object>(),
+                new HashMap<Class<? extends NetworkDataType>, Object>(),
+                new HashMap<Class<? extends NetworkDataType>, Object>());
+    }
+    
+    public NetworkDataEdge(NetworkDataEdge data)
+    {
+        this(
+                new HashMap<Class<? extends NetworkDataType>, Object>(data.dataMapEdge),
+                new HashMap<Class<? extends NetworkDataType>, Object>(data.dataMapLeft),
+                new HashMap<Class<? extends NetworkDataType>, Object>(data.dataMapRight));
+    }
+
 }

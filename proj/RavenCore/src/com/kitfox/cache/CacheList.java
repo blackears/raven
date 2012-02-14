@@ -39,6 +39,14 @@ public class CacheList extends CacheIdentifier
         }
     }
 
+    public CacheList(float... data)
+    {
+        for (int i = 0; i < data.length; ++i)
+        {
+            cache.add(new CacheFloat(data[i]));
+        }
+    }
+
     public CacheList(String name, CacheElement... data)
     {
         super(name);

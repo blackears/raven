@@ -94,7 +94,10 @@ public class RavenToolManager
 
                 ToolProvider prov =
                         ToolProviderIndex.inst().getProvider(prop.getClazz());
-                prov.loadPreferences(props);
+                if (prov != null)
+                {
+                    prov.loadPreferences(props);
+                }
             }
         }
     }

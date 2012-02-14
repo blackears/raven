@@ -56,6 +56,7 @@ import java.util.HashMap;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenNodeMesh extends RavenNodeXformable
         implements ServiceBezierNetwork
 {

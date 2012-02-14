@@ -24,7 +24,21 @@ import java.util.HashMap;
  */
 public class NetworkDataVertex extends NetworkData
 {
-    HashMap<Class<? extends NetworkDataType>, Object> dataMap 
-            = new HashMap<Class<? extends NetworkDataType>, Object>();
+    HashMap<Class<? extends NetworkDataType>, Object> dataMap;
+
+    public NetworkDataVertex(HashMap<Class<? extends NetworkDataType>, Object> dataMap)
+    {
+        this.dataMap = dataMap;
+    }
+
+    public NetworkDataVertex()
+    {
+        this(new HashMap<Class<? extends NetworkDataType>, Object>());
+    }
+
+    public NetworkDataVertex(NetworkDataVertex data)
+    {
+        this(new HashMap<Class<? extends NetworkDataType>, Object>(data.dataMap));
+    }
     
 }

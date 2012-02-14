@@ -170,6 +170,10 @@ public class CutGraph<EdgeData>
     public CutLoop buildFaces()
     {
         ArrayList<CutSegHalf> segList = getSegmentsRadial();
+        if (segList.isEmpty())
+        {
+            return null;
+        }
         
         //Build loops
         ArrayList<CutLoop> loopList = new ArrayList<CutLoop>();

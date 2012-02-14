@@ -54,6 +54,7 @@ import java.util.Iterator;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenNodeMeshStatic extends RavenNodeXformable
 {
     public static final String PROP_PATH = "path";

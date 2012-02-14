@@ -48,4 +48,17 @@ public final class NetworkDataTypeIndex extends ServiceIndex<NetworkDataType>
         }
         return null;
     }
+
+    public <T> NetworkDataType<T> getByData(String clsName)
+    {
+        for (int i = 0; i < serviceList.size(); ++i)
+        {
+            NetworkDataType prov = serviceList.get(i);
+            if (prov.getDataType().getName().equals(clsName))
+            {
+                return prov;
+            }
+        }
+        return null;
+    }
 }

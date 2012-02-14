@@ -71,14 +71,17 @@ public class Math2DUtil
     }
 
     /**
-     * @param px
-     * @param py
-     * @param qx
-     * @param qy
-     * @param rx
-     * @param ry
-     * @return Distance of projection of P onto the ray, expressed as a
-     * scalar to the ray.
+     * Calculate the scalar such that when the length of the ray is
+     * multiplied by this scalar, it will provide the closest point
+     * along the ray to the reference point.
+     * 
+     * @param px X coord of reference point
+     * @param py Y coord of reference point
+     * @param qx X coord of ray origin
+     * @param qy Y coord of ray origin
+     * @param rx X length of ray
+     * @param ry Y length of ray
+     * @return Scalar of ray
      */
     public static double fractionAlongRay(double px, double py,
             double qx, double qy, double rx, double ry)

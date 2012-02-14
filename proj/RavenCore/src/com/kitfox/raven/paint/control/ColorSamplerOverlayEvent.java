@@ -15,10 +15,16 @@ public class ColorSamplerOverlayEvent extends EventObject
 {
     private final Color color;
 
-    public ColorSamplerOverlayEvent(Object source, Color color)
+    public ColorSamplerOverlayEvent(ColorSamplerOverlayWindow source, Color color)
     {
         super(source);
         this.color = color;
+    }
+
+    @Override
+    public ColorSamplerOverlayWindow getSource()
+    {
+        return (ColorSamplerOverlayWindow)super.getSource();
     }
 
     /**

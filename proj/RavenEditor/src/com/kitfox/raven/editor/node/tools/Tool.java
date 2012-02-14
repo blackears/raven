@@ -16,6 +16,7 @@
 
 package com.kitfox.raven.editor.node.tools;
 
+import com.kitfox.raven.editor.node.scene.RenderContext;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -36,6 +37,11 @@ abstract public class Tool
     protected Tool(ToolUser user)
     {
         this.user = user;
+    }
+    
+    public ToolUser getUser()
+    {
+        return user;
     }
 
     public void addToolListener(ToolListener l)
@@ -109,6 +115,11 @@ abstract public class Tool
     {
     }
 
+    public void render(RenderContext ctx)
+    {
+    }
+    
+    @Deprecated
     public void paint(Graphics2D g)
     {
     }

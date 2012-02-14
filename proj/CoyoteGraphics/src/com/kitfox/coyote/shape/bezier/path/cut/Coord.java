@@ -16,6 +16,9 @@
 
 package com.kitfox.coyote.shape.bezier.path.cut;
 
+import com.kitfox.coyote.math.CyVector2d;
+import com.kitfox.coyote.math.Math2DUtil;
+
 
 /**
  *
@@ -83,6 +86,16 @@ public class Coord implements Comparable<Coord>
     public String toString()
     {
         return "(" + x + ", " + y + ")";
+    }
+
+    public double getDistSquared(double x, double y)
+    {
+        return Math2DUtil.distSquared(this.x, this.y, x, y);
+    }
+
+    public double getDistSquared(CyVector2d pt)
+    {
+        return getDistSquared(pt.x, pt.y);
     }
     
     

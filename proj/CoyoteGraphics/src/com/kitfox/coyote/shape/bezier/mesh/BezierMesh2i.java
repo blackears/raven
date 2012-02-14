@@ -16,8 +16,10 @@
 
 package com.kitfox.coyote.shape.bezier.mesh;
 
+import com.kitfox.coyote.math.Math2DUtil;
 import com.kitfox.coyote.shape.bezier.BezierCubic2i;
 import com.kitfox.coyote.shape.bezier.BezierCurve2i;
+import com.kitfox.coyote.shape.bezier.PickPoint;
 import com.kitfox.coyote.shape.bezier.cutgraph.CurveCutter2i;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import java.util.ArrayList;
@@ -37,13 +39,77 @@ public class BezierMesh2i<VertexData, EdgeData>
     {
         this.flatnessSquared = flatnessSquared;
     }
+
+//    public BezierMesh2i(BezierMesh2i<VertexData, EdgeData> mesh)
+//    {
+//        super(mesh.flatnessSquared);
+//        
+//        for (
+//    }
     
-    private BezierMeshVertex2i getOrCreateVertex(Coord c)
+    public double getFlatnessSquared()
+    {
+        return flatnessSquared;
+    }
+    
+    public ArrayList<Coord> getCoords()
+    {
+        return new ArrayList<Coord>(vertMap.keySet());
+    }
+
+    public BezierMeshVertex2i<VertexData> getClosestVertex(double x, double y)
+    {
+        double bestDist2 = Double.POSITIVE_INFINITY;
+        BezierMeshVertex2i bestVert = null;
+        for (BezierMeshVertex2i v: vertMap.values())
+        {
+            Coord c = v.getCoord();
+            double dist2 = Math2DUtil.distSquared(c.x, c.y, x, y);
+            if (dist2 <= bestDist2)
+            {
+                bestVert = v;
+                bestDist2 = dist2;
+            }
+        }
+        return bestVert;
+    }
+    
+    public BezierMeshEdge2i<EdgeData> getClosestEdge(double x, double y)
+    {
+        double bestDist2 = Double.POSITIVE_INFINITY;
+        BezierMeshEdge2i bestEdge = null;
+        
+        ArrayList<BezierMeshEdge2i> edges = getEdges();
+        for (BezierMeshEdge2i e: edges)
+        {
+            BezierCurve2i c = e.asCurve();
+            PickPoint pt = c.getClosestPoint(x, y);
+            
+            if (pt.getDistSquared() <= bestDist2)
+            {
+                bestEdge = e;
+                bestDist2 = pt.getDistSquared();
+            }
+        }
+        return bestEdge;
+    }
+    
+    public ArrayList<BezierMeshVertex2i> getVertices()
+    {
+        return new ArrayList<BezierMeshVertex2i>(vertMap.values());
+    }
+    
+    protected VertexData createDefaultVertexData(Coord c)
+    {
+        return null;
+    }
+    
+    protected BezierMeshVertex2i getOrCreateVertex(Coord c)
     {
         BezierMeshVertex2i v = vertMap.get(c);
         if (v == null)
         {
-            v = new BezierMeshVertex2i(c, null);
+            v = new BezierMeshVertex2i(c, createDefaultVertexData(c));
             vertMap.put(c, v);
         }
         return v;
@@ -113,7 +179,7 @@ public class BezierMesh2i<VertexData, EdgeData>
         return retEdges;
     }
     
-    private BezierMeshEdge2i addEdgeDirect(BezierCurve2i curve, Object data)
+    protected BezierMeshEdge2i addEdgeDirect(BezierCurve2i curve, Object data)
     {
         Coord c0 = new Coord(curve.getStartX(), curve.getStartY());
         Coord c1 = new Coord(curve.getEndX(), curve.getEndY());

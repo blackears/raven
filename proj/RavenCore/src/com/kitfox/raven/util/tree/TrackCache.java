@@ -23,6 +23,7 @@ import java.util.HashMap;
  *
  * @author kitfox
  */
+@Deprecated
 public class TrackCache<T>
 {
     HashMap<Integer, SoftReference<PropertyData<T>>> cache

@@ -17,18 +17,20 @@
 package com.kitfox.raven.editor.node.tools.common;
 
 import com.kitfox.coyote.math.CyMatrix4d;
+import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.action.ActionManager;
 import com.kitfox.raven.editor.node.scene.RavenNodeXformable;
+import com.kitfox.raven.editor.node.scene.snap.Snapping;
 import com.kitfox.raven.editor.node.tools.ToolDraggable;
 import com.kitfox.raven.editor.node.tools.ToolUser;
 import com.kitfox.raven.util.Selection;
+import com.kitfox.raven.util.cursor.CursorProvider;
+import com.kitfox.raven.util.cursor.CursorProviderIndex;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.SelectionRecord;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Shape;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
@@ -50,6 +52,7 @@ abstract public class ToolDisplay extends ToolDraggable
         super(user);
     }
 
+    @Deprecated
     protected AffineTransform getWorldToDeviceTransform(AffineTransform xform)
     {
         if (xform == null)
@@ -68,6 +71,7 @@ abstract public class ToolDisplay extends ToolDraggable
         return xform;
     }
 
+    @Deprecated
     protected CyMatrix4d getWorldToDeviceTransform(CyMatrix4d xform)
     {
         if (xform == null)
@@ -84,6 +88,139 @@ abstract public class ToolDisplay extends ToolDraggable
 
         provider.getWorldToDeviceTransform(xform);
         return xform;
+    }
+
+    /**
+     * Transform a point from device space to local space.
+     * 
+     * @param point Point to be transformed
+     * @param snapGrid If true, grid snapping will be used if it is enabled
+     * @return Transformed point
+     */
+    protected CyVector2d xformDev2LocalPoint(CyVector2d point, boolean snapGrid)
+    {
+        CyMatrix4d d2w = getDeviceToWorld(null);
+        point = d2w.transformPoint(point, false);
+        
+        if (snapGrid)
+        {
+            point = snapToGridWorld(point);
+        }
+        
+        CyMatrix4d w2l = getWorldToLocal(null);
+        point = w2l.transformPoint(point, false);
+        
+        return point;
+    }
+    
+    protected CyVector2d snapToGridWorld(CyVector2d v)
+    {
+        ServiceDocument provDoc = user.getToolService(ServiceDocument.class);
+        if (provDoc == null)
+        {
+            return v;
+        }
+        
+        Snapping snap = provDoc.getSnapping();
+        if (snap.isSnapGrid())
+        {
+            //int major = snap.getGridSpacingMajor();
+            int minor = snap.getGridSpacingMinor();
+            int offX = snap.getGridSpacingOffsetX();
+            int offY = snap.getGridSpacingOffsetY();
+            
+            v.sub(offX, offY);
+            v.scale(1.0 / minor);
+            v.x = Math.round(v.x);
+            v.y = Math.round(v.y);
+            v.scale(minor);
+            v.add(offX, offY);
+        }
+        
+        return v;
+    }
+    
+    protected CyMatrix4d getLocalToWorld(CyMatrix4d xform)
+    {
+        if (xform == null)
+        {
+            xform = CyMatrix4d.createIdentity();
+        }
+
+        ServiceTransformable provider = user.getToolService(ServiceTransformable.class);
+        if (provider != null)
+        {
+            provider.getLocalToWorldTransform(xform);
+        }
+        
+        return xform;
+    }
+    
+    protected CyMatrix4d getWorldToLocal(CyMatrix4d xform)
+    {
+        xform = getLocalToWorld(xform);
+        xform.invert();
+        return xform;
+    }
+    
+    protected CyMatrix4d getLocalToDevice(CyMatrix4d xform)
+    {
+        xform = getWorldToDevice(xform);
+        CyMatrix4d l2w = getLocalToWorld(xform);
+        xform.mul(l2w);
+        return xform;
+    }
+
+    protected CyMatrix4d getDeviceToLocal(CyMatrix4d xform)
+    {
+        xform = getLocalToDevice(xform);
+        xform.invert();
+        return xform;
+    }
+    
+    protected CyMatrix4d getWorldToDevice(CyMatrix4d xform)
+    {
+        if (xform == null)
+        {
+            xform = CyMatrix4d.createIdentity();
+        }
+
+        ServiceDeviceCamera provider = user.getToolService(ServiceDeviceCamera.class);
+        if (provider == null)
+        {
+            xform.setIdentity();
+            return xform;
+        }
+
+        provider.getWorldToDeviceTransform(xform);
+        return xform;
+    }
+    
+    protected CyMatrix4d getDeviceToWorld(CyMatrix4d xform)
+    {
+        xform = getWorldToDevice(xform);
+        xform.invert();
+        return xform;
+    }
+    
+    protected void setCursor(Cursor csr)
+    {
+        ServiceDevice provider = user.getToolService(ServiceDevice.class);
+        if (provider == null)
+        {
+            return;
+        }
+
+        Component comp = provider.getComponent();
+        comp.setCursor(csr);
+    }
+    
+    protected void setCursor(Class<? extends CursorProvider> cls)
+    {
+        CursorProviderIndex index = CursorProviderIndex.inst();
+        CursorProvider cp = index.getServiceByClass(cls);
+
+        setCursor(cp.getCursor());
     }
 
     @Override
@@ -138,6 +275,7 @@ abstract public class ToolDisplay extends ToolDraggable
         evt.consume();
     }
 
+    @Deprecated
     public void paintSelectionBounds(Graphics2D g)
     {
         //Draw selection tool

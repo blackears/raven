@@ -333,6 +333,12 @@ public class DisplayCyPanel extends CoyotePanel
         {
             serv.renderEditor(ctx);
         }
+        
+        //Paint tool
+        if (tool != null)
+        {
+            tool.render(ctx);
+        }
     }
 
     @Override

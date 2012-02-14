@@ -17,6 +17,7 @@
 package com.kitfox.coyote.shape.bezier.mesh;
 
 import com.kitfox.coyote.math.Math2DUtil;
+import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import java.util.ArrayList;
 
@@ -70,6 +71,16 @@ public class CutLoop implements Comparable<CutLoop>
         this.maxY = cMaxY;
     }
 
+    public int getNumChildren()
+    {
+        return children.size();
+    }
+    
+    public CutLoop getChild(int index)
+    {
+        return children.get(index);
+    }
+    
     public boolean isCcw()
     {
         return area2 >= 0;
@@ -151,5 +162,58 @@ public class CutLoop implements Comparable<CutLoop>
             }
         }
         return false;
+    }
+    
+    public void appendPath(CyPath2d path)
+    {
+        for (int i = 0; i < segList.size(); ++i)
+        {
+            CutSegHalf seg = segList.get(i);
+            
+            if (i == 0)
+            {
+                path.moveTo(seg.c0.x, seg.c0.y);
+            }
+            path.lineTo(seg.c1.x, seg.c1.y);
+        }
+        path.close();
+    }
+
+    /**
+     * If this loop represents the contour of a face (and not a hole),
+     * creates the equivalent CyPath2d.  Includes any holes.  
+     * Will also recursively 
+     * look for faces contained within the holes.
+     * 
+     * @param faces 
+     */
+    public void buildFaces(PathVisitor faces)
+    {
+        CyPath2d path = new CyPath2d();
+
+        //Create outer loop
+        appendPath(path);
+        
+        //Add holes
+        for (int i = 0; i < children.size(); ++i)
+        {
+            CutLoop child = children.get(i);
+            child.appendPath(path);
+            
+            //Build faces which are contained within the holes
+            for (CutLoop subChild: child.children)
+            {
+                subChild.buildFaces(faces);
+            }
+        }
+        
+        faces.emitFace(this, path);
+    }
+    
+    //-------------------------------
+    
+    public interface PathVisitor
+    {
+        public void emitFace(CutLoop parent, CyPath2d path);
     }
 }

@@ -74,6 +74,18 @@ public class ServiceIndex<T>
         return null;
     }
     
+    public T getServiceByClass(String clsName)
+    {
+        for (T service: serviceList)
+        {
+            if (service.getClass().getName().equals(clsName))
+            {
+                return service;
+            }
+        }
+        return null;
+    }
+    
     /**
      * @return the serviceType
      */

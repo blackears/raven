@@ -25,11 +25,9 @@ package com.kitfox.raven.editor;
 import com.kitfox.raven.util.tree.NodeDocumentProvider;
 import com.kitfox.raven.util.tree.NodeDocumentProviderIndex;
 import com.kitfox.raven.wizard.RavenWizardPage;
-import com.kitfox.raven.wizard.RavenWizardPageIterator;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Properties;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -59,6 +57,11 @@ public class NewDocumentWizardPanel extends JPanel
         ArrayList<NodeDocumentProvider> list = NodeDocumentProviderIndex.inst().getServices();
         Collections.sort(list);
         list_providers.setListData(list.toArray());
+        
+        if (!list.isEmpty())
+        {
+            list_providers.setSelectedIndex(0);
+        }
     }
 
     @Override

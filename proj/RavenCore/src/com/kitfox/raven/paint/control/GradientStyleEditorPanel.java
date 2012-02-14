@@ -54,8 +54,6 @@ public class GradientStyleEditorPanel extends javax.swing.JPanel
 
     CyGradientStops gradientCompiled;
 
-    ColorEditorPanel colorEditor = new ColorEditorPanel();
-
     /** Creates new form GradientStyleCustomEditor */
     public GradientStyleEditorPanel()
     {
@@ -202,6 +200,8 @@ public class GradientStyleEditorPanel extends javax.swing.JPanel
     @Override
     public void editStop(final GradientStop stop)
     {
+        final ColorEditorPanel colorEditor = new ColorEditorPanel();
+
         PropertyChangeListener colorCopier = new PropertyChangeListener()
         {
             @Override

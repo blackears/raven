@@ -24,6 +24,8 @@ import com.kitfox.coyote.renderer.CyRendererUtil2D;
 import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.game.control.color.ColorStyle;
 import com.kitfox.raven.editor.node.renderer.RavenRenderer;
+import com.kitfox.raven.editor.node.scene.snap.GraphLayout;
+import com.kitfox.raven.editor.node.scene.snap.Snapping;
 import com.kitfox.raven.editor.node.scene.wizard.RavenNodeRootWizard;
 import com.kitfox.raven.editor.node.tools.common.ServiceBackground;
 import com.kitfox.raven.editor.node.tools.common.ServiceColors2D;
@@ -123,6 +125,14 @@ public class RavenNodeRoot extends NodeDocument
     public static final String PROP_ZOOM = "zoom";
     public final PropertyWrapperFloat<RavenNodeRoot> zoom =
             new PropertyWrapperFloat(this, PROP_ZOOM, 1);
+
+    public static final String PROP_SNAPPING = "snapping";
+    public final PropertyWrapper<RavenNodeRoot, Snapping> snapping =
+            new PropertyWrapper(this, PROP_SNAPPING, Snapping.class, new Snapping());
+
+    public static final String PROP_GRAPHDISPLAY = "graphDisplay";
+    public final PropertyWrapper<RavenNodeRoot, GraphLayout> graphDisplay =
+            new PropertyWrapper(this, PROP_GRAPHDISPLAY, GraphLayout.class, new GraphLayout());
 
 //    public static final String PROP_CAMERA = "camera";
 //    public final PropertyWrapper<RavenNodeRoot, RavenNodeCamera> camera =
@@ -468,6 +478,18 @@ public class RavenNodeRoot extends NodeDocument
     public RavenPaintColor getBackgroundColor()
     {
         return background.getValue();
+    }
+
+    @Override
+    public Snapping getSnapping()
+    {
+        return snapping.getValue();
+    }
+    
+    @Override
+    public GraphLayout getGraphLayout()
+    {
+        return graphDisplay.getValue();
     }
 
     //-----------------------------------------------

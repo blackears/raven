@@ -17,6 +17,7 @@
 package com.kitfox.coyote.shape.bezier;
 
 import com.kitfox.coyote.math.CyVector2d;
+import com.kitfox.coyote.math.Math2DUtil;
 import com.kitfox.coyote.shape.PathConsumer;
 import java.util.ArrayList;
 
@@ -158,6 +159,75 @@ abstract public class BezierCurve2i
         BezierCurve2i[] curves = split(.5);
         curves[0].flatten(curvatureSquared, segs);
         curves[1].flatten(curvatureSquared, segs);
+    }
+
+    public PickPoint getClosestPoint(double x, double y)
+    {
+        return getClosestPoint(x, y, 0, 1);
+    }
+
+    private PickPoint getClosestPoint(double x, double y, double t0, double t1)
+    {
+        if (getMaxX() == getMinX() && getMaxY() == getMinY())
+        {
+            return new PickPoint(getMinX(), getMinY(), t1 == 1 ? 1 : t0, 
+                    Math2DUtil.distSquared(getMinX(), getMinY(), x, y));
+        }
+
+        BezierCurve2i curves[] = split(.5);
+        BezierCurve2i c0 = curves[0];
+        BezierCurve2i c1 = curves[1];
+        
+        double tMid = (t0 + t1) / 2;
+        
+        double bestDistSq0, worstDistSq0;
+        {
+            double d00 = Math2DUtil.distSquared(x, y, c0.getMinX(), c0.getMinY());
+            double d10 = Math2DUtil.distSquared(x, y, c0.getMaxX(), c0.getMinY());
+            double d01 = Math2DUtil.distSquared(x, y, c0.getMinX(), c0.getMaxY());
+            double d11 = Math2DUtil.distSquared(x, y, c0.getMaxX(), c0.getMaxY());
+            
+            bestDistSq0 = c0.boundingBoxContains(x, y) ? 0 
+                    : Math.min(Math.min(Math.min(d00, d01), d10), d11);
+            worstDistSq0 = Math.max(Math.max(Math.max(d00, d01), d10), d11);
+        }
+        
+        double bestDistSq1, worstDistSq1;
+        {
+            double d00 = Math2DUtil.distSquared(x, y, c1.getMinX(), c1.getMinY());
+            double d10 = Math2DUtil.distSquared(x, y, c1.getMaxX(), c1.getMinY());
+            double d01 = Math2DUtil.distSquared(x, y, c1.getMinX(), c1.getMaxY());
+            double d11 = Math2DUtil.distSquared(x, y, c1.getMaxX(), c1.getMaxY());
+            
+            bestDistSq1 = c1.boundingBoxContains(x, y) ? 0 
+                    : Math.min(Math.min(Math.min(d00, d01), d10), d11);
+            worstDistSq1 = Math.max(Math.max(Math.max(d00, d01), d10), d11);
+        }
+        
+        if (worstDistSq0 <= bestDistSq1)
+        {
+            return c0.getClosestPoint(x, y, t0, tMid);
+        }
+        
+        if (worstDistSq1 <= bestDistSq0)
+        {
+            return c1.getClosestPoint(x, y, t0, tMid);
+        }
+        
+        PickPoint p0 = c0.getClosestPoint(x, y, t0, tMid);
+        PickPoint p1 = c1.getClosestPoint(x, y, tMid, t1);
+        
+        return p0.getDistSquared() < p1.getDistSquared() ? p0 : p1;
+    }
+
+    public boolean boundingBoxContains(double x, double y)
+    {
+        return x >= getMinX() && x <= getMaxX() && y >= getMinY() && y <= getMaxY();
+    }
+
+    public boolean boundingBoxContains(int x, int y)
+    {
+        return x >= getMinX() && x <= getMaxX() && y >= getMinY() && y <= getMaxY();
     }
 
 }

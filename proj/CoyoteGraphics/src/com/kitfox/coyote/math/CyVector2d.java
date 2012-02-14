@@ -66,6 +66,11 @@ public class CyVector2d
         return x * v.x + y * v.y;
     }
 
+    public double dot(double x, double y)
+    {
+        return this.x * x + this.y * y;
+    }
+
     /**
      * @return the x
      */
@@ -110,10 +115,22 @@ public class CyVector2d
         y += v.y;
     }
 
+    public void add(double x, double y)
+    {
+        this.x += x;
+        this.y += y;
+    }
+
     public void sub(CyVector2d v)
     {
         x -= v.x;
         y -= v.y;
+    }
+
+    public void sub(double x, double y)
+    {
+        this.x -= x;
+        this.y -= y;
     }
     
     public void normalize()
