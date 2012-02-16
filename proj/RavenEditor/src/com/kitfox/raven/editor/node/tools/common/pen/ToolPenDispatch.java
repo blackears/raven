@@ -31,7 +31,7 @@ public class ToolPenDispatch extends ToolDisplay
         
     }
     
-    private void updateDelegate()
+    private void touchDelegate()
     {
         if (delegate == null)
         {
@@ -62,7 +62,7 @@ public class ToolPenDispatch extends ToolDisplay
     @Override
     protected void click(MouseEvent evt)
     {
-        updateDelegate();
+        touchDelegate();
 
         if (delegate != null)
         {
@@ -73,7 +73,7 @@ public class ToolPenDispatch extends ToolDisplay
     @Override
     protected void startDrag(MouseEvent evt)
     {
-        updateDelegate();
+        touchDelegate();
 
         if (delegate != null)
         {
@@ -84,7 +84,7 @@ public class ToolPenDispatch extends ToolDisplay
     @Override
     protected void dragTo(MouseEvent evt)
     {
-        updateDelegate();
+        touchDelegate();
 
         if (delegate != null)
         {
@@ -95,7 +95,7 @@ public class ToolPenDispatch extends ToolDisplay
     @Override
     protected void endDrag(MouseEvent evt)
     {
-        updateDelegate();
+        touchDelegate();
 
         if (delegate != null)
         {
@@ -106,8 +106,6 @@ public class ToolPenDispatch extends ToolDisplay
     @Override
     public void mouseMoved(MouseEvent evt)
     {
-        updateDelegate();
-
         if (delegate != null)
         {
             delegate.mouseMoved(evt);
@@ -119,7 +117,7 @@ public class ToolPenDispatch extends ToolDisplay
     {
         super.render(ctx);
         
-        updateDelegate();
+//        updateDelegate();
 
         if (delegate != null)
         {
@@ -135,7 +133,7 @@ public class ToolPenDispatch extends ToolDisplay
     @Override
     public void keyPressed(KeyEvent evt)
     {
-        updateDelegate();
+        touchDelegate();
 
         if (delegate != null)
         {

@@ -1110,5 +1110,58 @@ public class CyMatrix3d
 
         return v;
     }
+    
+    /**
+     * Extracts the rotation of this matrix as a quaternion.
+     * 
+     * http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
+     * 
+     * @param q Quaternion to set to rotation.  If null, one
+     * will be allocated.
+     * @return Quaternion representing rotation of this matrix
+     */
+    public CyVector4d getQuaternion(CyVector4d q)
+    {
+        if (q == null)
+        {
+            q = new CyVector4d();
+        }
+        
+        double tr = m00 + m11 + m22;
+
+        if (tr > 0)
+        {
+            double s = Math.sqrt(tr + 1) * 2; // S=4*qw 
+            q.w = 0.25f * s;
+            q.x = (m21 - m12) / s;
+            q.y = (m02 - m20) / s;
+            q.z = (m10 - m01) / s;
+        }
+        else if ((m00 > m11) & (m00 > m22))
+        {
+            double s = (double)(Math.sqrt(1.0 + m00 - m11 - m22) * 2); // S=4*qx 
+            q.w = (m21 - m12) / s;
+            q.x = 0.25f * s;
+            q.y = (m01 + m10) / s;
+            q.z = (m02 + m20) / s;
+        }
+        else if (m11 > m22)
+        {
+            double s = (double)(Math.sqrt(1.0 + m11 - m00 - m22) * 2); // S=4*qy
+            q.w = (m02 - m20) / s;
+            q.x = (m01 + m10) / s;
+            q.y = 0.25f * s;
+            q.z = (m12 + m21) / s;
+        } else
+        {
+            double s = (double)(Math.sqrt(1.0 + m22 - m00 - m11) * 2); // S=4*qz
+            q.w = (m10 - m01) / s;
+            q.x = (m02 + m20) / s;
+            q.y = (m12 + m21) / s;
+            q.z = 0.25f * s;
+        }
+        
+        return q;
+    }
 
 }

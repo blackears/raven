@@ -61,6 +61,7 @@ public class RavenNodeMesh2 extends RavenNodeXformable
         
         CyDrawStack stack = ctx.getDrawStack();
         CyMatrix4d mvp = stack.getModelViewProjXform();
+        mvp.scale(.01, .01, 1);
         
         for (FaceLayout lay: faceSet.paths)
         {

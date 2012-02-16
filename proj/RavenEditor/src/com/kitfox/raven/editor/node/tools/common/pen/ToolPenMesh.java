@@ -71,25 +71,35 @@ public class ToolPenMesh extends ToolPenDelegate
         CyVector2d pickPt = xformDev2MeshPoint(
                 new CyVector2d(evt.getX(), evt.getY()), true);
 
-        //Look for existing vertex to clamp to
+        //Look for existing mesh vertex to clamp to
         BezierMeshVertex2i<NetworkDataVertex> v = mesh.getClosestVertex(pickPt.x, pickPt.y);
+        double pickRadiusSq = layout.getPointRadiusPickSq() * 100 * 100;
         
         if (v != null &&
-                v.getCoord().getDistSquared(pickPt) > layout.getPointRadiusPickSq())
+                v.getCoord().getDistSquared(pickPt) < pickRadiusSq)
         {
             Coord c = v.getCoord();
             return new Step(new CyVector2d(c.x, c.y));
         }
         
-        //Check for clamp to edge
+        //Try clamping to point we are currently plotting
+        for (Step step: plan)
+        {
+            if (step.point.distanceSquared(pickPt) < pickRadiusSq)
+            {
+                return new Step(new CyVector2d(step.point));
+            }
+        }
+        
+        //Check for clamp to edge in mesh
         BezierMeshEdge2i<NetworkDataEdge> e = 
-                mesh.getClosestEdge(pickPt.x, pickPt.y);
+                mesh.getClosestEdge(pickPt.x, pickPt.y, pickRadiusSq);
         if (e != null)
         {
             BezierCurve2i curve = e.asCurve();
             PickPoint pt = curve.getClosestPoint(pickPt.x, pickPt.y);
 
-            if (pt.getDistSquared() <= layout.getPointRadiusPickSq())
+            if (pt.getDistSquared() <= pickRadiusSq)
             {
                 Step s = new Step(new CyVector2d(pt.getX(), pt.getY()));
                 s.splitEdge = e;

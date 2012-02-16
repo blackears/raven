@@ -314,7 +314,7 @@ public class BezierLine2i extends BezierCurve2i
 
         double rx = Math2DUtil.lerp(ax0, ax1, t);
         double ry = Math2DUtil.lerp(ay0, ay1, t);
-        return new PickPoint(rx, ry, t, Math2DUtil.dist(rx, ry, x, y));
+        return new PickPoint(rx, ry, t, Math2DUtil.distSquared(rx, ry, x, y));
     }
 
     @Override

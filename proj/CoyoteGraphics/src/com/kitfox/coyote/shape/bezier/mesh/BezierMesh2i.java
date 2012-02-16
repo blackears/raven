@@ -73,22 +73,36 @@ public class BezierMesh2i<VertexData, EdgeData>
         }
         return bestVert;
     }
-    
-    public BezierMeshEdge2i<EdgeData> getClosestEdge(double x, double y)
+
+    /**
+     * Finds the edge closest to the given point.
+     * 
+     * @param x
+     * @param y
+     * @param maxDistSq
+     * @return 
+     */
+    public BezierMeshEdge2i<EdgeData> getClosestEdge(double x, double y, double maxDistSq)
     {
-        double bestDist2 = Double.POSITIVE_INFINITY;
+        double bestDistSq = maxDistSq;
         BezierMeshEdge2i bestEdge = null;
         
         ArrayList<BezierMeshEdge2i> edges = getEdges();
         for (BezierMeshEdge2i e: edges)
         {
             BezierCurve2i c = e.asCurve();
+            if (c.distBoundingBoxSq(x, y) > bestDistSq)
+            {
+                //Bounding box test to filter out points too far away
+                continue;
+            }
+            
             PickPoint pt = c.getClosestPoint(x, y);
             
-            if (pt.getDistSquared() <= bestDist2)
+            if (pt.getDistSquared() <= bestDistSq)
             {
                 bestEdge = e;
-                bestDist2 = pt.getDistSquared();
+                bestDistSq = pt.getDistSquared();
             }
         }
         return bestEdge;

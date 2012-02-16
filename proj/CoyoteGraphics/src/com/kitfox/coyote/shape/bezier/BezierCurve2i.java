@@ -178,6 +178,20 @@ abstract public class BezierCurve2i
         BezierCurve2i c0 = curves[0];
         BezierCurve2i c1 = curves[1];
         
+        if (c0.equals(this))
+        {
+            //Degenerate curve
+            return new PickPoint(c0.getStartX(), c0.getStartY(), t0, 
+                    Math2DUtil.distSquared(c0.getStartX(), c0.getStartY(), x, y));
+        }
+        
+        if (c1.equals(this))
+        {
+            //Degenerate curve
+            return new PickPoint(c1.getEndX(), c1.getEndY(), t1, 
+                    Math2DUtil.distSquared(c1.getEndX(), c1.getEndY(), x, y));
+        }
+        
         double tMid = (t0 + t1) / 2;
         
         double bestDistSq0, worstDistSq0;
@@ -211,7 +225,7 @@ abstract public class BezierCurve2i
         
         if (worstDistSq1 <= bestDistSq0)
         {
-            return c1.getClosestPoint(x, y, t0, tMid);
+            return c1.getClosestPoint(x, y, tMid, t1);
         }
         
         PickPoint p0 = c0.getClosestPoint(x, y, t0, tMid);
@@ -228,6 +242,20 @@ abstract public class BezierCurve2i
     public boolean boundingBoxContains(int x, int y)
     {
         return x >= getMinX() && x <= getMaxX() && y >= getMinY() && y <= getMaxY();
+    }
+
+    public double distBoundingBoxSq(double x, double y)
+    {
+        int minX = getMinX();
+        int maxX = getMaxX();
+        int minY = getMinY();
+        int maxY = getMaxY();
+        
+        double dx = x < minX ? minX - x :
+                (x > maxX ? maxX - x : 0);
+        double dy = y < minY ? minY - y :
+                (y > maxY ? maxY - y : 0);
+        return dx * dx + dy * dy;
     }
 
 }

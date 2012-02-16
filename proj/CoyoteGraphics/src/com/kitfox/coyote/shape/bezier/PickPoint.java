@@ -53,5 +53,13 @@ public class PickPoint
     public double getDistSquared()
     {
         return distSquared;
-    }    
+    }
+
+    @Override
+    public String toString()
+    {
+        return "(" + x + ", " + y + ", " + t + ", " + distSquared + ")";
+    }
+    
+    
 }

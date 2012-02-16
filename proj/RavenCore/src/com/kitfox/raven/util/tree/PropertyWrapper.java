@@ -516,6 +516,7 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         }
 
         cache = new ValueCache(FrameKey.DIRECT, directValue);
+        valueCache.put(FrameKey.DIRECT, cache);
         return cache;
     }
 
