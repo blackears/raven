@@ -144,6 +144,31 @@ public class BezierQuad2d extends BezierCurve2d
     }
 
     @Override
+    public CyVector2d evaluate(double t, CyVector2d pos)
+    {
+        double bx0 = ax0 + t * (ax1 - ax0);
+        double by0 = ay0 + t * (ay1 - ay0);
+        double bx1 = ax1 + t * (ax2 - ax1);
+        double by1 = ay1 + t * (ay2 - ay1);
+        double cx0 = bx0 + t * (bx1 - bx0);
+        double cy0 = by0 + t * (by1 - by0);
+
+        if (pos == null)
+        {
+            return new CyVector2d(cx0, cy0);
+        }
+        
+        pos.set(cx0, cy0);
+        return pos;
+
+//        if (tan != null)
+//        {
+//            tan.set(bx1 - bx0, by1 - by0);
+//        }
+    }
+
+   /*
+    @Override
     public void evaluate(double t, CyVector2d pos, CyVector2d tan)
     {
         double bx0 = ax0 + t * (ax1 - ax0);
@@ -163,6 +188,7 @@ public class BezierQuad2d extends BezierCurve2d
             tan.set(bx1 - bx0, by1 - by0);
         }
     }
+    */
 
     @Override
     public BezierLine2d getDerivative()
@@ -195,21 +221,32 @@ public class BezierQuad2d extends BezierCurve2d
         //Find points and tangents offset line will need to match
         //Initial points of offset curve displaced perpendicular
         // to curve
+        BezierLine2d dc = getDerivative();
+        
         CyVector2d p0 = new CyVector2d();
         CyVector2d t0 = new CyVector2d();
-        evaluate(0, p0, t0);
+        evaluate(0, p0);
+        t0.set(getTanInX(), getTanInY());
+//        dc.evaluate(0, t0);
         t0.normalize();
         t0.scale(width);
 
         CyVector2d p2 = new CyVector2d();
         CyVector2d t2 = new CyVector2d();
-        evaluate(1, p2, t2);
+        evaluate(1, p2);
+        t2.set(getTanOutX(), getTanOutY());
+//        dc.evaluate(1, t2);
         t2.normalize();
         t2.scale(width);
 
         CyVector2d pm = new CyVector2d();
         CyVector2d tm = new CyVector2d();
-        evaluate(.5, pm, tm);
+        evaluate(.5, pm);
+        dc.evaluate(.5, tm);
+        if (tm.lengthSquared() == 0)
+        {
+            tm.set(ax2 - ax0, ay2 - ay0);
+        }
         tm.normalize();
         tm.scale(width);
 

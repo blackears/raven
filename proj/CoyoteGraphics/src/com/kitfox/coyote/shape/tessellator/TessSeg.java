@@ -21,31 +21,15 @@ package com.kitfox.coyote.shape.tessellator;
  * @author kitfox
  */
 @Deprecated
-public class TessPoint
+public class TessSeg
 {
-    public final double x;
-    public final double y;
+    TessPoint pt0;
+    TessPoint pt1;
 
-    public TessPoint(double x, double y)
+    public TessSeg(TessPoint p0, TessPoint p1)
     {
-        this.x = x;
-        this.y = y;
-    }
-
-    /**
-     * @return the x
-     */
-    public double getX()
-    {
-        return x;
-    }
-
-    /**
-     * @return the y
-     */
-    public double getY()
-    {
-        return y;
+        this.pt0 = p0;
+        this.pt1 = p1;
     }
 
     @Override
@@ -59,12 +43,12 @@ public class TessPoint
         {
             return false;
         }
-        final TessPoint other = (TessPoint) obj;
-        if (Double.doubleToLongBits(this.x) != Double.doubleToLongBits(other.x))
+        final TessSeg other = (TessSeg)obj;
+        if (this.pt0 != other.pt0 && (this.pt0 == null || !this.pt0.equals(other.pt0)))
         {
             return false;
         }
-        if (Double.doubleToLongBits(this.y) != Double.doubleToLongBits(other.y))
+        if (this.pt1 != other.pt1 && (this.pt1 == null || !this.pt1.equals(other.pt1)))
         {
             return false;
         }
@@ -75,15 +59,44 @@ public class TessPoint
     public int hashCode()
     {
         int hash = 7;
-        hash = 41 * hash + (int) (Double.doubleToLongBits(this.x) ^ (Double.doubleToLongBits(this.x) >>> 32));
-        hash = 41 * hash + (int) (Double.doubleToLongBits(this.y) ^ (Double.doubleToLongBits(this.y) >>> 32));
+        hash = 41 * hash + (this.pt0 != null ? this.pt0.hashCode() : 0);
+        hash = 41 * hash + (this.pt1 != null ? this.pt1.hashCode() : 0);
         return hash;
+    }
+
+    public double minX()
+    {
+        return Math.min(pt0.x, pt1.x);
+    }
+    
+    public double minY()
+    {
+        return Math.min(pt0.y, pt1.y);
+    }
+
+    public double maxX()
+    {
+        return Math.max(pt0.x, pt1.x);
+    }
+    
+    public double maxY()
+    {
+        return Math.max(pt0.y, pt1.y);
+    }
+    
+    public boolean boundsOverlap(TessSeg s1)
+    {
+        return maxX() >= s1.minX()
+                && minX() <= s1.maxX()
+                && maxY() >= s1.minY()
+                && minY() <= s1.maxY();
     }
 
     @Override
     public String toString()
     {
-        return "(" + x + ", " + y + ")";
+        return "[" + pt0 + " " + pt1 + "]";
     }
 
+    
 }

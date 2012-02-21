@@ -71,7 +71,8 @@ abstract public class BezierCurve2d
     }
 
     abstract public BezierCurve2d[] split(double t);
-    abstract public void evaluate(double t, CyVector2d pos, CyVector2d tan);
+//    abstract public void evaluate(double t, CyVector2d pos, CyVector2d tan);
+    abstract public CyVector2d evaluate(double t, CyVector2d val);
     abstract public BezierCurve2d getDerivative();
     public BezierLine2d getBaseline()
     {

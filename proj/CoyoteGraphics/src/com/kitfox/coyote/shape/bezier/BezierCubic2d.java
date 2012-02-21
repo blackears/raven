@@ -202,7 +202,7 @@ public class BezierCubic2d extends BezierCurve2d
     {
         return this;
     }
-
+/*
     @Override
     public void evaluate(double t, CyVector2d pos, CyVector2d tan)
     {
@@ -229,6 +229,36 @@ public class BezierCubic2d extends BezierCurve2d
             tan.set(cx1 - cx0, cy1 - cy0);
         }
     }
+    */
+    @Override
+    public CyVector2d evaluate(double t, CyVector2d pos)
+    {
+        double bx0 = ax0 + t * (ax1 - ax0);
+        double by0 = ay0 + t * (ay1 - ay0);
+        double bx1 = ax1 + t * (ax2 - ax1);
+        double by1 = ay1 + t * (ay2 - ay1);
+        double bx2 = ax2 + t * (ax3 - ax2);
+        double by2 = ay2 + t * (ay3 - ay2);
+        double cx0 = bx0 + t * (bx1 - bx0);
+        double cy0 = by0 + t * (by1 - by0);
+        double cx1 = bx1 + t * (bx2 - bx1);
+        double cy1 = by1 + t * (by2 - by1);
+        double dx0 = cx0 + t * (cx1 - cx0);
+        double dy0 = cy0 + t * (cy1 - cy0);
+
+        if (pos == null)
+        {
+            return new CyVector2d(dx0, dy0);
+        }
+        
+        pos.set(dx0, dy0);
+        return pos;
+
+//        if (tan != null)
+//        {
+//            tan.set(cx1 - cx0, cy1 - cy0);
+//        }
+    }
 
     @Override
     public double getCurvatureSquared()
@@ -247,21 +277,32 @@ public class BezierCubic2d extends BezierCurve2d
         //Find points and tangents offset line will need to match
         //Initial points of offset curve displaced perpendicular
         // to curve
+        BezierQuad2d dc = getDerivative();
+        
         CyVector2d p0 = new CyVector2d();
         CyVector2d t0 = new CyVector2d();
-        evaluate(0, p0, t0);
+        evaluate(0, p0);
+        t0.set(getTanInX(), getTanInY());
+//        dc.evaluate(0, t0);
         t0.normalize();
         t0.scale(width);
 
         CyVector2d p3 = new CyVector2d();
         CyVector2d t3 = new CyVector2d();
-        evaluate(1, p3, t3);
+        evaluate(1, p3);
+        t3.set(getTanOutX(), getTanOutY());
+//        dc.evaluate(1, t3);
         t3.normalize();
         t3.scale(width);
 
         CyVector2d pm = new CyVector2d();
         CyVector2d tm = new CyVector2d();
-        evaluate(.5, pm, tm);
+        evaluate(.5, pm);
+        dc.evaluate(.5, tm);
+        if (tm.lengthSquared() == 0)
+        {
+            tm.set(ax3 - ax0, ay3 - ay0);
+        }
         tm.normalize();
         tm.scale(width);
 

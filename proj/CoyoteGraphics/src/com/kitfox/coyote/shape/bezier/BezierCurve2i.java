@@ -168,7 +168,7 @@ abstract public class BezierCurve2i
 
     private PickPoint getClosestPoint(double x, double y, double t0, double t1)
     {
-        if (getMaxX() == getMinX() && getMaxY() == getMinY())
+        if (getMaxX() - getMinX() <= 2 && getMaxY() - getMinY() <= 2)
         {
             return new PickPoint(getMinX(), getMinY(), t1 == 1 ? 1 : t0, 
                     Math2DUtil.distSquared(getMinX(), getMinY(), x, y));
@@ -177,6 +177,8 @@ abstract public class BezierCurve2i
         BezierCurve2i curves[] = split(.5);
         BezierCurve2i c0 = curves[0];
         BezierCurve2i c1 = curves[1];
+        
+//System.err.println("edgeSplit " + c0 + "**" + c1);
         
         if (c0.equals(this))
         {

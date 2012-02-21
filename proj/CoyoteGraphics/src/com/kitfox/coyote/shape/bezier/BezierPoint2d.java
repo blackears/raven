@@ -128,17 +128,14 @@ public class BezierPoint2d extends BezierCurve2d
     }
 
     @Override
-    public void evaluate(double t, CyVector2d pos, CyVector2d tan)
+    public CyVector2d evaluate(double t, CyVector2d pos)
     {
         if (pos != null)
         {
-            pos.set(ax0, ay0);
+            return new CyVector2d(ax0, ay0);
         }
-
-        if (tan != null)
-        {
-            tan.set(0, 0);
-        }
+        pos.set(ax0, ay0);
+        return pos;
     }
 
     @Override

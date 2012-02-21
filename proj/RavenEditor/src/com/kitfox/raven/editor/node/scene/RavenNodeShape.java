@@ -204,10 +204,18 @@ abstract public class RavenNodeShape extends RavenNodeXformable
     public CyVertexBuffer getMeshLocal(FrameKey time)
     {
         CyShape shape = getShapeLocal(time);
+        if (shape == null)
+        {
+            return null;
+        }
 
         CyVertexBuffer mesh = meshCache.get(shape);
         if (mesh == null)
         {
+            CyMatrix4d m = CyMatrix4d.createIdentity();
+            m.scale(100, 100, 1);
+            shape = shape.createTransformedPath(m);
+            
             ShapeMeshProvider meshProv = new ShapeMeshProvider(shape);
             mesh = new CyVertexBuffer(meshProv);
             meshCache.put(shape, mesh);
@@ -219,10 +227,18 @@ abstract public class RavenNodeShape extends RavenNodeXformable
     public CyVertexBuffer getMeshStrokeLocal(FrameKey time)
     {
         CyShape shape = getShapeStrokeLocal(time);
+        if (shape == null)
+        {
+            return null;
+        }
 
         CyVertexBuffer mesh = meshCache.get(shape);
         if (mesh == null)
         {
+            CyMatrix4d m = CyMatrix4d.createIdentity();
+            m.scale(100, 100, 1);
+            shape = shape.createTransformedPath(m);
+            
             ShapeMeshProvider meshProv = new ShapeMeshProvider(shape);
             mesh = new CyVertexBuffer(meshProv);
             meshCache.put(shape, mesh);
@@ -314,6 +330,8 @@ abstract public class RavenNodeShape extends RavenNodeXformable
         PaintLayout curStrokeLayout = strokePaintLayout.getValue(frame);
 //        RavenStroke curStroke = stroke.getValue();
 
+        stack.pushFrame(null);
+        stack.scale(.01, .01, 1);
         if (curFillPaint != null)
         {
 //            CyShape shape = getShapePickLocal();
@@ -334,6 +352,7 @@ abstract public class RavenNodeShape extends RavenNodeXformable
                 curStrokePaint.fillShape(stack, curStrokeLayout, mesh);
             }
         }
+        stack.popFrame();
     }
 
 

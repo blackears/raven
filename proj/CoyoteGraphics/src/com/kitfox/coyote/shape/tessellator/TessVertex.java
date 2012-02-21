@@ -23,6 +23,7 @@ import java.util.Collections;
  *
  * @author kitfox
  */
+@Deprecated
 public class TessVertex
 {
     final TessPoint point;

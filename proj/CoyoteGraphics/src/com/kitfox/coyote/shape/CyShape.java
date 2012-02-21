@@ -111,16 +111,16 @@ abstract public class CyShape
                     newPath.lineTo(pt.x, pt.y);
                     break;
                 case QUADTO:
-                    pt.set(coords[0], coords[1], 0);
-                    k0.set(coords[2], coords[3], 0);
+                    k0.set(coords[0], coords[1], 0);
+                    pt.set(coords[2], coords[3], 0);
                     m.transformPoint(pt, normalize);
                     m.transformPoint(k0, normalize);
                     newPath.quadTo(k0.x, k0.y, pt.x, pt.y);
                     break;
                 case CUBICTO:
-                    pt.set(coords[0], coords[1], 0);
-                    k0.set(coords[2], coords[3], 0);
-                    k1.set(coords[4], coords[5], 0);
+                    k0.set(coords[0], coords[1], 0);
+                    k1.set(coords[2], coords[3], 0);
+                    pt.set(coords[4], coords[5], 0);
                     m.transformPoint(pt, normalize);
                     m.transformPoint(k0, normalize);
                     m.transformPoint(k1, normalize);

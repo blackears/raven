@@ -17,8 +17,10 @@
 package com.kitfox.coyote.shape.tessellator;
 
 import com.kitfox.coyote.math.CyVector2d;
+import com.kitfox.coyote.math.Math2DUtil;
 import static com.kitfox.coyote.math.Math2DUtil.*;
 import com.kitfox.coyote.shape.PathConsumer;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -52,6 +54,7 @@ import java.util.HashSet;
  *
  * @author kitfox
  */
+@Deprecated
 public class PathTessellator extends PathConsumer
 {
     double mx, my;
@@ -59,6 +62,10 @@ public class PathTessellator extends PathConsumer
     boolean drawingPath;
 
     HashMap<TessPoint, TessVertex> vertMap = new HashMap<TessPoint, TessVertex>();
+    
+    //Ordered list of vertices
+    ArrayList<TessPoint> pointList = new ArrayList<TessPoint>();
+    ArrayList<TessSeg> segList = new ArrayList<TessSeg>();
 
     final static double EPSILON = .0000001;
 
@@ -135,6 +142,7 @@ public class PathTessellator extends PathConsumer
             closeSubpath();
         }
 
+        splitCrossingLines();
         connectInteriorPaths();
         calcWindingLevels();
         //Contour ctr = buildContour();
@@ -155,8 +163,11 @@ public class PathTessellator extends PathConsumer
                 ContourSet set = ctrSets.get(level);
                 for (Contour ctr: set.contours)
                 {
+ctr.dump(System.err);
                     ArrayList<CyVector2d> loop = ctr.getContour();
+System.err.println("Tess start");
                     EarClip.tessellate(loop, res);
+System.err.println("Tess done");
                 }
             }
         }
@@ -198,21 +209,224 @@ public class PathTessellator extends PathConsumer
         return res;
     }
 
+    private TessVertex getOrCreateVertex(TessPoint pt)
+    {
+        TessVertex v = vertMap.get(pt);
+        if (v == null)
+        {
+            v = new TessVertex(pt);
+            vertMap.put(pt, v);
+        }
+        return v;
+    }
+
+    private TessPoint addOrClampPoint(double x, double y)
+    {
+        for (TessPoint p1: pointList)
+        {
+            double px = p1.getX();
+            double py = p1.getY();
+            if (distSquared(x, y, px, py) < EPSILON)
+            {
+                return p1;
+            }
+        }
+        
+        TessPoint p = new TessPoint(x, y);
+        pointList.add(p);
+        return p;
+    }
+
+    private void addLine(double x0, double y0, double x1, double y1)
+    {
+        TessPoint p0 = addOrClampPoint(x0, y0);
+        TessPoint p1 = addOrClampPoint(x1, y1);
+        
+        segList.add(new TessSeg(p0, p1));
+    }
+    
+    private void splitSeg(TessSeg s, TessPoint p0, TessPoint p1, ArrayList<TessSeg> splits)
+    {
+        double s0x = s.pt0.x;
+        double s0y = s.pt0.y;
+        double s1x = s.pt1.x;
+        double s1y = s.pt1.y;
+        double dsx = s1x - s0x;
+        double dsy = s1y - s0y;
+        
+        double p0x = p0.x;
+        double p0y = p0.y;
+        double p1x = p1.x;
+        double p1y = p1.y;
+
+        double frac0 = Math2DUtil.fractionAlongRay(p0x, p0y, s0x, s0y, dsx, dsy);
+        double dist0 = Math2DUtil.distPointLineSigned(p0x, p0y, s0x, s0y, dsx, dsy);
+        double frac1 = Math2DUtil.fractionAlongRay(p1x, p1y, s0x, s0y, dsx, dsy);
+        double dist1 = Math2DUtil.distPointLineSigned(p1x, p1y, s0x, s0y, dsx, dsy);
+        
+        boolean cut0 = !s.pt0.equals(p0) && s.pt1.equals(p0) 
+                && dist0 < EPSILON && frac0 > 0 && frac0 < 1;
+        boolean cut1 = !s.pt0.equals(p1) && s.pt1.equals(p1) 
+                && dist1 < EPSILON && frac1 > 0 && frac1 < 1;
+        
+        if (cut0 && cut1)
+        {
+            TessPoint c0 = addOrClampPoint(Math2DUtil.lerp(p0x, p1x, frac0),
+                    Math2DUtil.lerp(p0y, p1y, frac0));
+            TessPoint c1 = addOrClampPoint(Math2DUtil.lerp(p0x, p1x, frac1),
+                    Math2DUtil.lerp(p0y, p1y, frac1));
+            
+            if (frac0 < frac1)
+            {
+                splits.add(new TessSeg(s.pt0, c0));
+                splits.add(new TessSeg(c0, c1));
+                splits.add(new TessSeg(c1, s.pt1));
+            }
+            else
+            {
+                splits.add(new TessSeg(s.pt0, c1));
+                splits.add(new TessSeg(c1, c0));
+                splits.add(new TessSeg(c0, s.pt1));
+            }
+        }
+        else if (cut0)
+        {
+            TessPoint c0 = addOrClampPoint(Math2DUtil.lerp(p0x, p1x, frac0),
+                    Math2DUtil.lerp(p0y, p1y, frac0));
+            
+            splits.add(new TessSeg(s.pt0, c0));
+            splits.add(new TessSeg(c0, s.pt1));
+        }
+        else if (cut1)
+        {
+            TessPoint c1 = addOrClampPoint(Math2DUtil.lerp(p0x, p1x, frac1),
+                    Math2DUtil.lerp(p0y, p1y, frac1));
+            
+            splits.add(new TessSeg(s.pt0, c1));
+            splits.add(new TessSeg(c1, s.pt1));
+        }
+    }
+    
+    private ArrayList<TessSeg> splitSegs(TessSeg s0, TessSeg s1)
+    {
+        if (!s0.boundsOverlap(s1))
+        {
+            return null;
+        }
+        
+        ArrayList<TessSeg> splits = new ArrayList<TessSeg>();
+        
+        //Check for line/point cross
+        splitSeg(s0, s1.pt0, s1.pt1, splits);
+        splitSeg(s1, s0.pt0, s0.pt1, splits);
+        
+        if (!splits.isEmpty())
+        {
+            return splits;
+        }
+        
+        if (s0.pt0.equals(s1.pt0)
+                || s0.pt0.equals(s1.pt1)
+                || s0.pt1.equals(s1.pt0)
+                || s0.pt1.equals(s1.pt1))
+        {
+            //Lines meet at end points
+            return null;
+        }
+        
+        //Check for midpoint cross
+        double p0x = s0.pt0.x;
+        double p0y = s0.pt0.y;
+        double p1x = s0.pt1.x;
+        double p1y = s0.pt1.y;
+        double q0x = s1.pt0.x;
+        double q0y = s1.pt0.y;
+        double q1x = s1.pt1.x;
+        double q1y = s1.pt1.y;
+        
+        double[] frac = 
+                Math2DUtil.lineIsectFractions(
+                p0x, p0y, p1x - p0x, p1y - p0y, 
+                q0x, q0y, q1x - q0x, q1y - q0y, 
+                null);
+        
+        if (frac != null 
+                && frac[0] > 0 && frac[0] < 1
+                && frac[1] > 0 && frac[1] < 1)
+        {
+            double mx = Math2DUtil.lerp(p0x, p1x, frac[0]);
+            double my = Math2DUtil.lerp(p0y, p1y, frac[0]);
+            
+            TessPoint mp = addOrClampPoint(mx, my);
+            splits.add(new TessSeg(s0.pt0, mp));
+            splits.add(new TessSeg(mp, s0.pt1));
+            splits.add(new TessSeg(s1.pt0, mp));
+            splits.add(new TessSeg(mp, s1.pt1));
+        }
+        
+        return splits.isEmpty() ? null : splits;
+    }
+    
+    private void splitCrossingLines()
+    {
+        ArrayList<TessSeg> segsClear = new ArrayList<TessSeg>();
+        
+        NEXT_SEG:
+        while (!segList.isEmpty())
+        {
+            TessSeg curEdge = segList.remove(segList.size() - 1);
+            
+            for (int j = 0; j < segList.size(); ++j)
+            {
+                TessSeg testEdge = segList.get(j);
+                
+                ArrayList<TessSeg> split = splitSegs(curEdge, testEdge);
+                if (split != null && !split.isEmpty())
+                {
+                    segList.remove(j);
+                    segList.addAll(split);
+                    continue NEXT_SEG;
+                }
+            }
+            
+            //No conflicts
+            segsClear.add(curEdge);
+        }
+
+        //Build graph from cut segments
+        for (TessSeg seg: segsClear)
+        {
+            //Ignore zero length lines
+            if (seg.pt0.equals(seg.pt1))
+            {
+                continue;
+            }
+            
+            TessVertex vv0 = getOrCreateVertex(seg.pt0);
+            TessVertex vv1 = getOrCreateVertex(seg.pt1);
+            TessEdge line = new TessEdge(vv0, vv1);
+            vv0.edgeOut.add(line);
+            vv1.edgeIn.add(line);
+        }
+    }
+    
+    /*
     private void addLine(double x0, double y0, double x1, double y1)
     {
         double[] lineFrac = new double[2];
 
 //        boolean snapped = false;
 
-        for (TessPoint pt: vertMap.keySet())
+        //Snap to existing vertices
+        for (TessVertex v: vertList)
         {
-            double px = pt.getX();
-            double py = pt.getY();
+            double px = v.point.getX();
+            double py = v.point.getY();
 
-            if (pointEquals(x0, y0, px, py) || pointEquals(x1, y1, px, py))
-            {
-                continue;
-            }
+//            if (pointEquals(x0, y0, px, py) || pointEquals(x1, y1, px, py))
+//            {
+//                continue;
+//            }
 
             //If close to existing vertex, snap to it
             if (distSquared(x0, y0, px, py) < EPSILON)
@@ -310,22 +524,10 @@ public class PathTessellator extends PathConsumer
         vv0.edgeOut.add(line);
         vv1.edgeIn.add(line);
     }
-
+*/
     private boolean isOn01(double value)
     {
         return 0 <= value && value <= 1;
-    }
-
-    private TessVertex getOrCreateVertex(double x, double y)
-    {
-        TessPoint pt = new TessPoint(x, y);
-        TessVertex v = vertMap.get(pt);
-        if (v == null)
-        {
-            v = new TessVertex(pt);
-            vertMap.put(pt, v);
-        }
-        return v;
     }
 
     private void connectInteriorPaths()
@@ -644,6 +846,16 @@ public class PathTessellator extends PathConsumer
             this.winding = winding;
         }
 
+        public void dump(PrintStream ps)
+        {
+            ps.println("Contour winding: " + winding);
+            for (TessHalfEdge e: edges)
+            {
+                ps.println(e);
+            }
+            ps.println();
+        }
+        
         public void addEdge(TessHalfEdge edge)
         {
             edges.add(edge);

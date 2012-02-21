@@ -24,6 +24,7 @@ import java.util.ArrayList;
  *
  * @author kitfox
  */
+@Deprecated
 public class EarClip
 {
     /**
@@ -141,6 +142,10 @@ public class EarClip
         public VertexInfo(CyVector2d point)
         {
             this.point = point;
+//if (Double.isNaN(point.x))
+//{
+//    int j = 9;
+//}
         }
 
 //        private boolean isPeninsula()

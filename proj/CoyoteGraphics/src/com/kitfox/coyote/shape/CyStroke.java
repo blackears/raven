@@ -67,6 +67,24 @@ public class CyStroke
         return ret;
     }
     
+    public CyPath2d outlineShape(CyShape shape)
+    {
+        PathCollector col = new PathCollector();
+        PathConsumer builder = new PathOutliner(col,
+                width / 2,
+                cap,
+                join,
+                miterLimit);
+
+        if (dash != null && dash.length >= 2)
+        {
+            builder = new PathDasher(builder, dash, dashOffset);
+        }
+
+        builder.feedShape(shape);
+        return col.getPath();
+    }
+    
     /**
      * @return the width
      */

@@ -14,17 +14,25 @@
  * limitations under the License.
  */
 
-package com.kitfox.raven.editor.node.tools.common.pen;
+package com.kitfox.coyote.shape.tessellator2;
 
-import com.kitfox.raven.editor.node.tools.ToolService;
-import com.kitfox.raven.shape.network.NetworkMesh;
+import com.kitfox.coyote.shape.bezier.path.cut.Coord;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  *
  * @author kitfox
  */
-public interface ServiceBezierMesh extends ToolService
+public class SegGroup
 {
-    public NetworkMesh getNetworkMesh();
-    public void setNetworkMesh(NetworkMesh mesh, boolean history);
+    ArrayList<TessSeg> segments = new ArrayList<TessSeg>();
+    HashSet<Coord> coords = new HashSet<Coord>();
+    
+    public void add(TessSeg seg)
+    {
+        segments.add(seg);
+        coords.add(seg.c0);
+        coords.add(seg.c1);
+    }
 }

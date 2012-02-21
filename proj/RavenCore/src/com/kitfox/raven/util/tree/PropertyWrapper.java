@@ -47,8 +47,10 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
     private final Class<PropType> propertyType;
 
     PropertyData<PropType> directValue;
-//    PropertyData<PropType> lastUndoableValue;
 
+    //Indicates frame this property is synchronized to
+    FrameKey synchKey = FrameKey.DIRECT;
+        
     public static final Color DEFAULT_DISPLAY_COLOR = Color.BLUE;
     private final Color displayColor;
 
@@ -64,11 +66,6 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
     //Track UID->curve data
     HashMap<Integer, TrackCurve<PropType>> trackMap
             = new HashMap<Integer, TrackCurve<PropType>>();
-
-//    HashMap<FrameKey, SoftReference<PropertyData<PropType>>> interpCache
-//            = new HashMap<FrameKey, SoftReference<PropertyData<PropType>>>();
-//    HashMap<Integer, TrackCache<PropType>> interpCache
-//            = new HashMap<Integer, TrackCache<PropType>>();
     
     //Keep track of cached values and precomputed info
     HashMap<FrameKey, ValueCache<PropType>> valueCache
@@ -177,6 +174,11 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
 
     protected void firePropertyDataChanged(Object oldValue, Object newValue)
     {
+        if (oldValue.equals(newValue))
+        {
+            return;
+        }
+        
         PropertyChangeEvent evt = new PropertyChangeEvent(this, name, oldValue, newValue);
         for (int i = 0; i < listeners.size(); ++i)
         {
@@ -223,12 +225,14 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
 
     public PropType getValue()
     {
-        return directValue == null ? null : directValue.getValue(node.getDocument());
+        return getValue(synchKey);
+//        return directValue == null ? null : directValue.getValue(node.getDocument());
     }
 
     public PropertyData<PropType> getData()
     {
-        return directValue;
+        return getData(synchKey);
+        //return directValue;
     }
 
     public void setValue(PropType value)
@@ -258,25 +262,6 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         {
             action.redo(null);
         }
-//        if (history)
-//        {
-//            if ((lastUndoableValue == null && value == null) ||
-//                    (lastUndoableValue != null && lastUndoableValue.equals(value)))
-//            {
-//                return;
-//            }
-//            
-//            SetValueDirectAction action = new SetValueDirectAction(lastUndoableValue, value);
-//            doAction(action);
-//        }
-//        else
-//        {
-//            //Don't write to history
-//            //action.redo();
-//            PropertyData<PropType> dataOld = directValue;
-//            directValue = value;
-//            firePropertyDataChanged(dataOld, value);
-//        }
     }
 
     protected void doAction(HistoryAction action)
@@ -431,39 +416,31 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
     
     public void synchToTrack(FrameKey key)
     {
-        ValueCache<PropType> cache = getOrCreateValueCache(key);
-        if (cache.key.equals(FrameKey.DIRECT))
-        {
-            return;
-        }
+        FrameKey synchOld = synchKey;
+        synchKey = key;
         
-        PropertyData<PropType> oldValue = directValue;
+        PropertyData<PropType> oldValue = getData(synchOld);
+        PropertyData<PropType> newValue = getData(synchKey);
+
+        //Update direct cache
+        ValueCache<PropType> cache = getOrCreateValueCache(key);
         ValueCache<PropType> cacheDirect = getOrCreateValueCache(FrameKey.DIRECT);
         cacheDirect.copyState(cache);
-        directValue = cache.data;
-        firePropertyDataChanged(oldValue, directValue);
+        directValue = newValue;
         
+        firePropertyDataChanged(oldValue, newValue);
         
-        
-        
-        
-//        TrackCurve<PropType> curve = trackMap.get(trackUid);
-//        if (curve == null)
+//        ValueCache<PropType> cache = getOrCreateValueCache(key);
+//        if (cache.key.equals(FrameKey.DIRECT))
 //        {
 //            return;
 //        }
-//
-//        if (curve.isKeyAt(frame))
-//        {
-//            TrackKey<PropType> curveKey = curve.getKey(frame);
-//            setData(curveKey.getData(), false);
-//        }
-//        else if (curve.isInterpolatedAt(frame))
-//        {
-////            PropType value = curve.evaluate(frame, getNode().getDocument());
-//            PropertyData<PropType> value = getData(trackUid, frame);
-//            setData(value, false);
-//        }
+//        
+//        PropertyData<PropType> oldValue = directValue;
+//        ValueCache<PropType> cacheDirect = getOrCreateValueCache(FrameKey.DIRECT);
+//        cacheDirect.copyState(cache);
+//        directValue = cache.data;
+//        firePropertyDataChanged(oldValue, directValue);
     }
 
     public PropType getValue(FrameKey key)
@@ -480,12 +457,20 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
 
     protected ValueCache<PropType> getOrCreateValueCache(FrameKey key)
     {
+        if (FrameKey.DIRECT.equals(key))
+        {
+            //If we're synchronized to a keyed value, return information from 
+            // it instead
+            key = synchKey;
+        }
+        
         ValueCache<PropType> cache = valueCache.get(key);
         if (cache != null)
         {
             return cache;
         }
         
+        //Cache is empty at key.  Build it
         int trackUid = key.getTrackUid();
         int frame = key.getAnimFrame();
         TrackCurve<PropType> curve = trackMap.get(trackUid);
@@ -508,7 +493,7 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
             }
         }
 
-        //Not handled by anim curves.  Return direct value
+        //Not handled by anim curves.  Return direct value cache
         cache = valueCache.get(FrameKey.DIRECT);
         if (cache != null)
         {
@@ -530,39 +515,6 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
     public PropertyData<PropType> getData(int trackUid, int frame)
     {
         return getData(new FrameKey(trackUid, frame));
-//        TrackCurve<PropType> curve = trackMap.get(trackUid);
-//        if (curve == null)
-//        {
-//            return directValue;
-//        }
-//
-//        if (curve.isKeyAt(frame))
-//        {
-//            TrackKey<PropType> curveKey = curve.getKey(frame);
-//            return curveKey.getData();
-//        }
-//        else if (curve.isInterpolatedAt(frame))
-//        {
-//            ValueCache<PropType> cache = valueCache.get(trackUid);
-//            if (cache == null)
-//            {
-//                cache = new ValueCache<PropType>();
-//                interpCache.put(trackUid, cache);
-//            }
-//
-//            PropertyData<PropType> value = cache.get(frame);
-//
-//            if (value == null)
-//            {
-//                PropType curveValue = curve.evaluate(frame, getNode().getDocument());
-//                value = new PropertyDataInline(curveValue);
-//                cache.set(frame, value);
-//            }
-//
-//            return value;
-//        }
-//
-//        return directValue;
     }
 
     public PropertyType export()
@@ -975,20 +927,18 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         }
 
         @Override
-        public void undo(History history)
-        {
-            trackMap.put(trackUid, curveOld);
-            invalidateCacheAtTrack(trackUid);
-//            interpCache.remove(trackUid);
-            firePropertyTrackChanged(trackUid);
-        }
-
-        @Override
         public void redo(History history)
         {
             invalidateCacheAtTrack(trackUid);
             trackMap.remove(trackUid);
-//            interpCache.remove(trackUid);
+            firePropertyTrackChanged(trackUid);
+        }
+
+        @Override
+        public void undo(History history)
+        {
+            trackMap.put(trackUid, curveOld);
+            invalidateCacheAtTrack(trackUid);
             firePropertyTrackChanged(trackUid);
         }
 
@@ -1013,6 +963,14 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         }
 
         @Override
+        public void redo(History history)
+        {
+            trackMap.put(trackUid, curveNew);
+            invalidateCacheAtTrack(trackUid);
+            firePropertyTrackChanged(trackUid);
+        }
+
+        @Override
         public void undo(History history)
         {
             invalidateCacheAtTrack(trackUid);
@@ -1024,16 +982,6 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
             {
                 trackMap.put(trackUid, curveOld);
             }
-//            interpCache.remove(trackUid);
-            firePropertyTrackChanged(trackUid);
-        }
-
-        @Override
-        public void redo(History history)
-        {
-            trackMap.put(trackUid, curveNew);
-            invalidateCacheAtTrack(trackUid);
-//            interpCache.remove(trackUid);
             firePropertyTrackChanged(trackUid);
         }
 
@@ -1048,21 +996,14 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
     {
         final PropertyData<PropType> dataOld;
         final PropertyData<PropType> dataNew;
+        final FrameKey synchOld;
 
         public SetValueDirectAction(PropertyData<PropType> dataOld,
                 PropertyData<PropType> dataNew)
         {
             this.dataOld = dataOld;
             this.dataNew = dataNew;
-        }
-
-        @Override
-        public void undo(History history)
-        {
-            invalidateCacheAtDirect();
-            //lastUndoableValue = directValue = dataOld;
-            directValue = dataOld;
-            firePropertyDataChanged(dataNew, dataOld);
+            this.synchOld = synchKey;
         }
 
         @Override
@@ -1070,8 +1011,19 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         {
             invalidateCacheAtDirect();
 //            lastUndoableValue = directValue = dataNew;
+            synchKey = FrameKey.DIRECT;
             directValue = dataNew;
             firePropertyDataChanged(dataOld, dataNew);
+        }
+
+        @Override
+        public void undo(History history)
+        {
+            invalidateCacheAtDirect();
+            //lastUndoableValue = directValue = dataOld;
+            synchKey = synchOld;
+            directValue = dataOld;
+            firePropertyDataChanged(dataNew, dataOld);
         }
 
         @Override

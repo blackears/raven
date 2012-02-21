@@ -20,6 +20,7 @@ package com.kitfox.coyote.shape.tessellator;
  *
  * @author kitfox
  */
+@Deprecated
 public class TessHalfEdge
 {
     TessEdge parent;
@@ -54,7 +55,7 @@ public class TessHalfEdge
     @Override
     public String toString()
     {
-        return "[" + (rightSide ? "right" : "left") + parent.toString() + "]";
+        return "[" + (rightSide ? "right" : "left") + getHead() + "->" + getTail() + " wind:" + parent.windingLevel + "]";
     }
 
 

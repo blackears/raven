@@ -23,6 +23,7 @@ import java.util.HashMap;
  *
  * @author kitfox
  */
+@Deprecated
 public class ContourBuilder
 {
     HashMap<TessPoint, Vertex> edgeMap = new HashMap<TessPoint, Vertex>();

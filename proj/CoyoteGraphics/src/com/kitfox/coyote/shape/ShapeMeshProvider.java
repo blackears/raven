@@ -23,7 +23,8 @@ import com.kitfox.coyote.renderer.CyMaterial;
 import com.kitfox.coyote.renderer.CyVertexBufferDataProvider;
 import com.kitfox.coyote.renderer.CyGLWrapper.BufferUsage;
 import com.kitfox.coyote.renderer.CyGLWrapper.DrawMode;
-import com.kitfox.coyote.shape.tessellator.PathTessellator;
+import com.kitfox.coyote.shape.bezier.path.cut.Coord;
+import com.kitfox.coyote.shape.tessellator2.PathTessellator2;
 import java.lang.ref.SoftReference;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
@@ -108,17 +109,18 @@ public class ShapeMeshProvider extends CyVertexBufferDataProvider
 
         public void build()
         {
-            PathTessellator tess = new PathTessellator();
-            PathFlattener flat = new PathFlattener(tess);
+            PathTessellator2 tess = new PathTessellator2();
+            PathFlattener flat = new PathFlattener(tess, 10000);
 
             flat.feedShape(shape);
 
-            ArrayList<CyVector2d> tris = tess.getTrianglesNonZero();
+            ArrayList<Coord> tris = tess.getTrianglesNonZero();
             HashMap<CyVector2d, Integer> vertMap = new HashMap<CyVector2d, Integer>();
             ArrayList<CyVector2d> vertIdx = new ArrayList<CyVector2d>();
             ArrayList<Integer> eleIdx = new ArrayList<Integer>();
-            for (CyVector2d pt: tris)
+            for (Coord c: tris)
             {
+                CyVector2d pt = new CyVector2d(c.x, c.y);
                 Integer idx = vertMap.get(pt);
                 if (idx == null)
                 {

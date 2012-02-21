@@ -135,6 +135,21 @@ public class BezierLine2d extends BezierCurve2d
     }
 
     @Override
+    public CyVector2d evaluate(double t, CyVector2d pos)
+    {
+        double bx0 = ax0 + t * (ax1 - ax0);
+        double by0 = ay0 + t * (ay1 - ay0);
+
+        if (pos == null)
+        {
+            return new CyVector2d(bx0, by0);
+        }
+        pos.set(bx0, by0);
+        return pos;
+    }
+
+    /*
+    @Override
     public void evaluate(double t, CyVector2d pos, CyVector2d tan)
     {
         double bx0 = ax0 + t * (ax1 - ax0);
@@ -150,6 +165,7 @@ public class BezierLine2d extends BezierCurve2d
             tan.set(ax1 - ax0, ay1 - ay0);
         }
     }
+    */
 
     @Override
     public BezierPoint2d getDerivative()

@@ -76,4 +76,15 @@ public class BezierMeshVertex2i<VertexData>
         return edgesIn.isEmpty() && edgesOut.isEmpty();
     }
 
+    public int getNumEdges()
+    {
+        return edgesIn.size() + edgesOut.size();
+    }
+
+    public BezierMeshEdge2i getEdge(int index)
+    {
+        return index < edgesIn.size() ? edgesIn.get(index)
+                : edgesOut.get(index - edgesIn.size());
+    }
+
 }

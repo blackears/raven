@@ -134,13 +134,13 @@ public class PathOutliner extends PathConsumer
         for (int i = 0; i < pathCore.size(); ++i)
         {
             BezierCurve2d curve = pathCore.get(i);
-            addOffsetWidth(curve, true, pathLeft);
+            addOffsetWidth(curve, true, 0, pathLeft);
         }
 
         for (int i = pathCore.size() - 1; i >= 0; --i)
         {
             BezierCurve2d curve = pathCore.get(i).reverse();
-            addOffsetWidth(curve, true, pathRight);
+            addOffsetWidth(curve, true, 0, pathRight);
         }
 
         //Prepare paths for export
@@ -188,8 +188,10 @@ public class PathOutliner extends PathConsumer
 
     private boolean isParallelEnough(double t, BezierCurve2d base, BezierCurve2d off)
     {
-        base.evaluate(t, pBase, tBase);
-        off.evaluate(t, pOff, null);
+        BezierCurve2d dBase = base.getDerivative();
+        base.evaluate(t, pBase);
+        dBase.evaluate(t, tBase);
+        off.evaluate(t, pOff);
 
         tBase.normalize();
         tBase.rotCCW90();
@@ -199,13 +201,14 @@ public class PathOutliner extends PathConsumer
         return pBase.distanceSquared(pOff) < PARALLEL_EPSILON * PARALLEL_EPSILON;
     }
 
-    private void addOffsetWidth(BezierCurve2d base, boolean join, ArrayList<BezierCurve2d> list)
+    private void addOffsetWidth(BezierCurve2d base, boolean join, int depth, ArrayList<BezierCurve2d> list)
     {
         BezierCurve2d off = base.offset(radius);
 
         if (base instanceof BezierLine2d ||
                 (isParallelEnough(.25, base, off)
-                && isParallelEnough(.75, base, off)))
+                && isParallelEnough(.75, base, off))
+                || depth > 20)
         {
             if (join && !list.isEmpty())
             {
@@ -221,8 +224,8 @@ public class PathOutliner extends PathConsumer
         }
 
         BezierCurve2d[] curves = base.split(.5);
-        addOffsetWidth(curves[0], join, list);
-        addOffsetWidth(curves[1], false, list);
+        addOffsetWidth(curves[0], join, depth + 1, list);
+        addOffsetWidth(curves[1], false, depth + 1, list);
     }
 
     private void addJoin(CyVector2d p0, CyVector2d p1, List<BezierCurve2d> list)

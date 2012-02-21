@@ -14,38 +14,42 @@
  * limitations under the License.
  */
 
-package com.kitfox.coyote.shape.tessellator;
+package com.kitfox.coyote.shape.tessellator2;
+
+import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 
 /**
  *
  * @author kitfox
  */
-@Deprecated
-public class TessEdge
+public class CtrEdge
 {
-    TessVertex p0;
-    TessVertex p1;
+    final CtrVertex v0;
+    final CtrVertex v1;
+//    boolean forward;
+//    CtrEdge peer;
+    final CtrHalfEdge left;
+    final CtrHalfEdge right;
 
-    TessHalfEdge halfRight;
-    TessHalfEdge halfLeft;
-    
-    //Winding level of right side of line.  Winding of left side 
-    // is windingLevel + 1.
-    int windingLevel = Integer.MIN_VALUE;
-
-    public TessEdge(TessVertex p0, TessVertex p1)
+    public CtrEdge(CtrVertex v0, CtrVertex v1)
     {
-        this.p0 = p0;
-        this.p1 = p1;
+        this.v0 = v0;
+        this.v1 = v1;
+        left = new CtrHalfEdge(this, false);
+        right = new CtrHalfEdge(this, true);
+    }
 
-        halfRight = new TessHalfEdge(this, true);
-        halfLeft = new TessHalfEdge(this, false);
+    Coord getOppositeCoord(Coord c)
+    {
+        return v0.coord.equals(c)
+                ? v1.coord : v0.coord;
     }
 
     @Override
     public String toString()
     {
-        return "(" + p0 + "->" + p1 + ") wind:" + windingLevel;
+        return "[" + v0 + "->" + v1 + "]";
     }
+
     
 }
