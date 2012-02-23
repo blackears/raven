@@ -69,7 +69,8 @@ public class CyStroke
     
     public CyPath2d outlineShape(CyShape shape)
     {
-        return outlineShape(shape, 10000);
+//        return outlineShape(shape, 10000);
+        return outlineShape(shape, 2500);
     }
     
     public CyPath2d outlineShape(CyShape shape, double flatnessSquared)

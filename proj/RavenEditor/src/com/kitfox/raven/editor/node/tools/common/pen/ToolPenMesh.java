@@ -126,12 +126,16 @@ public class ToolPenMesh extends ToolPenDelegate
 
     private void applyTangent(MouseEvent evt)
     {
-        int dx = evt.getX() - mouseStart.getX();
-        int dy = evt.getY() - mouseStart.getY();
+        CyVector2d dragPt = xformDev2MeshPoint(
+                new CyVector2d(evt.getX(), evt.getY()), false);
+        
+//        int dx = evt.getX() - mouseStart.getX();
+//        int dy = evt.getY() - mouseStart.getY();
         
         Step step = plan.get(plan.size() - 1);
-        CyVector2d tan = xformDev2MeshPoint(new CyVector2d(dx, dy), false);
-        step.tangent = tan;
+//        CyVector2d tan = xformDev2MeshPoint(new CyVector2d(dx, dy), false);
+        dragPt.sub(step.point);
+        step.tangent = dragPt;
     }
     
     private void commit()
@@ -371,19 +375,30 @@ public class ToolPenMesh extends ToolPenDelegate
         
         //Draw verts
         {
+            CyMatrix4d l2w = getLocalToWorld(null);
+            stack.setModelXform(l2w);
+            
+            CyMatrix4d mv = stack.getModelViewXform();
+            CyMatrix4d proj = stack.getProjXform();
+
+            CyMatrix4d mvp = new CyMatrix4d();
+                
             for (CyVector2d v: verts)
             {
                 CyMaterialColorDrawRecord rec =
                         CyMaterialColorDrawRecordFactory.inst().allocRecord();
 
-                CyMatrix4d l2w = getLocalToWorld(null);
-                stack.setModelXform(l2w);
+                CyVector2d viewVert = new CyVector2d(v);
+                //From mesh space to local space
+                viewVert.scale(1 / 100f);
+                mv.transformPoint(viewVert);
 
-                CyMatrix4d mvp = stack.getModelViewProjXform();
-                mvp.scale(1 / 100.0, 1 / 100.0, 1);
+                mvp.set(proj);
+//                mvp.scale(1 / 100.0, 1 / 100.0, 1);
                 
-                mvp.translate(v.x, v.y, 0);
-                int ptRad = graphLayout.getPointRadiusDisplay() * 200;
+                mvp.translate(viewVert.x, viewVert.y, 0);
+//                int ptRad = graphLayout.getPointRadiusDisplay() * 200;
+                int ptRad = graphLayout.getPointRadiusDisplay() * 2;
                 mvp.scale(ptRad, ptRad, ptRad);
                 mvp.translate(-.5, -.5, 0);
 

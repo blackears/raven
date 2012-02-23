@@ -50,6 +50,8 @@ public class RavenNodeMesh2 extends RavenNodeXformable
             new PropertyWrapper(
             this, PROP_MESH, NetworkMesh.class, new NetworkMesh());
 
+    final double TESS_FLAT_SQ = 2500;
+    
     protected RavenNodeMesh2(int uid)
     {
         super(uid);
@@ -303,7 +305,7 @@ public class RavenNodeMesh2 extends RavenNodeXformable
 //System.err.println("EdgeLayout Out " + path.toString());
             color = CyColor4f.randomRGB();
 //            ShapeLinesProvider prov = new ShapeLinesProvider(path);
-            ShapeMeshProvider prov = new ShapeMeshProvider(pathStroked, NetworkMesh.FLATNESS_SQ);
+            ShapeMeshProvider prov = new ShapeMeshProvider(pathStroked, TESS_FLAT_SQ);
             vertBuf = new CyVertexBuffer(prov);
             
         }
@@ -319,7 +321,7 @@ public class RavenNodeMesh2 extends RavenNodeXformable
         {
             this.path = path;
             this.color = color;
-            ShapeMeshProvider prov = new ShapeMeshProvider(path);
+            ShapeMeshProvider prov = new ShapeMeshProvider(path, TESS_FLAT_SQ);
             vertBuf = new CyVertexBuffer(prov);
         }        
     }
