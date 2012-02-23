@@ -37,7 +37,79 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * The PropertyWrapper extends the concept of a Java property by encapsulating
+ * it in an object and adding some important information.  PropertyWrappers 
+ * are the way NodeObjects declare and publish their properties.
  *
+ * <p>PropertyWrappers manage a property.  The property value will ideally be immutable,
+ * and if it isn't, it should be treated as if it is.  (An immutable object 
+ * is one who's internal data doesn't change after it's been constructed.  A 
+ * {@link java.lang.String} is immutable; a {@link java.awt.Point} is not). 
+ * The values the properties manage must be 
+ * effectively immutable because the PropertyWrapper
+ * will only know if the value changes if its set*() methods are called.  If
+ * you change the internal data of the value directly, the animation
+ * system has no way of knowing that the value has changed.</p>
+ * 
+ * <p>PropertyWrappers not only track the current value of a property, but how
+ * it is accessed too.  It does this by wrapping each value that is tracks
+ * in a PropertyData class.  By using the appropriate {@link PropertyData}, you can
+ * store the value directly on the object, pull it from the 
+ * {@link com.kitfox.raven.util.resource.ResourceCache}, 
+ * or create a reference to another node in your scene.  In fact, the
+ * PropertyWrapper tracks {@link PropertyData} objects via the getData*() and 
+ * setData*() methods, and provides the getValue*() and setValue*() methods
+ * as a convenience.</p>
+ * 
+ * <p>When you set the property data, you have the option of recording your change
+ * in the {@link History}.  You can indicate this by setting the history flag
+ * in the set*() methods.  When you do this, an action will be created and 
+ * added to the current project's history queue.  While you will usually want
+ * to submit most of your changes to history, there are times when you may want
+ * to bypass it - for example, an interactive tool that lets the user scrub
+ * through many values to get feedback on how their changes affect things.
+ * (In these cases, you will usually want to set the intermediate values without
+ * using history and only set a value with history at the end when the user
+ * finishes.)</p>
+ * 
+ * <p>The PropertyWrapper keeps track of both its current value (called the 
+ * 'direct' value) and animated track based values.  A track is a series of key
+ * values which are interpolated to determine intermediate values.
+ * Tracks are defined on the root Symbol, and so all NodeObjects within your
+ * symbol use the same set of tracks.  Since all {@link Track}s are
+ * ordinary NodeObjects, the PropertyWrapper simply uses their node ID to keep
+ * track of them.  The direct value is a special additional value that is used
+ * to indicate the editing value of the property and is also used whenever
+ * you refer to a {@link FrameKey} that is not defined by this property's 
+ * tracks.</p>
+ * 
+ * <p>To keep things running quickly, the PropertyWrapper does a lot of caching.
+ * Each interpolated frame within each track - the direct value as well -
+ * have a {@link ValueCache} that keeps track of their values.  Whenever you
+ * call a get*() method, the cache if first checked to see if a 
+ * {@link ValueCache} has already been created, and if not will create one.
+ * This way interpolated values that have been calculated once will not need
+ * to be calculated again.  The {@link ValueCache} also allows the user 
+ * to store custom data on it - this allows a NodeObject to derive custom
+ * objects from the PropertyWrapper data and store them along side them in 
+ * the cache.  Whenever a {@link FramKey} is determined to be invalid, its 
+ * cache is erased and everything must be recalculated.</p>
+ * 
+ * <p>When a property is animated, its direct value (ie, current value) is 
+ * repeatedly updated to the current {@link FrameKey}.  This is done by
+ * calling the synchToTrack() method.  When this happens, the property's
+ * tracks are checked to see if they provide an interpolated value for this 
+ * frame.  If they do, it is copied into the direct value.  The direct value
+ * also becomes synchronized, which means that all get operations will 
+ * draw from the {@link ValueCache} of the synchronized {@link FrameKey}.
+ * The synchronization will be broken the next time a set*() method is called.</p>
+ * 
+ * <p>The PropertyWrapper also handles serialization of properties within the
+ * NodeObject.  When you declare a PropertyWrapper, you must pass it the
+ * class of the property being managed.  When it needs to load or save a
+ * property value, it will use this class to look for a corresponding 
+ * {@link PropertyProvider}, which it will delegate to.</p>
+ * 
  * @author kitfox
  */
 public class PropertyWrapper<NodeType extends NodeObject, PropType>

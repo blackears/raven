@@ -260,4 +260,6 @@ abstract public class BezierCurve2i
         return dx * dx + dy * dy;
     }
 
+    abstract public boolean isPoint();
+
 }

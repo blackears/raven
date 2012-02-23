@@ -296,12 +296,14 @@ public class RavenNodeMesh2 extends RavenNodeXformable
 //System.err.println("EdgeLayout In " + path.toString());
 
             CyStroke stroke = new CyStroke(100);
-            path = stroke.outlineShape(path);
+            CyPath2d pathStroked = stroke.outlineShape(path);
             
+//System.err.println("Edge " + path.toString());
+//System.err.println("Stroked " + pathStroked.toString());
 //System.err.println("EdgeLayout Out " + path.toString());
             color = CyColor4f.randomRGB();
 //            ShapeLinesProvider prov = new ShapeLinesProvider(path);
-            ShapeMeshProvider prov = new ShapeMeshProvider(path);
+            ShapeMeshProvider prov = new ShapeMeshProvider(pathStroked, NetworkMesh.FLATNESS_SQ);
             vertBuf = new CyVertexBuffer(prov);
             
         }

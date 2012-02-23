@@ -237,6 +237,12 @@ public class BezierPoint2i extends BezierCurve2i
     }
 
     @Override
+    public boolean isPoint()
+    {
+        return true;
+    }
+
+    @Override
     public String toString()
     {
         return String.format("point {(%d, %d)}",

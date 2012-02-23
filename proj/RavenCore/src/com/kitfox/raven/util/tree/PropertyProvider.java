@@ -17,6 +17,9 @@
 package com.kitfox.raven.util.tree;
 
 /**
+ * Defines a property used by the RavenDocument.  Provides methods to
+ * serialize properties, create property editors and to interpolate
+ * properties between keyframes.
  *
  * @author kitfox
  */

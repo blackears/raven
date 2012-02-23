@@ -45,7 +45,8 @@ public class NetworkMesh extends BezierMesh2i<NetworkDataVertex, NetworkDataEdge
     public static final String PROP_DATAKEYS = "dataKeys";
     public static final String PROP_DATAVALS = "dataVals";
     
-    public static final double FLATNESS_SQ = 4;
+    //Default resolution of 2 pixels (ie 200 * 200)
+    public static final double FLATNESS_SQ = 40000;
 
     public NetworkMesh()
     {

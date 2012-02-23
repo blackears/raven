@@ -267,19 +267,19 @@ public class CyPath2d extends CyShape
             switch (it.next(coords))
             {
                 case MOVETO:
-                    pw.print("m " + coords[0] + " " + coords[1]);
+                    pw.print("M " + coords[0] + " " + coords[1]);
                     break;
                 case LINETO:
-                    pw.print("l " + coords[0] + " " + coords[1]);
+                    pw.print("L " + coords[0] + " " + coords[1]);
                     break;
                 case QUADTO:
-                    pw.print("q " 
+                    pw.print("Q " 
                             + coords[0] + " " + coords[1] + ", "
                             + coords[2] + " " + coords[3]
                             );
                     break;
                 case CUBICTO:
-                    pw.print("c " 
+                    pw.print("C " 
                             + coords[0] + " " + coords[1] + ", "
                             + coords[2] + " " + coords[3] + ", "
                             + coords[4] + " " + coords[5]

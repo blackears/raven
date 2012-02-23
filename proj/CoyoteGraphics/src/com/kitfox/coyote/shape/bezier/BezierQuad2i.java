@@ -201,6 +201,11 @@ public class BezierQuad2i extends BezierCurve2i
     @Override
     public double getCurvatureSquared()
     {
+        if (ax2 == ax0 && ay2 == ay0)
+        {
+            return Math2DUtil.distSquared(ax1, ay1, ax0, ay0);
+        }
+        
         return Math2DUtil.distPointLineSquared(ax1, ay1,
                 ax0, ay0, ax2 - ax0, ay2 - ay0);
     }
@@ -220,18 +225,30 @@ public class BezierQuad2i extends BezierCurve2i
         CyVector2d p0 = new CyVector2d();
         CyVector2d t0 = new CyVector2d();
         evaluate(0, p0, t0);
+        if (t0.lengthSquared() == 0)
+        {
+            t0.x = 1;
+        }
         t0.normalize();
         t0.scale(width);
 
         CyVector2d p2 = new CyVector2d();
         CyVector2d t2 = new CyVector2d();
         evaluate(1, p2, t2);
+        if (t2.lengthSquared() == 0)
+        {
+            t2.x = 1;
+        }
         t2.normalize();
         t2.scale(width);
 
         CyVector2d pm = new CyVector2d();
         CyVector2d tm = new CyVector2d();
         evaluate(.5, pm, tm);
+        if (tm.lengthSquared() == 0)
+        {
+            tm.x = 1;
+        }
         tm.normalize();
         tm.scale(width);
 
@@ -380,6 +397,13 @@ public class BezierQuad2i extends BezierCurve2i
     public BezierQuad2i setEndPoints(int x0, int y0, int x1, int y1)
     {
         return new BezierQuad2i(x0, y0, ax1, ay1, x1, y1);
+    }
+
+    @Override
+    public boolean isPoint()
+    {
+        return ax0 == ax1 && ax0 == ax2
+                && ay0 == ay1 && ay0 == ay2;
     }
 
     @Override

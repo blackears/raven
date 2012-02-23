@@ -73,9 +73,12 @@ public class PathFlattener extends PathConsumer
     @Override
     public void lineTo(double x0, double y0)
     {
-        out.lineTo(x0, y0);
-        mx = x0;
-        my = y0;
+        if (!(x0 == mx && y0 == my))
+        {
+            out.lineTo(x0, y0);
+            mx = x0;
+            my = y0;
+        }
     }
 
     @Override

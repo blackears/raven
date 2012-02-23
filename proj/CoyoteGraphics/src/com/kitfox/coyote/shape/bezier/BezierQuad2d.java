@@ -211,6 +211,11 @@ public class BezierQuad2d extends BezierCurve2d
     @Override
     public double getCurvatureSquared()
     {
+        if (ax2 == ax0 && ay2 == ay0)
+        {
+            return Math2DUtil.distSquared(ax1, ay1, ax0, ay0);
+        }
+        
         return Math2DUtil.distPointLineSquared(ax1, ay1,
                 ax0, ay0, ax2 - ax0, ay2 - ay0);
     }
@@ -227,6 +232,10 @@ public class BezierQuad2d extends BezierCurve2d
         CyVector2d t0 = new CyVector2d();
         evaluate(0, p0);
         t0.set(getTanInX(), getTanInY());
+        if (t0.lengthSquared() == 0)
+        {
+            t0.x = 1;
+        }
 //        dc.evaluate(0, t0);
         t0.normalize();
         t0.scale(width);
@@ -236,6 +245,10 @@ public class BezierQuad2d extends BezierCurve2d
         evaluate(1, p2);
         t2.set(getTanOutX(), getTanOutY());
 //        dc.evaluate(1, t2);
+        if (t2.lengthSquared() == 0)
+        {
+            t2.x = 1;
+        }
         t2.normalize();
         t2.scale(width);
 
@@ -246,6 +259,10 @@ public class BezierQuad2d extends BezierCurve2d
         if (tm.lengthSquared() == 0)
         {
             tm.set(ax2 - ax0, ay2 - ay0);
+        }
+        if (tm.lengthSquared() == 0)
+        {
+            tm.x = 1;
         }
         tm.normalize();
         tm.scale(width);

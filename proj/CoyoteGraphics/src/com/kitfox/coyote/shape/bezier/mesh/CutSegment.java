@@ -50,6 +50,10 @@ public class CutSegment<EdgeData>
         {
             list = new ArrayList<CutSegment>();
         }
+        if (curve.isPoint())
+        {
+            return list;
+        }
         createSegments(curve, data, flatnessSquared, 0, 1, list);
         return list;
     }
@@ -60,11 +64,13 @@ public class CutSegment<EdgeData>
     {
         if (curve.getCurvatureSquared() <= flatnessSquared)
         {
-            CutSegment seg = new CutSegment(t0, t1, 
-                    new Coord(curve.getStartX(), curve.getStartY()), 
-                    new Coord(curve.getEndX(), curve.getEndY()),
-                    data);
-            list.add(seg);
+            Coord c0 = new Coord(curve.getStartX(), curve.getStartY());
+            Coord c1 = new Coord(curve.getEndX(), curve.getEndY());
+            if (!c0.equals(c1))
+            {
+                CutSegment seg = new CutSegment(t0, t1, c0, c1, data);
+                list.add(seg);
+            }
             return;
         }
         

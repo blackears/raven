@@ -16,6 +16,10 @@
 
 package com.kitfox.coyote.shape.tessellator2;
 
+import com.kitfox.coyote.renderer.CyFramebufferTexture;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * Left edges flow in the same direction as their parent and
  * right edges flow backward.  The left side of a line is
@@ -53,12 +57,16 @@ public class CtrHalfEdge
             return;
         }
 
-        //Make sure this edge has its untouched value
-if (this.winding != Integer.MIN_VALUE)
-{
-    int j = 9;
-}
-        assert this.winding == Integer.MIN_VALUE : "Setting edge to different winding";
+        if (this.winding != Integer.MIN_VALUE)
+        {
+            //If everything is going well, we should only call this method when
+            // the winding level is not set yet, or with a value equal to the 
+            // already assigned winding value.
+            //Some badly formed shapes seem to be breaking this.
+            Logger.getLogger(CtrHalfEdge.class.getName()).log(Level.WARNING, "Setting edge to different winding");
+            return;
+        }
+//        assert this.winding == Integer.MIN_VALUE : "Setting edge to different winding";
         
         this.winding = winding;
         if (right)

@@ -63,6 +63,8 @@ public class CutSegment
         
         double tm = (t0 + t1) / 2;
         BezierCurve2i[] curves = curve.split(.5);
+//TODO: stack overflow here
+//System.err.println(curve);
         createSegments(curves[0], flatnessSquared,
                 t0, tm, list);
         createSegments(curves[1], flatnessSquared,

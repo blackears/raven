@@ -141,9 +141,15 @@ public class BezierMesh2i<VertexData, EdgeData>
     
     public ArrayList<BezierMeshEdge2i> addEdge(BezierCurve2i curve, EdgeData data)
     {
+        if (curve.isPoint())
+        {
+            return new ArrayList<BezierMeshEdge2i>();
+        }
+        
         ArrayList<BezierCurve2i> insertCurves = new ArrayList<BezierCurve2i>();
         insertCurves.add(curve);
         
+        //Cut existing curves and collect list of curves to insert
         ArrayList<BezierMeshEdge2i> initEdges = getEdges();
         for (BezierMeshEdge2i e1: initEdges)
         {
@@ -171,6 +177,10 @@ public class BezierMesh2i<VertexData, EdgeData>
                     for (int j = 0; j < cuts1.length; ++j)
                     {
                         BezierCurve2i cm = cuts1[j];
+                        if (cm.isPoint())
+                        {
+                            continue;
+                        }
                         addEdgeDirect(cm, e1.getData());
                     }
                 }
@@ -178,8 +188,19 @@ public class BezierMesh2i<VertexData, EdgeData>
                 if (cuts0.length > 1)
                 {
                     insertCurves.remove(i);
-                    insertCurves.addAll(i, Arrays.asList(cuts0));
-                    i += cuts0.length - 1;
+                    --i;
+                    for (int j = 0; j < cuts0.length; ++j)
+                    {
+                        if (cuts0[j].isPoint())
+                        {
+                            continue;
+                        }
+                        ++i;
+                        insertCurves.add(i, cuts0[j]);
+                    }
+                    
+//                    insertCurves.addAll(i, Arrays.asList(cuts0));
+//                    i += cuts0.length - 1;
                 }
             }
         }

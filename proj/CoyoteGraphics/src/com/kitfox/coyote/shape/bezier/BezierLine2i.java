@@ -318,6 +318,12 @@ public class BezierLine2i extends BezierCurve2i
     }
 
     @Override
+    public boolean isPoint()
+    {
+        return ax0 == ax1 && ay0 == ay1;
+    }
+
+    @Override
     public String toString()
     {
         return String.format("line {(%d, %d)(%d, %d)}",

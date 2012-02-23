@@ -42,6 +42,8 @@ public class PathOutliner extends PathConsumer
     private final CyStrokeJoin join;
     private final double miterLimit;
 
+    final double flatnessSquared;
+    
     //Incoming point and tangent
     double mx;
     double my;
@@ -50,13 +52,16 @@ public class PathOutliner extends PathConsumer
 
     ArrayList<BezierCurve2d> pathCore = new ArrayList<BezierCurve2d>();
 
-    public PathOutliner(PathConsumer out, double radius, CyStrokeCap cap, CyStrokeJoin join, double miterLimit)
+    public PathOutliner(PathConsumer out, double radius, 
+            CyStrokeCap cap, CyStrokeJoin join, double miterLimit,
+            double flatnessSquared)
     {
         this.out = out;
         this.radius = radius;
         this.cap = cap;
         this.join = join;
         this.miterLimit = miterLimit;
+        this.flatnessSquared = flatnessSquared;
     }
 
     @Override
@@ -184,7 +189,7 @@ public class PathOutliner extends PathConsumer
     CyVector2d pBase = new CyVector2d();
     CyVector2d tBase = new CyVector2d();
     CyVector2d pOff = new CyVector2d();
-    private static final double PARALLEL_EPSILON = .01;
+    private static final double EPSILON = .01;
 
     private boolean isParallelEnough(double t, BezierCurve2d base, BezierCurve2d off)
     {
@@ -193,12 +198,16 @@ public class PathOutliner extends PathConsumer
         dBase.evaluate(t, tBase);
         off.evaluate(t, pOff);
 
+        if (tBase.lengthSquared() == 0)
+        {
+            return true;
+        }
         tBase.normalize();
         tBase.rotCCW90();
         tBase.scale(radius);
         pBase.add(tBase);
 
-        return pBase.distanceSquared(pOff) < PARALLEL_EPSILON * PARALLEL_EPSILON;
+        return pBase.distanceSquared(pOff) < flatnessSquared;
     }
 
     private void addOffsetWidth(BezierCurve2d base, boolean join, int depth, ArrayList<BezierCurve2d> list)
@@ -230,7 +239,7 @@ public class PathOutliner extends PathConsumer
 
     private void addJoin(CyVector2d p0, CyVector2d p1, List<BezierCurve2d> list)
     {
-        if (p0.distanceSquared(p1) < PARALLEL_EPSILON * PARALLEL_EPSILON)
+        if (p0.distanceSquared(p1) < flatnessSquared)
         {
             //If close enough, ignore
             return;
@@ -334,7 +343,7 @@ public class PathOutliner extends PathConsumer
 
                 //Check to see if we are nearly parallel
                 double det = t0.x * t1.y - t0.y * t1.x;
-                if (det * det < PARALLEL_EPSILON * PARALLEL_EPSILON)
+                if (det * det < EPSILON)
                 {
                     //Tangents are nearly parallel.  Draw a semi circle
                     CyVector2d tan = new CyVector2d(d);
@@ -358,7 +367,7 @@ public class PathOutliner extends PathConsumer
 
     private void addCap(CyVector2d p0, CyVector2d p1, List<BezierCurve2d> list)
     {
-        if (p0.distanceSquared(p1) < PARALLEL_EPSILON * PARALLEL_EPSILON)
+        if (p0.equals(p1))
         {
             //If close enough, ignore
             return;

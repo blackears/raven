@@ -39,10 +39,17 @@ public class ShapeMeshProvider extends CyVertexBufferDataProvider
 {
     CyShape shape;
     SoftReference<BufferInfo> bufferInfo;
+    double flatnessSquared;
+
+    public ShapeMeshProvider(CyShape shape, double flatnessSquared)
+    {
+        this.shape = shape;
+        this.flatnessSquared = flatnessSquared;
+    }
 
     public ShapeMeshProvider(CyShape shape)
     {
-        this.shape = shape;
+        this(shape, 10000);
     }
 
     private BufferInfo getBufferInfo()
@@ -110,7 +117,7 @@ public class ShapeMeshProvider extends CyVertexBufferDataProvider
         public void build()
         {
             PathTessellator2 tess = new PathTessellator2();
-            PathFlattener flat = new PathFlattener(tess, 10000);
+            PathFlattener flat = new PathFlattener(tess, flatnessSquared);
 
             flat.feedShape(shape);
 

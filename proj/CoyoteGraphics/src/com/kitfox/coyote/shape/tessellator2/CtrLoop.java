@@ -142,17 +142,49 @@ public class CtrLoop
         }
         boolean ccw = area > 0;
         
+        //Remove verts which are in the middle of a straight line
+        for (int i = 0; i < verts.size(); ++i)
+        {
+            int prevIdx = i == 0 ? verts.size() - 1 : i - 1;
+            int nextIdx = i == verts.size() - 1 ? 0 : i + 1;
+            
+            Coord c0 = verts.get(prevIdx);
+            Coord c1 = verts.get(i);
+            Coord c2 = verts.get(nextIdx);
+            
+            int dx10 = c1.x - c0.x;
+            int dy10 = c1.y - c0.y;
+            int dx21 = c2.x - c1.x;
+            int dy21 = c2.y - c1.y;
+
+            if (dx10 * dx21 < 0 || dy10 * dy21 < 0)
+            {
+                //c1 is not within bounding box of [c0 c2]
+                continue;
+            }
+            
+            if (dx10 * dy21 != dx21 * dy10)
+            {
+                //Not colinear
+                continue;
+            }
+            
+            //Remove vert
+            verts.remove(i);
+            --i;
+        }
+        
         //Build tris
         while (verts.size() > 2)
         {
-            int size = verts.size();
+            int cacheSize = verts.size();
             
             NEXT_POINT:
             for (int i = 0; i < verts.size(); ++i)
             {
-                int i0 = i;
-                int i1 = i + 1 >= size ? i + 1 - size : i + 1;
-                int i2 = i + 2 >= size ? i + 2 - size : i + 2;
+                int i0 = i == 0 ? verts.size() - 1 : i - 1;
+                int i1 = i;
+                int i2 = i == verts.size() - 1 ? 0 : i + 1;
                 Coord c0 = verts.get(i0);
                 Coord c1 = verts.get(i1);
                 Coord c2 = verts.get(i2);
@@ -180,6 +212,13 @@ public class CtrLoop
                 triList.add(c1);
                 triList.add(c2);
                 break;
+            }
+            
+            if (cacheSize == verts.size())
+            {
+                //TODO: Went through entire list without finding any trianges
+                // to export.  Perhaps face is self intersecting?
+                return;
             }
         }
     }

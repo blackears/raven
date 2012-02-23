@@ -263,6 +263,12 @@ public class BezierCubic2d extends BezierCurve2d
     @Override
     public double getCurvatureSquared()
     {
+        if (ax3 == ax0 && ay3 == ay0)
+        {
+            return Math.max(Math2DUtil.distSquared(ax1, ay1, ax0, ay0),
+            Math2DUtil.distSquared(ax2, ay2, ax0, ay0));
+        }
+        
         return Math.max(Math2DUtil.distPointLineSquared(
                 ax1, ay1,
                 ax0, ay0, ax3 - ax0, ay3 - ay0),
@@ -284,6 +290,10 @@ public class BezierCubic2d extends BezierCurve2d
         evaluate(0, p0);
         t0.set(getTanInX(), getTanInY());
 //        dc.evaluate(0, t0);
+        if (t0.lengthSquared() == 0)
+        {
+            t0.x = 1;
+        }
         t0.normalize();
         t0.scale(width);
 
@@ -292,6 +302,10 @@ public class BezierCubic2d extends BezierCurve2d
         evaluate(1, p3);
         t3.set(getTanOutX(), getTanOutY());
 //        dc.evaluate(1, t3);
+        if (t3.lengthSquared() == 0)
+        {
+            t3.x = 1;
+        }
         t3.normalize();
         t3.scale(width);
 
@@ -302,6 +316,10 @@ public class BezierCubic2d extends BezierCurve2d
         if (tm.lengthSquared() == 0)
         {
             tm.set(ax3 - ax0, ay3 - ay0);
+        }
+        if (tm.lengthSquared() == 0)
+        {
+            tm.x = 1;
         }
         tm.normalize();
         tm.scale(width);
@@ -352,6 +370,17 @@ public class BezierCubic2d extends BezierCurve2d
         // s = T^-1 (8 * pm - 4 * p0 - 4 * p3) / 3
 
         CyMatrix2d T = new CyMatrix2d(t0.x, t0.y, t1.x, t1.y);
+        
+        if (T.determinant() == 0)
+        {
+            //Tangents are parallel.  Cannot solve eqn, so fit to quad
+            BezierQuad2d curve = new BezierQuad2d(
+                    p0.x, p0.y,
+                    (4 * pm.x - p0.x - p1.x) / 2, (4 * pm.y - p0.y - p1.y) / 2, 
+                    p1.x, p1.y);
+            return curve.asCubic();
+        }
+        
         T.invert();
         CyVector2d s = new CyVector2d(
                 8 * pm.x - 4 * (p0.x + p1.x),
