@@ -30,6 +30,7 @@ import java.awt.Stroke;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenNodeStroke extends RavenNode
         implements RavenStroke
 {

@@ -61,6 +61,23 @@ public class NumberText
         return list;
     }
 
+    public static double[] findDoubleArray(String text)
+    {
+        ArrayList<Double> values = new ArrayList<Double>();
+        Matcher match = Pattern.compile(REGEX_FLOAT).matcher(text);
+        while (match.find())
+        {
+            values.add(Double.parseDouble(match.group()));
+        }
+
+        double[] list = new double[values.size()];
+        for (int i = 0; i < list.length; ++i)
+        {
+            list[i] = values.get(i);
+        }
+        return list;
+    }
+
     public static String asStringCodeGen(float[] list)
     {
         if (list == null)

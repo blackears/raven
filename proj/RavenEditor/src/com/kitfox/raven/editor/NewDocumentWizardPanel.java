@@ -149,10 +149,16 @@ public class NewDocumentWizardPanel extends JPanel
 
             NodeDocumentProvider provider = (NodeDocumentProvider)value;
             setOpaque(true);
-            UIDefaults def = UIManager.getDefaults();
-            setBackground(isSelected
-                ? def.getColor("ComboBox.selectionBackground")
-                : def.getColor("ComboBox.background"));
+            if (isSelected)
+            {
+                setBackground(list.getSelectionBackground());
+                setForeground(list.getSelectionForeground());
+            }
+            else
+            {
+                setBackground(list.getBackground());
+                setForeground(list.getForeground());
+            }
 
             if (provider == null)
             {

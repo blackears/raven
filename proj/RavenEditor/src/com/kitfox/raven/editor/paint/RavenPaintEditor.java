@@ -36,6 +36,7 @@ import java.awt.Rectangle;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenPaintEditor extends PropertyWrapperEditor<RavenPaint>
 {
     PropertyData<RavenPaint> customPaintCache;

@@ -18,10 +18,10 @@ package com.kitfox.raven.editor.node.tools.common;
 
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.shape.CyRectangle2d;
-import com.kitfox.game.control.color.PaintLayout;
 import com.kitfox.raven.editor.node.tools.ToolService;
-import com.kitfox.raven.editor.paint.RavenPaint;
-import com.kitfox.raven.editor.stroke.RavenStroke;
+import com.kitfox.raven.paint.RavenPaint;
+import com.kitfox.raven.paint.RavenPaintLayout;
+import com.kitfox.raven.paint.RavenStroke;
 import com.kitfox.raven.util.Intersection;
 
 /**
@@ -49,18 +49,18 @@ public interface ServiceMaterial extends ToolService
      * if not (or if it does not apply)
      */
     public RavenPaint getMaterialFacePaint(Integer subselection);
-    public PaintLayout getMaterialFaceLayout(Integer subselection);
+    public RavenPaintLayout getMaterialFaceLayout(Integer subselection);
 
     public CyRectangle2d getMaterialEdgeBounds(Integer subselection);
     public RavenStroke getMaterialEdgeStroke(Integer subselection);
     public RavenPaint getMaterialEdgePaint(Integer subselection);
-    public PaintLayout getMaterialEdgeLayout(Integer subselection);
+    public RavenPaintLayout getMaterialEdgeLayout(Integer subselection);
 
     public void setMaterialFacePaint(Integer subselection, RavenPaint value, boolean history);
-    public void setMaterialFaceLayout(Integer subselection, PaintLayout value, boolean history);
+    public void setMaterialFaceLayout(Integer subselection, RavenPaintLayout value, boolean history);
     public void setMaterialEdgeStroke(Integer subselection, RavenStroke value, boolean history);
     public void setMaterialEdgePaint(Integer subselection, RavenPaint value, boolean history);
-    public void setMaterialEdgeLayout(Integer subselection, PaintLayout value, boolean history);
+    public void setMaterialEdgeLayout(Integer subselection, RavenPaintLayout value, boolean history);
 
     /**
      * Sets all components of the shape within given area to the given

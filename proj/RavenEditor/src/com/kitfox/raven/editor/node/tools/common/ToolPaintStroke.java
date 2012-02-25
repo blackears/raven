@@ -34,6 +34,7 @@ import com.kitfox.raven.shape.builders.BitmapOutliner;
 import com.kitfox.raven.shape.builders.StrokeBuffer;
 import com.kitfox.raven.shape.path.PathCurve;
 import com.kitfox.rabbit.util.NumberText;
+import com.kitfox.raven.paint.RavenPaintLayout;
 import com.kitfox.raven.util.service.ServiceInst;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
@@ -359,7 +360,7 @@ public class ToolPaintStroke extends ToolDisplay
                 }
 
                 nodePath.paint.setData(doc.fillPaint.getData());
-                nodePath.paintLayout.setValue(new PaintLayoutTexture(nodePath.getBoundsLocal()));
+                nodePath.paintLayout.setValue(new RavenPaintLayout(nodePath.getBoundsLocal()));
                 nodePath.centerPivot(true);
 
                 if (parentGroupNode != null)

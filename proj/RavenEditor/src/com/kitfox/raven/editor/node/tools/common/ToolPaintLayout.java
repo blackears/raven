@@ -18,23 +18,15 @@ package com.kitfox.raven.editor.node.tools.common;
 
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.shape.CyRectangle2d;
-import com.kitfox.game.control.color.MultipleGradientStops.Style;
-import com.kitfox.game.control.color.PaintLayout;
-import com.kitfox.game.control.color.PaintLayoutLinear;
-import com.kitfox.game.control.color.PaintLayoutRadial;
-import com.kitfox.game.control.color.PaintLayoutTexture;
 import com.kitfox.raven.editor.RavenEditor;
-import com.kitfox.raven.editor.node.scene.RavenNodePaint;
 import com.kitfox.raven.editor.node.tools.ToolProvider;
 import com.kitfox.raven.editor.node.tools.ToolUser;
 import com.kitfox.raven.editor.node.tools.common.select.PaintLayoutManipulator;
 import com.kitfox.raven.editor.node.tools.common.select.PaintLayoutManipulator.MaterialElement;
 import com.kitfox.raven.editor.node.tools.common.select.PaintLayoutManipulatorHandle;
-import com.kitfox.raven.editor.node.tools.common.select.PaintLayoutManipulatorLinear;
-import com.kitfox.raven.editor.node.tools.common.select.PaintLayoutManipulatorRadial;
 import com.kitfox.raven.editor.node.tools.common.select.PaintLayoutManipulatorTexture;
-import com.kitfox.raven.editor.paint.RavenPaint;
-import com.kitfox.raven.editor.paint.RavenPaintGradient;
+import com.kitfox.raven.paint.RavenPaint;
+import com.kitfox.raven.paint.RavenPaintLayout;
 import com.kitfox.raven.shape.bezier.BezierNetwork;
 import com.kitfox.raven.util.Intersection;
 import com.kitfox.raven.util.Selection;
@@ -275,7 +267,7 @@ public class ToolPaintLayout extends ToolDisplay
 //        PlaneDataProvider prov;
 
         RavenPaint paint;
-        PaintLayout layout;
+        RavenPaintLayout layout;
         if (toolProvider.isStrokeMode())
         {
             paint = ele.getEdgePaint();
@@ -296,17 +288,17 @@ public class ToolPaintLayout extends ToolDisplay
         if (layout == null)
         {
             CyRectangle2d bounds = getCombinedBoundsWorld(eleList);
-            layout = new PaintLayoutTexture(bounds);
+            layout = new RavenPaintLayout(bounds);
         }
 
 
-        //Force the layout to be the appropriate type for the current
-        // paint
-        if (paint instanceof RavenNodePaint)
-        {
-            paint = ((RavenNodePaint)paint).createPaint();
-        }
-
+//        //Force the layout to be the appropriate type for the current
+//        // paint
+//        if (paint instanceof RavenNodePaint)
+//        {
+//            paint = ((RavenNodePaint)paint).createPaint();
+//        }
+//
 //        if (paint instanceof RavenPaintGradient)
 //        {
 //            Style style = ((RavenPaintGradient)paint).getGradient().getStops().getStyle();
@@ -327,7 +319,7 @@ public class ToolPaintLayout extends ToolDisplay
 //        {
             manip = new PaintLayoutManipulatorTexture(eleList,
                     toolProvider.isStrokeMode(),
-                    PaintLayoutTexture.create(layout));
+                    layout);
 //        }
     }
 

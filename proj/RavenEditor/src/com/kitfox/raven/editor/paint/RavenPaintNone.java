@@ -28,6 +28,7 @@ import java.awt.geom.AffineTransform;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenPaintNone extends RavenPaintInline
 {
     public static RavenPaintNone PAINT = new RavenPaintNone();

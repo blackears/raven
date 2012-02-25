@@ -32,6 +32,7 @@ import java.beans.PropertyChangeListener;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenPaintInlinePanel extends javax.swing.JPanel
         implements PropertyChangeListener
 {

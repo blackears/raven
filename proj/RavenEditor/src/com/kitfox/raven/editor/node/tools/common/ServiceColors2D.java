@@ -20,8 +20,8 @@ import com.kitfox.raven.editor.node.scene.RavenNodePaintLibrary;
 import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
 import com.kitfox.raven.editor.node.scene.RavenNodeStrokeLibrary;
 import com.kitfox.raven.editor.node.tools.ToolService;
-import com.kitfox.raven.editor.paint.RavenPaint;
-import com.kitfox.raven.editor.stroke.RavenStroke;
+import com.kitfox.raven.paint.RavenPaint;
+import com.kitfox.raven.paint.RavenStroke;
 import com.kitfox.raven.util.tree.PropertyWrapper;
 
 /**

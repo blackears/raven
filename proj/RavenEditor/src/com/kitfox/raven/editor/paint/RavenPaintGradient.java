@@ -40,6 +40,7 @@ import java.awt.geom.AffineTransform;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenPaintGradient extends RavenPaintInline
 {
     private final MultipleGradientStyle gradient;

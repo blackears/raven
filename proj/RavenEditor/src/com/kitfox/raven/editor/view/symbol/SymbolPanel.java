@@ -24,7 +24,7 @@ import com.kitfox.raven.editor.RavenDocumentWeakListener;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.RavenEditorListener;
 import com.kitfox.raven.editor.RavenEditorWeakListener;
-import com.kitfox.raven.editor.RavenSwingUtil;
+import com.kitfox.raven.util.RavenSwingUtil;
 import com.kitfox.raven.util.tree.NodeDocument;
 import com.kitfox.raven.util.undo.History;
 import com.kitfox.raven.util.undo.HistoryAction;
@@ -337,10 +337,16 @@ public class SymbolPanel extends javax.swing.JPanel
                 JList list, Object value, int index, 
                 boolean isSelected, boolean cellHasFocus)
         {
-            UIDefaults def = UIManager.getDefaults();
-            setBackground(isSelected
-                ? def.getColor("List.selectionBackground")
-                : def.getColor("List.background"));
+            if (isSelected)
+            {
+                setBackground(list.getSelectionBackground());
+                setForeground(list.getSelectionForeground());
+            }
+            else
+            {
+                setBackground(list.getBackground());
+                setForeground(list.getForeground());
+            }
             
             NodeDocument doc = (NodeDocument)value;
             String name = doc.getDocumentName();

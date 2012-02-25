@@ -39,8 +39,6 @@ import javax.script.ScriptException;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
-import javax.swing.UIDefaults;
-import javax.swing.UIManager;
 
 /**
  *
@@ -372,10 +370,16 @@ public class ConsolePanel extends javax.swing.JPanel
             }
 
             ScriptEngineFactory fact = (ScriptEngineFactory)value;
-            UIDefaults def = UIManager.getDefaults();
-            setBackground(isSelected
-                ? def.getColor("ComboBox.selectionBackground")
-                : def.getColor("ComboBox.background"));
+            if (isSelected)
+            {
+                setBackground(list.getSelectionBackground());
+                setForeground(list.getSelectionForeground());
+            }
+            else
+            {
+                setBackground(list.getBackground());
+                setForeground(list.getForeground());
+            }
             setText(fact == null ? ""
                     : fact.getLanguageName() + " (" + fact.getLanguageVersion() + ")");
             return this;

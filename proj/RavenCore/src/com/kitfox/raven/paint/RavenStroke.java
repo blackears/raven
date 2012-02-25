@@ -24,6 +24,10 @@ import com.kitfox.coyote.shape.CyStroke;
 import com.kitfox.coyote.shape.CyStrokeCap;
 import com.kitfox.coyote.shape.CyStrokeJoin;
 import com.kitfox.raven.paint.common.RavenPaintColor;
+import java.awt.BasicStroke;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.geom.Path2D;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -145,6 +149,42 @@ public class RavenStroke
         int hash = 5;
         hash = 73 * hash + (this.stroke != null ? this.stroke.hashCode() : 0);
         return hash;
+    }
+
+    /**
+     * Used for drawing AWT thumbnails of this stroke
+     * 
+     * @param g
+     * @param box 
+     */
+    public void drawPreview(Graphics2D g, Rectangle box)
+    {
+        BasicStroke bs = asBasicStroke();
+
+        float inset = Math.min(box.width, box.height) / 4f;
+        float dispWidth = Math.min(bs.getLineWidth(), inset * 2);
+        float pathLenX = box.width - 2 * inset;
+
+        Path2D.Double path = new Path2D.Double();
+        path.moveTo(inset, box.height / 2);
+        path.curveTo(
+                (pathLenX / 3) + inset, inset * 0,
+                (pathLenX * 2 / 3) + inset, box.height - (inset * 0),
+                box.width - inset, box.height / 2
+                );
+
+        BasicStroke dispStroke = new BasicStroke(dispWidth,
+                bs.getEndCap(), bs.getLineJoin(),
+                bs.getMiterLimit(),
+                bs.getDashArray(), bs.getDashPhase());
+
+        g.setStroke(dispStroke);
+        g.draw(path);
+    }
+
+    public BasicStroke asBasicStroke()
+    {
+        return stroke.asBasicStroke();
     }
     
 }

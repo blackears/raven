@@ -16,6 +16,8 @@
 
 package com.kitfox.raven.paint;
 
+import com.kitfox.coyote.renderer.CyDrawStack;
+import com.kitfox.coyote.renderer.CyVertexBuffer;
 import java.awt.Paint;
 import java.awt.Rectangle;
 
@@ -32,5 +34,7 @@ public interface RavenPaint
      * @return 
      */
     public Paint getPaintSwatch(Rectangle box);
+
+    public void fillShape(CyDrawStack stack, RavenPaintLayout layout, CyVertexBuffer mesh);
     
 }

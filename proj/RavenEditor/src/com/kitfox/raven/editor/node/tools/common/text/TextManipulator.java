@@ -16,13 +16,12 @@
 
 package com.kitfox.raven.editor.node.tools.common.text;
 
-import com.kitfox.game.control.color.PaintLayout;
-import com.kitfox.game.control.color.PaintLayoutTexture;
 import com.kitfox.raven.editor.node.scene.RavenNodeGroup;
 import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
 import com.kitfox.raven.editor.node.scene.RavenNodeText;
-import com.kitfox.raven.editor.paint.RavenPaint;
-import com.kitfox.raven.editor.stroke.RavenStroke;
+import com.kitfox.raven.paint.RavenPaint;
+import com.kitfox.raven.paint.RavenPaintLayout;
+import com.kitfox.raven.paint.RavenStroke;
 import com.kitfox.raven.util.Selection;
 import com.kitfox.raven.util.text.Justify;
 import com.kitfox.raven.util.text.TextDocumentEditor;
@@ -32,10 +31,7 @@ import com.kitfox.raven.util.text.TextFormatterFont;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.NodeObjectProviderIndex;
 import com.kitfox.raven.util.tree.SelectionRecord;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.Shape;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
@@ -64,10 +60,10 @@ public class TextManipulator
     Font textFont;
     Justify textJustify;
     RavenPaint textFillPaint;
-    PaintLayout textFillPaintLayout;
+    RavenPaintLayout textFillPaintLayout;
     RavenPaint textStrokePaint;
     RavenStroke textStroke;
-    PaintLayout textStrokePaintLayout;
+    RavenPaintLayout textStrokePaintLayout;
     
     LineSetToken textLines;
     TextDocumentEditor textDoc;
@@ -95,7 +91,7 @@ public class TextManipulator
             textFont = root.getTextFont();
             textJustify = root.getTextJustify();
             textFillPaint = root.fillPaint.getValue();
-            textFillPaintLayout = new PaintLayoutTexture();
+            textFillPaintLayout = new RavenPaintLayout();
 
             //Find parent to attach new text node to
             Selection<SelectionRecord> sel = root.getSelection();
@@ -212,7 +208,9 @@ public class TextManipulator
 
         if (textFillPaint != null)
         {
-            g.setPaint(textFillPaint.getPaint(textFillPaintLayout, textLocalToWorld));
+            Paint paint = textFillPaint.getPaintSwatch(null);
+            g.setPaint(paint);
+//            g.setPaint(textFillPaint.getPaint(textFillPaintLayout, textLocalToWorld));
             g.fill(devShape);
         }
 

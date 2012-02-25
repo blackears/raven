@@ -17,7 +17,7 @@
 package com.kitfox.raven.editor.node.tools.common;
 
 import com.kitfox.raven.editor.node.tools.ToolService;
-import com.kitfox.raven.editor.paint.RavenPaintColor;
+import com.kitfox.raven.paint.common.RavenPaintColor;
 
 /**
  *

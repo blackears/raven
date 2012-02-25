@@ -25,6 +25,7 @@ import com.kitfox.raven.util.tree.ChildWrapperList;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenNodeStrokeLibrary extends RavenNode
 {
     public static final String CHILD_STROKES = "strokes";

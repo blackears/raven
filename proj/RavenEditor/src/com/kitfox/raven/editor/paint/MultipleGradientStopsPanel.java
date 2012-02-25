@@ -47,6 +47,7 @@ import javax.swing.event.ChangeEvent;
  *
  * @author kitfox
  */
+@Deprecated
 public class MultipleGradientStopsPanel extends javax.swing.JPanel
 //        implements StopModelListener, PropertyChangeListener, StopEditor
         implements StopModelListener, StopEditor

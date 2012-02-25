@@ -16,6 +16,7 @@
 
 package com.kitfox.raven.paint;
 
+import com.kitfox.raven.paint.control.RavenPaintControl;
 import java.beans.PropertyEditor;
 
 /**
@@ -54,7 +55,7 @@ abstract public class RavenPaintProvider<T extends RavenPaint>
     /**
      * @return the propEditorType
      */
-    abstract public PropertyEditor createEditor();
+    abstract public RavenPaintControl createEditor();
 
     /**
      * @return the name

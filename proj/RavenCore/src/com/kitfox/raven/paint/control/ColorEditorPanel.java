@@ -23,9 +23,11 @@
 package com.kitfox.raven.paint.control;
 
 import com.kitfox.coyote.math.MathColorUtil;
+import com.kitfox.raven.paint.RavenPaint;
 import com.kitfox.raven.paint.common.RavenPaintColor;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Window;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -36,7 +38,8 @@ import javax.swing.SwingUtilities;
  * @author kitfox
  */
 public class ColorEditorPanel extends javax.swing.JPanel
-        implements PropertyChangeListener, ColorSamplerOverlayListener
+        implements PropertyChangeListener, ColorSamplerOverlayListener,
+        RavenPaintControl
 {
     private static final long serialVersionUID = 0;
 
@@ -175,7 +178,8 @@ public class ColorEditorPanel extends javax.swing.JPanel
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
 
         panel_pickers = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
@@ -200,6 +204,7 @@ public class ColorEditorPanel extends javax.swing.JPanel
 
         setLayout(new java.awt.BorderLayout());
 
+        panel_pickers.setMinimumSize(new java.awt.Dimension(400, 250));
         panel_pickers.setLayout(new javax.swing.BoxLayout(panel_pickers, javax.swing.BoxLayout.LINE_AXIS));
         add(panel_pickers, java.awt.BorderLayout.CENTER);
 
@@ -208,15 +213,19 @@ public class ColorEditorPanel extends javax.swing.JPanel
         jLabel1.setText("R");
 
         spinner_r.setModel(new javax.swing.SpinnerNumberModel(0, 0, 255, 1));
-        spinner_r.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+        spinner_r.addChangeListener(new javax.swing.event.ChangeListener()
+        {
+            public void stateChanged(javax.swing.event.ChangeEvent evt)
+            {
                 spinner_rStateChanged(evt);
             }
         });
 
         spinner_g.setModel(new javax.swing.SpinnerNumberModel(0, 0, 255, 1));
-        spinner_g.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+        spinner_g.addChangeListener(new javax.swing.event.ChangeListener()
+        {
+            public void stateChanged(javax.swing.event.ChangeEvent evt)
+            {
                 spinner_gStateChanged(evt);
             }
         });
@@ -224,8 +233,10 @@ public class ColorEditorPanel extends javax.swing.JPanel
         jLabel2.setText("G");
 
         spinner_b.setModel(new javax.swing.SpinnerNumberModel(0, 0, 255, 1));
-        spinner_b.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+        spinner_b.addChangeListener(new javax.swing.event.ChangeListener()
+        {
+            public void stateChanged(javax.swing.event.ChangeEvent evt)
+            {
                 spinner_bStateChanged(evt);
             }
         });
@@ -233,15 +244,19 @@ public class ColorEditorPanel extends javax.swing.JPanel
         jLabel3.setText("B");
 
         spinner_h.setModel(new javax.swing.SpinnerNumberModel(0, 0, 359, 1));
-        spinner_h.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+        spinner_h.addChangeListener(new javax.swing.event.ChangeListener()
+        {
+            public void stateChanged(javax.swing.event.ChangeEvent evt)
+            {
                 spinner_hStateChanged(evt);
             }
         });
 
         spinner_s.setModel(new javax.swing.SpinnerNumberModel(0, 0, 100, 1));
-        spinner_s.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+        spinner_s.addChangeListener(new javax.swing.event.ChangeListener()
+        {
+            public void stateChanged(javax.swing.event.ChangeEvent evt)
+            {
                 spinner_sStateChanged(evt);
             }
         });
@@ -253,16 +268,20 @@ public class ColorEditorPanel extends javax.swing.JPanel
         jLabel6.setText("V");
 
         spinner_v.setModel(new javax.swing.SpinnerNumberModel(0, 0, 100, 1));
-        spinner_v.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+        spinner_v.addChangeListener(new javax.swing.event.ChangeListener()
+        {
+            public void stateChanged(javax.swing.event.ChangeEvent evt)
+            {
                 spinner_vStateChanged(evt);
             }
         });
 
         bn_sampler.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/controls/colorSampler.png"))); // NOI18N
         bn_sampler.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        bn_sampler.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        bn_sampler.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 bn_samplerActionPerformed(evt);
             }
         });
@@ -332,8 +351,10 @@ public class ColorEditorPanel extends javax.swing.JPanel
         jLabel7.setText("A");
 
         spinner_a.setModel(new javax.swing.SpinnerNumberModel(0, 0, 255, 1));
-        spinner_a.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+        spinner_a.addChangeListener(new javax.swing.event.ChangeListener()
+        {
+            public void stateChanged(javax.swing.event.ChangeEvent evt)
+            {
                 spinner_aStateChanged(evt);
             }
         });
@@ -461,5 +482,32 @@ public class ColorEditorPanel extends javax.swing.JPanel
     private javax.swing.JSpinner spinner_s;
     private javax.swing.JSpinner spinner_v;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public Component getComponent()
+    {
+        return this;
+    }
+
+    @Override
+    public RavenPaint getPaint()
+    {
+        return getColor();
+    }
+
+    @Override
+    public void setPaint(RavenPaint paint)
+    {
+        if (paint instanceof RavenPaintColor)
+        {
+            setColor((RavenPaintColor)paint);
+        }
+    }
+
+    @Override
+    public String getPaintPropertyName()
+    {
+        return PROP_COLOR;
+    }
 
 }

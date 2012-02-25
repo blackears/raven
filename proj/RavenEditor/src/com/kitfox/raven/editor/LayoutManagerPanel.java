@@ -56,10 +56,16 @@ public class LayoutManagerPanel extends javax.swing.JPanel
             }
 
             ViewLayoutType serv = (ViewLayoutType)value;
-            UIDefaults def = UIManager.getDefaults();
-            setBackground(isSelected
-                ? def.getColor("List.selectionBackground")
-                : def.getColor("List.background"));
+            if (isSelected)
+            {
+                setBackground(list.getSelectionBackground());
+                setForeground(list.getSelectionForeground());
+            }
+            else
+            {
+                setBackground(list.getBackground());
+                setForeground(list.getForeground());
+            }
             setText(serv == null ? "" : serv.getName());
             return this;
         }

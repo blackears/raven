@@ -36,8 +36,22 @@ public class ColorFieldA extends ColorModelField1D
     public ColorFieldA(ColorChooserModel model)
     {
         super(model);
+        updateFromModel();
     }
 
+    private void updateFromModel()
+    {
+        RavenPaintColor color = model.getColor();
+        if (color == null)
+        {
+            color = RavenPaintColor.BLACK;
+        }
+        MathColorUtil.RGBtoHSV(color.getR(), color.getG(), color.getB(), hsv);
+        setHue(hsv[0]);
+        setSat(hsv[1]);
+        setBright(hsv[2]);
+    }
+    
     @Override
     public RavenPaintColor toColor(float x, float y)
     {
@@ -123,15 +137,7 @@ public class ColorFieldA extends ColorModelField1D
     {
         if (evt.getSource() == model && ColorChooserModel.PROP_COLOR.equals(evt.getPropertyName()))
         {
-            RavenPaintColor color = model.getColor();
-            if (color == null)
-            {
-                color = RavenPaintColor.BLACK;
-            }
-            MathColorUtil.RGBtoHSV(color.getR(), color.getG(), color.getB(), hsv);
-            setHue(hsv[0]);
-            setSat(hsv[1]);
-            setBright(hsv[2]);
+            updateFromModel();
         }
     }
 

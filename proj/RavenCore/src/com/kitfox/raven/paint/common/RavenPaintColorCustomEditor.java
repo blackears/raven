@@ -23,8 +23,11 @@
 package com.kitfox.raven.paint.common;
 
 import com.kitfox.raven.paint.control.ColorEditorPanel;
-import com.kitfox.raven.util.PropertyChangeWeakListener;
+import com.kitfox.raven.util.tree.PropertyCustomEditor;
+import com.kitfox.raven.util.tree.PropertyData;
+import com.kitfox.raven.util.tree.PropertyDataInline;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -32,39 +35,31 @@ import java.beans.PropertyChangeListener;
  *
  * @author kitfox
  */
-public class RavenPaintColorCustomEditor extends javax.swing.JPanel implements PropertyChangeListener
+public class RavenPaintColorCustomEditor extends javax.swing.JPanel
+    implements PropertyCustomEditor, PropertyChangeListener
 {
     private static final long serialVersionUID = 1;
 
-    final RavenPaintColorEditor ed;
-    PropertyChangeWeakListener listener;
+    private final RavenPaintColorEditor editor;
 
     ColorEditorPanel colorPanel = new ColorEditorPanel();
+    
+    PropertyData<RavenPaintColor> initValue;
+    RavenPaintColor curValue;
 
     /** Creates new form ColorStylePanel */
-    public RavenPaintColorCustomEditor(RavenPaintColorEditor ed)
+    public RavenPaintColorCustomEditor(RavenPaintColorEditor editor)
     {
         initComponents();
 
-        this.ed = ed;
-        listener = new PropertyChangeWeakListener(this, ed);
-        ed.addPropertyChangeListener(listener);
+        this.editor = editor;
+        initValue = editor.getValue();
+        curValue = initValue.getValue(editor.getDocument());
 
         add(colorPanel, BorderLayout.CENTER);
 
+        colorPanel.setColor(curValue);
         colorPanel.addPropertyChangeListener(this);
-
-        update();
-    }
-
-    private void update()
-    {
-        RavenPaintColor value = ed.getValue();
-        if  (value == null)
-        {
-            value = RavenPaintColor.BLACK;
-        }
-        colorPanel.setColor(value);
     }
 
     /** This method is called from within the constructor to
@@ -85,17 +80,31 @@ public class RavenPaintColorCustomEditor extends javax.swing.JPanel implements P
         if (evt.getSource() == colorPanel 
                 && ColorEditorPanel.PROP_COLOR.equals(evt.getPropertyName()))
         {
-            RavenPaintColor col = colorPanel.getColor();
-            ed.setValue(col);
-        }
-        else if (evt.getSource() == ed)
-        {
-            update();
+            curValue = colorPanel.getColor();
+            editor.setValue(new PropertyDataInline(curValue), false);
         }
     }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public Component getCustomEditor()
+    {
+        return this;
+    }
+
+    @Override
+    public void customEditorCommit()
+    {
+        editor.setValue(new PropertyDataInline(curValue), true);
+    }
+
+    @Override
+    public void customEditorCancel()
+    {
+        editor.setValue(initValue, false);
+    }
 
 }

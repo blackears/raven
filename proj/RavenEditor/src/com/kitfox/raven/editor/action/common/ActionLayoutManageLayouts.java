@@ -18,7 +18,7 @@ package com.kitfox.raven.editor.action.common;
 
 import com.kitfox.raven.editor.LayoutManagerPanel;
 import com.kitfox.raven.editor.RavenEditor;
-import com.kitfox.raven.editor.RavenSwingUtil;
+import com.kitfox.raven.util.RavenSwingUtil;
 import com.kitfox.raven.editor.RavenViewManager;
 import com.kitfox.raven.editor.action.ActionProvider;
 import com.kitfox.raven.util.service.ServiceInst;

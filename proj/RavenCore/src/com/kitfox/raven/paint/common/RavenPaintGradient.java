@@ -22,18 +22,24 @@ import com.kitfox.cache.CacheList;
 import com.kitfox.cache.CacheMap;
 import com.kitfox.cache.parser.CacheParser;
 import com.kitfox.cache.parser.ParseException;
+import com.kitfox.coyote.material.gradient.CyMaterialGradientDrawRecord;
+import com.kitfox.coyote.material.gradient.CyMaterialGradientDrawRecordFactory;
 import com.kitfox.coyote.math.CyColor4f;
 import com.kitfox.coyote.math.CyGradientStops;
 import com.kitfox.coyote.math.CyGradientStops.Cycle;
 import com.kitfox.coyote.math.CyGradientStops.Style;
+import com.kitfox.coyote.renderer.CyDrawStack;
+import com.kitfox.coyote.renderer.CyVertexBuffer;
 import com.kitfox.raven.paint.RavenPaint;
+import com.kitfox.raven.paint.control.RavenPaintControl;
+import com.kitfox.raven.paint.RavenPaintLayout;
 import com.kitfox.raven.paint.RavenPaintProvider;
+import com.kitfox.raven.paint.control.GradientEditorPanel;
 import com.kitfox.raven.util.service.ServiceInst;
 import java.awt.MultipleGradientPaint.CycleMethod;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-import java.beans.PropertyEditor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -127,6 +133,22 @@ public class RavenPaintGradient implements RavenPaint
     public CyGradientStops getStops()
     {
         return stops;
+    }
+
+    @Override
+    public void fillShape(CyDrawStack stack, 
+        RavenPaintLayout layout, CyVertexBuffer mesh)
+    {
+        CyMaterialGradientDrawRecord rec =
+                CyMaterialGradientDrawRecordFactory.inst().allocRecord();
+        
+        rec.setStops(stops);
+        rec.setTexToLocalMatrix(layout.getPaintToLocal());
+        rec.setMesh(mesh);
+        rec.setMvpMatrix(stack.getModelViewProjXform());
+        rec.setOpacity(1);
+        
+        stack.addDrawRecord(rec);
     }
 
     public static RavenPaintGradient create(String text)
@@ -295,10 +317,9 @@ public class RavenPaintGradient implements RavenPaint
         }
 
         @Override
-        public PropertyEditor createEditor()
+        public RavenPaintControl createEditor()
         {
-            return new RavenPaintGradientEditor();
-//            return ed;
+            return new GradientEditorPanel();
         }
 
         @Override

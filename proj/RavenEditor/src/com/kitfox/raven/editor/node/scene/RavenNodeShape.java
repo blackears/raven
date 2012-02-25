@@ -16,35 +16,23 @@
 
 package com.kitfox.raven.editor.node.scene;
 
+import com.kitfox.coyote.math.CyColor4f;
 import com.kitfox.raven.util.tree.FrameKey;
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.renderer.CyDrawStack;
 import com.kitfox.coyote.renderer.CyVertexBuffer;
-import com.kitfox.coyote.shape.CyPath2d;
-import com.kitfox.coyote.shape.CyRectangle2d;
-import com.kitfox.coyote.shape.CyShape;
-import com.kitfox.coyote.shape.CyStrokeCap;
-import com.kitfox.coyote.shape.CyStrokeJoin;
-import com.kitfox.coyote.shape.PathCollector;
-import com.kitfox.coyote.shape.PathConsumer;
-import com.kitfox.coyote.shape.PathDasher;
-import com.kitfox.coyote.shape.PathOutliner;
-import com.kitfox.coyote.shape.ShapeMeshProvider;
-import com.kitfox.game.control.color.PaintLayout;
-import com.kitfox.game.control.color.PaintLayoutLinear;
+import com.kitfox.coyote.shape.*;
 import com.kitfox.raven.editor.node.renderer.RavenRenderer;
 import com.kitfox.raven.editor.node.tools.common.ServiceMaterial;
-import com.kitfox.raven.editor.paint.RavenPaint;
-import com.kitfox.raven.editor.paint.RavenPaintColor;
-import com.kitfox.raven.editor.stroke.RavenStroke;
+import com.kitfox.raven.paint.RavenPaint;
+import com.kitfox.raven.paint.RavenPaintLayout;
+import com.kitfox.raven.paint.RavenStroke;
+import com.kitfox.raven.paint.common.RavenPaintColor;
 import com.kitfox.raven.util.Intersection;
-import com.kitfox.raven.util.tree.NodeObject;
-import com.kitfox.raven.util.tree.PropertyDataReference;
 import com.kitfox.raven.util.tree.PropertyTrackChangeEvent;
 import com.kitfox.raven.util.tree.PropertyTrackKeyChangeEvent;
 import com.kitfox.raven.util.tree.PropertyWrapper;
 import com.kitfox.raven.util.tree.PropertyWrapperListener;
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 
@@ -62,26 +50,27 @@ abstract public class RavenNodeShape extends RavenNodeXformable
             new RavenPaintColor(Color.BLACK));
 
     public static final String PROP_PAINT_LAYOUT = "paintLayout";
-    public final PropertyWrapper<RavenNodeShape, PaintLayout> paintLayout =
+    public final PropertyWrapper<RavenNodeShape, RavenPaintLayout> paintLayout =
             new PropertyWrapper(
-            this, PROP_PAINT_LAYOUT, PaintLayout.class,
-            new PaintLayoutLinear());
+            this, PROP_PAINT_LAYOUT, RavenPaintLayout.class,
+            new RavenPaintLayout());
 
     public static final String PROP_STROKE = "stroke";
     public final PropertyWrapper<RavenNodeShape, RavenStroke> stroke =
             new PropertyWrapper(
-            this, PROP_STROKE, RavenStroke.class);
+            this, PROP_STROKE, RavenStroke.class, new RavenStroke());
 
     public static final String PROP_STROKEPAINT = "strokePaint";
     public final PropertyWrapper<RavenNodeShape, RavenPaint> strokePaint =
             new PropertyWrapper(
-            this, PROP_STROKEPAINT, RavenPaint.class);
+            this, PROP_STROKEPAINT, RavenPaint.class, 
+            new RavenPaintColor(CyColor4f.TRANSPARENT));
 
     public static final String PROP_STROKE_PAINT_LAYOUT = "strokePaintLayout";
-    public final PropertyWrapper<RavenNodeShape, PaintLayout> strokePaintLayout =
+    public final PropertyWrapper<RavenNodeShape, RavenPaintLayout> strokePaintLayout =
             new PropertyWrapper(
-            this, PROP_STROKE_PAINT_LAYOUT, PaintLayout.class,
-            new PaintLayoutLinear());
+            this, PROP_STROKE_PAINT_LAYOUT, RavenPaintLayout.class,
+            new RavenPaintLayout());
 
 //    private CyVertexBuffer mesh;
 //    private CyVertexBuffer strokeMesh;
@@ -131,64 +120,69 @@ abstract public class RavenNodeShape extends RavenNodeXformable
         {
             return null;
         }
-        BasicStroke st = (BasicStroke)cStroke.getStroke();
-        if (st == null)
-        {
-            return null;
-        }
-
-        CyStrokeCap cap;
-        switch (st.getEndCap())
-        {
-            default:
-            case BasicStroke.CAP_BUTT:
-                cap = CyStrokeCap.BUTT;
-                break;
-            case BasicStroke.CAP_ROUND:
-                cap = CyStrokeCap.ROUND;
-                break;
-            case BasicStroke.CAP_SQUARE:
-                cap = CyStrokeCap.SQUARE;
-                break;
-        }
-
-        CyStrokeJoin join;
-        switch (st.getLineJoin())
-        {
-            default:
-            case BasicStroke.JOIN_BEVEL:
-                join = CyStrokeJoin.BEVEL;
-                break;
-            case BasicStroke.JOIN_MITER:
-                join = CyStrokeJoin.MITER;
-                break;
-            case BasicStroke.JOIN_ROUND:
-                join = CyStrokeJoin.ROUND;
-                break;
-        }
-
-        PathCollector col = new PathCollector();
-        PathConsumer builder = new PathOutliner(col,
-                st.getLineWidth() / 2,
-                cap,
-                join,
-                st.getMiterLimit());
-
-        float[] dash = st.getDashArray();
-        if (dash != null && dash.length >= 2)
-        {
-            double[] dashD = new double[dash.length];
-            for (int i = 0; i < dash.length; ++i)
-            {
-                dashD[i] = dash[i];
-            }
-            builder = new PathDasher(builder, dashD, st.getDashPhase());
-        }
-
+        
         CyShape local = createShapeLocal(time);
-        builder.feedShape(local);
-
-        return col.getPath();
+        CyStroke st = cStroke.getStroke();
+        return st.outlineShape(local);
+        
+//        BasicStroke st = (BasicStroke)cStroke.getStroke();
+//        if (st == null)
+//        {
+//            return null;
+//        }
+//
+//        CyStrokeCap cap;
+//        switch (st.getEndCap())
+//        {
+//            default:
+//            case BasicStroke.CAP_BUTT:
+//                cap = CyStrokeCap.BUTT;
+//                break;
+//            case BasicStroke.CAP_ROUND:
+//                cap = CyStrokeCap.ROUND;
+//                break;
+//            case BasicStroke.CAP_SQUARE:
+//                cap = CyStrokeCap.SQUARE;
+//                break;
+//        }
+//
+//        CyStrokeJoin join;
+//        switch (st.getLineJoin())
+//        {
+//            default:
+//            case BasicStroke.JOIN_BEVEL:
+//                join = CyStrokeJoin.BEVEL;
+//                break;
+//            case BasicStroke.JOIN_MITER:
+//                join = CyStrokeJoin.MITER;
+//                break;
+//            case BasicStroke.JOIN_ROUND:
+//                join = CyStrokeJoin.ROUND;
+//                break;
+//        }
+//
+//        PathCollector col = new PathCollector();
+//        PathConsumer builder = new PathOutliner(col,
+//                st.getLineWidth() / 2,
+//                cap,
+//                join,
+//                st.getMiterLimit());
+//
+//        float[] dash = st.getDashArray();
+//        if (dash != null && dash.length >= 2)
+//        {
+//            double[] dashD = new double[dash.length];
+//            for (int i = 0; i < dash.length; ++i)
+//            {
+//                dashD[i] = dash[i];
+//            }
+//            builder = new PathDasher(builder, dashD, st.getDashPhase());
+//        }
+//
+//        CyShape local = createShapeLocal(time);
+//        builder.feedShape(local);
+//
+//        return col.getPath();
     }
 
     public CyShape getShapeLocal(FrameKey time)
@@ -325,9 +319,9 @@ abstract public class RavenNodeShape extends RavenNodeXformable
         //Gets local shape
 
         RavenPaint curFillPaint = paint.getValue(frame);
-        PaintLayout curFillLayout = paintLayout.getValue(frame);
+        RavenPaintLayout curFillLayout = paintLayout.getValue(frame);
         RavenPaint curStrokePaint = strokePaint.getValue(frame);
-        PaintLayout curStrokeLayout = strokePaintLayout.getValue(frame);
+        RavenPaintLayout curStrokeLayout = strokePaintLayout.getValue(frame);
 //        RavenStroke curStroke = stroke.getValue();
 
         stack.pushFrame(null);
@@ -559,7 +553,7 @@ abstract public class RavenNodeShape extends RavenNodeXformable
     }
 
     @Override
-    public PaintLayout getMaterialFaceLayout(Integer subselection)
+    public RavenPaintLayout getMaterialFaceLayout(Integer subselection)
     {
         return paintLayout.getValue();
     }
@@ -589,7 +583,7 @@ abstract public class RavenNodeShape extends RavenNodeXformable
     }
 
     @Override
-    public PaintLayout getMaterialEdgeLayout(Integer subselection)
+    public RavenPaintLayout getMaterialEdgeLayout(Integer subselection)
     {
         return strokePaintLayout.getValue();
     }
@@ -598,19 +592,19 @@ abstract public class RavenNodeShape extends RavenNodeXformable
     @Override
     public void setMaterialFacePaint(Integer subselection, RavenPaint value, boolean history)
     {
-        if (value instanceof NodeObject)
-        {
-            paint.setData(new PropertyDataReference<RavenPaint>(
-                    ((NodeObject)value).getUid()), history);
-        }
-        else
-        {
+//        if (value instanceof NodeObject)
+//        {
+//            paint.setData(new PropertyDataReference<RavenPaint>(
+//                    ((NodeObject)value).getUid()), history);
+//        }
+//        else
+//        {
             paint.setValue(value, history);
-        }
+//        }
     }
 
     @Override
-    public void setMaterialFaceLayout(Integer subselection, PaintLayout value, boolean history)
+    public void setMaterialFaceLayout(Integer subselection, RavenPaintLayout value, boolean history)
     {
         paintLayout.setValue(value, history);
     }
@@ -618,42 +612,35 @@ abstract public class RavenNodeShape extends RavenNodeXformable
     @Override
     public void setMaterialEdgeStroke(Integer subselection, RavenStroke value, boolean history)
     {
-        if (value instanceof NodeObject)
-        {
-            stroke.setData(new PropertyDataReference<RavenStroke>(
-                    ((NodeObject)value).getUid()), history);
-        }
-        else
-        {
+//        if (value instanceof NodeObject)
+//        {
+//            stroke.setData(new PropertyDataReference<RavenStroke>(
+//                    ((NodeObject)value).getUid()), history);
+//        }
+//        else
+//        {
             stroke.setValue(value, history);
-        }
+//        }
     }
 
     @Override
     public void setMaterialEdgePaint(Integer subselection, RavenPaint value, boolean history)
     {
-        if (value instanceof NodeObject)
-        {
-            strokePaint.setData(new PropertyDataReference<RavenPaint>(
-                    ((NodeObject)value).getUid()), history);
-        }
-        else
-        {
+//        if (value instanceof NodeObject)
+//        {
+//            strokePaint.setData(new PropertyDataReference<RavenPaint>(
+//                    ((NodeObject)value).getUid()), history);
+//        }
+//        else
+//        {
             strokePaint.setValue(value, history);
-        }
+//        }
     }
 
     @Override
-    public void setMaterialEdgeLayout(Integer subselection, PaintLayout value, boolean history)
+    public void setMaterialEdgeLayout(Integer subselection, RavenPaintLayout value, boolean history)
     {
         strokePaintLayout.setValue(value, history);
     }
 
-    //---------------------------------
-//    class FrameCache
-//    {
-//        //Precompiled meshes
-//        CyVertexBuffer shape;
-//        CyVertexBuffer strokeShape;
-//    }
 }

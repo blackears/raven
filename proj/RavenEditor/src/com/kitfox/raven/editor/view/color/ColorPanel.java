@@ -26,22 +26,22 @@ import com.kitfox.raven.editor.RavenDocument;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.RavenEditorListener;
 import com.kitfox.raven.editor.RavenEditorWeakListener;
-import com.kitfox.raven.editor.RavenSwingUtil;
+import com.kitfox.raven.util.RavenSwingUtil;
 import com.kitfox.raven.editor.node.scene.RavenNodePaint;
 import com.kitfox.raven.editor.node.scene.RavenNodePaintLibrary;
 import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
 import com.kitfox.raven.editor.node.scene.RavenNodeStroke;
 import com.kitfox.raven.editor.node.scene.RavenNodeStrokeLibrary;
 import com.kitfox.raven.editor.node.tools.common.ServiceColors2D;
-import com.kitfox.raven.editor.paint.RavenPaint;
 import com.kitfox.raven.editor.paint.RavenPaintInlineDialog;
 import com.kitfox.raven.editor.paint.RavenPaintInlinePanel;
 import com.kitfox.raven.editor.paint.RavenPaintPreviewPanel;
-import com.kitfox.raven.editor.stroke.RavenStroke;
 import com.kitfox.raven.editor.stroke.RavenStrokeBasic;
 import com.kitfox.raven.editor.stroke.RavenStrokeBasicPanel;
 import com.kitfox.raven.editor.stroke.RavenStrokeInlineDialog;
 import com.kitfox.raven.editor.stroke.RavenStrokePreviewPanel;
+import com.kitfox.raven.paint.RavenPaint;
+import com.kitfox.raven.paint.RavenStroke;
 import com.kitfox.raven.util.tree.ChildWrapperEvent;
 import com.kitfox.raven.util.tree.ChildWrapperListener;
 import com.kitfox.raven.util.tree.ChildWrapperWeakListener;
@@ -66,6 +66,7 @@ import javax.swing.SwingUtilities;
  *
  * @author kitfox
  */
+@Deprecated
 public class ColorPanel extends javax.swing.JPanel
         implements RavenEditorListener
 {
@@ -263,6 +264,7 @@ public class ColorPanel extends javax.swing.JPanel
 //        RavenNodeRoot root = doc.getRoot();
 
         PropertyData<RavenStroke> data = service.getStrokeStyleProp().getData();
+        /*
         if (data instanceof PropertyDataReference)
         {
             RavenNodeStroke node = (RavenNodeStroke)
@@ -278,6 +280,7 @@ public class ColorPanel extends javax.swing.JPanel
             radio_strokeStyleInline.setSelected(true);
         }
         previewStrokeStyle.setStroke(curStrokeStyleInline);
+        */
 
         --updateCount;
     }
@@ -297,6 +300,7 @@ public class ColorPanel extends javax.swing.JPanel
 //        RavenNodeRoot root = doc.getRoot();
 
         PropertyData<RavenPaint> data = service.getStrokePaintProp().getData();
+        /*
         if (data instanceof PropertyDataReference)
         {
             RavenNodePaint node = (RavenNodePaint)
@@ -312,6 +316,7 @@ public class ColorPanel extends javax.swing.JPanel
             radio_strokePaintInline.setSelected(true);
         }
         previewStrokePaint.setPaint(curStrokePaintInline);
+        */
 
         --updateCount;
     }
@@ -331,6 +336,7 @@ public class ColorPanel extends javax.swing.JPanel
 //        RavenNodeRoot root = doc.getRoot();
 
         PropertyData<RavenPaint> data = service.getFillPaintProp().getData();
+        /*
         if (data instanceof PropertyDataReference)
         {
             RavenNodePaint node = (RavenNodePaint)
@@ -346,6 +352,7 @@ public class ColorPanel extends javax.swing.JPanel
             radio_fillPaintInline.setSelected(true);
         }
         previewFillPaint.setPaint(curFillPaintInline);
+        */
 
         --updateCount;
     }
@@ -857,7 +864,7 @@ public class ColorPanel extends javax.swing.JPanel
 
             ServiceColors2D service = root.getNodeService(ServiceColors2D.class, false);
             RavenStroke initStroke = service.getStrokeStyleProp().getValue();
-
+/*
             Window parent = SwingUtilities.getWindowAncestor(ColorPanel.this);
             dlg = new RavenStrokeInlineDialog(parent);
             dlg.setStroke((RavenStrokeBasic)curStrokeStyleInline);
@@ -874,7 +881,7 @@ public class ColorPanel extends javax.swing.JPanel
             {
                 setPaint(initStroke, false);
             }
-
+*/
             dlg = null;
             root = null;
         }
@@ -882,7 +889,9 @@ public class ColorPanel extends javax.swing.JPanel
         @Override
         public void propertyChange(PropertyChangeEvent evt)
         {
+            /*
             setPaint(dlg.getStroke(), false);
+            */
         }
     }
 
@@ -910,7 +919,7 @@ public class ColorPanel extends javax.swing.JPanel
 
             ServiceColors2D service = root.getNodeService(ServiceColors2D.class, false);
             RavenPaint initPaint = service.getStrokePaintProp().getValue();
-
+/*
             Window parent = SwingUtilities.getWindowAncestor(ColorPanel.this);
             dlg = new RavenPaintInlineDialog(parent);
             dlg.setPaint(curStrokePaintInline);
@@ -927,7 +936,7 @@ public class ColorPanel extends javax.swing.JPanel
             {
                 setPaint(initPaint, false);
             }
-
+*/
             dlg = null;
             root = null;
         }
@@ -935,7 +944,9 @@ public class ColorPanel extends javax.swing.JPanel
         @Override
         public void propertyChange(PropertyChangeEvent evt)
         {
+            /*
             setPaint(dlg.getPaint(), false);
+            */
         }
     }
 
@@ -963,7 +974,7 @@ public class ColorPanel extends javax.swing.JPanel
 
             ServiceColors2D service = root.getNodeService(ServiceColors2D.class, false);
             RavenPaint initPaint = service.getFillPaintProp().getValue();
-
+/*
             Window parent = SwingUtilities.getWindowAncestor(ColorPanel.this);
             dlg = new RavenPaintInlineDialog(parent);
             dlg.setPaint(curFillPaintInline);
@@ -980,7 +991,7 @@ public class ColorPanel extends javax.swing.JPanel
             {
                 setPaint(initPaint, false);
             }
-
+*/
             dlg = null;
             root = null;
         }
@@ -988,7 +999,9 @@ public class ColorPanel extends javax.swing.JPanel
         @Override
         public void propertyChange(PropertyChangeEvent evt)
         {
+            /*
             setPaint(dlg.getPaint(), false);
+            */
         }
     }
 

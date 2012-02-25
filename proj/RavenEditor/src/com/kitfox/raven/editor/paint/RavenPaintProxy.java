@@ -28,6 +28,7 @@ import com.kitfox.raven.util.tree.NodeDocument;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenPaintProxy
 {
     public static final String PROP_REF = "ref";

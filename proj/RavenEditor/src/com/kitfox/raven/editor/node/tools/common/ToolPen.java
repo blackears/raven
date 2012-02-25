@@ -16,16 +16,17 @@
 
 package com.kitfox.raven.editor.node.tools.common;
 
+import com.kitfox.coyote.shape.CyStroke;
+import com.kitfox.coyote.shape.CyStrokeCap;
+import com.kitfox.coyote.shape.CyStrokeJoin;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.node.scene.RavenNodeGroup;
 import com.kitfox.raven.editor.node.scene.RavenNodePath;
 import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
 import com.kitfox.raven.editor.node.tools.ToolProvider;
 import com.kitfox.raven.editor.node.tools.ToolUser;
-import com.kitfox.raven.editor.paint.RavenPaintColor;
-import com.kitfox.raven.editor.stroke.RavenStrokeBasic;
-import com.kitfox.raven.editor.stroke.RavenStrokeBasic.Cap;
-import com.kitfox.raven.editor.stroke.RavenStrokeBasic.Join;
+import com.kitfox.raven.paint.RavenStroke;
+import com.kitfox.raven.paint.common.RavenPaintColor;
 import com.kitfox.raven.shape.bezier.BezierCurve;
 import com.kitfox.raven.shape.bezier.BezierEdge;
 import com.kitfox.raven.shape.bezier.BezierNetwork;
@@ -34,7 +35,6 @@ import com.kitfox.raven.shape.bezier.BezierPoint;
 import com.kitfox.raven.shape.bezier.BezierVertex;
 import com.kitfox.raven.shape.bezier.VertexSmooth;
 import com.kitfox.raven.shape.path.PathCurve;
-import com.kitfox.raven.util.service.ServiceInst;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
 import com.kitfox.raven.util.tree.NodeObjectProviderIndex;
@@ -440,7 +440,9 @@ public class ToolPen extends ToolDisplay
 
         nodePath.paint.setValue(null);
         nodePath.strokePaint.setValue(RavenPaintColor.BLACK);
-        nodePath.stroke.setValue(new RavenStrokeBasic(5, Cap.ROUND, Join.ROUND, 4, null, 0));
+        nodePath.stroke.setValue(new RavenStroke(
+                new CyStroke(5, 
+                CyStrokeCap.ROUND, CyStrokeJoin.ROUND)));
 
         nodePath.centerPivot(true);
 

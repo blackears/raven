@@ -40,6 +40,7 @@ import javax.swing.SwingUtilities;
  *
  * @author kitfox
  */
+@Deprecated
 public class PaintLayoutCustomEditor extends javax.swing.JPanel
         implements PropertyCustomEditor
 {

@@ -30,7 +30,6 @@ import com.kitfox.coyote.shape.bezier.mesh.CutLoop.PathVisitor;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import com.kitfox.raven.editor.node.renderer.RavenRenderer;
 import com.kitfox.raven.editor.node.tools.common.pen.ServiceBezierMesh;
-import com.kitfox.raven.shape.network.NetworkDataEdge;
 import com.kitfox.raven.shape.network.NetworkMesh;
 import com.kitfox.raven.util.service.ServiceInst;
 import com.kitfox.raven.util.tree.NodeObjectProvider;

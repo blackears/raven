@@ -20,14 +20,20 @@ import com.kitfox.cache.CacheElement;
 import com.kitfox.cache.CacheList;
 import com.kitfox.cache.parser.CacheParser;
 import com.kitfox.cache.parser.ParseException;
+import com.kitfox.coyote.material.color.CyMaterialColorDrawRecord;
+import com.kitfox.coyote.material.color.CyMaterialColorDrawRecordFactory;
 import com.kitfox.coyote.math.CyColor4f;
+import com.kitfox.coyote.renderer.CyDrawStack;
+import com.kitfox.coyote.renderer.CyVertexBuffer;
 import com.kitfox.raven.paint.RavenPaint;
+import com.kitfox.raven.paint.control.RavenPaintControl;
+import com.kitfox.raven.paint.RavenPaintLayout;
 import com.kitfox.raven.paint.RavenPaintProvider;
+import com.kitfox.raven.paint.control.ColorEditorPanel;
 import com.kitfox.raven.util.service.ServiceInst;
 import java.awt.Color;
 import java.awt.Paint;
 import java.awt.Rectangle;
-import java.beans.PropertyEditor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,6 +55,7 @@ public class RavenPaintColor implements RavenPaint
     public final float g;
     public final float b;
     public final float a;
+    final CyColor4f color;
 
     public static final RavenPaintColor CLEAR = new RavenPaintColor(1, 1, 1, 0);
     
@@ -67,6 +74,7 @@ public class RavenPaintColor implements RavenPaint
         this.g = g;
         this.b = b;
         this.a = a;
+        this.color = new CyColor4f(r, g, b, a);
     }
 
     public RavenPaintColor(CyColor4f color)
@@ -172,6 +180,21 @@ public class RavenPaintColor implements RavenPaint
     {
         return a;
     }
+    
+    @Override
+    public void fillShape(CyDrawStack stack, 
+        RavenPaintLayout layout, CyVertexBuffer mesh)
+    {
+        CyMaterialColorDrawRecord rec =
+                CyMaterialColorDrawRecordFactory.inst().allocRecord();
+        
+        rec.setColor(color);
+        rec.setMesh(mesh);
+        rec.setMvpMatrix(stack.getModelViewProjXform());
+        rec.setOpacity(1);
+        
+        stack.addDrawRecord(rec);
+    }
 
     public CacheList toCache()
     {
@@ -235,7 +258,7 @@ public class RavenPaintColor implements RavenPaint
         hash = 83 * hash + Float.floatToIntBits(this.a);
         return hash;
     }
-    
+
     //--------------------------------------
     @ServiceInst(service=RavenPaintProvider.class)
     public static class Provider extends RavenPaintProvider<RavenPaintColor>
@@ -266,10 +289,9 @@ public class RavenPaintColor implements RavenPaint
         }
 
         @Override
-        public PropertyEditor createEditor()
+        public RavenPaintControl createEditor()
         {
-            return new RavenPaintColorEditor();
-//          return ed;
+            return new ColorEditorPanel();
         }
 
         @Override

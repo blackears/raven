@@ -25,6 +25,7 @@ import com.kitfox.raven.util.tree.ChildWrapperList;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenNodePaintLibrary extends RavenNode
 {
     public static final String CHILD_PAINTS = "paints";

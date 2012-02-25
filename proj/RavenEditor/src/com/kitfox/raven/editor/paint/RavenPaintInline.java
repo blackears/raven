@@ -27,6 +27,7 @@ import com.kitfox.cache.parser.ParseException;
  *
  * @author kitfox
  */
+@Deprecated
 abstract public class RavenPaintInline implements RavenPaint
 {
     abstract public CacheIdentifier toCache();

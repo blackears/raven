@@ -36,6 +36,7 @@ import java.awt.geom.AffineTransform;
  *
  * @author kitfox
  */
+@Deprecated
 public class MultipleGradientStopsEditor extends PropertyWrapperEditor<MultipleGradientStops>
 {
     public MultipleGradientStopsEditor(PropertyWrapper wrapper)

@@ -18,7 +18,7 @@ package com.kitfox.raven.editor.node.tools.common.select;
 
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.math.CyVector2d;
-import com.kitfox.game.control.color.PaintLayoutTexture;
+import com.kitfox.raven.paint.RavenPaintLayout;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
@@ -31,13 +31,13 @@ import java.util.ArrayList;
  */
 public class PaintLayoutManipulatorTexture extends PaintLayoutManipulator
 {
-    PaintLayoutTexture initLayout;
-    PaintLayoutTexture lastLayout;
+    RavenPaintLayout initLayout;
+    RavenPaintLayout lastLayout;
 
     public PaintLayoutManipulatorTexture(
             ArrayList<MaterialElement> compList,
             boolean strokeMode,
-            PaintLayoutTexture layout)
+            RavenPaintLayout layout)
     {
         super(compList, strokeMode);
         this.initLayout = this.lastLayout = layout;
@@ -123,30 +123,32 @@ public class PaintLayoutManipulatorTexture extends PaintLayoutManipulator
 
     class LayoutPoints
     {
-        CyVector2d ptOrigin;
-        CyVector2d ptBasisX;
-        CyVector2d ptBasisY;
+        CyVector2d ptOrigin = new CyVector2d();
+        CyVector2d ptBasisX = new CyVector2d();
+        CyVector2d ptBasisY = new CyVector2d();
 
-        LayoutPoints(PaintLayoutTexture layout)
+        LayoutPoints(RavenPaintLayout layout)
         {
-            ptOrigin = new CyVector2d(
-                    layout.getTransX(), layout.getTransY());
-//            w2d.transformPoint(ptOrigin, ptOrigin);
-
-            double cosX = Math.cos(Math.toRadians(layout.getAngle()));
-            double sinX = Math.sin(Math.toRadians(layout.getAngle()));
-            double cosY = Math.cos(Math.toRadians(layout.getAngle() + layout.getSkewAngle()));
-            double sinY = Math.sin(Math.toRadians(layout.getAngle() + layout.getSkewAngle()));
-
-            ptBasisX = new CyVector2d(
-                    layout.getScaleX() * cosX + layout.getTransX(),
-                    layout.getScaleX() * sinX + layout.getTransY());
-//            w2d.transformPoint(ptBasisX, ptBasisX);
-
-            ptBasisY = new CyVector2d(
-                    layout.getScaleY() * cosY + layout.getTransX(),
-                    layout.getScaleY() * sinY + layout.getTransY());
-//            w2d.transformPoint(ptBasisY, ptBasisY);
+            layout.getTextureLayout(ptOrigin, ptBasisX, ptBasisY);
+            
+//            ptOrigin = new CyVector2d(
+//                    layout.getTransX(), layout.getTransY());
+////            w2d.transformPoint(ptOrigin, ptOrigin);
+//
+//            double cosX = Math.cos(Math.toRadians(layout.getAngle()));
+//            double sinX = Math.sin(Math.toRadians(layout.getAngle()));
+//            double cosY = Math.cos(Math.toRadians(layout.getAngle() + layout.getSkewAngle()));
+//            double sinY = Math.sin(Math.toRadians(layout.getAngle() + layout.getSkewAngle()));
+//
+//            ptBasisX = new CyVector2d(
+//                    layout.getScaleX() * cosX + layout.getTransX(),
+//                    layout.getScaleX() * sinX + layout.getTransY());
+////            w2d.transformPoint(ptBasisX, ptBasisX);
+//
+//            ptBasisY = new CyVector2d(
+//                    layout.getScaleY() * cosY + layout.getTransX(),
+//                    layout.getScaleY() * sinY + layout.getTransY());
+////            w2d.transformPoint(ptBasisY, ptBasisY);
         }
     }
 
@@ -198,31 +200,34 @@ public class PaintLayoutManipulatorTexture extends PaintLayoutManipulator
                 }
             }
 
-            double radiusXdx = lp.ptBasisX.x - lp.ptOrigin.x;
-            double radiusXdy = lp.ptBasisX.y - lp.ptOrigin.y;
-            double radiusYdx = lp.ptBasisY.x - lp.ptOrigin.x;
-            double radiusYdy = lp.ptBasisY.y - lp.ptOrigin.y;
-
-            double scaleXlen = Math.sqrt(radiusXdx * radiusXdx + radiusXdy * radiusXdy);
-            double scaleYlen = Math.sqrt(radiusYdx * radiusYdx + radiusYdy * radiusYdy);
-            double angle = Math.toDegrees(Math.atan2(radiusXdy, radiusXdx));
-            double skewAngle = Math.toDegrees(Math.atan2(radiusYdy, radiusYdx)) - angle;
-            while (skewAngle < 0)
-            {
-                skewAngle += 360;
-            }
-            while (skewAngle >= 360)
-            {
-                skewAngle -= 360;
-            }
-
-            lastLayout = new PaintLayoutTexture(
-                    (float)lp.ptOrigin.x, (float)lp.ptOrigin.y,
-                    (float)scaleXlen,
-                    (float)scaleYlen,
-                    (float)angle,
-                    (float)skewAngle
-                    );
+//            double radiusXdx = lp.ptBasisX.x - lp.ptOrigin.x;
+//            double radiusXdy = lp.ptBasisX.y - lp.ptOrigin.y;
+//            double radiusYdx = lp.ptBasisY.x - lp.ptOrigin.x;
+//            double radiusYdy = lp.ptBasisY.y - lp.ptOrigin.y;
+//
+//            double scaleXlen = Math.sqrt(radiusXdx * radiusXdx + radiusXdy * radiusXdy);
+//            double scaleYlen = Math.sqrt(radiusYdx * radiusYdx + radiusYdy * radiusYdy);
+//            double angle = Math.toDegrees(Math.atan2(radiusXdy, radiusXdx));
+//            double skewAngle = Math.toDegrees(Math.atan2(radiusYdy, radiusYdx)) - angle;
+//            while (skewAngle < 0)
+//            {
+//                skewAngle += 360;
+//            }
+//            while (skewAngle >= 360)
+//            {
+//                skewAngle -= 360;
+//            }
+//
+//            lastLayout = new PaintLayoutTexture(
+//                    (float)lp.ptOrigin.x, (float)lp.ptOrigin.y,
+//                    (float)scaleXlen,
+//                    (float)scaleYlen,
+//                    (float)angle,
+//                    (float)skewAngle
+//                    );
+            
+            lastLayout = RavenPaintLayout.createTexture2D(
+                    lp.ptOrigin, lp.ptBasisX, lp.ptBasisY);
 
             for (MaterialElement ele: compList)
             {

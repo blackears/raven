@@ -37,6 +37,7 @@ import java.util.logging.Logger;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenNodeDataPlane extends RavenNode
 {
     //Used to lookup provider for data type that can be serialized with CacheMap

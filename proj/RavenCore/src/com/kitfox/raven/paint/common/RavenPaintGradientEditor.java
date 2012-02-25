@@ -16,48 +16,48 @@
 
 package com.kitfox.raven.paint.common;
 
-import java.awt.Component;
+import com.kitfox.raven.paint.control.UnderlayPaint;
+import com.kitfox.raven.util.service.ServiceInst;
+import com.kitfox.raven.util.tree.*;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Paint;
 import java.awt.Rectangle;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.beans.PropertyEditor;
 
 /**
  *
  * @author kitfox
  */
 public class RavenPaintGradientEditor
-        implements PropertyEditor
+    extends PropertyWrapperEditor<RavenPaintGradient>
 {
-    public static final String PROP_VALUE = "value";
-
-    public static final String PROP_WORLDSPACE = "worldSpace";
-    public static final String PROP_STOPS = "stops";
-
-    protected PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-
-    RavenPaintGradient value;
-    String textValue = "";
-
-    RavenPaintGradientCustomEditor customEd = new RavenPaintGradientCustomEditor(this);
-    
-
-    @Override
-    public RavenPaintGradient getValue()
+    public RavenPaintGradientEditor(PropertyWrapper<? extends NodeObject, RavenPaintGradient> wrapper)
     {
-        return value;
+        super(wrapper);
     }
-
+    
     @Override
     public boolean isPaintable()
     {
-        return false;
+        return true;
     }
 
     @Override
-    public void paintValue(Graphics g, Rectangle box)
+    public void paintValue(Graphics gg, Rectangle box)
     {
+        Graphics2D g = (Graphics2D)gg;
+        RavenPaintGradient col = getValueFlat();
+        g.setPaint(UnderlayPaint.inst().getPaint());
+        g.fill(box);
+        
+        if (col == null)
+        {
+            return;
+        }
+        
+        Paint paint = col.getPaintSwatch(box);
+        g.setPaint(paint);
+        g.fill(box);
     }
 
     @Override
@@ -69,40 +69,15 @@ public class RavenPaintGradientEditor
     @Override
     public String getAsText()
     {
-        return textValue;
+        RavenPaintGradient val = getValueFlat();
+        return val == null ? "" : val.toString();
     }
 
     @Override
     public void setAsText(String text) throws IllegalArgumentException
     {
-        this.textValue = text;
-        RavenPaintGradient style = RavenPaintGradient.create(text);
-        setValue(style);
-    }
-
-    @Override
-    public void setValue(Object value)
-    {
-        RavenPaintGradient oldValue = this.value;
-        this.value = (RavenPaintGradient)value;
-        textValue = value == null ? ""
-                : ((RavenPaintGradient)value).toString();
-        if (oldValue != null || value != null)
-        {
-            propertyChangeSupport.firePropertyChange(PROP_VALUE, oldValue, value);
-        }
-    }
-
-    @Override
-    public Component getCustomEditor()
-    {
-        return customEd;
-    }
-
-    @Override
-    public boolean supportsCustomEditor()
-    {
-        return true;
+        RavenPaintGradient val = RavenPaintGradient.create(text);
+        setValue(val);
     }
 
     @Override
@@ -111,25 +86,45 @@ public class RavenPaintGradientEditor
         return null;
     }
 
-    /**
-     * Add PropertyChangeListener.
-     *
-     * @param listener
-     */
     @Override
-    public void addPropertyChangeListener(PropertyChangeListener listener)
+    public PropertyCustomEditor createCustomEditor()
     {
-        propertyChangeSupport.addPropertyChangeListener(listener);
+        return new RavenPaintGradientCustomEditor(this);
     }
 
-    /**
-     * Remove PropertyChangeListener.
-     *
-     * @param listener
-     */
     @Override
-    public void removePropertyChangeListener(PropertyChangeListener listener)
+    public boolean supportsCustomEditor()
     {
-        propertyChangeSupport.removePropertyChangeListener(listener);
+        return true;
+    }
+
+    //----------------------------
+
+    @ServiceInst(service=PropertyProvider.class)
+    public static class Provider extends PropertyProvider<RavenPaintGradient>
+    {
+
+        public Provider()
+        {
+            super(RavenPaintGradient.class);
+        }
+
+        @Override
+        public PropertyWrapperEditor createEditor(PropertyWrapper wrapper)
+        {
+            return new RavenPaintGradientEditor(wrapper);
+        }
+
+        @Override
+        public String asText(RavenPaintGradient value)
+        {
+            return value.toString();
+        }
+
+        @Override
+        public RavenPaintGradient fromText(String text)
+        {
+            return RavenPaintGradient.create(text);
+        }
     }
 }

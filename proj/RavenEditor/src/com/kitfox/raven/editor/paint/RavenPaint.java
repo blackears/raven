@@ -28,6 +28,7 @@ import java.awt.geom.AffineTransform;
  *
  * @author kitfox
  */
+@Deprecated
 public interface RavenPaint extends BezierPaint
 {
     public Paint getPaint(PaintLayout layout, AffineTransform localToWorld);

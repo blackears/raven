@@ -20,8 +20,19 @@ import com.kitfox.cache.CacheElement;
 import com.kitfox.cache.CacheMap;
 import com.kitfox.cache.parser.CacheParser;
 import com.kitfox.cache.parser.ParseException;
+import com.kitfox.coyote.material.textureBlit.CyMaterialTextureBlitDrawRecord;
+import com.kitfox.coyote.material.textureBlit.CyMaterialTextureBlitDrawRecordFactory;
+import com.kitfox.coyote.renderer.CyDrawStack;
+import com.kitfox.coyote.renderer.CyGLWrapper;
+import com.kitfox.coyote.renderer.CyTextureImage;
+import com.kitfox.coyote.renderer.CyVertexBuffer;
+import com.kitfox.coyote.renderer.jogl.TexSourceAWT;
+import com.kitfox.coyote.renderer.jogl.TexSourceAWTBufferedImage;
 import com.kitfox.raven.paint.RavenPaint;
+import com.kitfox.raven.paint.control.RavenPaintControl;
+import com.kitfox.raven.paint.RavenPaintLayout;
 import com.kitfox.raven.paint.RavenPaintProvider;
+import com.kitfox.raven.paint.control.TextureEditorPanel;
 import com.kitfox.raven.util.resource.ResourceCache;
 import com.kitfox.raven.util.service.ServiceInst;
 import java.awt.Paint;
@@ -44,6 +55,7 @@ public class RavenPaintTexture implements RavenPaint
     public static final String PROP_URI = "uri";
     
     private final URI texture;
+    CyTextureImage texSrc;
 
     public RavenPaintTexture()
     {
@@ -53,6 +65,17 @@ public class RavenPaintTexture implements RavenPaint
     public RavenPaintTexture(URI texture)
     {
         this.texture = texture;
+        
+        BufferedImage img = (BufferedImage)ResourceCache.inst().getResource(texture);
+        
+        TexSourceAWT src = new TexSourceAWTBufferedImage(img);
+        
+        texSrc = new CyTextureImage(
+                CyGLWrapper.TexTarget.GL_TEXTURE_2D, 
+                CyGLWrapper.InternalFormatTex.GL_RGBA, 
+                CyGLWrapper.DataType.GL_UNSIGNED_BYTE, 
+                src.getWidth(), src.getHeight(),
+                src.getTransparency(), src);
     }
 
     @Override
@@ -74,6 +97,26 @@ public class RavenPaintTexture implements RavenPaint
     public URI getTexture()
     {
         return texture;
+    }
+
+    @Override
+    public void fillShape(CyDrawStack stack, 
+        RavenPaintLayout layout, CyVertexBuffer mesh)
+    {
+        CyMaterialTextureBlitDrawRecord rec =
+                CyMaterialTextureBlitDrawRecordFactory.inst().allocRecord();
+        
+        rec.setMagFilter(CyGLWrapper.TexParam.GL_NEAREST);
+        rec.setMinFilter(CyGLWrapper.TexParam.GL_NEAREST_MIPMAP_NEAREST);
+        rec.setWrapS(CyGLWrapper.TexParam.GL_REPEAT);
+        rec.setWrapT(CyGLWrapper.TexParam.GL_REPEAT);
+        rec.setTexture(texSrc);
+        rec.setTexToLocalMatrix(layout.getPaintToLocal());
+        rec.setMesh(mesh);
+        rec.setMvpMatrix(stack.getModelViewProjXform());
+        rec.setOpacity(1);
+        
+        stack.addDrawRecord(rec);
     }
 
     public static RavenPaintTexture create(String text)
@@ -189,9 +232,9 @@ public class RavenPaintTexture implements RavenPaint
         }
 
         @Override
-        public PropertyEditor createEditor()
+        public RavenPaintControl createEditor()
         {
-            throw new UnsupportedOperationException("Not supported yet.");
+            return new TextureEditorPanel();
         }
     }
 }

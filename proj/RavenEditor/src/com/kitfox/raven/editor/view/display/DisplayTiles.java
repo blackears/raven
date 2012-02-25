@@ -296,6 +296,7 @@ public class DisplayTiles implements NodeDocumentListener
                 {
                     for (int i = minTileX; i <= maxTileX; ++i)
                     {
+                        /*
                         TileCoord coord = new TileCoord(i, j);
                         Tile tile = allocTile(coord);
                         tileBounds.x = tile.coord.x * TILE_SIZE;
@@ -311,6 +312,7 @@ public class DisplayTiles implements NodeDocumentListener
                         {
                             tiles.put(coord, tile);
                         }
+                        */
                     }
                 }
 

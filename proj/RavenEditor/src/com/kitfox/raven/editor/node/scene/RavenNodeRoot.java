@@ -18,12 +18,11 @@ package com.kitfox.raven.editor.node.scene;
 
 import com.kitfox.raven.util.tree.FrameKey;
 import com.kitfox.coyote.drawRecord.CyDrawRecordViewport;
+import com.kitfox.coyote.math.CyColor4f;
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.renderer.CyDrawStack;
 import com.kitfox.coyote.renderer.CyRendererUtil2D;
 import com.kitfox.coyote.shape.CyRectangle2d;
-import com.kitfox.game.control.color.ColorStyle;
-import com.kitfox.raven.editor.node.renderer.RavenRenderer;
 import com.kitfox.raven.editor.node.scene.snap.GraphLayout;
 import com.kitfox.raven.editor.node.scene.snap.Snapping;
 import com.kitfox.raven.editor.node.scene.wizard.RavenNodeRootWizard;
@@ -32,13 +31,11 @@ import com.kitfox.raven.editor.node.tools.common.ServiceColors2D;
 import com.kitfox.raven.util.Intersection;
 import com.kitfox.raven.editor.node.tools.common.ServiceDeviceCamera;
 import com.kitfox.raven.editor.node.tools.common.ServiceDocument;
-import com.kitfox.raven.editor.node.tools.common.ServiceRenderer2D;
 import com.kitfox.raven.editor.node.tools.common.ServiceText;
-import com.kitfox.raven.editor.paint.RavenPaint;
-import com.kitfox.raven.editor.paint.RavenPaintColor;
-import com.kitfox.raven.editor.stroke.RavenStroke;
-import com.kitfox.raven.editor.stroke.RavenStrokeBasic;
 import com.kitfox.raven.editor.view.displayCy.CyRenderService;
+import com.kitfox.raven.paint.RavenPaint;
+import com.kitfox.raven.paint.RavenStroke;
+import com.kitfox.raven.paint.common.RavenPaintColor;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
 import com.kitfox.raven.util.service.ServiceInst;
 import com.kitfox.raven.util.text.Justify;
@@ -53,7 +50,6 @@ import com.kitfox.raven.util.tree.PropertyWrapperBoolean;
 import com.kitfox.raven.util.tree.PropertyWrapperFloat;
 import com.kitfox.raven.wizard.RavenWizardPageIterator;
 import com.kitfox.xml.schema.ravendocumentschema.NodeSymbolType;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.geom.AffineTransform;
 import java.beans.PropertyChangeEvent;
@@ -68,13 +64,13 @@ import java.util.Comparator;
 public class RavenNodeRoot extends NodeDocument
         implements ServiceDeviceCamera, ServiceDocument,
         ServiceText, ServiceColors2D, ServiceBackground,
-        ServiceRenderer2D, CyRenderService
+        CyRenderService
 {
     public static final String PROP_BACKGROUND = "background";
     public final PropertyWrapper<RavenNodeRoot, RavenPaintColor> background =
             new PropertyWrapper(
             this, PROP_BACKGROUND, RavenPaintColor.class,
-            new RavenPaintColor(ColorStyle.WHITE));
+            new RavenPaintColor(CyColor4f.WHITE));
 
     public static final String PROP_ANTIALIASED = "antialiased";
     public final PropertyWrapperBoolean<RavenNodeRoot> antialiased =
@@ -84,19 +80,19 @@ public class RavenNodeRoot extends NodeDocument
     public final PropertyWrapper<RavenNodeRoot, RavenPaint> fillPaint =
             new PropertyWrapper(
             this, PROP_FILLPAINT, RavenPaint.class,
-            new RavenPaintColor(ColorStyle.BLACK));
+            new RavenPaintColor(CyColor4f.BLACK));
 
     public static final String PROP_STROKEPAINT = "strokePaint";
     public final PropertyWrapper<RavenNodeRoot, RavenPaint> strokePaint =
             new PropertyWrapper(
             this, PROP_STROKEPAINT, RavenPaint.class,
-            new RavenPaintColor(ColorStyle.BLACK));
+            new RavenPaintColor(CyColor4f.BLACK));
 
     public static final String PROP_STROKESTYLE = "strokeStyle";
     public final PropertyWrapper<RavenNodeRoot, RavenStroke> strokeStyle =
             new PropertyWrapper(
             this, PROP_STROKESTYLE, RavenStroke.class,
-            new RavenStrokeBasic());
+            new RavenStroke());
 
     public static final String PROP_FONT = "font";
     public final PropertyWrapper<RavenNodeRoot, Font> font =
@@ -192,8 +188,8 @@ public class RavenNodeRoot extends NodeDocument
         
 //        ColorStyle col = background.getValue().getColor();
         RavenPaintColor rcol = background.getValue(frame);
-        ColorStyle col = rcol.getColor();
-        CyRendererUtil2D.clear(rend, col.r, col.g, col.b, col.a);
+        //ColorStyle col = rcol.getColor();
+        CyRendererUtil2D.clear(rend, rcol.r, rcol.g, rcol.b, rcol.a);
 
         CyMatrix4d view = new CyMatrix4d(viewXform);
         rend.setViewXform(view);
@@ -225,7 +221,7 @@ public class RavenNodeRoot extends NodeDocument
 
         Collections.sort(cams, new Comp());
 
-        ColorStyle col = background.getValue().getColor();
+        RavenPaintColor col = background.getValue();
         CyRendererUtil2D.clear(rend, col.r, col.g, col.b, col.a);
 
         int devW = rend.getDeviceWidth();
@@ -283,25 +279,25 @@ public class RavenNodeRoot extends NodeDocument
         return cams.size();
     }
 
-    @Deprecated
-    @Override
-    public void render(RavenRenderer renderer)
-    {
-        RavenPaintColor color = background.getValue();
-        Color bgCol = color == null ? Color.GRAY : color.getColor().getColor();
-
-        renderer.clear(bgCol);
-        renderer.setAntialiased(antialiased.getValue());
-
-//        renderer.mulTransform(viewXform);
-        renderer.setWorldToViewTransform(viewXform);
-
-        for (int i = 0; i < sceneGraph.size(); ++i)
-        {
-            RavenNodeXformable child = sceneGraph.get(i);
-            child.render(renderer);
-        }
-    }
+//    @Deprecated
+//    @Override
+//    public void render(RavenRenderer renderer)
+//    {
+//        RavenPaintColor color = background.getValue();
+//        Color bgCol = color == null ? Color.GRAY : color.getColor().getColor();
+//
+//        renderer.clear(bgCol);
+//        renderer.setAntialiased(antialiased.getValue());
+//
+////        renderer.mulTransform(viewXform);
+//        renderer.setWorldToViewTransform(viewXform);
+//
+//        for (int i = 0; i < sceneGraph.size(); ++i)
+//        {
+//            RavenNodeXformable child = sceneGraph.get(i);
+//            child.render(renderer);
+//        }
+//    }
 
     @Deprecated
     @Override

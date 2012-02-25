@@ -257,9 +257,10 @@ public class DisplayPanel extends javax.swing.JPanel
 
         NodeDocument root = doc.getCurDocument();
         ServiceBackground service = root.getNodeService(ServiceBackground.class, false);
-        RavenPaintColor bg = service == null
-                ? RavenPaintColor.TRANSPARENT
-                : service.getBackgroundColor();
+        RavenPaintColor bg = RavenPaintColor.TRANSPARENT;
+//        RavenPaintColor bg = service == null
+//                ? RavenPaintColor.TRANSPARENT
+//                : service.getBackgroundColor();
         if (bg.getColor().isTransparent())
         {
             g.setPaint(UnderlayPaint.inst().getPaint());

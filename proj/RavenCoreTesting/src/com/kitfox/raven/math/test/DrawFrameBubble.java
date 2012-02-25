@@ -22,7 +22,7 @@
 
 package com.kitfox.raven.math.test;
 
-import com.kitfox.raven.editor.RavenSwingUtil;
+import com.kitfox.raven.util.RavenSwingUtil;
 import java.awt.BorderLayout;
 
 /**

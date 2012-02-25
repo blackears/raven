@@ -16,6 +16,7 @@
 
 package com.kitfox.raven.editor;
 
+import com.kitfox.raven.util.RavenSwingUtil;
 import com.kitfox.raven.util.FileFilterSuffix;
 import com.kitfox.raven.util.tree.NodeDocument;
 import com.kitfox.raven.wizard.RavenWizardDialog;

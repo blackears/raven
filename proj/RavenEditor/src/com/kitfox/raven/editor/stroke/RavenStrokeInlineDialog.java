@@ -22,7 +22,7 @@
 
 package com.kitfox.raven.editor.stroke;
 
-import com.kitfox.raven.editor.RavenSwingUtil;
+import com.kitfox.raven.util.RavenSwingUtil;
 import java.awt.BorderLayout;
 import java.awt.Window;
 import java.beans.PropertyChangeEvent;

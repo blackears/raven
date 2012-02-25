@@ -20,29 +20,33 @@
  * Created on Sep 17, 2009, 8:14:59 PM
  */
 
-package com.kitfox.raven.paint.common;
+package com.kitfox.raven.paint;
 
 import com.kitfox.coyote.shape.CyStroke;
 import com.kitfox.coyote.shape.CyStrokeCap;
 import com.kitfox.coyote.shape.CyStrokeJoin;
 import com.kitfox.rabbit.util.NumberText;
-import com.kitfox.raven.paint.RavenStroke;
-import com.kitfox.raven.util.PropertyChangeWeakListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import com.kitfox.raven.util.tree.PropertyCustomEditor;
+import com.kitfox.raven.util.tree.PropertyData;
+import com.kitfox.raven.util.tree.PropertyDataInline;
+import java.awt.Component;
 
 /**
  *
  * @author kitfox
  */
-public class RavenStrokeCustomEditor extends javax.swing.JPanel implements PropertyChangeListener
+public class RavenStrokeCustomEditor extends javax.swing.JPanel 
+    implements PropertyCustomEditor
 {
     private static final long serialVersionUID = 1;
 
-    PropertyChangeWeakListener listener;
+//    PropertyChangeWeakListener listener;
     RavenStrokeEditor ed;
 
     boolean updating = true;
+    
+    PropertyData<RavenStroke> initValue;
+    RavenStroke curValue;
 
     /** Creates new form StrokeStyleCustomEditor */
     public RavenStrokeCustomEditor(RavenStrokeEditor ed)
@@ -50,6 +54,9 @@ public class RavenStrokeCustomEditor extends javax.swing.JPanel implements Prope
         this.ed = ed;
         initComponents();
 
+        initValue = ed.getValue();
+        curValue = initValue.getValue(ed.getDocument());
+        
         combo_cap.addItem(CyStrokeCap.BUTT);
         combo_cap.addItem(CyStrokeCap.ROUND);
         combo_cap.addItem(CyStrokeCap.SQUARE);
@@ -58,43 +65,48 @@ public class RavenStrokeCustomEditor extends javax.swing.JPanel implements Prope
         combo_join.addItem(CyStrokeJoin.MITER);
         combo_join.addItem(CyStrokeJoin.ROUND);
 
-        listener = new PropertyChangeWeakListener(this, ed);
-        ed.addPropertyChangeListener(listener);
+//        listener = new PropertyChangeWeakListener(this, ed);
+//        ed.addPropertyChangeListener(listener);
 
         update();
+        updating = false;
     }
 
     public void update()
-    {
+    {        
         updating = true;
 
-        RavenStroke ravenStroke = ed.getValue();
+        RavenStroke ravenStroke = ed.getValueFlat();
         if (ravenStroke == null)
         {
             ravenStroke = new RavenStroke();
         }
 
         CyStroke stroke = ravenStroke.getStroke();
-        text_width.setText("" + stroke.getWidth());
+        spinner_width.setValue(stroke.getWidth());
         combo_cap.setSelectedItem(stroke.getCap());
         combo_join.setSelectedItem(stroke.getJoin());
-        text_miterLimit.setText("" + stroke.getMiterLimit());
+        spinner_miterLimit.setValue(stroke.getMiterLimit());
         float[] dashArray = stroke.getDashFloat();
         text_dash.setText(dashArray == null ? "" : NumberText.asString(dashArray, ","));
-        text_dashPhase.setText("" + stroke.getDashOffset());
+        spinner_dashOffset.setValue(stroke.getDashOffset());
 
         updating = false;
     }
 
     public void export()
     {
-        ed.setAsText(String.format("{width: %f; cap: %s; join: %s; miterLimit: %f; dash: (%s); dashPhase: %f}",
-                NumberText.findFloat(text_width.getText(), 1),
-                combo_cap.getSelectedItem().toString(),
-                combo_join.getSelectedItem().toString(),
-                NumberText.findFloat(text_miterLimit.getText(), 10),
-                NumberText.cleanFloatArray(text_dash.getText(), ","),
-                NumberText.findFloat(text_dashPhase.getText(), 0)));
+        double width = (Double)spinner_width.getValue();
+        CyStrokeCap cap = (CyStrokeCap)combo_cap.getSelectedItem();
+        CyStrokeJoin join = (CyStrokeJoin)combo_join.getSelectedItem();
+        double miterLimit = (Double)spinner_miterLimit.getValue();
+        double[] dash = NumberText.findDoubleArray(text_dash.getText());
+        double dashOffset = (Double)spinner_dashOffset.getValue();
+        CyStroke stroke = new CyStroke(
+                width, cap, join, miterLimit, dash, dashOffset);
+        curValue = new RavenStroke(stroke);
+
+        ed.setValue(new PropertyDataInline(curValue), false);
     }
 
     /** This method is called from within the constructor to
@@ -104,36 +116,28 @@ public class RavenStrokeCustomEditor extends javax.swing.JPanel implements Prope
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
 
         jLabel1 = new javax.swing.JLabel();
-        text_width = new javax.swing.JTextField();
         combo_cap = new javax.swing.JComboBox();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         combo_join = new javax.swing.JComboBox();
         jLabel4 = new javax.swing.JLabel();
-        text_miterLimit = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         text_dash = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        text_dashPhase = new javax.swing.JTextField();
+        spinner_width = new javax.swing.JSpinner();
+        spinner_miterLimit = new javax.swing.JSpinner();
+        spinner_dashOffset = new javax.swing.JSpinner();
 
         jLabel1.setText("Width");
 
-        text_width.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                text_widthActionPerformed(evt);
-            }
-        });
-        text_width.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                text_widthFocusLost(evt);
-            }
-        });
-
-        combo_cap.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        combo_cap.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 combo_capActionPerformed(evt);
             }
         });
@@ -142,48 +146,59 @@ public class RavenStrokeCustomEditor extends javax.swing.JPanel implements Prope
 
         jLabel3.setText("Join");
 
-        combo_join.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        combo_join.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 combo_joinActionPerformed(evt);
             }
         });
 
         jLabel4.setText("Miter Limit");
 
-        text_miterLimit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                text_miterLimitActionPerformed(evt);
-            }
-        });
-        text_miterLimit.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                text_miterLimitFocusLost(evt);
-            }
-        });
-
         jLabel5.setText("Dash");
 
-        text_dash.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        text_dash.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 text_dashActionPerformed(evt);
             }
         });
-        text_dash.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
+        text_dash.addFocusListener(new java.awt.event.FocusAdapter()
+        {
+            public void focusLost(java.awt.event.FocusEvent evt)
+            {
                 text_dashFocusLost(evt);
             }
         });
 
-        jLabel6.setText("Dash Phase");
+        jLabel6.setText("Dash Offset");
 
-        text_dashPhase.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                text_dashPhaseActionPerformed(evt);
+        spinner_width.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(0.0d), null, null, Double.valueOf(1.0d)));
+        spinner_width.addChangeListener(new javax.swing.event.ChangeListener()
+        {
+            public void stateChanged(javax.swing.event.ChangeEvent evt)
+            {
+                spinner_widthStateChanged(evt);
             }
         });
-        text_dashPhase.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                text_dashPhaseFocusLost(evt);
+
+        spinner_miterLimit.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(0.0d), null, null, Double.valueOf(1.0d)));
+        spinner_miterLimit.addChangeListener(new javax.swing.event.ChangeListener()
+        {
+            public void stateChanged(javax.swing.event.ChangeEvent evt)
+            {
+                spinner_miterLimitStateChanged(evt);
+            }
+        });
+
+        spinner_dashOffset.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(0.0d), null, null, Double.valueOf(1.0d)));
+        spinner_dashOffset.addChangeListener(new javax.swing.event.ChangeListener()
+        {
+            public void stateChanged(javax.swing.event.ChangeEvent evt)
+            {
+                spinner_dashOffsetStateChanged(evt);
             }
         });
 
@@ -197,7 +212,7 @@ public class RavenStrokeCustomEditor extends javax.swing.JPanel implements Prope
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(text_width, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE))
+                        .addComponent(spinner_width))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -209,7 +224,7 @@ public class RavenStrokeCustomEditor extends javax.swing.JPanel implements Prope
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(text_miterLimit, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE))
+                        .addComponent(spinner_miterLimit))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -217,7 +232,7 @@ public class RavenStrokeCustomEditor extends javax.swing.JPanel implements Prope
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(text_dashPhase, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)))
+                        .addComponent(spinner_dashOffset)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -226,7 +241,7 @@ public class RavenStrokeCustomEditor extends javax.swing.JPanel implements Prope
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(text_width, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(spinner_width, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -238,7 +253,7 @@ public class RavenStrokeCustomEditor extends javax.swing.JPanel implements Prope
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(text_miterLimit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(spinner_miterLimit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
@@ -246,26 +261,10 @@ public class RavenStrokeCustomEditor extends javax.swing.JPanel implements Prope
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(text_dashPhase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(spinner_dashOffset, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void text_widthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_text_widthActionPerformed
-        export();
-    }//GEN-LAST:event_text_widthActionPerformed
-
-    private void text_widthFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_text_widthFocusLost
-        export();
-    }//GEN-LAST:event_text_widthFocusLost
-
-    private void text_miterLimitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_text_miterLimitActionPerformed
-        export();
-    }//GEN-LAST:event_text_miterLimitActionPerformed
-
-    private void text_miterLimitFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_text_miterLimitFocusLost
-        export();
-    }//GEN-LAST:event_text_miterLimitFocusLost
 
     private void text_dashActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_text_dashActionPerformed
         export();
@@ -274,14 +273,6 @@ public class RavenStrokeCustomEditor extends javax.swing.JPanel implements Prope
     private void text_dashFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_text_dashFocusLost
         export();
     }//GEN-LAST:event_text_dashFocusLost
-
-    private void text_dashPhaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_text_dashPhaseActionPerformed
-        export();
-    }//GEN-LAST:event_text_dashPhaseActionPerformed
-
-    private void text_dashPhaseFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_text_dashPhaseFocusLost
-        export();
-    }//GEN-LAST:event_text_dashPhaseFocusLost
 
     private void combo_capActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combo_capActionPerformed
         if (updating)
@@ -301,6 +292,21 @@ public class RavenStrokeCustomEditor extends javax.swing.JPanel implements Prope
         export();
     }//GEN-LAST:event_combo_joinActionPerformed
 
+    private void spinner_widthStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_spinner_widthStateChanged
+    {//GEN-HEADEREND:event_spinner_widthStateChanged
+        export();
+    }//GEN-LAST:event_spinner_widthStateChanged
+
+    private void spinner_miterLimitStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_spinner_miterLimitStateChanged
+    {//GEN-HEADEREND:event_spinner_miterLimitStateChanged
+        export();
+    }//GEN-LAST:event_spinner_miterLimitStateChanged
+
+    private void spinner_dashOffsetStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_spinner_dashOffsetStateChanged
+    {//GEN-HEADEREND:event_spinner_dashOffsetStateChanged
+        export();
+    }//GEN-LAST:event_spinner_dashOffsetStateChanged
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox combo_cap;
@@ -311,16 +317,28 @@ public class RavenStrokeCustomEditor extends javax.swing.JPanel implements Prope
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JSpinner spinner_dashOffset;
+    private javax.swing.JSpinner spinner_miterLimit;
+    private javax.swing.JSpinner spinner_width;
     private javax.swing.JTextField text_dash;
-    private javax.swing.JTextField text_dashPhase;
-    private javax.swing.JTextField text_miterLimit;
-    private javax.swing.JTextField text_width;
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void propertyChange(PropertyChangeEvent evt)
+    public Component getCustomEditor()
     {
-        update();
+        return this;
+    }
+
+    @Override
+    public void customEditorCommit()
+    {
+        ed.setValue(new PropertyDataInline(curValue), true);
+    }
+
+    @Override
+    public void customEditorCancel()
+    {
+        ed.setValue(initValue, false);
     }
 
 }

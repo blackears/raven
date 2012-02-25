@@ -22,7 +22,7 @@
 
 package com.kitfox.raven.editor.paint;
 
-import com.kitfox.raven.editor.RavenSwingUtil;
+import com.kitfox.raven.util.RavenSwingUtil;
 import java.awt.BorderLayout;
 import java.awt.Window;
 import java.beans.PropertyChangeEvent;
@@ -32,6 +32,7 @@ import java.beans.PropertyChangeListener;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenPaintInlineDialog extends javax.swing.JDialog
         implements PropertyChangeListener
 {

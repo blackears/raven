@@ -23,8 +23,11 @@
 package com.kitfox.raven.paint.common;
 
 import com.kitfox.raven.paint.control.TextureEditorPanel;
-import com.kitfox.raven.util.PropertyChangeWeakListener;
+import com.kitfox.raven.util.tree.PropertyCustomEditor;
+import com.kitfox.raven.util.tree.PropertyData;
+import com.kitfox.raven.util.tree.PropertyDataInline;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -32,39 +35,31 @@ import java.beans.PropertyChangeListener;
  *
  * @author kitfox
  */
-public class RavenPaintTextureCustomEditor extends javax.swing.JPanel implements PropertyChangeListener
+public class RavenPaintTextureCustomEditor extends javax.swing.JPanel 
+        implements PropertyCustomEditor, PropertyChangeListener
 {
     private static final long serialVersionUID = 1;
 
-    final RavenPaintTextureEditor ed;
-    PropertyChangeWeakListener listener;
+    private final RavenPaintTextureEditor editor;
 
     TextureEditorPanel texPanel = new TextureEditorPanel();
 
+    PropertyData<RavenPaintTexture> initValue;
+    RavenPaintTexture curValue;
+
     /** Creates new form ColorStylePanel */
-    public RavenPaintTextureCustomEditor(RavenPaintTextureEditor ed)
+    public RavenPaintTextureCustomEditor(RavenPaintTextureEditor editor)
     {
         initComponents();
 
-        this.ed = ed;
-        listener = new PropertyChangeWeakListener(this, ed);
-        ed.addPropertyChangeListener(listener);
+        this.editor = editor;
+        initValue = editor.getValue();
+        curValue = initValue.getValue(editor.getDocument());
 
         add(texPanel, BorderLayout.CENTER);
 
         texPanel.addPropertyChangeListener(this);
-
-        update();
-    }
-
-    private void update()
-    {
-        RavenPaintTexture value = ed.getValue();
-        if  (value == null)
-        {
-            value = new RavenPaintTexture();
-        }
-        texPanel.setTexture(value);
+        texPanel.setTexture(curValue);
     }
 
     /** This method is called from within the constructor to
@@ -82,20 +77,30 @@ public class RavenPaintTextureCustomEditor extends javax.swing.JPanel implements
     @Override
     public void propertyChange(PropertyChangeEvent evt)
     {
-        if (evt.getSource() == texPanel 
-                && TextureEditorPanel.PROP_TEXTURE.equals(evt.getPropertyName()))
-        {
-            RavenPaintTexture col = texPanel.getTexture();
-            ed.setValue(col);
-        }
-        else if (evt.getSource() == ed)
-        {
-            update();
-        }
+        curValue = texPanel.getTexture();
+        editor.setValue(new PropertyDataInline(curValue), false);
     }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public Component getCustomEditor()
+    {
+        return this;
+    }
+
+    @Override
+    public void customEditorCommit()
+    {
+        editor.setValue(new PropertyDataInline(curValue), true);
+    }
+
+    @Override
+    public void customEditorCancel()
+    {
+        editor.setValue(initValue, false);
+    }
 
 }

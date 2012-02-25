@@ -36,6 +36,7 @@ import java.beans.PropertyChangeListener;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenPaintGradientCustomEditor extends javax.swing.JPanel
         implements PropertyChangeListener, PropertyCustomEditor
 {

@@ -20,7 +20,7 @@ import com.kitfox.raven.editor.node.scene.RavenNodeDataPlane;
 import com.kitfox.raven.editor.node.scene.RavenNodeGroup;
 import com.kitfox.raven.editor.node.scene.RavenNodeMeshStatic;
 import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
-import com.kitfox.raven.editor.paint.RavenPaintColor;
+import com.kitfox.raven.paint.common.RavenPaintColor;
 import com.kitfox.raven.util.planeData.PlaneDataProvider;
 import com.kitfox.raven.util.tree.NodeObjectProviderIndex;
 import com.kitfox.raven.util.tree.PropertyDataReference;
@@ -40,6 +40,7 @@ import com.kitfox.swf.tags.shapes.DefineShape2;
 import com.kitfox.swf.tags.shapes.DefineShape3;
 import com.kitfox.swf.tags.shapes.DefineShape4;
 import com.kitfox.swf.tags.shapes.ShapeWithStyle;
+import java.awt.Color;
 import java.util.ArrayList;
 
 /**
@@ -224,7 +225,8 @@ public class ImportSWFBuilder
             return;
         }
 
-        root.background.setValue(new RavenPaintColor(tag.getBgColor().asColor()));
+        Color col = tag.getBgColor().asColor();
+        root.background.setValue(new RavenPaintColor(col));
     }
     
 }

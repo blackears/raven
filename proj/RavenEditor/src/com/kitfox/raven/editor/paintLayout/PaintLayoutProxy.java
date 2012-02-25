@@ -27,6 +27,7 @@ import com.kitfox.raven.util.service.ServiceInst;
  *
  * @author kitfox
  */
+@Deprecated
 public class PaintLayoutProxy
 {
     private final PaintLayout layout;

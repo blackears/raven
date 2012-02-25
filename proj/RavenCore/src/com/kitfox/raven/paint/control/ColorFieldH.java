@@ -29,7 +29,7 @@ public class ColorFieldH extends ColorModelField1D
 {
     private float bright;
     private float sat;
-    private float alpha;
+//    private float alpha;
     private float[] hsv = new float[3];
     private float[] rgb = new float[3];
 
@@ -43,8 +43,9 @@ public class ColorFieldH extends ColorModelField1D
     {
         float hue = isHorizontal() ? x : y;
 
+        RavenPaintColor modelColor = model.getColor();
         MathColorUtil.HSVtoRGB(hue, sat, bright, rgb);
-        return new RavenPaintColor(rgb[0], rgb[1], rgb[2], alpha);
+        return new RavenPaintColor(rgb[0], rgb[1], rgb[2], modelColor.getA());
     }
 
     @Override
@@ -101,22 +102,22 @@ public class ColorFieldH extends ColorModelField1D
         fireModelChanged();
     }
 
-    /**
-     * @return the alpha
-     */
-    public float getAlpha()
-    {
-        return alpha;
-    }
-
-    /**
-     * @param alpha the alpha to set
-     */
-    public void setAlpha(float alpha)
-    {
-        this.alpha = alpha;
-        fireModelChanged();
-    }
+//    /**
+//     * @return the alpha
+//     */
+//    public float getAlpha()
+//    {
+//        return alpha;
+//    }
+//
+//    /**
+//     * @param alpha the alpha to set
+//     */
+//    public void setAlpha(float alpha)
+//    {
+//        this.alpha = alpha;
+//        fireModelChanged();
+//    }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt)
@@ -131,7 +132,7 @@ public class ColorFieldH extends ColorModelField1D
             MathColorUtil.RGBtoHSV(color.r, color.g, color.b, hsv);
             setSat(hsv[1]);
             setBright(hsv[2]);
-            setAlpha(color.a);
+//            setAlpha(color.a);
         }
     }
 

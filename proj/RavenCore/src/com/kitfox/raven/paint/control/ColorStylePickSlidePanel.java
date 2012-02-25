@@ -23,11 +23,6 @@
 package com.kitfox.raven.paint.control;
 
 import com.kitfox.raven.paint.common.RavenPaintColor;
-import com.kitfox.raven.paint.control.ColorChooserPanel;
-import com.kitfox.raven.paint.control.ColorModelColorField;
-import com.kitfox.raven.paint.control.ColorModelField1D;
-import com.kitfox.raven.paint.control.ColorSliderPanel;
-import com.kitfox.raven.paint.control.SimpleColorModel;
 import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -91,7 +86,7 @@ public class ColorStylePickSlidePanel extends javax.swing.JPanel
     public void propertyChange(PropertyChangeEvent evt)
     {
         //Echo color proeprty changes
-        firePropertyChange(PROP_COLOR, null, null);
+        firePropertyChange(PROP_COLOR, evt.getOldValue(), evt.getNewValue());
     }
 
     /** This method is called from within the constructor to

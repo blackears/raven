@@ -31,6 +31,7 @@ import java.awt.Rectangle;
  *
  * @author kitfox
  */
+@Deprecated
 public class PaintLayoutEditor extends PropertyWrapperEditor<PaintLayout>
 {
     public PaintLayoutEditor(PropertyWrapper wrapper)

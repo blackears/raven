@@ -32,6 +32,7 @@ import java.awt.Rectangle;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenPaintGradientEditor extends PropertyWrapperEditor<RavenPaintGradient>
 {
     public RavenPaintGradientEditor(PropertyWrapper wrapper)

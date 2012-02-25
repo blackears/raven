@@ -26,9 +26,12 @@ import com.kitfox.coyote.math.CyColor4f;
 import com.kitfox.coyote.math.CyGradientStops;
 import com.kitfox.coyote.math.CyGradientStops.Cycle;
 import com.kitfox.coyote.math.CyGradientStops.Style;
+import com.kitfox.raven.paint.RavenPaint;
 import com.kitfox.raven.paint.common.RavenPaintColor;
+import com.kitfox.raven.paint.common.RavenPaintGradient;
 import com.kitfox.raven.paint.control.Gradient.StopEditor;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dialog.ModalityType;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -42,8 +45,9 @@ import javax.swing.event.ChangeEvent;
  *
  * @author kitfox
  */
-public class GradientStyleEditorPanel extends javax.swing.JPanel
-        implements StopModelListener, StopEditor
+public class GradientEditorPanel extends javax.swing.JPanel
+        implements StopModelListener, StopEditor,
+        RavenPaintControl
 {
     GradientSliderPanel panelSlider = new GradientSliderPanel();
     
@@ -55,7 +59,7 @@ public class GradientStyleEditorPanel extends javax.swing.JPanel
     CyGradientStops gradientCompiled;
 
     /** Creates new form GradientStyleCustomEditor */
-    public GradientStyleEditorPanel()
+    public GradientEditorPanel()
     {
         initComponents();
 
@@ -232,7 +236,8 @@ public class GradientStyleEditorPanel extends javax.swing.JPanel
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
 
         panel_gradient = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
@@ -245,8 +250,10 @@ public class GradientStyleEditorPanel extends javax.swing.JPanel
 
         setLayout(new java.awt.BorderLayout());
 
-        panel_gradient.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
+        panel_gradient.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mouseReleased(java.awt.event.MouseEvent evt)
+            {
                 panel_gradientMouseReleased(evt);
             }
         });
@@ -255,8 +262,10 @@ public class GradientStyleEditorPanel extends javax.swing.JPanel
 
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.X_AXIS));
 
-        combo_cycle.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        combo_cycle.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 combo_cycleActionPerformed(evt);
             }
         });
@@ -288,8 +297,10 @@ public class GradientStyleEditorPanel extends javax.swing.JPanel
 
         jLabel12.setText("Style");
 
-        combo_style.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        combo_style.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 combo_styleActionPerformed(evt);
             }
         });
@@ -358,5 +369,34 @@ public class GradientStyleEditorPanel extends javax.swing.JPanel
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel panel_gradient;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public Component getComponent()
+    {
+        return this;
+    }
+
+    @Override
+    public RavenPaint getPaint()
+    {
+        CyGradientStops stops = getGradient();
+        return new RavenPaintGradient(stops);
+    }
+
+    @Override
+    public void setPaint(RavenPaint paint)
+    {
+        if (paint instanceof RavenPaintGradient)
+        {
+            RavenPaintGradient grad = (RavenPaintGradient)paint;
+            setGradient(grad.getStops());
+        }
+    }
+
+    @Override
+    public String getPaintPropertyName()
+    {
+        return PROP_GRADIENT;
+    }
 
 }

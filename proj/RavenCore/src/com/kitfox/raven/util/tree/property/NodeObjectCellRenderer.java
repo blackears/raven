@@ -17,13 +17,10 @@
 package com.kitfox.raven.util.tree.property;
 
 import com.kitfox.raven.util.tree.NodeObject;
-import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
-import javax.swing.UIDefaults;
-import javax.swing.UIManager;
 
 /**
  *
@@ -41,11 +38,16 @@ public class NodeObjectCellRenderer extends JLabel
     @Override
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
     {
-        UIDefaults uid = UIManager.getLookAndFeel().getDefaults();
-
-        Color bg = isSelected ? uid.getColor("ComboBox.selectionBackground")
-                : uid.getColor("ComboBox.background");
-        setBackground(bg);
+        if (isSelected)
+        {
+            setBackground(list.getSelectionBackground());
+            setForeground(list.getSelectionForeground());
+        }
+        else
+        {
+            setBackground(list.getBackground());
+            setForeground(list.getForeground());
+        }
 
         if (value instanceof String)
         {

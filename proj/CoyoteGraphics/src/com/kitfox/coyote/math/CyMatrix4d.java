@@ -16,6 +16,7 @@
 
 package com.kitfox.coyote.math;
 
+import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.coyote.shape.CyRectangle2i;
 import java.awt.geom.AffineTransform;
 import java.nio.DoubleBuffer;
@@ -2038,4 +2039,37 @@ public class CyMatrix4d
         return q;
     }
 
+    public static CyMatrix4d createComponents(CyRectangle2d box)
+    {
+        return createComponents(box.getX(), box.getY(),
+                box.getWidth(), box.getHeight(), 0, 90);
+    }
+
+    public static CyMatrix4d createComponents(
+            double transX, double transY,
+            double scaleX, double scaleY,
+            double angle, double skewAngle)
+    {
+        //Paint will span [0 1] unit square.
+
+        //Coordinates given either in local or world space.
+        // If in local space, xform will have the localToWorld xform.
+        double sinx = Math.sin(Math.toRadians(angle));
+        double cosx = Math.cos(Math.toRadians(angle));
+        double siny = Math.sin(Math.toRadians(angle + skewAngle));
+        double cosy = Math.cos(Math.toRadians(angle + skewAngle));
+
+        //Basis for top right quadrant
+        double ix = cosx * scaleX;
+        double iy = sinx * scaleX;
+        double jx = cosy * scaleY;
+        double jy = siny * scaleY;
+
+        //Transform basis onto [-1 1] unit square
+        return new CyMatrix4d(
+                ix, iy, 0, 0,
+                jx, jy, 0, 0,
+                0, 0, 1, 0,
+                transX, transY, 0, 1);
+    }
 }

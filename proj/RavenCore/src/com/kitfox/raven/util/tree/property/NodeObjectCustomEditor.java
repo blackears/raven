@@ -132,26 +132,6 @@ public class NodeObjectCustomEditor extends javax.swing.JPanel
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 
-//    class CellRenderer extends JLabel
-//            implements ListCellRenderer
-//    {
-//        @Override
-//        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
-//        {
-//            UIDefaults uid = UIManager.getLookAndFeel().getDefaults();
-//
-//            Color bg = isSelected ? uid.getColor("ComboBox.selectionBackground")
-//                    : uid.getColor("ComboBox.background");
-//            setBackground(bg);
-//
-//            NodeObject node = (NodeObject)value;
-//            setText(node == null ? "" : node.getName());
-//            setIcon(node == null ? null : node.getIcon());
-//
-//            return this;
-//        }
-//    }
-
     class FindNodes implements NodeVisitor
     {
         private ArrayList<NodeObject> list = new ArrayList<NodeObject>();

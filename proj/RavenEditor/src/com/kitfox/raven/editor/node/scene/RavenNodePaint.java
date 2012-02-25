@@ -29,6 +29,7 @@ import java.awt.geom.AffineTransform;
  *
  * @author kitfox
  */
+@Deprecated
 abstract public class RavenNodePaint extends RavenNode
         implements BezierPaint, RavenPaint
 {

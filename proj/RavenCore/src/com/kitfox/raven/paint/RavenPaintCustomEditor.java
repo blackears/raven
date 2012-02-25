@@ -22,80 +22,44 @@
 
 package com.kitfox.raven.paint;
 
-import com.kitfox.raven.util.PropertyChangeWeakListener;
+import com.kitfox.raven.paint.control.PaintEditorPanel;
+import com.kitfox.raven.util.tree.PropertyCustomEditor;
+import com.kitfox.raven.util.tree.PropertyData;
+import com.kitfox.raven.util.tree.PropertyDataInline;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyEditor;
-import javax.swing.*;
 
 /**
  *
  * @author kitfox
  */
 public class RavenPaintCustomEditor extends javax.swing.JPanel
-        implements PropertyChangeListener
+    implements PropertyCustomEditor, PropertyChangeListener
 {
     private static final long serialVersionUID = 1;
 
-    PropertyChangeWeakListener listener;
-    final RavenPaintEditor ed;
-
-    Component delegateCustomEditor;
-
-    boolean updating = true;
+    private final RavenPaintEditor editor;
+    
+    private PaintEditorPanel paintPanel = new PaintEditorPanel();
+    
+    PropertyData<RavenPaint> initValue;
+    RavenPaint curValue;
 
     /** Creates new form StrokeStyleCustomEditor */
-    public RavenPaintCustomEditor(RavenPaintEditor ed)
+    public RavenPaintCustomEditor(RavenPaintEditor editor)
     {
-        this.ed = ed;
         initComponents();
 
-        combo_type.setRenderer(new CellRenderer());        
-        
-        for (RavenPaintProvider prov: RavenPaintIndex.inst().getServices())
-        {
-            combo_type.addItem(prov);
-        }
-        
-        listener = new PropertyChangeWeakListener(this, ed);
-        ed.addPropertyChangeListener(listener);
+        this.editor = editor;
+        initValue = editor.getValue();
+        curValue = initValue.getValue(editor.getDocument());
 
-        update();
-    }
+        add(paintPanel, BorderLayout.CENTER);
 
-    public void update()
-    {
-        updating = true;
-
-//        RavenPaint paint = ed.getValue();
-//        RavenPaintProvider prov = 
-//                RavenPaintIndex.inst().getByPaint(paint.getClass());
-        
-        PropertyEditor delegateEd = ed.getDelegateEditor();
-        Component custEd = delegateEd.getCustomEditor();
-        if (custEd != delegateCustomEditor)
-        {
-            if (delegateCustomEditor != null)
-            {
-                delegateCustomEditor.removePropertyChangeListener(this);
-            }
-            
-            panel_workArea.removeAll();
-            delegateCustomEditor = custEd;
-
-            if (delegateCustomEditor != null)
-            {
-                panel_workArea.add(delegateCustomEditor, BorderLayout.CENTER);
-                delegateCustomEditor.addPropertyChangeListener(this);
-            }
-        }
-
-        updating = false;
-
-        revalidate();
+        paintPanel.setPaint(curValue);
+        paintPanel.addPropertyChangeListener(this);
     }
 
     /** This method is called from within the constructor to
@@ -105,102 +69,42 @@ public class RavenPaintCustomEditor extends javax.swing.JPanel
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
 
-        jLabel1 = new javax.swing.JLabel();
-        combo_type = new javax.swing.JComboBox();
-        panel_workArea = new javax.swing.JPanel();
-
-        jLabel1.setText("Type");
-
-        combo_type.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                combo_typeActionPerformed(evt);
-            }
-        });
-
-        panel_workArea.setLayout(new java.awt.BorderLayout());
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(combo_type, 0, 316, Short.MAX_VALUE)
-                .addContainerGap())
-            .addComponent(panel_workArea, javax.swing.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(combo_type, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panel_workArea, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE))
-        );
+        setLayout(new java.awt.BorderLayout());
     }// </editor-fold>//GEN-END:initComponents
-
-    private void combo_typeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combo_typeActionPerformed
-        if (updating)
-        {
-            return;
-        }
-
-        RavenPaintProvider prov = 
-                (RavenPaintProvider)combo_type.getSelectedItem();
-        
-        PropertyEditor provEd = prov.createEditor();
-        RavenPaint paint = (RavenPaint)provEd.getValue();
-        if (paint == null)
-        {
-            paint = prov.getDefaultValue();
-        }
-        ed.setValue(paint);
-
-    }//GEN-LAST:event_combo_typeActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox combo_type;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel panel_workArea;
     // End of variables declaration//GEN-END:variables
 
     @Override
     public void propertyChange(PropertyChangeEvent evt)
     {
-        update();
+        if (evt.getSource() == paintPanel 
+                && PaintEditorPanel.PROP_PAINT.equals(evt.getPropertyName()))
+        {
+            curValue = paintPanel.getPaint();
+            editor.setValue(new PropertyDataInline(curValue), false);
+        }
     }
 
-    //-----------------------------
-
-    class CellRenderer extends JLabel
-            implements ListCellRenderer
+    @Override
+    public Component getCustomEditor()
     {
-        public CellRenderer()
-        {
-            setOpaque(true);
-        }
+        return this;
+    }
 
-        @Override
-        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
-        {
-            UIDefaults uid = UIManager.getLookAndFeel().getDefaults();
+    @Override
+    public void customEditorCommit()
+    {
+        editor.setValue(new PropertyDataInline(curValue), true);
+    }
 
-            Color bg = isSelected ? uid.getColor("ComboBox.selectionBackground")
-                    : uid.getColor("ComboBox.background");
-            setBackground(bg);
-
-            RavenPaintProvider prov = (RavenPaintProvider)value;
-            setText(prov.getName());
-//            setToolTipText(prov.getFamily());
-
-            return this;
-        }
+    @Override
+    public void customEditorCancel()
+    {
+        editor.setValue(initValue, false);
     }
 }

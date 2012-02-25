@@ -28,17 +28,7 @@ import com.kitfox.coyote.renderer.CyGLWrapper;
  */
 public class CyMaterialColorDrawRecord extends CyDrawRecordMaterialSimple
 {
-//    boolean disposed;
-
-//        private CyMatrix4d mvpMatrix = CyMatrix4d.createIdentity();
     protected CyColor4f color = CyColor4f.WHITE;
-
-//        public void init(CyDrawStack renderer,
-//            CyColor4f color, CyVertexBuffer mesh)
-//        {
-//            this.color = color;
-//            init(renderer, mesh);
-//        }
 
     @Override
     public void render(CyGLContext ctx, CyGLWrapper gl, CyDrawRecord prevRecord)
@@ -51,58 +41,14 @@ public class CyMaterialColorDrawRecord extends CyDrawRecordMaterialSimple
         }
 
 
-//        if (!(prevRecord instanceof DrawRecord))
-//        {
-            mat.bind(gl);
-//        }
+        mat.bind(gl);
 
-            mat.render(ctx, gl, this);
-//        float alpha = color.a * opacity;
-//
-//        if (alpha >= 1)
-//        {
-//            gl.glDisable(Capability.GL_BLEND);
-//        }
-//        else
-//        {
-//            gl.glEnable(Capability.GL_BLEND);
-//            gl.glBlendFunc(GLWrapper.BlendFactor.GL_SRC_ALPHA,
-//                    GLWrapper.BlendFactor.GL_ONE_MINUS_SRC_ALPHA);
-//        }
-//
-//        //Upload uniforms
-//        mvpMatrix.toBufferc(matrixBuf);
-//        gl.glUniformMatrix4fv(u_mvpMatrix, 1, false, matrixBuf);
-//        gl.glUniform4f(u_color, color.r, color.g, color.b, alpha);
-//
-//        //Bind vertex buffers
-//        getMesh().bind(gl);
-//        {
-//            CyVertexArrayInfo info = getMesh().getVertexArrayInfo(KEY_POSITION);
-//            gl.glVertexAttribPointer(a_position, info.getSize(),
-//                    VertexDataType.GL_FLOAT, false, 0, info.getOffset());
-//            gl.glEnableVertexAttribArray(a_position);
-//        }
-//
-//        gl.glDrawElements(getMesh().getDrawMode(), getMesh().getIndexCount(),
-//                IndiciesType.GL_UNSIGNED_SHORT, 0);
+        mat.render(ctx, gl, this);
     }
-
-//    public void recycle()
-//    {
-//        disposed = false;
-//    }
 
     @Override
     public void dispose()
     {
-//        if (disposed)
-//        {
-//            throw new RuntimeException("Disposing twice");
-//        }
-//
-//        disposed = true;
-        //recordPool.add(this);
         CyMaterialColorDrawRecordFactory.inst().recycleRecord(this);
     }
 

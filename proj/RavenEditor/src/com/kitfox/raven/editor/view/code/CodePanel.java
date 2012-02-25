@@ -43,8 +43,6 @@ import java.util.EventObject;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
-import javax.swing.UIDefaults;
-import javax.swing.UIManager;
 
 /**
  *
@@ -446,10 +444,16 @@ public class CodePanel extends javax.swing.JPanel
 
             EventWrapper wrap = (EventWrapper)value;
             setOpaque(true);
-            UIDefaults def = UIManager.getDefaults();
-            setBackground(isSelected
-                ? def.getColor("ComboBox.selectionBackground")
-                : def.getColor("ComboBox.background"));
+            if (isSelected)
+            {
+                setBackground(list.getSelectionBackground());
+                setForeground(list.getSelectionForeground());
+            }
+            else
+            {
+                setBackground(list.getBackground());
+                setForeground(list.getForeground());
+            }
             
             String text = "";
             

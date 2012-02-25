@@ -25,6 +25,7 @@ import java.awt.Stroke;
  *
  * @author kitfox
  */
+@Deprecated
 public interface RavenStroke extends BezierStroke
 {
     public Stroke getStroke();

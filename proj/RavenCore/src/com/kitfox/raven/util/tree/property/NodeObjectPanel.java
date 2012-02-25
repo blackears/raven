@@ -133,33 +133,5 @@ public class NodeObjectPanel extends javax.swing.JPanel
     private javax.swing.JComboBox combo_nodes;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
-    // End of variables declaration
-
-//    static class CellRenderer extends JLabel
-//            implements ListCellRenderer
-//    {
-//
-//        public CellRenderer()
-//        {
-//            setOpaque(true);
-//        }
-//
-//
-//        @Override
-//        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
-//        {
-//            UIDefaults uid = UIManager.getLookAndFeel().getDefaults();
-//
-//            Color bg = isSelected ? uid.getColor("ComboBox.selectionBackground")
-//                    : uid.getColor("ComboBox.background");
-//            setBackground(bg);
-//
-//            NodeObject node = (NodeObject)value;
-//            setText(node == null ? "" : node.getName());
-//            setIcon(node == null ? null : node.getIcon());
-//
-//            return this;
-//        }
-//    }
 
 }

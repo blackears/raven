@@ -16,57 +16,52 @@
 
 package com.kitfox.raven.paint.common;
 
-import java.awt.Component;
+import com.kitfox.raven.paint.control.UnderlayPaint;
+import com.kitfox.raven.util.service.ServiceInst;
+import com.kitfox.raven.util.tree.*;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Paint;
 import java.awt.Rectangle;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.beans.PropertyEditor;
 
 /**
  *
  * @author kitfox
  */
-public class RavenPaintColorEditor implements PropertyEditor
+public class RavenPaintColorEditor
+    extends PropertyWrapperEditor<RavenPaintColor>
 {
-    public static final String PROP_VALUE = "value";
-
-    private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-
-    RavenPaintColor value;
-    String textValue = "";
-
-    RavenPaintColorCustomEditor customEd = new RavenPaintColorCustomEditor(this);
-
-
-    @Override
-    public void setValue(Object value)
+    public RavenPaintColorEditor(PropertyWrapper<? extends NodeObject, RavenPaintColor> wrapper)
     {
-        RavenPaintColor oldValue = this.value;
-        this.value = (RavenPaintColor)value;
-        textValue = value == null ? ""
-                : ((RavenPaintColor)value).toString();
-        if (oldValue != null || value != null)
-        {
-            propertyChangeSupport.firePropertyChange(PROP_VALUE, oldValue, value);
-        }
+        super(wrapper);
     }
-
-    @Override
-    public RavenPaintColor getValue()
-    {
-        return value;
-    }
-
+    
     @Override
     public boolean isPaintable()
     {
-        return false;
+        return true;
     }
 
     @Override
-    public void paintValue(Graphics g, Rectangle box)
+    public void paintValue(Graphics gg, Rectangle box)
     {
+        Graphics2D g = (Graphics2D)gg;
+        RavenPaintColor col = getValueFlat();
+        
+        if (col == null || col.getA() < 1)
+        {
+            g.setPaint(UnderlayPaint.inst().getPaint());
+            g.fill(box);
+        }
+        
+        if (col == null)
+        {
+            return;
+        }
+        
+        Paint paint = col.getPaintSwatch(box);
+        g.setPaint(paint);
+        g.fill(box);
     }
 
     @Override
@@ -78,26 +73,15 @@ public class RavenPaintColorEditor implements PropertyEditor
     @Override
     public String getAsText()
     {
-        return textValue;
+        RavenPaintColor val = getValueFlat();
+        return val == null ? "" : val.toString();
     }
 
     @Override
     public void setAsText(String text) throws IllegalArgumentException
     {
-        this.textValue = text;
-        updateValueFromText();
-    }
-
-    private void updateValueFromText()
-    {
-        if (textValue == null || "".equals(textValue))
-        {
-            setValue(null);
-            return;
-        }
-
-        RavenPaintColor paint = RavenPaintColor.create(textValue);
-        setValue(paint);
+        RavenPaintColor val = RavenPaintColor.create(text);
+        setValue(val);
     }
 
     @Override
@@ -105,11 +89,11 @@ public class RavenPaintColorEditor implements PropertyEditor
     {
         return null;
     }
-    
+
     @Override
-    public Component getCustomEditor()
+    public PropertyCustomEditor createCustomEditor()
     {
-        return customEd;
+        return new RavenPaintColorCustomEditor(this);
     }
 
     @Override
@@ -118,25 +102,33 @@ public class RavenPaintColorEditor implements PropertyEditor
         return true;
     }
 
-    /**
-     * Add PropertyChangeListener.
-     *
-     * @param listener
-     */
-    @Override
-    public void addPropertyChangeListener(PropertyChangeListener listener)
-    {
-        propertyChangeSupport.addPropertyChangeListener(listener);
-    }
+    //----------------------------
 
-    /**
-     * Remove PropertyChangeListener.
-     *
-     * @param listener
-     */
-    @Override
-    public void removePropertyChangeListener(PropertyChangeListener listener)
+    @ServiceInst(service=PropertyProvider.class)
+    public static class Provider extends PropertyProvider<RavenPaintColor>
     {
-        propertyChangeSupport.removePropertyChangeListener(listener);
+
+        public Provider()
+        {
+            super(RavenPaintColor.class);
+        }
+
+        @Override
+        public PropertyWrapperEditor createEditor(PropertyWrapper wrapper)
+        {
+            return new RavenPaintColorEditor(wrapper);
+        }
+
+        @Override
+        public String asText(RavenPaintColor value)
+        {
+            return value.toString();
+        }
+
+        @Override
+        public RavenPaintColor fromText(String text)
+        {
+            return RavenPaintColor.create(text);
+        }
     }
 }

@@ -32,6 +32,7 @@ import java.awt.RenderingHints;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenPaintPreviewPanel extends javax.swing.JPanel
 {
     private RavenPaint paint;

@@ -32,6 +32,7 @@ import com.kitfox.raven.util.tree.PropertyWrapper;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenNodeColor extends RavenNodePaint
 {
     public static final String PROP_COLOR = "color";

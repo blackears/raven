@@ -22,8 +22,13 @@
 
 package com.kitfox.raven.paint.common;
 
-import com.kitfox.raven.paint.control.GradientStyleEditorPanel;
+import com.kitfox.coyote.math.CyGradientStops;
+import com.kitfox.raven.paint.control.GradientEditorPanel;
+import com.kitfox.raven.util.tree.PropertyCustomEditor;
+import com.kitfox.raven.util.tree.PropertyData;
+import com.kitfox.raven.util.tree.PropertyDataInline;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -32,33 +37,38 @@ import java.beans.PropertyChangeListener;
  * @author kitfox
  */
 public class RavenPaintGradientCustomEditor extends javax.swing.JPanel
-        implements PropertyChangeListener
+        implements PropertyCustomEditor, PropertyChangeListener
 {
     private static final long serialVersionUID = 0;
 
-    GradientStyleEditorPanel panel = new GradientStyleEditorPanel();
+    GradientEditorPanel panel = new GradientEditorPanel();
 
-    final RavenPaintGradientEditor ed;
+    private final RavenPaintGradientEditor editor;
+
+    PropertyData<RavenPaintGradient> initValue;
+    RavenPaintGradient curValue;
 
     /** Creates new form GradientStylePanel */
-    public RavenPaintGradientCustomEditor(RavenPaintGradientEditor ed)
+    public RavenPaintGradientCustomEditor(RavenPaintGradientEditor editor)
     {
         initComponents();
         
-        this.ed = ed;
+        this.editor = editor;
+        initValue = editor.getValue();
+        curValue = initValue.getValue(editor.getDocument());
 
-        RavenPaintGradient value = ed.getValue();
-        panel.setGradient(value.getStops());
+        panel.setGradient(curValue.getStops());
 
         add(panel, BorderLayout.CENTER);
-        panel.addPropertyChangeListener(
-                GradientStyleEditorPanel.PROP_GRADIENT, this);
+        panel.addPropertyChangeListener(this);
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt)
     {
-        ed.setValue(panel.getGradient());
+        CyGradientStops stops = panel.getGradient();
+        curValue = new RavenPaintGradient(stops);
+        editor.setValue(new PropertyDataInline(curValue), false);
     }
 
     /** This method is called from within the constructor to
@@ -76,5 +86,23 @@ public class RavenPaintGradientCustomEditor extends javax.swing.JPanel
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public Component getCustomEditor()
+    {
+        return this;
+    }
+
+    @Override
+    public void customEditorCommit()
+    {
+        editor.setValue(new PropertyDataInline(curValue), true);
+    }
+
+    @Override
+    public void customEditorCancel()
+    {
+        editor.setValue(initValue, false);
+    }
 
 }

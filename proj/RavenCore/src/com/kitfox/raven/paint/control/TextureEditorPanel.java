@@ -16,17 +16,15 @@
 
 package com.kitfox.raven.paint.control;
 
+import com.kitfox.raven.paint.RavenPaint;
 import com.kitfox.raven.paint.common.RavenPaintTexture;
 import com.kitfox.raven.util.FileFilterSuffix;
 import com.kitfox.raven.util.resource.ResourceCache;
-import java.awt.BorderLayout;
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
@@ -36,6 +34,7 @@ import javax.swing.JPanel;
  * @author kitfox
  */
 public class TextureEditorPanel extends javax.swing.JPanel
+        implements RavenPaintControl
 {
     public static final String PROP_TEXTURE = "texture";
     private RavenPaintTexture texture;
@@ -216,6 +215,33 @@ public class TextureEditorPanel extends javax.swing.JPanel
         update();
         firePropertyChange(PROP_TEXTURE, oldTexture, texture);
     }
+
+    @Override
+    public Component getComponent()
+    {
+        return this;
+    }
+
+    @Override
+    public RavenPaint getPaint()
+    {
+        return getTexture();
+    }
+
+    @Override
+    public void setPaint(RavenPaint paint)
+    {
+        if (paint instanceof RavenPaintTexture)
+        {
+            setTexture((RavenPaintTexture)paint);
+        }
+    }
+
+    @Override
+    public String getPaintPropertyName()
+    {
+        return PROP_TEXTURE;
+    }
     
     //----------------------------------
     class ImageChip extends JPanel
@@ -223,13 +249,17 @@ public class TextureEditorPanel extends javax.swing.JPanel
         private BufferedImage image;
 
         @Override
-        protected void paintComponent(Graphics g)
+        protected void paintComponent(Graphics gg)
         {
+            Graphics2D g = (Graphics2D)gg;
+            
             g.setColor(getBackground());
             g.fillRect(0, 0, getWidth(), getHeight());
             
             if (image != null)
             {
+                g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, 
+                        RenderingHints.VALUE_INTERPOLATION_BICUBIC);
                 g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
             }
         }

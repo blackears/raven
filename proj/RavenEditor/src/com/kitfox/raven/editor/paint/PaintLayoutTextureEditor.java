@@ -29,6 +29,7 @@ import com.kitfox.rabbit.util.NumberText;
  *
  * @author kitfox
  */
+@Deprecated
 public class PaintLayoutTextureEditor extends javax.swing.JPanel
 {
     public static final String PROP_PAINT_LAYOUT = "paintLayout";

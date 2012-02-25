@@ -31,6 +31,7 @@ import java.util.Arrays;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenPaintList
 {
     public static final String CACHE_REF = "ref";

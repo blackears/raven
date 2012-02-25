@@ -258,10 +258,16 @@ public class HelpPanel extends javax.swing.JPanel
             }
 
             HistoryAction histAction = (HistoryAction)value;
-            UIDefaults def = UIManager.getDefaults();
-            setBackground(isSelected
-                ? def.getColor("List.selectionBackground")
-                : def.getColor("List.background"));
+            if (isSelected)
+            {
+                setBackground(list.getSelectionBackground());
+                setForeground(list.getSelectionForeground());
+            }
+            else
+            {
+                setBackground(list.getBackground());
+                setForeground(list.getForeground());
+            }
             setText(histAction == null ? "" : histAction.getTitle());
             return this;
         }

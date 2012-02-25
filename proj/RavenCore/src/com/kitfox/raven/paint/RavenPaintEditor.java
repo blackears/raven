@@ -16,75 +16,46 @@
 
 package com.kitfox.raven.paint;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.beans.PropertyEditor;
-import java.util.HashMap;
+import com.kitfox.raven.paint.control.UnderlayPaint;
+import com.kitfox.raven.util.service.ServiceInst;
+import com.kitfox.raven.util.tree.*;
+import java.awt.*;
 
 /**
  *
  * @author kitfox
  */
 public class RavenPaintEditor 
-        implements PropertyEditor, PropertyChangeListener
+    extends PropertyWrapperEditor<RavenPaint>
 {
-    public static final String PROP_VALUE = "value";
-
-    private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-
-    RavenPaint value;
-    String textValue = "";
-
-    private PropertyEditor delegateEditor;
-    
-    HashMap<RavenPaintProvider, PropertyEditor> paintEditorMap = 
-            new HashMap<RavenPaintProvider, PropertyEditor>();
-
-    public RavenPaintEditor()
+    public RavenPaintEditor(PropertyWrapper<? extends NodeObject, RavenPaint> wrapper)
     {
-        for (RavenPaintProvider prov: RavenPaintIndex.inst().getServices())
-        {
-            paintEditorMap.put(prov, prov.createEditor());
-        }
-    }
-
-    @Override
-    public RavenPaint getValue()
-    {
-        return value;
-    }
-
-    @Override
-    public void setValue(Object value)
-    {
-        RavenPaint oldValue = this.value;
-        this.value = (RavenPaint)value;
-        
-        RavenPaintProvider prov = 
-                RavenPaintIndex.inst().getByPaint(this.value.getClass());
-        textValue = prov == null ? null : prov.asText(this.value);
-
-        updateDelegate();
-        
-        if (oldValue != null || value != null)
-        {
-            propertyChangeSupport.firePropertyChange(PROP_VALUE, oldValue, value);
-        }
+        super(wrapper);
     }
 
     @Override
     public boolean isPaintable()
     {
-        return false;
+        return true;
     }
 
     @Override
-    public void paintValue(Graphics g, Rectangle box)
+    public void paintValue(Graphics gg, Rectangle box)
     {
+        Graphics2D g = (Graphics2D)gg;
+        RavenPaint col = getValueFlat();
+        
+        g.setPaint(UnderlayPaint.inst().getPaint());
+        g.fillRect(0, 0, box.width, box.height);
+        
+        if (col == null)
+        {
+            return;
+        }
+        
+        Paint paint = col.getPaintSwatch(box);
+        g.setPaint(paint);
+        g.fillRect(0, 0, box.width, box.height);
     }
 
     @Override
@@ -96,66 +67,28 @@ public class RavenPaintEditor
     @Override
     public String getAsText()
     {
-        return textValue;
+        RavenPaint paint = getValueFlat();
+        if (paint == null)
+        {
+            return "";
+        }
+        RavenPaintProvider prov =
+                RavenPaintIndex.inst().getByPaint(paint.getClass());
+        if (prov == null)
+        {
+            return "";
+        }
+        return prov.asText(paint);
     }
 
     @Override
     public void setAsText(String text) throws IllegalArgumentException
     {
-        if (this.textValue.equals(text))
-        {
-            return;
-        }
-        this.textValue = text;
-        
-        RavenPaint oldValue = value;
-        if (textValue == null || "".equals(textValue))
-        {
-            value = null;
-        }
-        else
-        {
-            RavenPaintProvider prov =
-                    RavenPaintIndex.inst().getProviderSupporting(textValue);
-            value = prov.fromText(textValue);
-        }
-        
-        updateDelegate();
-        
-        if (oldValue != null || value != null)
-        {
-            propertyChangeSupport.firePropertyChange(PROP_VALUE, oldValue, value);
-        }
-    }
-
-    private void updateDelegate()
-    {
         RavenPaintProvider prov =
-                RavenPaintIndex.inst().getByPaint(value.getClass());
-        if (prov == null)
-        {
-            return;
-        }
+                RavenPaintIndex.inst().getProviderSupporting(text);
 
-        PropertyEditor paintEd = paintEditorMap.get(prov);
-        if (paintEd == delegateEditor)
-        {
-            //Don't update editor with itself
-            return;
-        }
-        
-        if (delegateEditor != null)
-        {
-            delegateEditor.removePropertyChangeListener(this);
-        }
-        
-        delegateEditor = paintEd;
-        
-        if (delegateEditor != null)
-        {
-            delegateEditor.setValue(value);
-            delegateEditor.addPropertyChangeListener(this);
-        }
+        RavenPaint paint = prov.fromText(text);
+        setValue(paint);
     }
 
     @Override
@@ -165,7 +98,7 @@ public class RavenPaintEditor
     }
 
     @Override
-    public Component getCustomEditor()
+    public PropertyCustomEditor createCustomEditor()
     {
         return new RavenPaintCustomEditor(this);
     }
@@ -176,43 +109,43 @@ public class RavenPaintEditor
         return true;
     }
 
-    /**
-     * Add PropertyChangeListener.
-     *
-     * @param listener
-     */
-    @Override
-    public void addPropertyChangeListener(PropertyChangeListener listener)
-    {
-        propertyChangeSupport.addPropertyChangeListener(listener);
-    }
 
-    /**
-     * Remove PropertyChangeListener.
-     *
-     * @param listener
-     */
-    @Override
-    public void removePropertyChangeListener(PropertyChangeListener listener)
-    {
-        propertyChangeSupport.removePropertyChangeListener(listener);
-    }
+    //----------------------------
 
-    @Override
-    public void propertyChange(PropertyChangeEvent evt)
+    @ServiceInst(service=PropertyProvider.class)
+    public static class Provider extends PropertyProvider<RavenPaint>
     {
-        if (evt.getSource() == delegateEditor)
+
+        public Provider()
         {
-            setValue(delegateEditor.getValue());
+            super(RavenPaint.class);
+        }
+
+        @Override
+        public PropertyWrapperEditor createEditor(PropertyWrapper wrapper)
+        {
+            return new RavenPaintEditor(wrapper);
+        }
+
+        @Override
+        public String asText(RavenPaint paint)
+        {
+            RavenPaintProvider prov =
+                    RavenPaintIndex.inst().getByPaint(paint.getClass());
+            if (prov == null)
+            {
+                return "";
+            }
+            return prov.asText(paint);
+        }
+
+        @Override
+        public RavenPaint fromText(String text)
+        {
+            RavenPaintProvider prov =
+                    RavenPaintIndex.inst().getProviderSupporting(text);
+
+            return prov.fromText(text);
         }
     }
-
-    /**
-     * @return the delegateEditor
-     */
-    public PropertyEditor getDelegateEditor()
-    {
-        return delegateEditor;
-    }
-
 }

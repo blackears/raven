@@ -60,7 +60,6 @@ import com.kitfox.raven.util.tree.TrackLibrary;
 import com.kitfox.xml.schema.ravendocumentschema.TrackTransferableType;
 import com.kitfox.xml.schema.ravendocumentschema.TrackType;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -86,9 +85,6 @@ import javax.swing.JList;
 import javax.swing.KeyStroke;
 import javax.swing.ListCellRenderer;
 import javax.swing.TransferHandler;
-import javax.swing.UIDefaults;
-import javax.swing.UIManager;
-import jogamp.opengl.glu.nurbs.Curve;
 
 /**
  *
@@ -664,10 +660,16 @@ public class TrackPanel extends javax.swing.JPanel
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean selected, boolean cellHasFocus)
         {
-            UIDefaults uid = UIManager.getLookAndFeel().getDefaults();
-            Color bg = selected ? uid.getColor("List.selectionBackground")
-                    : uid.getColor("List.background");
-            setBackground(bg);
+            if (selected)
+            {
+                setBackground(list.getSelectionBackground());
+                setForeground(list.getSelectionForeground());
+            }
+            else
+            {
+                setBackground(list.getBackground());
+                setForeground(list.getForeground());
+            }
 
             setOpaque(true);
 

@@ -26,7 +26,30 @@ import java.beans.PropertyChangeSupport;
  */
 public class SimpleColorModel implements ColorChooserModel
 {
+    private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
     protected RavenPaintColor color = RavenPaintColor.BLACK;
+
+    /**
+     * Add PropertyChangeListener.
+     *
+     * @param listener
+     */
+    @Override
+    public void addPropertyChangeListener(PropertyChangeListener listener)
+    {
+        propertyChangeSupport.addPropertyChangeListener(listener);
+    }
+
+    /**
+     * Remove PropertyChangeListener.
+     *
+     * @param listener
+     */
+    @Override
+    public void removePropertyChangeListener(PropertyChangeListener listener)
+    {
+        propertyChangeSupport.removePropertyChangeListener(listener);
+    }
 
     /**
      * Get the value of color
@@ -50,29 +73,6 @@ public class SimpleColorModel implements ColorChooserModel
         RavenPaintColor oldColor = this.color;
         this.color = color;
         propertyChangeSupport.firePropertyChange(PROP_COLOR, oldColor, color);
-    }
-    private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-
-    /**
-     * Add PropertyChangeListener.
-     *
-     * @param listener
-     */
-    @Override
-    public void addPropertyChangeListener(PropertyChangeListener listener)
-    {
-        propertyChangeSupport.addPropertyChangeListener(listener);
-    }
-
-    /**
-     * Remove PropertyChangeListener.
-     *
-     * @param listener
-     */
-    @Override
-    public void removePropertyChangeListener(PropertyChangeListener listener)
-    {
-        propertyChangeSupport.removePropertyChangeListener(listener);
     }
 
 }

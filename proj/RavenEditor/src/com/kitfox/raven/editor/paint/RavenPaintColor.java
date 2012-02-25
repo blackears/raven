@@ -36,6 +36,7 @@ import java.awt.geom.AffineTransform;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenPaintColor extends RavenPaintInline
 {
     public static final String CACHE_NAME = "color";

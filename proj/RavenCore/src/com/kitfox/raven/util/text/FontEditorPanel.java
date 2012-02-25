@@ -36,8 +36,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
-import javax.swing.UIDefaults;
-import javax.swing.UIManager;
 
 /**
  *
@@ -386,11 +384,16 @@ public class FontEditorPanel extends javax.swing.JPanel
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
         {
-            UIDefaults uid = UIManager.getLookAndFeel().getDefaults();
-
-            Color bg = isSelected ? uid.getColor("ComboBox.selectionBackground")
-                    : uid.getColor("ComboBox.background");
-            setBackground(bg);
+            if (isSelected)
+            {
+                setBackground(list.getSelectionBackground());
+                setForeground(list.getSelectionForeground());
+            }
+            else
+            {
+                setBackground(list.getBackground());
+                setForeground(list.getForeground());
+            }
 
             Font font = (Font)value;
             setText(font.getFamily());

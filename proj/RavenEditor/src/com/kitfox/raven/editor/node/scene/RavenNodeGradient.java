@@ -37,6 +37,7 @@ import java.beans.PropertyChangeEvent;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenNodeGradient extends RavenNodePaint
 {
 //    public static final String PROP_GRADIENT = "gradient";

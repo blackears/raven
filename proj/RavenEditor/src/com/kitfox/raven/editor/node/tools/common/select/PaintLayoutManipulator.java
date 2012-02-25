@@ -18,12 +18,12 @@ package com.kitfox.raven.editor.node.tools.common.select;
 
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.shape.CyRectangle2d;
-import com.kitfox.game.control.color.PaintLayout;
 import com.kitfox.raven.editor.node.scene.RavenNodeRenderable;
 import com.kitfox.raven.editor.node.scene.RavenNodeXformable;
 import com.kitfox.raven.editor.node.tools.common.ServiceMaterial;
-import com.kitfox.raven.editor.paint.RavenPaint;
-import com.kitfox.raven.editor.stroke.RavenStroke;
+import com.kitfox.raven.paint.RavenPaint;
+import com.kitfox.raven.paint.RavenPaintLayout;
+import com.kitfox.raven.paint.RavenStroke;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -80,7 +80,7 @@ abstract public class PaintLayoutManipulator extends Manipulator
             return node.getMaterialFacePaint(subcomponent);
         }
 
-        public PaintLayout getFaceLayout()
+        public RavenPaintLayout getFaceLayout()
         {
             return node.getMaterialFaceLayout(subcomponent);
         }
@@ -95,7 +95,7 @@ abstract public class PaintLayoutManipulator extends Manipulator
             return node.getMaterialEdgePaint(subcomponent);
         }
 
-        public PaintLayout getEdgeLayout()
+        public RavenPaintLayout getEdgeLayout()
         {
             return node.getMaterialEdgeLayout(subcomponent);
         }
@@ -133,23 +133,23 @@ abstract public class PaintLayoutManipulator extends Manipulator
             return subcomponent;
         }
 
-        public PaintLayout getEdgeLayoutWorld()
+        public RavenPaintLayout getEdgeLayoutWorld()
         {
             CyMatrix4d l2w = ((RavenNodeXformable)node)
                     .getLocalToWorldTransform((CyMatrix4d)null);
-            PaintLayout layout = getEdgeLayout();
+            RavenPaintLayout layout = getEdgeLayout();
             return layout.transform(l2w);
         }
 
-        public PaintLayout getFaceLayoutWorld()
+        public RavenPaintLayout getFaceLayoutWorld()
         {
             CyMatrix4d l2w = ((RavenNodeXformable)node)
                     .getLocalToWorldTransform((CyMatrix4d)null);
-            PaintLayout layout = getFaceLayout();
+            RavenPaintLayout layout = getFaceLayout();
             return layout.transform(l2w);
         }
 
-        public void setEdgeLayoutWorld(PaintLayout layout, boolean history)
+        public void setEdgeLayoutWorld(RavenPaintLayout layout, boolean history)
         {
             CyMatrix4d w2l = ((RavenNodeXformable)node)
                     .getLocalToWorldTransform((CyMatrix4d)null);
@@ -158,7 +158,7 @@ abstract public class PaintLayoutManipulator extends Manipulator
             node.setMaterialEdgeLayout(subcomponent, layout, history);
         }
 
-        public void setFaceLayoutWorld(PaintLayout layout, boolean history)
+        public void setFaceLayoutWorld(RavenPaintLayout layout, boolean history)
         {
             CyMatrix4d w2l = ((RavenNodeXformable)node)
                     .getLocalToWorldTransform((CyMatrix4d)null);

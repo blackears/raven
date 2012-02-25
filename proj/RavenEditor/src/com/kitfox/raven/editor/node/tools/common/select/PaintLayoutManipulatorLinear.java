@@ -19,6 +19,7 @@ package com.kitfox.raven.editor.node.tools.common.select;
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.game.control.color.PaintLayoutLinear;
+import com.kitfox.raven.paint.RavenPaintLayout;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
@@ -31,13 +32,13 @@ import java.util.ArrayList;
  */
 public class PaintLayoutManipulatorLinear extends PaintLayoutManipulator
 {
-    PaintLayoutLinear initLayout;
-    PaintLayoutLinear lastLayout;
+    RavenPaintLayout initLayout;
+    RavenPaintLayout lastLayout;
 
     public PaintLayoutManipulatorLinear(
             ArrayList<MaterialElement> compList,
             boolean strokeMode,
-            PaintLayoutLinear layout)
+            RavenPaintLayout layout)
     {
         super(compList, strokeMode);
         this.initLayout = this.lastLayout = layout;
@@ -50,13 +51,18 @@ public class PaintLayoutManipulatorLinear extends PaintLayoutManipulator
         int x = evt.getX();
         int y = evt.getY();
 
-        if (handleHit(x, y, initLayout.getStartX(), initLayout.getStartY(), w2d))
+        //CyMatrix4d p2l = initLayout.getPaintToLocal();
+        CyVector2d startPt = new CyVector2d();
+        CyVector2d endPt = new CyVector2d();
+        initLayout.getLinearLayout(startPt, endPt);
+        
+        if (handleHit(x, y, startPt.x, startPt.y, w2d))
         {
             return new Handle(new CyVector2d(x, y),
                     w2d, Type.START);
         }
 
-        if (handleHit(x, y, initLayout.getEndX(), initLayout.getEndY(), w2d))
+        if (handleHit(x, y, endPt.x, endPt.y, w2d))
         {
             return new Handle(new CyVector2d(x, y),
                     w2d, Type.END);
@@ -68,13 +74,20 @@ public class PaintLayoutManipulatorLinear extends PaintLayoutManipulator
     @Override
     public void paint(Graphics2D g, CyMatrix4d w2d)
     {
-        CyVector2d ptStart = new CyVector2d(
-                lastLayout.getStartX(), lastLayout.getStartY());
-        w2d.transformPoint(ptStart, ptStart);
+        CyVector2d ptStart = new CyVector2d();
+        CyVector2d ptEnd = new CyVector2d();
+        lastLayout.getLinearLayout(ptStart, ptEnd);
 
-        CyVector2d ptEnd = new CyVector2d(
-                lastLayout.getEndX(), lastLayout.getEndY());
-        w2d.transformPoint(ptEnd, ptEnd);
+        w2d.transformPoint(ptStart);
+        w2d.transformPoint(ptEnd);
+        
+//        CyVector2d ptStart = new CyVector2d(
+//                lastLayout.getStartX(), lastLayout.getStartY());
+//        w2d.transformPoint(ptStart, ptStart);
+//
+//        CyVector2d ptEnd = new CyVector2d(
+//                lastLayout.getEndX(), lastLayout.getEndY());
+//        w2d.transformPoint(ptEnd, ptEnd);
 
         g.setColor(Color.blue);
         Line2D.Double line = new Line2D.Double(ptStart.x, ptStart.y,
@@ -115,28 +128,34 @@ public class PaintLayoutManipulatorLinear extends PaintLayoutManipulator
             d2w.transformVector(delta);
 //            mulVector(d2w, delta, delta);
 
-            double sx = initLayout.getStartX();
-            double sy = initLayout.getStartY();
-            double ex = initLayout.getEndX();
-            double ey = initLayout.getEndY();
+            CyVector2d startPt = new CyVector2d();
+            CyVector2d endPt = new CyVector2d();
+            initLayout.getLinearLayout(startPt, endPt);
+//            double sx = initLayout.getStartX();
+//            double sy = initLayout.getStartY();
+//            double ex = initLayout.getEndX();
+//            double ey = initLayout.getEndY();
 
             switch (type)
             {
                 case START:
                 {
-                    sx += (float)delta.x;
-                    sy += (float)delta.y;
+                    startPt.add(delta);
+//                    sx += (float)delta.x;
+//                    sy += (float)delta.y;
                     break;
                 }
                 case END:
                 {
-                    ex += (float)delta.x;
-                    ey += (float)delta.y;
+                    endPt.add(delta);
+//                    ex += (float)delta.x;
+//                    ey += (float)delta.y;
                     break;
                 }
             }
 
-            lastLayout = new PaintLayoutLinear(sx, sy, ex, ey);
+//            lastLayout = new PaintLayoutLinear(sx, sy, ex, ey);
+            lastLayout = RavenPaintLayout.createLinear(startPt, endPt);
             for (MaterialElement ele: compList)
             {
                 if (strokeMode)

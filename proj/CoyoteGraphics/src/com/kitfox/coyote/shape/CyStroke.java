@@ -16,6 +16,7 @@
 
 package com.kitfox.coyote.shape;
 
+import java.awt.BasicStroke;
 import java.util.Arrays;
 
 /**
@@ -39,7 +40,12 @@ public class CyStroke
 
     public CyStroke(double width, CyStrokeCap cap, CyStrokeJoin join)
     {
-        this(width, cap, join, 4, null, 0);
+        this(width, cap, join, 4);
+    }
+
+    public CyStroke(double width, CyStrokeCap cap, CyStrokeJoin join, double miterLimit)
+    {
+        this(width, cap, join, miterLimit, null, 0);
     }
 
     public CyStroke(float width, CyStrokeCap cap, CyStrokeJoin join, float miterLimit, float[] dash, float dashOffset)
@@ -137,6 +143,11 @@ public class CyStroke
      */
     public float[] getDashFloat()
     {
+        if (dash == null)
+        {
+            return new float[0];
+        }
+        
         float[] arr = new float[dash.length];
         for (int i = 0; i < arr.length; ++i)
         {
@@ -151,6 +162,65 @@ public class CyStroke
     public double getDashOffset()
     {
         return dashOffset;
+    }
+
+    public boolean isDashUsed()
+    {
+        if (dash == null || dash.length <= 1)
+        {
+            return false;
+        }
+        
+        for (int i = 0; i < dash.length; ++i)
+        {
+            if (dash[i] > 0)
+            {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    public BasicStroke asBasicStroke()
+    {
+        int sCap, sJoin;
+        switch (cap)
+        {
+            default:
+            case BUTT:
+                sCap = BasicStroke.CAP_BUTT;
+                break;
+            case ROUND:
+                sCap = BasicStroke.CAP_ROUND;
+                break;
+            case SQUARE:
+                sCap = BasicStroke.CAP_SQUARE;
+                break;
+        }
+        
+        switch (join)
+        {
+            default:
+            case BEVEL:
+                sJoin = BasicStroke.JOIN_BEVEL;
+                break;
+            case MITER:
+                sJoin = BasicStroke.JOIN_MITER;
+                break;
+            case ROUND:
+                sJoin = BasicStroke.JOIN_ROUND;
+                break;
+        }
+        
+        if (isDashUsed())
+        {
+            return new BasicStroke((float)width, sCap, sJoin, 
+                    (float)miterLimit, getDashFloat(), (float)dashOffset);
+        }
+        
+        return new BasicStroke((float)width, sCap, sJoin, 
+                (float)miterLimit);
     }
 
     @Override
@@ -204,6 +274,4 @@ public class CyStroke
         hash = 53 * hash + (int) (Double.doubleToLongBits(this.dashOffset) ^ (Double.doubleToLongBits(this.dashOffset) >>> 32));
         return hash;
     }
-
-
 }

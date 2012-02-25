@@ -280,13 +280,11 @@ public class ColorChooserPanel extends ColorFieldPanel
         cursorY = (float)evt.getY() / getHeight();
         choosePoint(evt);
         repaint();
-
     }//GEN-LAST:event_formMouseDragged
 
     private void formMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseReleased
         choosePoint(evt);
         dragging  = false;
-
     }//GEN-LAST:event_formMouseReleased
 
     /**

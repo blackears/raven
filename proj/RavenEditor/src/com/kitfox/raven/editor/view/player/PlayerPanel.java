@@ -1261,10 +1261,16 @@ public class PlayerPanel extends javax.swing.JPanel
 
             Track track = (Track)value;
             setOpaque(true);
-            UIDefaults def = UIManager.getDefaults();
-            setBackground(isSelected
-                ? def.getColor("ComboBox.selectionBackground")
-                : def.getColor("ComboBox.background"));
+            if (isSelected)
+            {
+                setBackground(list.getSelectionBackground());
+                setForeground(list.getSelectionForeground());
+            }
+            else
+            {
+                setBackground(list.getBackground());
+                setForeground(list.getForeground());
+            }
             setText(track == null ? "" : track.getName());
             return this;
         }

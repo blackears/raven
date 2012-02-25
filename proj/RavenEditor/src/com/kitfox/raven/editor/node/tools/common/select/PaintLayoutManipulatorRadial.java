@@ -18,7 +18,7 @@ package com.kitfox.raven.editor.node.tools.common.select;
 
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.math.CyVector2d;
-import com.kitfox.game.control.color.PaintLayoutRadial;
+import com.kitfox.raven.paint.RavenPaintLayout;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
@@ -31,13 +31,13 @@ import java.util.ArrayList;
  */
 public class PaintLayoutManipulatorRadial extends PaintLayoutManipulator
 {
-    PaintLayoutRadial initLayout;
-    PaintLayoutRadial lastLayout;
+    RavenPaintLayout initLayout;
+    RavenPaintLayout lastLayout;
 
     public PaintLayoutManipulatorRadial(
             ArrayList<MaterialElement> compList,
             boolean strokeMode,
-            PaintLayoutRadial layout)
+            RavenPaintLayout layout)
     {
         super(compList, strokeMode);
         this.initLayout = this.lastLayout = layout;
@@ -54,11 +54,11 @@ public class PaintLayoutManipulatorRadial extends PaintLayoutManipulator
 
         LayoutPoints lp = new LayoutPoints(w2d, initLayout);
 
-        if (ctrlDown)
-        {
-            //Force selection of focus
-            return new Handle(new CyVector2d(lp.ptFocus.x, lp.ptFocus.y), w2d, Type.FOCUS);
-        }
+//        if (ctrlDown)
+//        {
+//            //Force selection of focus
+//            return new Handle(new CyVector2d(lp.ptFocus.x, lp.ptFocus.y), w2d, Type.FOCUS);
+//        }
 
         if (handleHit(x, y,
                 lp.ptRadiusX.x,
@@ -82,13 +82,13 @@ public class PaintLayoutManipulatorRadial extends PaintLayoutManipulator
         }
 
         //Point2D.Double focusLocal = initLayout.getFocusLocal();
-        if (handleHit(x, y,
-                lp.ptFocus.x,
-                lp.ptFocus.y,
-                w2d))
-        {
-            return new Handle(new CyVector2d(x, y), w2d, Type.FOCUS);
-        }
+//        if (handleHit(x, y,
+//                lp.ptFocus.x,
+//                lp.ptFocus.y,
+//                w2d))
+//        {
+//            return new Handle(new CyVector2d(x, y), w2d, Type.FOCUS);
+//        }
 
         return null;
     }
@@ -116,7 +116,7 @@ public class PaintLayoutManipulatorRadial extends PaintLayoutManipulator
         paintHandleShape(g, lp.ptCenter, DRAG_HANDLE_SHAPE, Color.white, Color.black);
         paintHandleShape(g, lp.ptRadiusX, DRAG_HANDLE_SHAPE, Color.white, Color.black);
         paintHandleShape(g, lp.ptRadiusY, DRAG_HANDLE_SHAPE, Color.white, Color.black);
-        paintHandleShape(g, lp.ptFocus, PIVOT_HANDLE_SHAPE, Color.white, Color.black);
+//        paintHandleShape(g, lp.ptFocus, PIVOT_HANDLE_SHAPE, Color.white, Color.black);
     }
 
     @Override
@@ -133,34 +133,40 @@ public class PaintLayoutManipulatorRadial extends PaintLayoutManipulator
 
     class LayoutPoints
     {
-        CyVector2d ptCenter;
-        CyVector2d ptFocus;
-        CyVector2d ptRadiusX;
-        CyVector2d ptRadiusY;
+        CyVector2d ptCenter = new CyVector2d();
+//        CyVector2d ptFocus;
+        CyVector2d ptRadiusX = new CyVector2d();
+        CyVector2d ptRadiusY = new CyVector2d();
 
-        LayoutPoints(CyMatrix4d w2d, PaintLayoutRadial layout)
+        LayoutPoints(CyMatrix4d w2d, RavenPaintLayout layout)
         {
-            ptCenter = new CyVector2d(
-                    layout.getCenterX(), layout.getCenterY());
+            layout.getTextureLayout(ptCenter, ptRadiusX, ptRadiusY);
             w2d.transformPoint(ptCenter, ptCenter);
-
-            ptFocus = layout.getFocusLocal();
-            w2d.transformPoint(ptFocus, ptFocus);
-
-            double cosX = Math.cos(Math.toRadians(layout.getAngle()));
-            double sinX = Math.sin(Math.toRadians(layout.getAngle()));
-            double cosY = Math.cos(Math.toRadians(layout.getAngle() + layout.getSkewAngle()));
-            double sinY = Math.sin(Math.toRadians(layout.getAngle() + layout.getSkewAngle()));
-
-            ptRadiusX = new CyVector2d(
-                    layout.getRadiusX() * cosX + layout.getCenterX(),
-                    layout.getRadiusX() * sinX + layout.getCenterY());
             w2d.transformPoint(ptRadiusX, ptRadiusX);
-
-            ptRadiusY = new CyVector2d(
-                    layout.getRadiusY() * cosY + layout.getCenterX(),
-                    layout.getRadiusY() * sinY + layout.getCenterY());
             w2d.transformPoint(ptRadiusY, ptRadiusY);
+            
+            
+//            ptCenter = new CyVector2d(
+//                    layout.getCenterX(), layout.getCenterY());
+//            w2d.transformPoint(ptCenter, ptCenter);
+//
+//            ptFocus = layout.getFocusLocal();
+//            w2d.transformPoint(ptFocus, ptFocus);
+//
+//            double cosX = Math.cos(Math.toRadians(layout.getAngle()));
+//            double sinX = Math.sin(Math.toRadians(layout.getAngle()));
+//            double cosY = Math.cos(Math.toRadians(layout.getAngle() + layout.getSkewAngle()));
+//            double sinY = Math.sin(Math.toRadians(layout.getAngle() + layout.getSkewAngle()));
+//
+//            ptRadiusX = new CyVector2d(
+//                    layout.getRadiusX() * cosX + layout.getCenterX(),
+//                    layout.getRadiusX() * sinX + layout.getCenterY());
+//            w2d.transformPoint(ptRadiusX, ptRadiusX);
+//
+//            ptRadiusY = new CyVector2d(
+//                    layout.getRadiusY() * cosY + layout.getCenterX(),
+//                    layout.getRadiusY() * sinY + layout.getCenterY());
+//            w2d.transformPoint(ptRadiusY, ptRadiusY);
         }
     }
 
@@ -191,8 +197,8 @@ public class PaintLayoutManipulatorRadial extends PaintLayoutManipulator
                     lp.ptCenter.y += delta.y;
 
                     //Move everything along with center
-                    lp.ptFocus.x += delta.x;
-                    lp.ptFocus.y += delta.y;
+//                    lp.ptFocus.x += delta.x;
+//                    lp.ptFocus.y += delta.y;
                     lp.ptRadiusX.x += delta.x;
                     lp.ptRadiusX.y += delta.y;
                     lp.ptRadiusY.x += delta.x;
@@ -201,8 +207,8 @@ public class PaintLayoutManipulatorRadial extends PaintLayoutManipulator
                 }
                 case FOCUS:
                 {
-                    lp.ptFocus.x += delta.x;
-                    lp.ptFocus.y += delta.y;
+//                    lp.ptFocus.x += delta.x;
+//                    lp.ptFocus.y += delta.y;
                     break;
                 }
                 case RADIUSX:
@@ -219,34 +225,37 @@ public class PaintLayoutManipulatorRadial extends PaintLayoutManipulator
                 }
             }
 
-            double radiusXdx = lp.ptRadiusX.x - lp.ptCenter.x;
-            double radiusXdy = lp.ptRadiusX.y - lp.ptCenter.y;
-            double radiusYdx = lp.ptRadiusY.x - lp.ptCenter.x;
-            double radiusYdy = lp.ptRadiusY.y - lp.ptCenter.y;
+//            double radiusXdx = lp.ptRadiusX.x - lp.ptCenter.x;
+//            double radiusXdy = lp.ptRadiusX.y - lp.ptCenter.y;
+//            double radiusYdx = lp.ptRadiusY.x - lp.ptCenter.x;
+//            double radiusYdy = lp.ptRadiusY.y - lp.ptCenter.y;
+//
+//            double radiusXlen = Math.sqrt(radiusXdx * radiusXdx + radiusXdy * radiusXdy);
+//            double radiusYlen = Math.sqrt(radiusYdx * radiusYdx + radiusYdy * radiusYdy);
+//            double angle = Math.toDegrees(Math.atan2(radiusXdy, radiusXdx));
+//            double skewAngle = Math.toDegrees(Math.atan2(radiusYdy, radiusYdx)) - angle;
+//            while (skewAngle < 0)
+//            {
+//                skewAngle += 360;
+//            }
+//            while (skewAngle >= 360)
+//            {
+//                skewAngle -= 360;
+//            }
+//
+//            lastLayout = new PaintLayoutRadial(
+//                    (float)lp.ptCenter.x, (float)lp.ptCenter.y,
+//                    (float)radiusXlen,
+//                    (float)radiusYlen,
+//                    (float)angle,
+//                    (float)skewAngle,
+//                    (float)lp.ptFocus.x,
+//                    (float)lp.ptFocus.y
+//                    );
 
-            double radiusXlen = Math.sqrt(radiusXdx * radiusXdx + radiusXdy * radiusXdy);
-            double radiusYlen = Math.sqrt(radiusYdx * radiusYdx + radiusYdy * radiusYdy);
-            double angle = Math.toDegrees(Math.atan2(radiusXdy, radiusXdx));
-            double skewAngle = Math.toDegrees(Math.atan2(radiusYdy, radiusYdx)) - angle;
-            while (skewAngle < 0)
-            {
-                skewAngle += 360;
-            }
-            while (skewAngle >= 360)
-            {
-                skewAngle -= 360;
-            }
-
-            lastLayout = new PaintLayoutRadial(
-                    (float)lp.ptCenter.x, (float)lp.ptCenter.y,
-                    (float)radiusXlen,
-                    (float)radiusYlen,
-                    (float)angle,
-                    (float)skewAngle,
-                    (float)lp.ptFocus.x,
-                    (float)lp.ptFocus.y
-                    );
-
+            lastLayout = RavenPaintLayout.createTexture2D(
+                    lp.ptCenter, lp.ptRadiusX, lp.ptRadiusY);
+            
             for (MaterialElement ele: compList)
             {
                 if (strokeMode)

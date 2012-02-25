@@ -30,6 +30,7 @@ import java.util.logging.Logger;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenTexTransform
 {
     public static final String CACHE_NAME = "matrix";
