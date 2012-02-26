@@ -33,26 +33,40 @@ public class PathTessellator2 extends PathConsumer
     double mx, my;
     double bx, by;
     boolean drawingPath;
-    boolean removeInternalSegments;
+    final boolean removeInternalSegments;
+    final double resolution;
+    final double resolutionI;
     
-//    double scalar = 1;
     ArrayList<TessSeg> segments = new ArrayList<TessSeg>();
     ArrayList<CtrLoop> contours;
 
     public PathTessellator2()
     {
-        this(false);
+        this(1, false);
     }
     
     /**
      * Turns path into a set of nested loops with known winding level.
      * 
+     * To avoid round off error, all internal calculations round
+     * vertex coords off to the nearest integer.  To allow for
+     * tessellation of shapes that require finer resolution, a
+     * resolution scalar can be specified.  All vertices will 
+     * have their coords divided by this value when added.
+     * The loops will then be computed and the final result will
+     * be multiplied by this value to bring it back into your 
+     * coordinate system.
+     * 
+     * @param resolution Unit distance all vertices will be rounded
+     * to during calculation.
      * @param removeInternalSegments If true, any segments that do
      * not have one other their sides touching the outside (ie, have a 
      * winding level of 0) are removed before loops are calculated.
      */
-    public PathTessellator2(boolean removeInternalSegments)
+    public PathTessellator2(double resolution, boolean removeInternalSegments)
     {
+        this.resolution = resolution;
+        this.resolutionI = 1 / resolution;
         this.removeInternalSegments = removeInternalSegments;
     }
 
@@ -129,17 +143,21 @@ public class PathTessellator2 extends PathConsumer
 
     private void addLine(double x0, double y0, double x1, double y1)
     {
-        Coord c0 = new Coord((int)x0, (int)y0);
-        Coord c1 = new Coord((int)x1, (int)y1);
+        Coord c0 = new Coord((int)(x0 * resolutionI), (int)(y0 * resolutionI));
+        Coord c1 = new Coord((int)(x1 * resolutionI), (int)(y1 * resolutionI));
+        if (c0.equals(c1))
+        {
+            return;
+        }
         segments.add(new TessSeg(c0, c1));
     }
     
-    private void removeDegenerateSegs(ArrayList<TessSeg> segs)
+    private void removeZeroLengthSegs(ArrayList<TessSeg> segs)
     {
         for (Iterator<TessSeg> it = segs.iterator(); it.hasNext();)
         {
             TessSeg seg = it.next();
-            if (seg.isDegenerate())
+            if (seg.isZeroLength())
             {
                 it.remove();
             }
@@ -148,33 +166,48 @@ public class PathTessellator2 extends PathConsumer
     
     private void splitOverlappingSegments()
     {
-        ArrayList<TessSeg> segsToCut = segments;
-        removeDegenerateSegs(segsToCut);
-
-        segments = new ArrayList<TessSeg>();
-        
-        NEXT_SEG:
-        while (!segsToCut.isEmpty())
+        boolean didSplit;
+        do
         {
-            TessSeg curEdge = segsToCut.remove(segsToCut.size() - 1);
-            
-            for (int j = 0; j < segsToCut.size(); ++j)
+            didSplit = false;
+            ArrayList<TessSeg> newSegs = new ArrayList<TessSeg>();
+
+            while (!segments.isEmpty())
             {
-                TessSeg testEdge = segsToCut.get(j);
+                TessSeg curSeg = segments.remove(segments.size() - 1);
                 
-                ArrayList<TessSeg> split = curEdge.cutAgainst(testEdge);
-                if (split != null && !split.isEmpty())
+                for (int j = 0; j < segments.size(); ++j)
                 {
-                    segsToCut.remove(j);
-                    removeDegenerateSegs(split);
-                    segsToCut.addAll(split);
-                    continue NEXT_SEG;
+                    TessSeg peerSeg = segments.get(j);
+                    ArrayList<TessSeg> cutSegs = 
+                            curSeg.splitAtIsect(peerSeg);
+                    
+                    if (cutSegs != null)
+                    {
+                        didSplit = true;
+                        segments.remove(j);
+                        for (TessSeg s: cutSegs)
+                        {
+                            if (!s.isZeroLength())
+                            {
+                                newSegs.add(s);
+                            }
+                        }
+                        curSeg = null;
+                        break;
+                    }
+                }
+                
+                if (curSeg != null)
+                {
+                    //Went through entire list without splitting
+                    // anything.  Add unaltered segments to list.
+                    newSegs.add(curSeg);
                 }
             }
             
-            //No conflicts
-            segments.add(curEdge);
-        }
+            segments = newSegs;
+        } while (didSplit);
     }
 
     /**
@@ -241,7 +274,7 @@ public class PathTessellator2 extends PathConsumer
                    for (Coord c1: testGrp.coords)
                    {
                        TessSeg seg = new TessSeg(c0, c1);
-                       if (!crossesSegment(seg))
+                       if (!isSplitBySegments(seg))
                        {
                            segments.add(seg);
                            segments.add(seg.reverse());
@@ -255,11 +288,11 @@ public class PathTessellator2 extends PathConsumer
        }
     }
 
-    private boolean crossesSegment(TessSeg s0)
+    private boolean isSplitBySegments(TessSeg s0)
     {
         for (TessSeg s1: segments)
         {
-            if (s0.crosses(s1))
+            if (s0.isLineSplitBy(s1))
             {
                 return true;
             }
@@ -289,17 +322,6 @@ public class PathTessellator2 extends PathConsumer
                 }
             }
         }
-        
-//        ArrayList<Coord> triList = new ArrayList<Coord>();
-//        for (CtrLoop loop: contours)
-//        {
-//            if (loop.getWindingLevel() != 0)
-//            {
-//                loop.buildTriangles(triList);
-//            }
-//        }
-//        
-//        assert false;
     }
     
     public ArrayList<CtrLoop> getContours()

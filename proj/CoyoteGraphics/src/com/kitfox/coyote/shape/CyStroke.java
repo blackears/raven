@@ -65,6 +65,10 @@ public class CyStroke
 
     private static double[] toFloat(float[] arr)
     {
+        if (arr == null)
+        {
+            return null;
+        }
         double[] ret = new double[arr.length];
         for (int i = 0; i < arr.length; ++i)
         {

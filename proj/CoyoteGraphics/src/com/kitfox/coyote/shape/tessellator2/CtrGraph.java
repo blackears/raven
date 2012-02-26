@@ -16,9 +16,12 @@
 
 package com.kitfox.coyote.shape.tessellator2;
 
+import com.kitfox.coyote.material.textureBlit.CyMaterialTextureBlit;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -124,7 +127,13 @@ public class CtrGraph
                     e = e.nextLoopEdge())
             {
                 edgeList.add(e);
+if (edgeList.size() > 1000)
+{
+Logger.getLogger(CyMaterialTextureBlit.class.getName()).log(Level.WARNING, 
+        "Edge list getting suspiciously long");
+}
                 halfEdges.remove(e);
+                
             }
 
             loops.add(new CtrLoop(edgeList));

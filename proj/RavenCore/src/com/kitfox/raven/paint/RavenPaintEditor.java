@@ -52,8 +52,9 @@ public class RavenPaintEditor
         {
             return;
         }
-        
-        Paint paint = col.getPaintSwatch(box);
+
+        Rectangle drawBox = new Rectangle(box.width, box.height);
+        Paint paint = col.getPaintSwatch(drawBox);
         g.setPaint(paint);
         g.fillRect(0, 0, box.width, box.height);
     }

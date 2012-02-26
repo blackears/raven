@@ -16,9 +16,12 @@
 
 package com.kitfox.coyote.shape.tessellator2;
 
+import com.kitfox.coyote.material.textureBlit.CyMaterialTextureBlit;
 import com.kitfox.coyote.math.Math2DUtil;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -149,21 +152,21 @@ public class TessSeg
     /**
      * Compare this segment to passed in segment.  If they cross, 
      * returns list containing new set of segments cut at
-     * points of crossing.
+     * points of touching or crossing.
      * 
      * @param s1
-     * @return 
+     * @return List of cut points, or null if lines to not touch.
      */
-    public ArrayList<TessSeg> cutAgainst(TessSeg s1)
+    public ArrayList<TessSeg> splitAtIsect(TessSeg s1)
     {
-        if (!isBoundingBoxOverlap(s1))
+        if (!isLineHit(s1))
         {
             return null;
         }
         
         //Check for point-line hits
         double t00 = -1, t01 = -1, t10 = -1, t11 = -1;
-        boolean pointHit = false;
+        boolean pointMidlineHit = false;
         
         if (isPointOnLine(s1.c0))
         {
@@ -171,7 +174,7 @@ public class TessSeg
             if (t > 0 && t < 1)
             {
                 t00 = t;
-                pointHit = true;
+                pointMidlineHit = true;
             }
         }
         
@@ -181,7 +184,7 @@ public class TessSeg
             if (t > 0 && t < 1)
             {
                 t01 = t;
-                pointHit = true;
+                pointMidlineHit = true;
             }
         }
         
@@ -191,7 +194,7 @@ public class TessSeg
             if (t > 0 && t < 1)
             {
                 t10 = t;
-                pointHit = true;
+                pointMidlineHit = true;
             }
         }
         
@@ -201,11 +204,11 @@ public class TessSeg
             if (t > 0 && t < 1)
             {
                 t11 = t;
-                pointHit = true;
+                pointMidlineHit = true;
             }
         }
 
-        if (pointHit)
+        if (pointMidlineHit)
         {
             ArrayList<TessSeg> list = new ArrayList<TessSeg>();
             if (t00 > 0 && t01 > 0)
@@ -276,12 +279,15 @@ public class TessSeg
                 || c1.equals(s1.c0)
                 || c1.equals(s1.c1))
         {
+            //No point-midline hits.  If we only meet at verts,
+            // do not split.
             return null;
         }
         
-        if (!isParallelTo(s1))
+//        if (!isParallelTo(s1))
         {
-            //Not parallel.  Solve system of linear eqns
+            //Midpoint crossing for both segments.
+            // Solve system of linear eqns
             double s0x0 = c0.x;
             double s0y0 = c0.y;
             double s0x1 = c1.x;
@@ -296,7 +302,14 @@ public class TessSeg
                     s1x0, s1y0, s1x1 - s1x0, s1y1 - s1y0,
                     null);
 
-            if (t[0] > 0 && t[0] < 1 && t[1] > 0 && t[1] < 1)
+            if (t == null || t[0] < 0 || t[0] > 1 || t[1] < 0 || t[1] > 1)
+            {
+                Logger.getLogger(TessSeg.class.getName()).log(Level.WARNING, 
+                        "Line segments do not overlap");
+            }
+//            assert (t[0] > 0 && t[0] < 1 && t[1] > 0 && t[1] < 1)
+//                    : "Line segments do not overlap";
+            
             {
                 ArrayList<TessSeg> list = new ArrayList<TessSeg>();
                 
@@ -313,7 +326,7 @@ public class TessSeg
             }
         }
         
-        return null;
+//        return null;
     }
 
     @Override
@@ -354,7 +367,7 @@ public class TessSeg
         return hash;
     }
 
-    public boolean isDegenerate()
+    public boolean isZeroLength()
     {
         return c0.equals(c1);
     }
@@ -375,8 +388,77 @@ public class TessSeg
         return c1;
     }
 
-    public boolean crosses(TessSeg s1)
+    /**
+     * True if s1 would split this line.  Ie, isLineHit() == true and
+     * the end points of s1 are not midpoints of this line.
+     * 
+     * @param s1
+     * @return 
+     */
+    public boolean isLineSplitBy(TessSeg s1)
     {
+        if (!isLineHit(s1))
+        {
+            return false;
+        }
+        
+        if (isPointOnLine(s1.c0)
+                && !c0.equals(s1.c0) && !c1.equals(s1.c0))
+        {
+            return true;
+        }
+        
+        if (isPointOnLine(s1.c1)
+                && !c0.equals(s1.c1) && !c1.equals(s1.c1))
+        {
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * True if this line and s1 contain any common points.
+     * 
+     * @param s1
+     * @return 
+     */
+    public boolean isLineHit(TessSeg s1)
+    {
+        int side00 = 
+                Math2DUtil.getLineSide(s1.c0.x, s1.c0.y, s1.getDx(), s1.getDy(),
+                c0.x, c0.y);
+        int side01 = 
+                Math2DUtil.getLineSide(s1.c0.x, s1.c0.y, s1.getDx(), s1.getDy(), 
+                c1.x, c1.y);
+
+        if (side00 == 0 && side01 == 0)
+        {
+            //Lines lie along same ray
+            double t0 = pointOnLineT(s1.c0);
+            double t1 = pointOnLineT(s1.c1);
+            return ((t0 < 0 && t1 < 0) || (t0 > 1 && t1 > 1)) ? false : true;
+        }
+        
+        if ((side00 < 0 && side01 < 0) || (side00 > 0 && side01 > 0))
+        {
+            return false;
+        }
+        
+        int side10 = 
+                Math2DUtil.getLineSide(c0.x, c0.y, getDx(), getDy(),
+                s1.c0.x, s1.c0.y);
+        int side11 = 
+                Math2DUtil.getLineSide(c0.x, c0.y, getDx(), getDy(), 
+                s1.c1.x, s1.c1.y);
+
+        if ((side10 < 0 && side11 < 0) || (side10 > 0 && side11 > 0))
+        {
+            return false;
+        }
+
+        return true;
+        
+        /*
         if (!isBoundingBoxOverlap(s1))
         {
             return false;
@@ -456,6 +538,7 @@ public class TessSeg
         }
         
         return false;
+        */
     }
     
 }
