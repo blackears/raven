@@ -20,7 +20,6 @@ import com.kitfox.coyote.math.Math2DUtil;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  *
@@ -29,89 +28,91 @@ import java.util.Iterator;
 public class CtrLoop
 {
     ArrayList<CtrHalfEdge> edgeList;
+    private int winding = Integer.MIN_VALUE;
 
     public CtrLoop(ArrayList<CtrHalfEdge> edgeList)
     {
         this.edgeList = edgeList;
     }
     
-    public int getWindingLevel()
-    {
-        return edgeList.get(0).winding;
-    }
+//    public int getWindingLevel()
+//    {
+////        return edgeList.get(0).winding;
+//        return winding;
+//    }
 
     public boolean isEmpty()
     {
         return edgeList.isEmpty();
     }
     
-    /**
-     * Remove all segments where parent edge does not border an
-     * area with a winding of 0.
-     */
-    public void removeInternalSegments()
-    {
-        NEXT_EDGE:
-        for (int i = 0; i < edgeList.size(); ++i)
-        {
-            CtrHalfEdge e0 = edgeList.get(i);
-            if (e0.isNextToZero())
-            {
-                continue;
-            }
-            
-            CtrVertex v0 = e0.getTailVert();
-            for (int j = 1; j < edgeList.size(); ++j)
-            {
-                int nextIdx = i + j >= edgeList.size()
-                        ? i + j - edgeList.size() : i + j;
-                CtrHalfEdge e1 = edgeList.get(nextIdx);
-                if (e1.isNextToZero())
-                {
-                    continue NEXT_EDGE;
-                }
-                
-                if (e1.getHeadVert() == v0)
-                {
-                    //We've found an entire sub-loop with all interal
-                    // edges
-                    ArrayList<CtrHalfEdge> newList = new ArrayList<CtrHalfEdge>(j + 1);
-                    if (i < nextIdx)
-                    {
-                        for (int k = 0; k < i; ++k)
-                        {
-                            newList.add(edgeList.get(k));
-                        }
-                        for (int k = nextIdx + 1; k < edgeList.size(); ++k)
-                        {
-                            newList.add(edgeList.get(k));
-                        }
-                        i = i - 1;
-                    }
-                    else
-                    {
-                        for (int k = nextIdx + 1; k < i; ++k)
-                        {
-                            newList.add(edgeList.get(k));
-                        }
-                        i = -1;
-                    }
-                    edgeList = newList;
-                }
-            }
-        }
-        
-        
-//        for (Iterator<CtrHalfEdge> it = edgeList.iterator(); it.hasNext();)
+//    /**
+//     * Remove all segments where parent edge does not border an
+//     * area with a winding of 0.
+//     */
+//    public void removeInternalSegments()
+//    {
+//        NEXT_EDGE:
+//        for (int i = 0; i < edgeList.size(); ++i)
 //        {
-//            CtrHalfEdge e = it.next();
-//            if (e.parent.left.winding != 0
-//                    && e.parent.right.winding != 0)
+//            CtrHalfEdge e0 = edgeList.get(i);
+//            if (e0.isNextToZero())
 //            {
-//                it.remove();
+//                continue;
+//            }
+//            
+//            CtrVertex v0 = e0.getTailVert();
+//            for (int j = 1; j < edgeList.size(); ++j)
+//            {
+//                int nextIdx = i + j >= edgeList.size()
+//                        ? i + j - edgeList.size() : i + j;
+//                CtrHalfEdge e1 = edgeList.get(nextIdx);
+//                if (e1.isNextToZero())
+//                {
+//                    continue NEXT_EDGE;
+//                }
+//                
+//                if (e1.getHeadVert() == v0)
+//                {
+//                    //We've found an entire sub-loop with all interal
+//                    // edges
+//                    ArrayList<CtrHalfEdge> newList = new ArrayList<CtrHalfEdge>(j + 1);
+//                    if (i < nextIdx)
+//                    {
+//                        for (int k = 0; k < i; ++k)
+//                        {
+//                            newList.add(edgeList.get(k));
+//                        }
+//                        for (int k = nextIdx + 1; k < edgeList.size(); ++k)
+//                        {
+//                            newList.add(edgeList.get(k));
+//                        }
+//                        i = i - 1;
+//                    }
+//                    else
+//                    {
+//                        for (int k = nextIdx + 1; k < i; ++k)
+//                        {
+//                            newList.add(edgeList.get(k));
+//                        }
+//                        i = -1;
+//                    }
+//                    edgeList = newList;
+//                }
 //            }
 //        }
-    }
+//        
+//        
+////        for (Iterator<CtrHalfEdge> it = edgeList.iterator(); it.hasNext();)
+////        {
+////            CtrHalfEdge e = it.next();
+////            if (e.parent.left.winding != 0
+////                    && e.parent.right.winding != 0)
+////            {
+////                it.remove();
+////            }
+////        }
+//    }
     
     public void buildTriangles(ArrayList<Coord> triList)
     {
@@ -269,5 +270,21 @@ public class CtrLoop
         }
         ps.println("]");
         ps.println("plot(data(:, 1), data(:, 2))");
+    }
+
+    /**
+     * @return the winding
+     */
+    public int getWinding()
+    {
+        return winding;
+    }
+
+    /**
+     * @param winding the winding to set
+     */
+    public void setWinding(int winding)
+    {
+        this.winding = winding;
     }
 }

@@ -16,10 +16,6 @@
 
 package com.kitfox.coyote.shape.tessellator2;
 
-import com.kitfox.coyote.renderer.CyFramebufferTexture;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * Left edges flow in the same direction as their parent and
  * right edges flow backward.  The left side of a line is
@@ -31,7 +27,7 @@ public class CtrHalfEdge
 {
     CtrEdge parent;
     boolean right;
-    int winding = Integer.MIN_VALUE;
+    //int winding = Integer.MIN_VALUE;
 
     public CtrHalfEdge(CtrEdge parent, boolean right)
     {
@@ -49,38 +45,38 @@ public class CtrHalfEdge
         return right ? parent.v1 : parent.v0;
     }
     
-    void floodWinding(int winding)
-    {
-        if (winding == this.winding)
-        {
-            //We've already been here
-            return;
-        }
-
-        if (this.winding != Integer.MIN_VALUE)
-        {
-            //If everything is going well, we should only call this method when
-            // the winding level is not set yet, or with a value equal to the 
-            // already assigned winding value.
-            //Some badly formed shapes seem to be breaking this.
-            Logger.getLogger(CtrHalfEdge.class.getName()).log(Level.WARNING, "Setting edge to different winding");
-            return;
-        }
-//        assert this.winding == Integer.MIN_VALUE : "Setting edge to different winding";
-        
-        this.winding = winding;
-        if (right)
-        {
-            parent.left.floodWinding(winding + 1);
-        }
-        else
-        {
-            parent.right.floodWinding(winding - 1);
-        }
-
-        CtrHalfEdge half = nextLoopEdge();
-        half.floodWinding(winding);
-    }
+//    void floodWinding(int winding)
+//    {
+//        if (winding == this.winding)
+//        {
+//            //We've already been here
+//            return;
+//        }
+//
+//        if (this.winding != Integer.MIN_VALUE)
+//        {
+//            //If everything is going well, we should only call this method when
+//            // the winding level is not set yet, or with a value equal to the 
+//            // already assigned winding value.
+//            //Some badly formed shapes seem to be breaking this.
+//            Logger.getLogger(CtrHalfEdge.class.getName()).log(Level.WARNING, "Setting edge to different winding");
+//            return;
+//        }
+////        assert this.winding == Integer.MIN_VALUE : "Setting edge to different winding";
+//        
+//        this.winding = winding;
+//        if (right)
+//        {
+//            parent.left.floodWinding(winding + 1);
+//        }
+//        else
+//        {
+//            parent.right.floodWinding(winding - 1);
+//        }
+//
+//        CtrHalfEdge half = nextLoopEdge();
+//        half.floodWinding(winding);
+//    }
 
     CtrHalfEdge nextLoopEdge()
     {
@@ -92,13 +88,20 @@ public class CtrHalfEdge
     @Override
     public String toString()
     {
+//        return "[" + getTailVert() + "->" + getHeadVert() + 
+//                (right ? "right" : "left") + " wind:" + winding + "]";
         return "[" + getTailVert() + "->" + getHeadVert() + 
-                (right ? "right" : "left") + " wind:" + winding + "]";
+                (right ? "right" : "left") + "]";
     }
 
-    boolean isNextToZero()
+//    boolean isNextToZero()
+//    {
+//        return parent.left.winding == 0 || parent.right.winding == 0;
+//    }
+
+    public CtrHalfEdge getPeer()
     {
-        return parent.left.winding == 0 || parent.right.winding == 0;
+        return right ? parent.left : parent.right;
     }
 
 }

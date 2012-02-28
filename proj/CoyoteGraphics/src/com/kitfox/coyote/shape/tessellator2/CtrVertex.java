@@ -80,17 +80,17 @@ public class CtrVertex
         return coord.toString();
     }
 
-    void removeEdgesWindNonZero()
-    {
-        for (Iterator<CtrEdge> it = edges.iterator(); it.hasNext();)
-        {
-            CtrEdge e = it.next();
-            if (e.left.winding != 0 && e.right.winding != 0)
-            {
-                it.remove();
-            }
-        }
-    }
+//    void removeEdgesWindNonZero()
+//    {
+//        for (Iterator<CtrEdge> it = edges.iterator(); it.hasNext();)
+//        {
+//            CtrEdge e = it.next();
+//            if (e.left.winding != 0 && e.right.winding != 0)
+//            {
+//                it.remove();
+//            }
+//        }
+//    }
 
     boolean isEmpty()
     {
@@ -132,19 +132,22 @@ public class CtrVertex
             {
                 return area;
             }
+
+            throw new IllegalStateException(
+                    "Graph should not have two rays with same angle");
             
-            //Rays overlap.  Sort by incoming/outgoing
-            boolean in0 = isEdgeIn(e0);
-            boolean in1 = isEdgeIn(e1);
-            if (in0 != in1)
-            {
-                return in0 ? -1 : 1;
-            }
-            
-            //Duplicate rays.  Sort by hash code
-            return in0 
-                    ? e0.hashCode() - e1.hashCode() 
-                    : e1.hashCode() - e0.hashCode();
+//            //Rays overlap.  Sort by incoming/outgoing
+//            boolean in0 = isEdgeIn(e0);
+//            boolean in1 = isEdgeIn(e1);
+//            if (in0 != in1)
+//            {
+//                return in0 ? -1 : 1;
+//            }
+//            
+//            //Duplicate rays.  Sort by hash code
+//            return in0 
+//                    ? e0.hashCode() - e1.hashCode() 
+//                    : e1.hashCode() - e0.hashCode();
         }
         
         private int getSector(int dx, int dy)

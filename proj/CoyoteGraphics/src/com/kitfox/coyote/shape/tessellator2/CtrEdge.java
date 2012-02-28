@@ -30,6 +30,7 @@ public class CtrEdge
 //    CtrEdge peer;
     final CtrHalfEdge left;
     final CtrHalfEdge right;
+    int weight = 1;
 
     public CtrEdge(CtrVertex v0, CtrVertex v1)
     {
@@ -43,6 +44,17 @@ public class CtrEdge
     {
         return v0.coord.equals(c)
                 ? v1.coord : v0.coord;
+    }
+    
+    public boolean isPointOnLine(int x, int y)
+    {
+        Coord c0 = v0.coord;
+        Coord c1 = v1.coord;
+        int dx0 = c1.x - c0.x;
+        int dy0 = c1.y - c0.y;
+        int dx1 = x - c0.x;
+        int dy1 = y - c0.y;
+        return dx0 * dy1 == dy0 * dx1;
     }
 
     @Override

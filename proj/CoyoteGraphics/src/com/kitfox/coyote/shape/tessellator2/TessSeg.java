@@ -16,7 +16,6 @@
 
 package com.kitfox.coyote.shape.tessellator2;
 
-import com.kitfox.coyote.material.textureBlit.CyMaterialTextureBlit;
 import com.kitfox.coyote.math.Math2DUtil;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import java.util.ArrayList;

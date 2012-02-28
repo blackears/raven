@@ -312,15 +312,15 @@ public class PathTessellator2 extends PathConsumer
         
         if (removeInternalSegments)
         {
-            for (Iterator<CtrLoop> it = contours.iterator(); it.hasNext();)
-            {
-                CtrLoop loop = it.next();
-                loop.removeInternalSegments();
-                if (loop.isEmpty())
-                {
-                    it.remove();
-                }
-            }
+//            for (Iterator<CtrLoop> it = contours.iterator(); it.hasNext();)
+//            {
+//                CtrLoop loop = it.next();
+//                loop.removeInternalSegments();
+//                if (loop.isEmpty())
+//                {
+//                    it.remove();
+//                }
+//            }
         }
     }
     
@@ -354,7 +354,7 @@ public class PathTessellator2 extends PathConsumer
         ArrayList<Coord> triList = new ArrayList<Coord>();
         for (CtrLoop loop: contours)
         {
-            if (loop.getWindingLevel() == 0)
+            if (loop.getWinding() == 0)
             {
                 continue;
             }
