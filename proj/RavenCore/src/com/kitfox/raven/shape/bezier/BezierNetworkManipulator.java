@@ -31,6 +31,7 @@ import java.util.HashMap;
  *
  * @author kitfox
  */
+@Deprecated
 public class BezierNetworkManipulator
 {
     static final AffineTransform toPixels = new AffineTransform(

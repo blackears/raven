@@ -292,11 +292,11 @@ public class ToolPropertyCurveEditor extends ToolDisplay
             return;
         }
 
-        Selection.Type selType = Selection.suggestSelectType(evt);
+        Selection.Operator selType = Selection.suggestSelectType(evt);
 
         if (!pickListKeys.isEmpty())
         {
-            sel.select(selType, pickListKeys.get(0));
+            sel.select(pickListKeys.get(0), selType);
         }
         else if (!pickListKnotsIn.isEmpty())
         {
@@ -328,7 +328,7 @@ public class ToolPropertyCurveEditor extends ToolDisplay
         }
         else if (pickListCurves.isEmpty())
         {
-            sel.select(selType, pickListCurves.get(0));
+            sel.select(pickListCurves.get(0), selType);
         }
 
         fireToolDisplayChanged();
@@ -472,8 +472,8 @@ public class ToolPropertyCurveEditor extends ToolDisplay
 
             Selection<TrackCurveComponent> sel = provider.getSelection();
 
-            Selection.Type selType = Selection.suggestSelectType(evt);
-            sel.select(selType, pickList);
+            Selection.Operator selType = Selection.suggestSelectType(evt);
+            sel.select(pickList, selType);
             fireToolDisplayChanged();
         }
 
@@ -650,7 +650,7 @@ public class ToolPropertyCurveEditor extends ToolDisplay
 
         public void add(ManipKey manip)
         {
-            selBase.select(Selection.Type.SUB, manip.comp);
+            selBase.select(manip.comp, Selection.Operator.SUB);
 
             PropertyWrapper wrapper = manip.comp.getWrapper();
             ManipPropCurve propManip = manipMap.get(wrapper);
@@ -792,7 +792,7 @@ public class ToolPropertyCurveEditor extends ToolDisplay
                     {
                         TrackCurveComponentKey compKey =
                                 new TrackCurveComponentKey(comp.getWrapper(), startLayout.frame);
-                        selection.select(Selection.Type.ADD, compKey);
+                        selection.select(compKey, Selection.Operator.ADD);
                         selection.setSubselection(compKey,
                                 TrackCurveComponentKey.Subselect.class,
                                 new TrackCurveComponentKey.Subselect(knotIn, knotOut));
@@ -835,7 +835,7 @@ public class ToolPropertyCurveEditor extends ToolDisplay
                     {
                         TrackCurveComponentKey compKey =
                                 new TrackCurveComponentKey(comp.getWrapper(), startLayout.frame);
-                        selection.select(Selection.Type.ADD, compKey);
+                        selection.select(compKey, Selection.Operator.ADD);
                         selection.setSubselection(compKey,
                                 TrackCurveComponentKey.Subselect.class,
                                 new TrackCurveComponentKey.Subselect(knotIn, knotOut));
@@ -870,7 +870,7 @@ public class ToolPropertyCurveEditor extends ToolDisplay
                     {
                         TrackCurveComponentKey compKey =
                                 new TrackCurveComponentKey(comp.getWrapper(), newFrame);
-                        selection.select(Selection.Type.ADD, compKey);
+                        selection.select(compKey, Selection.Operator.ADD);
                         selection.setSubselection(compKey,
                                 TrackCurveComponentKey.Subselect.class,
                                 new TrackCurveComponentKey.Subselect(knotIn, knotOut));

@@ -94,11 +94,11 @@ public class TextManipulator
             textFillPaintLayout = new RavenPaintLayout();
 
             //Find parent to attach new text node to
-            Selection<SelectionRecord> sel = root.getSelection();
-            SelectionRecord top = sel.getTopSelected();
+            Selection<NodeObject> sel = root.getSelection();
+            NodeObject top = sel.getTopSelected();
             if (top != null)
             {
-                parent = top.getNode();
+                parent = top;
                 while (!(parent instanceof RavenNodeGroup
                         || parent instanceof RavenNodeRoot))
                 {

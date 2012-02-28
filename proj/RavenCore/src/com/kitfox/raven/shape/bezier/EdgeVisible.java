@@ -25,6 +25,7 @@ import com.kitfox.raven.util.service.ServiceInst;
  *
  * @author kitfox
  */
+@Deprecated
 @ServiceInst(service=PlaneDataProvider.class)
 public class EdgeVisible extends PlaneDataProvider<Boolean>
 {

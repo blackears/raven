@@ -20,6 +20,7 @@ package com.kitfox.raven.shape.bezier;
  *
  * @author kitfox
  */
+@Deprecated
 public class PointRecord
 {
     final double dist;

@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.kitfox.raven.util.tree;
 
 /**
  *
  * @author kitfox
  */
+@Deprecated
 public class SelectionRecord
-{
-    private final NodeObject node;
+{    private final NodeObject node;
     private final Object subselection;
 
     public SelectionRecord(NodeObject node)
     {
-        this(node, null);
+        this.node = node;
+        this.subselection = null;
     }
 
+    @Deprecated
     public SelectionRecord(NodeObject node, Object subselection)
     {
         this.node = node;
@@ -39,42 +40,49 @@ public class SelectionRecord
     /**
      * @return the node
      */
-    public NodeObject getNode() {
+    public NodeObject getNode()
+    {
         return node;
     }
 
     /**
      * @return the subselection
      */
-    public Object getSubselection() {
+    @Deprecated
+    public Object getSubselection()
+    {
         return subselection;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
+    public boolean equals(Object obj)
+    {
+        if (obj == null)
+        {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (getClass() != obj.getClass())
+        {
             return false;
         }
-        final SelectionRecord other = (SelectionRecord) obj;
-        if (this.node != other.node && (this.node == null || !this.node.equals(other.node))) {
+        final SelectionRecord other = (SelectionRecord)obj;
+        if (this.node != other.node && (this.node == null || !this.node.equals(other.node)))
+        {
             return false;
         }
-        if (this.subselection != other.subselection && (this.subselection == null || !this.subselection.equals(other.subselection))) {
+        if (this.subselection != other.subselection && (this.subselection == null || !this.subselection.equals(other.subselection)))
+        {
             return false;
         }
         return true;
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         int hash = 3;
         hash = 31 * hash + (this.node != null ? this.node.hashCode() : 0);
         hash = 31 * hash + (this.subselection != null ? this.subselection.hashCode() : 0);
         return hash;
     }
-
-
 }

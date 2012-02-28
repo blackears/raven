@@ -36,6 +36,7 @@ import com.kitfox.raven.util.Selection;
 import com.kitfox.raven.util.SelectionEvent;
 import com.kitfox.raven.util.SelectionSubEvent;
 import com.kitfox.raven.util.service.ServiceInst;
+import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.SelectionRecord;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -270,17 +271,17 @@ public class ToolSelect extends ToolSelectBase
         }
 
         ArrayList<ServiceTransformable> rootList = new ArrayList<ServiceTransformable>();
-        Selection<SelectionRecord> sel = provider.getSelection();
+        Selection<NodeObject> sel = provider.getSelection();
         NEXT_NODE:
         for (int j = 0; j < sel.size(); ++j)
         {
-            SelectionRecord rec = sel.get(j);
-            if (!(rec.getNode() instanceof ServiceTransformable))
+            NodeObject rec = sel.get(j);
+            if (!(rec instanceof ServiceTransformable))
             {
                 continue;
             }
 
-            ServiceTransformable rootNode = (ServiceTransformable)rec.getNode();
+            ServiceTransformable rootNode = (ServiceTransformable)rec;
 
             for (int i = 0; i < sel.size(); ++i)
             {
@@ -289,8 +290,8 @@ public class ToolSelect extends ToolSelectBase
                     continue;
                 }
 
-                SelectionRecord other = sel.get(i);
-                if (other.getNode().isAncestorOf(rootNode.getNodeObject()))
+                NodeObject other = sel.get(i);
+                if (other.isAncestorOf(rootNode.getNodeObject()))
                 {
                     continue NEXT_NODE;
                 }

@@ -22,6 +22,7 @@ import java.awt.geom.Path2D.Double;
  *
  * @author kitfox
  */
+@Deprecated
 public class BezierCurvePoint extends BezierCurve
 {
     int a0x;

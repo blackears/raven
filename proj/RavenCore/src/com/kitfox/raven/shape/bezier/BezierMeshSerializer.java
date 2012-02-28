@@ -28,6 +28,7 @@ import java.util.HashMap;
  *
  * @author kitfox
  */
+@Deprecated
 public class BezierMeshSerializer
 {
     private PathCurve path;

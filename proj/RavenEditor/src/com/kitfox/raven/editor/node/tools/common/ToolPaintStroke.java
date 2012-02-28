@@ -255,18 +255,17 @@ public class ToolPaintStroke extends ToolDisplay
                         .getWorldToDeviceTransform((AffineTransform)null);
 
                 //Find node to add new stroke to
-                SelectionRecord topSel = doc.getSelection().getTopSelected();
+                NodeObject topSel = doc.getSelection().getTopSelected();
                 RavenNodeGroup parentGroupNode = null;
                 if (topSel != null)
                 {
-                    NodeObject topNode = topSel.getNode();
-                    if (topNode instanceof RavenNodeGroup)
+                    if (topSel instanceof RavenNodeGroup)
                     {
-                        parentGroupNode = (RavenNodeGroup)topNode;
+                        parentGroupNode = (RavenNodeGroup)topSel;
                     }
-                    else if (topNode.getParent() != null)
+                    else if (topSel.getParent() != null)
                     {
-                        NodeObject topNodeParent = topNode.getParent().getNode();
+                        NodeObject topNodeParent = topSel.getParent().getNode();
                         if (topNodeParent instanceof RavenNodeGroup)
                         {
                             parentGroupNode = (RavenNodeGroup)topNodeParent;

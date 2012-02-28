@@ -24,6 +24,7 @@ import java.util.ArrayList;
  *
  * @author kitfox
  */
+@Deprecated
 public class SplitRecord
 {
     final double tOffset;

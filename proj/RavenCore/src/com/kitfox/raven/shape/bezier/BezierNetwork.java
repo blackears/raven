@@ -19,7 +19,7 @@ package com.kitfox.raven.shape.bezier;
 import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.raven.util.Intersection;
 import com.kitfox.raven.util.Selection;
-import com.kitfox.raven.util.Selection.Type;
+import com.kitfox.raven.util.Selection.Operator;
 import com.kitfox.raven.util.planeData.PlaneDataProvider;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -740,15 +740,15 @@ abstract public class BezierNetwork
         {
             if (vertices != null)
             {
-                this.vertices.select(Type.REPLACE, vertices);
+                this.vertices.select(vertices, Operator.REPLACE);
             }
             if (edges != null)
             {
-                this.edges.select(Type.REPLACE, edges);
+                this.edges.select(edges, Operator.REPLACE);
             }
             if (faces != null)
             {
-                this.faces.select(Type.REPLACE, faces);
+                this.faces.select(faces, Operator.REPLACE);
             }
         }
 
@@ -799,7 +799,7 @@ abstract public class BezierNetwork
             return face != null && faces.isSelected(face.getUid());
         }
 
-        public void addVertices(Type type, Collection<BezierVertex> vertices)
+        public void addVertices(Operator type, Collection<BezierVertex> vertices)
         {
             ArrayList<Integer> list = new ArrayList<Integer>();
             for (BezierVertex vtx: vertices)
@@ -807,12 +807,12 @@ abstract public class BezierNetwork
                 list.add(vtx.getUid());
             }
 
-            this.vertices.select(type, list);
+            this.vertices.select(list, type);
         }
 
-        public void addVertex(Type type, BezierVertex vtx)
+        public void addVertex(Operator type, BezierVertex vtx)
         {
-            this.vertices.select(type, vtx.getUid());
+            this.vertices.select(vtx.getUid(), type);
         }
 
         public boolean isEmptyVertices()

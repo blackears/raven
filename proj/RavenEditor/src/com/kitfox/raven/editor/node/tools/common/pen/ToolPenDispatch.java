@@ -48,14 +48,12 @@ public class ToolPenDispatch extends ToolDisplay
         if (delegate == null)
         {
             ServiceDocument servDoc = user.getToolService(ServiceDocument.class);
-            Selection<SelectionRecord> sel = servDoc.getSelection();
-            SelectionRecord rec = sel.getTopSelected();
-            if (rec == null)
+            Selection<NodeObject> sel = servDoc.getSelection();
+            NodeObject node = sel.getTopSelected();
+            if (node == null)
             {
                 return;
             }
-            
-            NodeObject node = rec.getNode();
             
             //Check if we're on a selection layer
             ServiceBezierMesh servMesh = node.getNodeService(ServiceBezierMesh.class, false);

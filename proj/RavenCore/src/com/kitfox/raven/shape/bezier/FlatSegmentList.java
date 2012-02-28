@@ -28,6 +28,7 @@ import java.util.Iterator;
  *
  * @author kitfox
  */
+@Deprecated
 public class FlatSegmentList
 {
     private FlatSegment head;

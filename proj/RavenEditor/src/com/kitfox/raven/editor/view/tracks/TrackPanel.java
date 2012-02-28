@@ -242,7 +242,7 @@ public class TrackPanel extends javax.swing.JPanel
             curFrameWatch = new CurFrameWatcher(trackLib.curFrame);
             curTrackWatch = new CurTrackWatcher(trackLib.curTrack);
 
-            Selection<SelectionRecord> sel = root.getSelection();
+            Selection<NodeObject> sel = root.getSelection();
             selectionWatch = new SelectionWatcher(sel);
         }
 
@@ -309,13 +309,12 @@ public class TrackPanel extends javax.swing.JPanel
             NodeDocument root = doc.getCurDocument();
 //            Track track = root.getTrackLibrary().curTrack.getValue();
 
-            Selection<SelectionRecord> sel = root.getSelection();
+            Selection<NodeObject> sel = root.getSelection();
 
             ArrayList<PropertyWrapper> propList = new ArrayList<PropertyWrapper>();
 
-            for (SelectionRecord rec: sel.getSelection())
+            for (NodeObject node: sel.getSelection())
             {
-                NodeObject node = rec.getNode();
                 for (PropertyWrapper wrapper: node.getPropertyWrappers())
                 {
                     Class type = wrapper.getPropertyType();

@@ -52,10 +52,9 @@ abstract public class ActionPathVertexSmoothingChange extends AbstractAction
         {
             return;
         }
-        Selection<SelectionRecord> sel = doc.getCurDocument().getSelection();
-        for (SelectionRecord rec: sel.getSelection())
+        Selection<NodeObject> sel = doc.getCurDocument().getSelection();
+        for (NodeObject nodeObj: sel.getSelection())
         {
-            NodeObject nodeObj = rec.getNode();
             ServiceBezierNetwork provBez =
                     nodeObj.getNodeService(ServiceBezierNetwork.class, false);
 
@@ -68,7 +67,7 @@ abstract public class ActionPathVertexSmoothingChange extends AbstractAction
 
 
             BezierNetwork.Subselection sub =
-                    sel.getSubselection(rec, BezierNetwork.Subselection.class);
+                    sel.getSubselection(nodeObj, BezierNetwork.Subselection.class);
             if (sub != null)
             {
                 ArrayList<BezierVertex> vtxList = network.getVertices();

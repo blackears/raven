@@ -25,6 +25,7 @@ import com.kitfox.raven.util.service.ServiceInst;
  *
  * @author kitfox
  */
+@Deprecated
 public enum VertexSmooth
 {
     TENSE,

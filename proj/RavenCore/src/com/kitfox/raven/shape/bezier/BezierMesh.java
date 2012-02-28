@@ -31,6 +31,7 @@ import java.util.Iterator;
  *
  * @author kitfox
  */
+@Deprecated
 public class BezierMesh extends BezierNetwork
 {
     HashMap<BezierPoint, BezierVertex> vertexMap

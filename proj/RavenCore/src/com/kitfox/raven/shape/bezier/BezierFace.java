@@ -27,6 +27,7 @@ import java.util.Random;
  *
  * @author kitfox
  */
+@Deprecated
 public class BezierFace extends BezierNetworkComponent
 {
     //Edges connected to this face on the left side

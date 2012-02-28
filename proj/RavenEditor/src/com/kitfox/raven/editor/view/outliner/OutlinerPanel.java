@@ -192,14 +192,13 @@ public class OutlinerPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            Selection<SelectionRecord> sel = doc.getCurDocument().getSelection();
-            ArrayList<SelectionRecord> recList = sel.getSelection();
+            Selection<NodeObject> sel = doc.getCurDocument().getSelection();
+            ArrayList<NodeObject> recList = sel.getSelection();
 
             TreePath[] paths = new TreePath[recList.size()];
             for (int i = 0; i < paths.length; ++i)
             {
-                SelectionRecord rec = recList.get(i);
-                NodeObject node = rec.getNode();
+                NodeObject node = recList.get(i);
                 OutlinerNode nodeOut = model.findNode(node);
 
                 paths[i] = nodeOut.getPath();
@@ -224,8 +223,8 @@ public class OutlinerPanel extends javax.swing.JPanel
                 return;
             }
 
-            Selection<SelectionRecord> sel = doc.getCurDocument().getSelection();
-            ArrayList<SelectionRecord> recList = new ArrayList<SelectionRecord>();
+            Selection<NodeObject> sel = doc.getCurDocument().getSelection();
+            ArrayList<NodeObject> recList = new ArrayList<NodeObject>();
 
             TreePath[] paths = tree_outline.getSelectionPaths();
             if (paths != null)
@@ -236,18 +235,16 @@ public class OutlinerPanel extends javax.swing.JPanel
                     if (nodeOut instanceof OutlinerNodeNodeFixed)
                     {
                         NodeObject node = ((OutlinerNodeNodeFixed)nodeOut).getNode();
-                        SelectionRecord rec = new SelectionRecord(node);
-                        recList.add(rec);
+                        recList.add(node);
                     }
                     else if (nodeOut instanceof OutlinerNodeNodeList)
                     {
                         NodeObject node = ((OutlinerNodeNodeList)nodeOut).getNode();
-                        SelectionRecord rec = new SelectionRecord(node);
-                        recList.add(rec);
+                        recList.add(node);
                     }
                 }
             }
-            sel.select(Selection.Type.REPLACE, recList);
+            sel.select(recList, Selection.Operator.REPLACE);
         }
     }
 

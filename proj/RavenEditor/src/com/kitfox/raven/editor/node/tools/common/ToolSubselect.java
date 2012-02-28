@@ -31,6 +31,7 @@ import com.kitfox.raven.shape.bezier.VertexSmooth;
 import com.kitfox.raven.util.Intersection;
 import com.kitfox.raven.util.Selection;
 import com.kitfox.raven.util.service.ServiceInst;
+import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.SelectionRecord;
 import com.kitfox.raven.util.undo.History;
 import java.awt.Color;
@@ -115,12 +116,12 @@ public class ToolSubselect extends ToolSubselectBase
         History hist = provider.getDocument().getHistory();
         hist.beginTransaction("Deleting vertices");
 
-        Selection<SelectionRecord> sel = provider.getSelection();
+        Selection<NodeObject> sel = provider.getSelection();
         for (int i = 0; i < sel.size(); ++i)
         {
-            SelectionRecord rec = sel.get(i);
+            NodeObject rec = sel.get(i);
             ServiceBezierNetwork provBez =
-                    rec.getNode().getNodeService(ServiceBezierNetwork.class, false);
+                    rec.getNodeService(ServiceBezierNetwork.class, false);
 
             if (provBez == null)
             {
@@ -160,19 +161,19 @@ public class ToolSubselect extends ToolSubselectBase
 
         Point2D.Double pt = new Point2D.Double();
 
-        Selection<SelectionRecord> sel = provider.getSelection();
+        Selection<NodeObject> sel = provider.getSelection();
         for (int i = 0; i < sel.size(); ++i)
         {
-            SelectionRecord rec = sel.get(i);
+            NodeObject rec = sel.get(i);
             ServiceBezierNetwork provBez =
-                    rec.getNode().getNodeService(ServiceBezierNetwork.class, false);
+                    rec.getNodeService(ServiceBezierNetwork.class, false);
 
             if (provBez == null)
             {
                 continue;
             }
 
-            RavenNodeXformable nodeSpatial = (RavenNodeXformable)rec.getNode();
+            RavenNodeXformable nodeSpatial = (RavenNodeXformable)rec;
             AffineTransform l2d = nodeSpatial.getLocalToDeviceTransform((AffineTransform)null);
             l2d.concatenate(BezierNetwork.toPixels);
 
@@ -204,12 +205,12 @@ public class ToolSubselect extends ToolSubselectBase
             return;
         }
 
-        Selection<SelectionRecord> sel = provider.getSelection();
+        Selection<NodeObject> sel = provider.getSelection();
         for (int i = 0; i < sel.size(); ++i)
         {
-            SelectionRecord rec = sel.get(i);
+            NodeObject rec = sel.get(i);
             ServiceBezierNetwork provBez =
-                    rec.getNode().getNodeService(ServiceBezierNetwork.class, false);
+                    rec.getNodeService(ServiceBezierNetwork.class, false);
 
             if (provBez == null)
             {
@@ -219,7 +220,7 @@ public class ToolSubselect extends ToolSubselectBase
 //            BezierNetwork.Subselection subsel =
 //                    sel.getSubselection(rec, BezierNetwork.Subselection.class);
 
-            RavenNodeXformable nodeSpatial = (RavenNodeXformable)rec.getNode();
+            RavenNodeXformable nodeSpatial = (RavenNodeXformable)rec;
             AffineTransform l2d = nodeSpatial.getLocalToDeviceTransform((AffineTransform)null);
             l2d.concatenate(BezierNetwork.toPixels);
 
@@ -290,22 +291,22 @@ public class ToolSubselect extends ToolSubselectBase
 
 
         boolean moveEntireSelection = false;
-        Selection<SelectionRecord> sel = provider.getSelection();
+        Selection<NodeObject> sel = provider.getSelection();
         for (int i = 0; i < sel.size(); ++i)
         {
-            SelectionRecord rec = sel.get(i);
+            NodeObject rec = sel.get(i);
             BezierNetwork.Subselection subsel =
                     sel.getSubselection(rec, BezierNetwork.Subselection.class);
 
             ServiceBezierNetwork provBez =
-                    rec.getNode().getNodeService(ServiceBezierNetwork.class, false);
+                    rec.getNodeService(ServiceBezierNetwork.class, false);
 
             if (provBez == null)
             {
                 continue;
             }
 
-            RavenNodeXformable nodeSpatial = (RavenNodeXformable)rec.getNode();
+            RavenNodeXformable nodeSpatial = (RavenNodeXformable)rec;
             AffineTransform l2d = nodeSpatial.getLocalToDeviceTransform((AffineTransform)null);
 
 
@@ -362,12 +363,12 @@ public class ToolSubselect extends ToolSubselectBase
             ArrayList<ManipSubVertices> vertGroups = new ArrayList<ManipSubVertices>();
             for (int i = 0; i < sel.size(); ++i)
             {
-                SelectionRecord rec = sel.get(i);
+                NodeObject rec = sel.get(i);
                 BezierNetwork.Subselection subsel =
                         sel.getSubselection(rec, BezierNetwork.Subselection.class);
 
                 ServiceBezierNetwork provBez =
-                        rec.getNode().getNodeService(ServiceBezierNetwork.class, false);
+                        rec.getNodeService(ServiceBezierNetwork.class, false);
 
                 if (provBez == null)
                 {
@@ -446,12 +447,12 @@ public class ToolSubselect extends ToolSubselectBase
             return;
         }
 
-        Selection<SelectionRecord> selection = provider.getSelection();
+        Selection<NodeObject> selection = provider.getSelection();
         for (int i = 0; i < selection.size(); ++i)
         {
-            SelectionRecord rec = selection.get(i);
+            NodeObject rec = selection.get(i);
             ServiceBezierNetwork provBez = 
-                    rec.getNode().getNodeService(ServiceBezierNetwork.class, false);
+                    rec.getNodeService(ServiceBezierNetwork.class, false);
 
             if (provBez == null)
             {
@@ -459,7 +460,7 @@ public class ToolSubselect extends ToolSubselectBase
             }
 
             //AffineTransform w2d = getWorldToDeviceTransform(null);
-            RavenNodeXformable nodeSpatial = (RavenNodeXformable)rec.getNode();
+            RavenNodeXformable nodeSpatial = (RavenNodeXformable)rec;
             AffineTransform l2d = nodeSpatial.getLocalToDeviceTransform((AffineTransform)null);
 
             BezierNetwork.Subselection subselection = 
@@ -500,7 +501,7 @@ public class ToolSubselect extends ToolSubselectBase
 
     class ManipSubKnot extends ManipSub
     {
-        SelectionRecord rec;
+        NodeObject rec;
         BezierNetwork network;
 //        BezierEdge edge;
 //        KnotType type;
@@ -509,7 +510,7 @@ public class ToolSubselect extends ToolSubselectBase
         BezierNetworkManipulator manip;
 
 //        public ManipSubKnot(SelectionRecord rec, BezierNetwork network, BezierEdge edge, KnotType type)
-        public ManipSubKnot(SelectionRecord rec, BezierNetwork network, BezierVertex vtx, boolean knotOut)
+        public ManipSubKnot(NodeObject rec, BezierNetwork network, BezierVertex vtx, boolean knotOut)
         {
             this.rec = rec;
             this.network = network;
@@ -523,7 +524,7 @@ public class ToolSubselect extends ToolSubselectBase
         @Override
         protected void dragBy(int dx, int dy)
         {
-            RavenNodeXformable nodeSpatial = (RavenNodeXformable)rec.getNode();
+            RavenNodeXformable nodeSpatial = (RavenNodeXformable)rec;
             AffineTransform devToPath = nodeSpatial.getLocalToDeviceTransform((AffineTransform)null);
             devToPath.concatenate(BezierNetwork.toPixels);
             try
@@ -584,11 +585,11 @@ public class ToolSubselect extends ToolSubselectBase
         @Override
         protected void render(Graphics2D g, Color color)
         {
-            RavenNodeXformable nodeSpatial = (RavenNodeXformable)rec.getNode();
+            RavenNodeXformable nodeSpatial = (RavenNodeXformable)rec;
             AffineTransform l2d = nodeSpatial.getLocalToDeviceTransform((AffineTransform)null);
 
             ServiceDocument provider = user.getToolService(ServiceDocument.class);
-            Selection<SelectionRecord> selection = provider.getSelection();
+            Selection<NodeObject> selection = provider.getSelection();
             BezierNetwork.Subselection subselection =
                     selection.getSubselection(rec, BezierNetwork.Subselection.class);
 
@@ -601,7 +602,7 @@ public class ToolSubselect extends ToolSubselectBase
             manip.apply();
 
             ServiceBezierNetwork provBez =
-                    rec.getNode().getNodeService(ServiceBezierNetwork.class, false);
+                    rec.getNodeService(ServiceBezierNetwork.class, false);
 
             //network.toSVGPath();
             provBez.updateFromBezierNetwork(network, history);
@@ -611,12 +612,12 @@ public class ToolSubselect extends ToolSubselectBase
 
     class ManipSubVertices extends ManipSub
     {
-        SelectionRecord rec;
+        NodeObject rec;
         BezierNetwork network;
         List<BezierVertex> vertices;
         BezierNetworkManipulator manip;
 
-        public ManipSubVertices(SelectionRecord rec, BezierNetwork network, List<BezierVertex> vertices)
+        public ManipSubVertices(NodeObject rec, BezierNetwork network, List<BezierVertex> vertices)
         {
             this.rec = rec;
             this.network = network;
@@ -624,7 +625,7 @@ public class ToolSubselect extends ToolSubselectBase
             this.manip = new BezierNetworkManipulator(network);
         }
 
-        public ManipSubVertices(SelectionRecord rec, BezierNetwork network, BezierVertex vtx)
+        public ManipSubVertices(NodeObject rec, BezierNetwork network, BezierVertex vtx)
         {
             this(rec, network, Arrays.asList(vtx));
         }
@@ -632,7 +633,7 @@ public class ToolSubselect extends ToolSubselectBase
         @Override
         protected void dragBy(int dx, int dy)
         {
-            RavenNodeXformable nodeSpatial = (RavenNodeXformable)rec.getNode();
+            RavenNodeXformable nodeSpatial = (RavenNodeXformable)rec;
             AffineTransform devToPath = nodeSpatial.getLocalToDeviceTransform((AffineTransform)null);
             devToPath.concatenate(BezierNetwork.toPixels);
             try
@@ -685,11 +686,11 @@ public class ToolSubselect extends ToolSubselectBase
         @Override
         protected void render(Graphics2D g, Color color)
         {
-            RavenNodeXformable nodeSpatial = (RavenNodeXformable)rec.getNode();
+            RavenNodeXformable nodeSpatial = (RavenNodeXformable)rec;
             AffineTransform l2d = nodeSpatial.getLocalToDeviceTransform((AffineTransform)null);
 
             ServiceDocument provider = user.getToolService(ServiceDocument.class);
-            Selection<SelectionRecord> selection = provider.getSelection();
+            Selection<NodeObject> selection = provider.getSelection();
             BezierNetwork.Subselection subselection =
                     selection.getSubselection(rec, BezierNetwork.Subselection.class);
 
@@ -701,7 +702,7 @@ public class ToolSubselect extends ToolSubselectBase
         {
             manip.apply();
             ServiceBezierNetwork provBez =
-                    rec.getNode().getNodeService(ServiceBezierNetwork.class, false);
+                    rec.getNodeService(ServiceBezierNetwork.class, false);
 
             provBez.updateFromBezierNetwork(network, history);
         }

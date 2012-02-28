@@ -78,16 +78,16 @@ public class ToolPaintLayout extends ToolDisplay
         }
         CyMatrix4d xform = provDevice.getWorldToDeviceTransform((CyMatrix4d)null);
 
-        Selection.Type selType = getSelectType(evt);
+        Selection.Operator selType = getSelectType(evt);
         NodeObject pickObj = provDoc.pickObject(
                 new CyRectangle2d(evt.getX(), evt.getY(), 1, 1),
                 xform, Intersection.INTERSECTS);
 
-        Selection<SelectionRecord> sel = provDoc.getSelection();
+        Selection<NodeObject> sel = provDoc.getSelection();
 
         if (pickObj == null)
         {
-            if (selType == Selection.Type.REPLACE)
+            if (selType == Selection.Operator.REPLACE)
             {
                 sel.clear();
             }
@@ -95,8 +95,7 @@ public class ToolPaintLayout extends ToolDisplay
             return;
         }
 
-        SelectionRecord rec = new SelectionRecord(pickObj);
-        sel.select(selType, rec);
+        sel.select(pickObj, selType);
 
         buildManipulator();
         fireToolDisplayChanged();
@@ -174,10 +173,9 @@ public class ToolPaintLayout extends ToolDisplay
     private ArrayList<MaterialElement> buildMaterialList(ServiceDocument provider)
     {
         ArrayList<MaterialElement> list = new ArrayList<MaterialElement>();
-        Selection<SelectionRecord> sel = provider.getSelection();
-        for (SelectionRecord rec: sel.getSelection())
+        Selection<NodeObject> sel = provider.getSelection();
+        for (NodeObject node: sel.getSelection())
         {
-            NodeObject node = rec.getNode();
             ServiceMaterial mat = node.getNodeService(ServiceMaterial.class, false);
             if (mat == null)
             {
@@ -185,7 +183,7 @@ public class ToolPaintLayout extends ToolDisplay
             }
 
             BezierNetwork.Subselection subsel =
-                    sel.getSubselection(rec, BezierNetwork.Subselection.class);
+                    sel.getSubselection(node, BezierNetwork.Subselection.class);
 
             if (toolProvider.isStrokeMode())
             {

@@ -31,6 +31,7 @@ import java.util.HashMap;
  *
  * @author kitfox
  */
+@Deprecated
 public class BezierPath extends BezierNetwork
 {
     private final BezierFace faceInside = new BezierFace();

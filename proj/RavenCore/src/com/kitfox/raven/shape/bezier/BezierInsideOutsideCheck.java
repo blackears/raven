@@ -20,6 +20,7 @@ package com.kitfox.raven.shape.bezier;
  *
  * @author kitfox
  */
+@Deprecated
 public class BezierInsideOutsideCheck
 {
     Cursor enterFrom = Cursor.NONE;

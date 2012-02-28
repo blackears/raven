@@ -22,6 +22,7 @@ import java.util.ArrayList;
  *
  * @author kitfox
  */
+@Deprecated
 public class SplitCurvesRecord
 {
     ArrayList<SplitRecord> localSplits = new ArrayList<SplitRecord>();

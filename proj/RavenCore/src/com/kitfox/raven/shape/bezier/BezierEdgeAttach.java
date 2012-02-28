@@ -22,6 +22,7 @@ package com.kitfox.raven.shape.bezier;
  *
  * @author kitfox
  */
+@Deprecated
 public class BezierEdgeAttach
 {
     BezierEdge edge;

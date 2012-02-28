@@ -33,7 +33,7 @@ import com.kitfox.raven.util.SelectionEvent;
 import com.kitfox.raven.util.SelectionListener;
 import com.kitfox.raven.util.SelectionSubEvent;
 import com.kitfox.raven.util.SelectionWeakListener;
-import com.kitfox.raven.util.tree.SelectionRecord;
+import com.kitfox.raven.util.tree.NodeObject;
 import java.util.EventObject;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
@@ -125,14 +125,14 @@ public class PropertiesPanel extends javax.swing.JPanel
         }
         else
         {
-            SelectionRecord top = doc.getCurDocument().getSelection().getTopSelected();
+            NodeObject top = doc.getCurDocument().getSelection().getTopSelected();
             if (top == null)
             {
                 model = null;
             }
             else
             {
-                model = new PropertyModel(top.getNode());
+                model = new PropertyModel(top);
             }
         }
         table_params.setModel(model == null

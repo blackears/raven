@@ -212,23 +212,23 @@ abstract public class ToolDraggable extends Tool
     {
     }
 
-    protected Selection.Type getSelectType(MouseEvent dragEvt)
+    protected Selection.Operator getSelectType(MouseEvent dragEvt)
     {
         if (dragEvt.isShiftDown() && dragEvt.isControlDown())
         {
-            return Selection.Type.INVERSE;
+            return Selection.Operator.INVERSE;
         }
         else if (dragEvt.isShiftDown())
         {
-            return Selection.Type.ADD;
+            return Selection.Operator.ADD;
         }
         else if (dragEvt.isControlDown())
         {
-            return Selection.Type.SUB;
+            return Selection.Operator.SUB;
         }
         else
         {
-            return Selection.Type.REPLACE;
+            return Selection.Operator.REPLACE;
         }
     }
 

@@ -17,7 +17,6 @@
 package com.kitfox.raven.util.tree;
 
 import com.kitfox.raven.util.Selection;
-import com.kitfox.raven.util.resource.ResourceCache;
 import com.kitfox.raven.util.undo.History;
 import com.kitfox.raven.util.undo.HistoryAction;
 import com.kitfox.xml.schema.ravendocumentschema.NodeSymbolType;
@@ -54,7 +53,7 @@ abstract public class NodeDocument extends NodeObject
 //            CHILD_RESOURCELIBRARY, ResourceLibrary.class);
 
 //    private Window swingRoot;
-    private final Selection<SelectionRecord> selection = new Selection<SelectionRecord>();
+    private final Selection<NodeObject> selection = new Selection<NodeObject>();
 
     ArrayList<NodeDocumentListener> docListeners = new ArrayList<NodeDocumentListener>();
 
@@ -282,7 +281,7 @@ abstract public class NodeDocument extends NodeObject
     /**
      * @return the selection
      */
-    public Selection<SelectionRecord> getSelection()
+    public Selection<NodeObject> getSelection()
     {
         return selection;
     }
@@ -330,11 +329,10 @@ abstract public class NodeDocument extends NodeObject
         History history = getHistory();
         history.beginTransaction("Delete");
 
-        ArrayList<SelectionRecord> list = selection.getSelection();
+        ArrayList<NodeObject> list = selection.getSelection();
         for (int i = 0; i < list.size(); ++i)
         {
-            SelectionRecord rec = list.get(i);
-            NodeObject node = rec.getNode();
+            NodeObject node = list.get(i);
             ChildWrapper wrap = node.getParent();
             if (wrap instanceof ChildWrapperList)
             {

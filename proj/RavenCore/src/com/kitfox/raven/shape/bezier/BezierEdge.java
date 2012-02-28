@@ -23,6 +23,7 @@ import java.util.ArrayList;
  *
  * @author kitfox
  */
+@Deprecated
 public class BezierEdge extends BezierNetworkComponent
 {
     private final double flatnessSquared;

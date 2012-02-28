@@ -26,6 +26,7 @@ import java.util.ArrayList;
  * 
  * @author kitfox
  */
+@Deprecated
 public class BezierContourSet
 {
     ArrayList<BezierContour> contourList;

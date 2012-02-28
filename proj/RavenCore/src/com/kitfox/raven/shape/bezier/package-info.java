@@ -24,4 +24,5 @@
  * that it is possible to determine if two points share the same
  * coordinate by using == to compare their (x, y) values.
  */
+@Deprecated
 package com.kitfox.raven.shape.bezier;

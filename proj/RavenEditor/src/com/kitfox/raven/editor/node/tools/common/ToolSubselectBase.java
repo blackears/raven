@@ -70,7 +70,7 @@ abstract public class ToolSubselectBase extends ToolDisplay
             return;
         }
 
-        Selection<SelectionRecord> sel = provider.getSelection();
+        Selection<NodeObject> sel = provider.getSelection();
         listener = new SelectionWeakListener(this, sel);
         sel.addSelectionListener(listener);
     }
@@ -92,22 +92,22 @@ abstract public class ToolSubselectBase extends ToolDisplay
         }
 
 
-        Selection.Type selType = getSelectType(evt);
+        Selection.Operator selType = getSelectType(evt);
         
         BezierVertex pickVtx = null;
-        Selection<SelectionRecord> sel = provDoc.getSelection();
+        Selection<NodeObject> sel = provDoc.getSelection();
         for (int i = 0; i < sel.size(); ++i)
         {
-            SelectionRecord rec = sel.get(i);
+            NodeObject rec = sel.get(i);
             ServiceBezierNetwork provBez =
-                    rec.getNode().getNodeService(ServiceBezierNetwork.class, false);
+                    rec.getNodeService(ServiceBezierNetwork.class, false);
 
             if (provBez == null)
             {
                 continue;
             }
 
-            RavenNodeXformable nodeSpatial = (RavenNodeXformable)rec.getNode();
+            RavenNodeXformable nodeSpatial = (RavenNodeXformable)rec;
             AffineTransform l2d = nodeSpatial.getLocalToDeviceTransform((AffineTransform)null);
 
             BezierNetwork network = provBez.getBezierNetwork();
@@ -165,19 +165,18 @@ abstract public class ToolSubselectBase extends ToolDisplay
 
             if (pickObj != null)
             {
-                SelectionRecord newRec = new SelectionRecord(pickObj);
-                sel.select(selType, newRec);
+                sel.select(pickObj, selType);
                 fireToolDisplayChanged();
                 return;
             }
         }
 
         //We still hit nothing.  Clear subselections.
-        if (selType == Selection.Type.REPLACE)
+        if (selType == Selection.Operator.REPLACE)
         {
             for (int i = 0; i < sel.size(); ++i)
             {
-                SelectionRecord rec = sel.get(i);
+                NodeObject rec = sel.get(i);
                 sel.setSubselection(rec, BezierNetwork.Subselection.class, null);
             }
             fireToolDisplayChanged();
@@ -220,21 +219,21 @@ abstract public class ToolSubselectBase extends ToolDisplay
 
         if (isDraggingSelectionArea())
         {
-            Selection.Type selType = getSelectType(evt);
+            Selection.Operator selType = getSelectType(evt);
 
-            Selection<SelectionRecord> sel = provider.getSelection();
+            Selection<NodeObject> sel = provider.getSelection();
             for (int i = 0; i < sel.size(); ++i)
             {
-                SelectionRecord rec = sel.get(i);
+                NodeObject rec = sel.get(i);
                 ServiceBezierNetwork provBez =
-                        rec.getNode().getNodeService(ServiceBezierNetwork.class, false);
+                        rec.getNodeService(ServiceBezierNetwork.class, false);
 
                 if (provBez == null)
                 {
                     continue;
                 }
 
-                RavenNodeXformable nodeSpatial = (RavenNodeXformable)rec.getNode();
+                RavenNodeXformable nodeSpatial = (RavenNodeXformable)rec;
                 AffineTransform l2d = nodeSpatial.getLocalToDeviceTransform((AffineTransform)null);
 
                 BezierNetwork network = provBez.getBezierNetwork();

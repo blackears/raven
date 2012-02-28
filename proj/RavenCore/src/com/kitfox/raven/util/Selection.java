@@ -25,17 +25,20 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
+ * Maintains an ordered list of selected objects.  Also keeps track of
+ * a subselection for each selected object.
+ * 
+ * Subselection implemented as a hashmap that maps class objects to
+ * instances of that object.  
  *
  * @author kitfox
  */
 public class Selection<T>
 {
-    
     final ArrayList<T> selection = new ArrayList<T>();
     HashMap<T, Info> selectionMap = new HashMap<T, Info>();
     
     final HashSet<SelectionListener> selectionListeners = new HashSet<SelectionListener>();
-    
     
     public Selection()
     {
@@ -62,6 +65,9 @@ public class Selection<T>
         selectionListeners.remove(l);
     }
     
+    /**
+     * Removes all selected values.
+     */
     public void clear()
     {
         if (selection.isEmpty())
@@ -74,17 +80,35 @@ public class Selection<T>
         fireSelectionChanged();
     }
     
-    public boolean isSelected(T node)
+    /**
+     * Test if item is currently selected
+     * 
+     * @param item Member to test
+     * @return true if item is a member of this selection.
+     */
+    public boolean isSelected(T item)
     {
-        return selectionMap.containsKey(node);
+        return selectionMap.containsKey(item);
     }
     
+    /**
+     * Finds the first selected item.
+     * 
+     * @return First item in selection list.  null if selection is empty.
+     */
     public T getTopSelected()
     {
         if (selection.isEmpty()) return null;
         return selection.get(0);
     }
     
+    /**
+     * Finds the first selected item that matches class filter.
+     * 
+     * @param filter Only selected items that are assignable to this
+     * class are considered.
+     * @return First item that matches filter.  null if none.
+     */
     public <R extends T> R getTopSelected(Class<R> filter)
     {
         for (T node: selection)
@@ -107,6 +131,11 @@ public class Selection<T>
         return selection.get(index);
     }
     
+    /**
+     * Get a copy of selected items.
+     * 
+     * @return List of selected items.
+     */
     public ArrayList<T> getSelection()
     {
         ArrayList<T> list = new ArrayList<T>();
@@ -122,7 +151,15 @@ public class Selection<T>
         
         return retVec;
     }
-    
+
+    /**
+     * Get selected items that are assignable to the class filter.
+     * 
+     * @param filter Only items assignable to this filter are returned
+     * @param retVec Array that results will be added to.  If null, a new
+     * list will be created.
+     * @return List with filtered items.
+     */
     public <R extends T> List<R> getSelection(Class<R> filter, List<R> retVec)
     {
         if (retVec == null) retVec = new ArrayList<R>();
@@ -138,9 +175,16 @@ public class Selection<T>
         return retVec;
     }
     
-    public void select(Type type, T item)
+    /**
+     * Alter selection by combining it with passed item and selection
+     * operator.
+     * 
+     * @param op Operator to apply with item against selection
+     * @param item Item to modify selection with
+     */
+    public void select(T item, Operator op)
     {
-        switch (type)
+        switch (op)
         {
             case REPLACE:
             {
@@ -185,9 +229,16 @@ public class Selection<T>
         fireSelectionChanged();
     }
     
-    public void select(Type type, Collection<? extends T> items)
+    /**
+     * Alter selection by combining it with passed items and selection
+     * operator.
+     * 
+     * @param op Operator to apply with items against selection
+     * @param item Item to modify selection with
+     */
+    public void select(Collection<? extends T> items, Operator op)
     {
-        switch (type)
+        switch (op)
         {
             case REPLACE:
             {
@@ -247,8 +298,14 @@ public class Selection<T>
         fireSelectionChanged();
     }
     
-    
-    public static Selection.Type suggestSelectType(InputEvent evt)
+    /**
+     * Parse modifier keys used on an event to determine a standard
+     * selection operator to use.
+     * 
+     * @param evt Event to examine
+     * @return Standard operator for this pattern of modifier keys
+     */
+    public static Selection.Operator suggestSelectType(InputEvent evt)
     {
         int mod = evt.getModifiersEx();
         boolean shift = (mod & InputEvent.SHIFT_DOWN_MASK) == InputEvent.SHIFT_DOWN_MASK;
@@ -256,25 +313,47 @@ public class Selection<T>
         
         return suggestSelectType(shift, ctrl);
     }
-    
-    public static Selection.Type suggestSelectType(boolean shift, boolean ctrl)
+
+    /**
+     * Determine best operator for given modifier keys.
+     * 
+     * @param shift true if shift pressed
+     * @param ctrl true if ctrl pressed
+     * @return Standard operator for given pattern
+     */
+    public static Selection.Operator suggestSelectType(boolean shift, boolean ctrl)
     {
         if (shift)
         {
-            return ctrl ? Type.ADD : Type.INVERSE;
+            return ctrl ? Operator.ADD : Operator.INVERSE;
         }
         else
         {
-            return ctrl ? Type.SUB : Type.REPLACE;
+            return ctrl ? Operator.SUB : Operator.REPLACE;
         }
     }
 
+    /**
+     * Find the sub-selection of given class type for selected item.
+     * 
+     * @param item Selection item to get sub-selection for
+     * @param key Class of sub-selection item to retrieve
+     * @return Sub-selection item.  null if item is not member of 
+     * selection, or has no sub-selection for the given key.
+     */
     public <R> R getSubselection(T item, Class<R> key)
     {
         Info info = selectionMap.get(item);
         return (info == null) ? null : info.getSubselection(key);
     }
 
+    /**
+     * Sets a sub-selection item on a given item in our selection.
+     * 
+     * @param item Item to set sub-selection for
+     * @param key Class key that is used to index sub-selection
+     * @param subselection Instance of sub-selection
+     */
     public <R> void setSubselection(T item, Class<R> key, R subselection)
     {
         Info info = selectionMap.get(item);
@@ -307,6 +386,11 @@ public class Selection<T>
         }
     }
 
+    /**
+     * Replaces this selection with copy of passed selection.
+     * 
+     * @param selNew Selection to copy.
+     */
     public void set(Selection<T> selNew)
     {
         selection.clear();
@@ -357,5 +441,5 @@ public class Selection<T>
     }
 
     //------------------------------
-    public enum Type { REPLACE, INVERSE, ADD, SUB };
+    public enum Operator { REPLACE, INVERSE, ADD, SUB };
 }

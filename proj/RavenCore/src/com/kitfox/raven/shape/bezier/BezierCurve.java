@@ -26,6 +26,7 @@ import java.util.ArrayList;
  *
  * @author kitfox
  */
+@Deprecated
 abstract public class BezierCurve
 {
     FlatSegment flatSegments;

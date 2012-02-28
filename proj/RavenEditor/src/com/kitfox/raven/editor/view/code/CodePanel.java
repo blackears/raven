@@ -108,7 +108,7 @@ public class CodePanel extends javax.swing.JPanel
             return;
         }
         NodeDocument root = doc.getCurDocument();
-        Selection<SelectionRecord> sel = root.getSelection();
+        Selection<NodeObject> sel = root.getSelection();
         listenerSelection = new SelectionWeakListener(this, sel);
         sel.addSelectionListener(listenerSelection);
 
@@ -129,9 +129,9 @@ public class CodePanel extends javax.swing.JPanel
             return;
         }
         NodeDocument root = doc.getCurDocument();
-        Selection<SelectionRecord> sel = root.getSelection();
+        Selection<NodeObject> sel = root.getSelection();
 
-        SelectionRecord top = sel.getTopSelected();
+        NodeObject top = sel.getTopSelected();
         if (top == null)
         {
             updating = true;
@@ -142,12 +142,11 @@ public class CodePanel extends javax.swing.JPanel
             return;
         }
 
-        NodeObject node = top.getNode();
-        label_object.setText(node.getName());
+        label_object.setText(top.getName());
 
         updating = true;
         combo_event.removeAllItems();
-        ArrayList<EventWrapper> wrappers = node.getEventWrappers();
+        ArrayList<EventWrapper> wrappers = top.getEventWrappers();
         for (EventWrapper wrapper: wrappers)
         {
             combo_event.addItem(wrapper);

@@ -25,6 +25,7 @@ import java.util.Comparator;
  *
  * @author kitfox
  */
+@Deprecated
 public class BezierVertex extends BezierNetworkComponent
 {
     protected BezierPoint point;

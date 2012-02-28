@@ -36,11 +36,20 @@ public interface ServiceDocument extends ToolService
 {
     public NodeDocument getDocument();
 
+    /**
+     * Pick objects in selection region.
+     * 
+     * @param rectangle Selection window defined in device window space
+     * @param worldToPick Transform from device space to world space
+     * @param intersection Type of intersection for determining hits
+     * @return Best object that fits pick.  Implementing class is
+     * free to decide what 'best' means.
+     */
     public NodeObject pickObject(CyRectangle2d rectangle, CyMatrix4d worldToPick, Intersection intersection);
 
     public void pickObjects(CyRectangle2d rectangle, CyMatrix4d worldToPick, Intersection intersection, ArrayList<NodeObject> pickList);
 
-    public Selection<SelectionRecord> getSelection();
+    public Selection<NodeObject> getSelection();
 
     public Snapping getSnapping();
     

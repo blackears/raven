@@ -25,6 +25,7 @@ import java.util.ArrayList;
  *
  * @author kitfox
  */
+@Deprecated
 public class BezierContour
 {
     ArrayList<BezierEdgeAttach> edges;

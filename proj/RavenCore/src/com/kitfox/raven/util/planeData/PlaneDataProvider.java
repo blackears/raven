@@ -23,6 +23,7 @@ import com.kitfox.cache.CacheElement;
  *
  * @author kitfox
  */
+@Deprecated
 abstract public class PlaneDataProvider<T>
 {
     Class<T> dataType;

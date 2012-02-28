@@ -23,6 +23,7 @@ import static com.kitfox.raven.shape.bezier.BezierMath.*;
  *
  * @author kitfox
  */
+@Deprecated
 public class BezierCurveQuadratic extends BezierCurve
 {
     int a0x;

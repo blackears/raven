@@ -59,7 +59,7 @@ abstract public class ToolSelectBase extends ToolDisplay
             return;
         }
 
-        Selection<SelectionRecord> sel = provider.getSelection();
+        Selection<NodeObject> sel = provider.getSelection();
         listener = new SelectionWeakListener(this, sel);
         sel.addSelectionListener(listener);
     }
@@ -80,16 +80,16 @@ abstract public class ToolSelectBase extends ToolDisplay
         }
         CyMatrix4d w2d = provCam.getWorldToDeviceTransform((CyMatrix4d)null);
 
-        Selection.Type selType = getSelectType(evt);
+        Selection.Operator selType = getSelectType(evt);
         NodeObject pickObj = provider.pickObject(
                 new CyRectangle2d(evt.getX(), evt.getY(), 1, 1),
                 w2d, Intersection.INTERSECTS);
 
-        Selection<SelectionRecord> sel = provider.getSelection();
+        Selection<NodeObject> sel = provider.getSelection();
 
         if (pickObj == null)
         {
-            if (selType == Selection.Type.REPLACE)
+            if (selType == Selection.Operator.REPLACE)
             {
                 sel.clear();
             }
@@ -97,8 +97,7 @@ abstract public class ToolSelectBase extends ToolDisplay
             return;
         }
 
-        SelectionRecord rec = new SelectionRecord(pickObj);
-        sel.select(selType, rec);
+        sel.select(pickObj, selType);
     }
 
 
@@ -150,14 +149,14 @@ abstract public class ToolSelectBase extends ToolDisplay
                     new CyRectangle2d(rect.x, rect.y, rect.width, rect.height),
                     w2d, Intersection.CONTAINS, selList);
 
-            ArrayList<SelectionRecord> pickList = new ArrayList<SelectionRecord>(selList.size());
-            for (NodeObject node: selList)
-            {
-                pickList.add(new SelectionRecord(node));
-            }
+//            ArrayList<NodeObject> pickList = new ArrayList<NodeObject>(selList.size());
+//            for (NodeObject node: selList)
+//            {
+//                pickList.add(node);
+//            }
 
-            Selection<SelectionRecord> sel = provider.getSelection();
-            sel.select(getSelectType(evt), pickList);
+            Selection<NodeObject> sel = provider.getSelection();
+            sel.select(selList, getSelectType(evt));
         }
 
         startEvt = endEvt = null;

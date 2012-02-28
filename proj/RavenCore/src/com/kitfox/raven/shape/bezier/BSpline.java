@@ -26,6 +26,7 @@ package com.kitfox.raven.shape.bezier;
  *
  * @author kitfox
  */
+@Deprecated
 public class BSpline
 {
     private double[] knots;

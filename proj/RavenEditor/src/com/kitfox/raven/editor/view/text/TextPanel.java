@@ -29,7 +29,6 @@ import com.kitfox.raven.editor.RavenDocumentWeakListener;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.RavenEditorListener;
 import com.kitfox.raven.editor.RavenEditorWeakListener;
-import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
 import com.kitfox.raven.editor.node.tools.common.ServiceText;
 import com.kitfox.raven.util.Selection;
 import com.kitfox.raven.util.SelectionEvent;
@@ -38,6 +37,7 @@ import com.kitfox.raven.util.SelectionSubEvent;
 import com.kitfox.raven.util.SelectionWeakListener;
 import com.kitfox.raven.util.text.TextPropertiesPanel;
 import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.SelectionRecord;
 import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
@@ -113,7 +113,7 @@ public class TextPanel extends javax.swing.JPanel
         }
 
         NodeDocument root = doc.getCurDocument();
-        Selection<SelectionRecord> sel = root.getSelection();
+        Selection<NodeObject> sel = root.getSelection();
         selListener = new SelectionWeakListener(this, sel);
         sel.addSelectionListener(selListener);
 
@@ -138,12 +138,12 @@ public class TextPanel extends javax.swing.JPanel
         }
 
         NodeDocument root = doc.getCurDocument();
-        Selection<SelectionRecord> sel = root.getSelection();
+        Selection<NodeObject> sel = root.getSelection();
 
         textRecords.clear();
-        for (SelectionRecord rec: sel.getSelection())
+        for (NodeObject node: sel.getSelection())
         {
-            ServiceText text = rec.getNode().getNodeService(ServiceText.class, false);
+            ServiceText text = node.getNodeService(ServiceText.class, false);
             if (text != null)
             {
                 textRecords.add(text);

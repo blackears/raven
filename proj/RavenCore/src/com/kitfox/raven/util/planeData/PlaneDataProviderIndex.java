@@ -24,6 +24,7 @@ import java.util.ServiceLoader;
  *
  * @author kitfox
  */
+@Deprecated
 public final class PlaneDataProviderIndex
 {
     private ArrayList<PlaneDataProvider> providerList = new ArrayList<PlaneDataProvider>();

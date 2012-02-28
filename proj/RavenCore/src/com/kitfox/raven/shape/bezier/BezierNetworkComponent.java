@@ -25,6 +25,7 @@ import java.util.HashMap;
  *
  * @author kitfox
  */
+@Deprecated
 abstract public class BezierNetworkComponent
 {
     private HashMap<Class<? extends PlaneDataProvider>, Object> data =

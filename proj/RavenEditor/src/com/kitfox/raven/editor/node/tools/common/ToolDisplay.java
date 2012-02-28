@@ -306,10 +306,9 @@ abstract public class ToolDisplay extends ToolDraggable
         }
 
         CyRectangle2d bounds = null;
-        Selection<SelectionRecord> sel = provider.getSelection();
-        for (SelectionRecord rec: sel.getSelection())
+        Selection<NodeObject> sel = provider.getSelection();
+        for (NodeObject obj: sel.getSelection())
         {
-            NodeObject obj = rec.getNode();
             if (obj instanceof RavenNodeXformable)
             {
                 RavenNodeXformable node = (RavenNodeXformable)obj;

@@ -107,7 +107,7 @@ public class TrackCurveComponentKey extends TrackCurveComponent
             return knotOut;
         }
 
-        public Subselect selectKnotIn(Selection.Type type)
+        public Subselect selectKnotIn(Selection.Operator type)
         {
             switch (type)
             {
@@ -123,7 +123,7 @@ public class TrackCurveComponentKey extends TrackCurveComponent
             }
         }
 
-        public Subselect selectKnotOut(Selection.Type type)
+        public Subselect selectKnotOut(Selection.Operator type)
         {
             switch (type)
             {
