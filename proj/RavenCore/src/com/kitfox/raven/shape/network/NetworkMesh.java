@@ -21,6 +21,7 @@ import com.kitfox.cache.CacheList;
 import com.kitfox.cache.CacheMap;
 import com.kitfox.cache.parser.CacheParser;
 import com.kitfox.cache.parser.ParseException;
+import com.kitfox.coyote.shape.CyRectangle2i;
 import com.kitfox.coyote.shape.bezier.BezierCubic2i;
 import com.kitfox.coyote.shape.bezier.mesh.BezierMesh2i;
 import com.kitfox.coyote.shape.bezier.mesh.BezierMeshEdge2i;
@@ -110,6 +111,28 @@ public class NetworkMesh extends BezierMesh2i<NetworkDataVertex, NetworkDataEdge
     public String toString()
     {
         return toCache().toString();
+    }
+
+    public CyRectangle2i getBounds()
+    {
+        CyRectangle2i bounds = null;
+        
+        for (BezierMeshVertex2i vert: getVertices())
+        {
+            for (int i = 0; i < vert.getNumEdges(); ++i)
+            {
+                BezierMeshEdge2i e = vert.getEdge(i);
+                
+                if (bounds == null)
+                {
+                    bounds = new CyRectangle2i(e.getMinX(), e.getMinY());
+                }
+                bounds.union(e.getMinX(), e.getMinY());
+                bounds.union(e.getMaxX(), e.getMaxY());                
+            }
+        }
+        
+        return bounds;
     }
 
 
@@ -327,7 +350,7 @@ public class NetworkMesh extends BezierMesh2i<NetworkDataVertex, NetworkDataEdge
                 Integer keyIdx = getDataKeyIdx(key);
 
                 NetworkDataType type = 
-                        NetworkDataTypeIndex.inst().getByData(key);
+                        NetworkDataTypeIndex.inst().getServiceByClass(key);
                 Object value = dataMap.get(key);
                 String valText = type.asText(value);
                 Integer valIdx = getDataValueIdx(valText);
@@ -344,12 +367,15 @@ public class NetworkMesh extends BezierMesh2i<NetworkDataVertex, NetworkDataEdge
             CacheMap map = new CacheMap(CACHE_NAME);
 
             //Build coord list
+            for (BezierMeshVertex2i v: getVertices())
+            {
+                appendCoord(v.getCoord(), pointMap, pointIdx);
+            }
+            
             for (BezierMeshEdge2i e: getEdges())
             {
-                appendCoord(e.getStart().getCoord(), pointMap, pointIdx);
                 appendCoord(e.getK0(), pointMap, pointIdx);
                 appendCoord(e.getK1(), pointMap, pointIdx);
-                appendCoord(e.getEnd().getCoord(), pointMap, pointIdx);
             }
 
             //Store coord list
@@ -373,8 +399,9 @@ public class NetworkMesh extends BezierMesh2i<NetworkDataVertex, NetworkDataEdge
                     NetworkDataVertex data = (NetworkDataVertex)v.getData();
 
                     CacheList tuple = new CacheList();
+                    list.add(tuple);
+                    
                     tuple.add(pointMap.get(v.getCoord()));
-
                     tuple.add(buildData(data.dataMap));
                 }
             }
@@ -386,6 +413,8 @@ public class NetworkMesh extends BezierMesh2i<NetworkDataVertex, NetworkDataEdge
                 for (BezierMeshEdge2i e: getEdges())
                 {
                     CacheList tuple = new CacheList();
+                    list.add(tuple);
+                    
                     tuple.add(new CacheIdentifier(getSmoothCode(e.getSmooth0())));
                     tuple.add(new CacheIdentifier(getSmoothCode(e.getSmooth1())));
                     tuple.add(pointMap.get(e.getStart().getCoord()));

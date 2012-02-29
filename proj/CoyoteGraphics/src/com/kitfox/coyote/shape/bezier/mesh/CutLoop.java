@@ -19,19 +19,23 @@ package com.kitfox.coyote.shape.bezier.mesh;
 import com.kitfox.coyote.math.Math2DUtil;
 import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
 /**
- *
+ * A closed shape extracted from a BezierMesh2i.  Each loop is a 
+ * non-self intersecting polygon that represents an edge-bounded
+ * region of the mesh.
+ * 
  * @author kitfox
  */
 public class CutLoop implements Comparable<CutLoop>
 {
     ArrayList<CutSegHalf> segList;
     final int minX, maxX, minY, maxY;
-    int area2;
+    private long area2;
 
-    ArrayList<CutLoop> children = new ArrayList<CutLoop>();
+//    ArrayList<CutLoop> children = new ArrayList<CutLoop>();
 
     public CutLoop(ArrayList<CutSegHalf> segList)
     {
@@ -41,7 +45,7 @@ public class CutLoop implements Comparable<CutLoop>
 
         Coord c0 = initSeg.c0;
         //Sum of area.  Will be twice actual area.
-        int cArea2 = 0;
+        long cArea2 = 0;
         int cMinX, cMaxX, cMinY, cMaxY;
         cMinX = cMaxX = c0.x;
         cMinY = cMaxY = c0.y;
@@ -71,15 +75,15 @@ public class CutLoop implements Comparable<CutLoop>
         this.maxY = cMaxY;
     }
 
-    public int getNumChildren()
-    {
-        return children.size();
-    }
-    
-    public CutLoop getChild(int index)
-    {
-        return children.get(index);
-    }
+//    public int getNumChildren()
+//    {
+//        return children.size();
+//    }
+//    
+//    public CutLoop getChild(int index)
+//    {
+//        return children.get(index);
+//    }
     
     public boolean isCcw()
     {
@@ -132,15 +136,15 @@ public class CutLoop implements Comparable<CutLoop>
     {
         //Move smaller shapes to right.
         //If same size, move CCW to right
-        int absArea0 = Math.abs(area2);
-        int absArea1 = Math.abs(oth.area2);
+        long absArea0 = Math.abs(area2);
+        long absArea1 = Math.abs(oth.area2);
 
         if (absArea0 == absArea1)
         {
             return isCcw() ? 1 : -1;
         }
 
-        return absArea1 - absArea0;
+        return Long.compare(absArea0, absArea1);
     }
 
     public boolean boundingBoxContains(CutLoop subLoop)
@@ -164,6 +168,13 @@ public class CutLoop implements Comparable<CutLoop>
         return false;
     }
     
+    public CyPath2d createPath()
+    {
+        CyPath2d path = new CyPath2d();
+        appendPath(path);
+        return path;
+    }
+    
     public void appendPath(CyPath2d path)
     {
         for (int i = 0; i < segList.size(); ++i)
@@ -179,41 +190,101 @@ public class CutLoop implements Comparable<CutLoop>
         path.close();
     }
 
+//    /**
+//     * If this loop represents the contour of a face (and not a hole),
+//     * creates the equivalent CyPath2d.  Includes any holes.  
+//     * Will also recursively 
+//     * look for faces contained within the holes.
+//     * 
+//     * This method is meant to be called on a CutLoop that defines a face,
+//     * and not those that are perimeters of holes.
+//     * 
+//     * @param faces 
+//     */
+//    public void visitFaces(PathVisitor faces)
+//    {
+//        CyPath2d path = new CyPath2d();
+//
+//        //Create outer loop
+//        appendPath(path);
+//        
+//        //Add holes
+//        for (int i = 0; i < children.size(); ++i)
+//        {
+//            CutLoop child = children.get(i);
+//            child.appendPath(path);
+//            
+//            //Build faces which are contained within the holes
+//            for (CutLoop subChild: child.children)
+//            {
+//                subChild.visitFaces(faces);
+//            }
+//        }
+//        
+//        faces.emitFace(this, path);
+//    }
+    
     /**
-     * If this loop represents the contour of a face (and not a hole),
-     * creates the equivalent CyPath2d.  Includes any holes.  
-     * Will also recursively 
-     * look for faces contained within the holes.
      * 
-     * @param faces 
+     * @return List of segments for this loop
      */
-    public void buildFaces(PathVisitor faces)
+    public ArrayList<CutSegHalf> getSegs()
     {
-        CyPath2d path = new CyPath2d();
-
-        //Create outer loop
-        appendPath(path);
-        
-        //Add holes
-        for (int i = 0; i < children.size(); ++i)
-        {
-            CutLoop child = children.get(i);
-            child.appendPath(path);
-            
-            //Build faces which are contained within the holes
-            for (CutLoop subChild: child.children)
-            {
-                subChild.buildFaces(faces);
-            }
-        }
-        
-        faces.emitFace(this, path);
+        return new ArrayList<CutSegHalf>(segList);
     }
     
+//    /**
+//     * 
+//     * @return List of segments for this loop, plus segments for 
+//     * perimeter of any holes
+//     */
+//    public ArrayList<CutSegHalf> getSegsInterior()
+//    {
+//        ArrayList<CutSegHalf> list = new ArrayList<CutSegHalf>(segList);
+//        for (CutLoop child: children)
+//        {
+//            list.addAll(child.segList);
+//        }
+//        return list;
+//    }
+
+    public void dump(PrintStream ps)
+    {
+        ps.println("CutLoop area: " + area2);
+        for (CutSegHalf half: segList)
+        {
+            ps.println(half.toString());
+        }
+    }
+    
+//    public void dump(PrintStream ps, String indent)
+//    {
+//        for (CutSegHalf half: segList)
+//        {
+//            ps.println(indent + half.toString());
+//        }
+//        
+////        for (CutLoop child: children)
+////        {
+////            ps.println(indent + "{");
+////            child.dump(ps, indent + "  ");
+////            ps.println(indent + "}");
+////        }
+//    }
+            
     //-------------------------------
     
-    public interface PathVisitor
+//    public interface PathVisitor
+//    {
+//        public void emitFace(CutLoop parent, CyPath2d path);
+//    }
+
+    /**
+     * @return the area2
+     */
+    public long getArea2()
     {
-        public void emitFace(CutLoop parent, CyPath2d path);
+        return area2;
     }
+
 }

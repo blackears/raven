@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
  *
  * @author kitfox
  */
+@Deprecated
 public class MeshCurves
 {
     private final MeshSegment[] curves;

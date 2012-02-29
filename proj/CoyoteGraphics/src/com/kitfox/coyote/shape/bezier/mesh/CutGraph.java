@@ -18,8 +18,6 @@ package com.kitfox.coyote.shape.bezier.mesh;
 
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -33,13 +31,117 @@ public class CutGraph<EdgeData>
 
     private CutGraph(ArrayList<CutSegment> segs)
     {
-        initGraph(segs);
+        connectGraph(segs);
+        insertSegments(segs);
     }
     
-    public static CutLoop createFaces(ArrayList<CutSegment> segsToInsert)
+    /**
+     * Builds faces from the passed in list of segments.  
+     * 
+     * A list will be returned with loops indicating each face.  
+     * All faces except one will be non-self intersecting, 
+     * have CCW winding and a positive area.  The other will be
+     * CW and have negative area - this loop is the bounding perimeter
+     * of the graph and is the union of all the other faces.
+     * 
+     * @param segsToInsert
+     * @return 
+     */
+    public static ArrayList<CutLoop> createFaces(ArrayList<CutSegment> segsToInsert)
     {
         CutGraph graph = new CutGraph(segsToInsert);
         return graph.buildFaces();
+    }
+
+    /**
+     * Connect any disjoint groups of segments
+     * 
+     * @param segs 
+     */
+    private void connectGraph(ArrayList<CutSegment> segs)
+    {
+        HashMap<Coord, CutSegGroup> segMap = new HashMap<Coord, CutSegGroup>();
+        ArrayList<CutSegGroup> groups = new ArrayList<CutSegGroup>(segMap.values());
+        for (CutSegment seg: segs)
+        {
+            CutSegGroup g0 = segMap.get(seg.c0);
+            CutSegGroup g1 = segMap.get(seg.c1);
+            
+            if (g0 == null && g1 == null)
+            {
+                g0 = new CutSegGroup();
+                groups.add(g0);
+                g0.addSeg(seg);
+                segMap.put(seg.c0, g0);
+                segMap.put(seg.c1, g0);
+            }
+            else if (g1 == null)
+            {
+                segMap.put(seg.c1, g0);
+                g0.addSeg(seg);
+            }
+            else if (g0 == null)
+            {
+                segMap.put(seg.c0, g1);
+                g1.addSeg(seg);
+            }
+            else if (g0 == g1)
+            {
+                g0.addSeg(seg);
+            }
+            else
+            {
+                //Connect groups by merging g1 into g0
+                g0.addAll(g1);
+                groups.remove(g1);
+                for (Coord c: g1.coords)
+                {
+                    segMap.put(c, g0);
+                }
+            }
+        }
+        
+        //While there are disjoint groups, connect them by inserting
+        // segments with no data
+        NEXT_GROUP:
+        while (groups.size() > 1)
+        {
+            CutSegGroup g1 = groups.remove(groups.size() - 1);
+            
+            for (int i = 0; i < groups.size(); ++i)
+            {
+                CutSegGroup g0 = groups.get(i);
+                
+                for (Coord c1: g1.coords)
+                {
+                    for (Coord c0: g0.coords)
+                    {
+                        CutSegment sc = new CutSegment(0, 1, c1, c0, null);
+                        if (!isCollision(segs, sc))
+                        {
+                            g0.addAll(g1);
+                            g0.addSeg(sc);
+                            segs.add(sc);
+                            continue NEXT_GROUP;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean isCollision(ArrayList<CutSegment> segs, CutSegment s0)
+    {
+        for (int j = 0; j < segs.size(); ++j)
+        {
+            CutSegment s1 = segs.get(j);
+
+            if (s0.collidesWith(s1))
+            {
+                return true;
+            }
+        }
+        return false;
     }
     
     private CutVertex getOrCreateVertex(Coord c)
@@ -77,7 +179,7 @@ public class CutGraph<EdgeData>
         return segList;
     }
     
-    private void initGraph(ArrayList<CutSegment> segs)
+    private void insertSegments(ArrayList<CutSegment> segs)
     {
         //Remove any segments that match or overlap at non-vertices
         for (int i = 0; i < segs.size(); ++i)
@@ -96,7 +198,7 @@ public class CutGraph<EdgeData>
             }
         }
         
-        //Load graph
+        //Insert segs into graph
         for (int i = 0; i < segs.size(); ++i)
         {
             CutSegment s0 = segs.get(i);
@@ -144,8 +246,10 @@ public class CutGraph<EdgeData>
             
             for (CutSegment s: v0.segOut)
             {
-                CutSegHalf h0 = new CutSegHalf(s.t0, s.t1, s.c0, s.c1, s.data);
-                CutSegHalf h1 = new CutSegHalf(s.t1, s.t0, s.c1, s.c0, s.data);
+                CutSegHalf h0 = 
+                        new CutSegHalf(s.t0, s.t1, s.c0, s.c1, s.data, false);
+                CutSegHalf h1 = 
+                        new CutSegHalf(s.t1, s.t0, s.c1, s.c0, s.data, true);
                 h0.setPeer(h1);
                 h1.setPeer(h0);
 
@@ -167,119 +271,152 @@ public class CutGraph<EdgeData>
         }
     }
 
-    public CutLoop buildFaces()
+    public ArrayList<CutLoop> buildFaces()
     {
-        ArrayList<CutSegHalf> segList = getSegmentsRadial();
-        if (segList.isEmpty())
-        {
-            return null;
-        }
+        ArrayList<CutLoop> faces = new ArrayList<CutLoop>();
         
-        //Build loops
-        ArrayList<CutLoop> loopList = new ArrayList<CutLoop>();
+        ArrayList<CutSegHalf> segList = getSegmentsRadial();
+        
         while (!segList.isEmpty())
         {
-            loopList.add(extractLoop(segList));
-        }
-        
-        //Sort loops by size.  Since loops do not cross, parent loops 
-        // will always have greater area than child loops
-        Collections.sort(loopList);
-        
-        //Nest loops
-        for (int i = loopList.size() - 1; i >= 1; --i)
-        {
-            CutLoop subLoop = loopList.get(i);
+            ArrayList<CutSegHalf> edges = new ArrayList<CutSegHalf>();
             
-            for (int j = i - 1; j >= 0; --j)
-            {
-                CutLoop parentLoop = loopList.get(j);
-                if (contains(parentLoop, subLoop))
-                {
-                    parentLoop.children.add(subLoop);
-                    break;
-                }
-            }
-        }
-        
-        return loopList.get(0);
-    }
-
-    private boolean contains(CutLoop parLoop, CutLoop subLoop)
-    {
-        if (parLoop.isCcw() == subLoop.isCcw())
-        {
-            //Exterior CW loops should encompass interior CCW loops
-            //Hence two loops with the same winding cannot have a
-            // parent/child relationship
-            return false;
-        }
-
-        if (!parLoop.boundingBoxContains(subLoop))
-        {
-            //Optimization
-            return false;
-        }
-        
-        for (CutSegHalf seg: subLoop.segList)
-        {
-            Coord c = seg.c0;
-            if (!parLoop.containsVertex(c))
-            {
-                //Since point is not common to both loops, can be used
-                // for inside/outside test
-                return parLoop.contains(c.x, c.y);
-            }
-        }
-
-        //All verts of subloop are also verts of parent loop.
-        // Since loops cannot overlap, must be contained in loop.
-        return true;        
-    }
-
-    private CutLoop extractLoop(ArrayList<CutSegHalf> segList)
-    {
-        CutSegHalf initSeg = segList.get(0);
-        
-        ArrayList<CutSegHalf> loop = new ArrayList<CutSegHalf>();
-        
-        CutSegHalf curSeg = initSeg;
-        do
-        {
-            loop.add(curSeg);
+            CutSegHalf firstSeg = segList.remove(0);
+            edges.add(firstSeg);
             
-            CutVertex v = vertMap.get(curSeg.c1);
-            curSeg = v.nextSegCW(curSeg.getPeer());
-        } 
-        while (curSeg != initSeg);
+            for (CutSegHalf half = nextSeg(firstSeg);
+                    half != firstSeg;
+                    half = nextSeg(half))
+            {
+                edges.add(half);
+                segList.remove(half);
+            }
+            
+            faces.add(new CutLoop(edges));
+        }
         
-        segList.removeAll(loop);
-        return new CutLoop(loop);
+        return faces;
     }
     
-    private Coord getMinCoord(CutSegment seg)
+    private CutSegHalf nextSeg(CutSegHalf s0)
     {
-        return seg.c0.compareTo(seg.c1) < 0 ? seg.c0 : seg.c1;
+        CutVertex v = vertMap.get(s0.c1);
+        return v.nextSegCW(s0.getPeer());
     }
-
-    private Coord getMaxCoord(CutSegment seg)
-    {
-        return seg.c0.compareTo(seg.c1) < 0 ? seg.c1 : seg.c0;
-    }
+    
+//    public CutLoop buildFaces()
+//    {
+//        ArrayList<CutSegHalf> segList = getSegmentsRadial();
+//        if (segList.isEmpty())
+//        {
+//            return null;
+//        }
+//        
+//        //Build loops
+//        ArrayList<CutLoop> loopList = new ArrayList<CutLoop>();
+//        while (!segList.isEmpty())
+//        {
+//            loopList.add(extractLoop(segList));
+//        }
+//        
+//        //Sort loops by size.  Since loops do not cross, parent loops 
+//        // will always have greater area than child loops
+//        Collections.sort(loopList);
+//        
+//        //Nest loops
+//        for (int i = loopList.size() - 1; i >= 1; --i)
+//        {
+//            CutLoop subLoop = loopList.get(i);
+//            
+//            for (int j = i - 1; j >= 0; --j)
+//            {
+//                CutLoop parentLoop = loopList.get(j);
+//                if (contains(parentLoop, subLoop))
+//                {
+//                    parentLoop.children.add(subLoop);
+//                    break;
+//                }
+//            }
+//        }
+//        
+//        return loopList.get(0);
+//    }
+//
+//    private boolean contains(CutLoop parLoop, CutLoop subLoop)
+//    {
+//        if (parLoop.isCcw() == subLoop.isCcw())
+//        {
+//            //Exterior CW loops should encompass interior CCW loops
+//            //Hence two loops with the same winding cannot have a
+//            // parent/child relationship
+//            return false;
+//        }
+//
+//        if (!parLoop.boundingBoxContains(subLoop))
+//        {
+//            //Optimization
+//            return false;
+//        }
+//        
+//        for (CutSegHalf seg: subLoop.segList)
+//        {
+//            Coord c = seg.c0;
+//            if (!parLoop.containsVertex(c))
+//            {
+//                //Since point is not common to both loops, can be used
+//                // for inside/outside test
+//                return parLoop.contains(c.x, c.y);
+//            }
+//        }
+//
+//        //All verts of subloop are also verts of parent loop.
+//        // Since loops cannot overlap, must be contained in loop.
+//        return true;        
+//    }
+//
+//    private CutLoop extractLoop(ArrayList<CutSegHalf> segList)
+//    {
+//        CutSegHalf initSeg = segList.get(0);
+//        
+//        ArrayList<CutSegHalf> loop = new ArrayList<CutSegHalf>();
+//        
+//        CutSegHalf curSeg = initSeg;
+//        do
+//        {
+//            loop.add(curSeg);
+//            
+//            CutVertex v = vertMap.get(curSeg.c1);
+//            curSeg = v.nextSegCW(curSeg.getPeer());
+//        } 
+//        while (curSeg != initSeg);
+//        
+//        segList.removeAll(loop);
+//        return new CutLoop(loop);
+//    }
+//    
+//    private Coord getMinCoord(CutSegment seg)
+//    {
+//        return seg.c0.compareTo(seg.c1) < 0 ? seg.c0 : seg.c1;
+//    }
+//
+//    private Coord getMaxCoord(CutSegment seg)
+//    {
+//        return seg.c0.compareTo(seg.c1) < 0 ? seg.c1 : seg.c0;
+//    }
         
     
     //-------------------------------
-    class SortSegs implements Comparator<CutSegment>
-    {
-        @Override
-        public int compare(CutSegment o1, CutSegment o2)
-        {
-            int comp = getMinCoord(o1).compareTo(getMinCoord(o2));
-            if (comp != 0)
-            {
-                return comp;
-            }
-            return getMaxCoord(o1).compareTo(getMaxCoord(o2));
-        }
-    }
+//    class SortSegs implements Comparator<CutSegment>
+//    {
+//        @Override
+//        public int compare(CutSegment o1, CutSegment o2)
+//        {
+//            int comp = getMinCoord(o1).compareTo(getMinCoord(o2));
+//            if (comp != 0)
+//            {
+//                return comp;
+//            }
+//            return getMaxCoord(o1).compareTo(getMaxCoord(o2));
+//        }
+//    }
 }

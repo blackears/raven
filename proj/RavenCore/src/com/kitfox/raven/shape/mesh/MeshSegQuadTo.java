@@ -22,6 +22,7 @@ import com.kitfox.rabbit.util.NumberText;
  *
  * @author kitfox
  */
+@Deprecated
 public class MeshSegQuadTo extends MeshSegment
 {
     private final int kx0;

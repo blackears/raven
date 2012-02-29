@@ -2039,6 +2039,12 @@ public class CyMatrix4d
         return q;
     }
 
+    public static CyMatrix4d createComponents(CyRectangle2i box)
+    {
+        return createComponents(box.getX(), box.getY(),
+                box.getWidth(), box.getHeight(), 0, 90);
+    }
+
     public static CyMatrix4d createComponents(CyRectangle2d box)
     {
         return createComponents(box.getX(), box.getY(),

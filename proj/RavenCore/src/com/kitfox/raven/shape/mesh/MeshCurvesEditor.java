@@ -29,6 +29,7 @@ import java.awt.Rectangle;
  *
  * @author kitfox
  */
+@Deprecated
 public class MeshCurvesEditor extends PropertyWrapperEditor<MeshCurves>
 {
     public MeshCurvesEditor(PropertyWrapper wrapper)

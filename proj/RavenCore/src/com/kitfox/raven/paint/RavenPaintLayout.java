@@ -23,6 +23,7 @@ import com.kitfox.cache.parser.ParseException;
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.shape.CyRectangle2d;
+import com.kitfox.coyote.shape.CyRectangle2i;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,6 +50,11 @@ public class RavenPaintLayout
     }
 
     public RavenPaintLayout(CyRectangle2d box)
+    {
+        this(CyMatrix4d.createComponents(box));
+    }
+
+    public RavenPaintLayout(CyRectangle2i box)
     {
         this(CyMatrix4d.createComponents(box));
     }

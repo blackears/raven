@@ -22,6 +22,7 @@ import java.awt.geom.Path2D;
  *
  * @author kitfox
  */
+@Deprecated
 abstract public class PathSeg
 {
     abstract public void append(Path2D path);

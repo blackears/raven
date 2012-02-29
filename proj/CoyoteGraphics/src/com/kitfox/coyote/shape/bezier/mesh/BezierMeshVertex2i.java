@@ -16,7 +16,6 @@
 
 package com.kitfox.coyote.shape.bezier.mesh;
 
-import com.kitfox.coyote.shape.bezier.mesh.BezierVertexSmooth;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import java.util.ArrayList;
 
@@ -85,6 +84,22 @@ public class BezierMeshVertex2i<VertexData>
     {
         return index < edgesIn.size() ? edgesIn.get(index)
                 : edgesOut.get(index - edgesIn.size());
+    }
+
+    /**
+     * @return the edgesIn
+     */
+    public ArrayList<BezierMeshEdge2i> getEdgesIn()
+    {
+        return new ArrayList<BezierMeshEdge2i>(edgesIn);
+    }
+
+    /**
+     * @return the edgesOut
+     */
+    public ArrayList<BezierMeshEdge2i> getEdgesOut()
+    {
+        return new ArrayList<BezierMeshEdge2i>(edgesOut);
     }
 
 }

@@ -177,6 +177,10 @@ public class PathLines extends PathConsumer
             return true;
         }
 
+        if (verts.isEmpty())
+        {
+            return false;
+        }
         CyVector2d v = verts.get(0);
         return rect.contains(v.x, v.y) || contains(rect.getX(), rect.getY());
     }

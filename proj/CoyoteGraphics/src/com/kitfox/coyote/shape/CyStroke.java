@@ -278,4 +278,20 @@ public class CyStroke
         hash = 53 * hash + (int) (Double.doubleToLongBits(this.dashOffset) ^ (Double.doubleToLongBits(this.dashOffset) >>> 32));
         return hash;
     }
+
+    public CyStroke scale(double scalar)
+    {
+        double[] newDash = null;
+        if (dash != null)
+        {
+            newDash = new double[dash.length];
+            for (int i = 0; i < dash.length; ++i)
+            {
+                newDash[i] = dash[i] * scalar;
+            }
+        }
+        return new CyStroke(width * scalar, 
+                cap, join, 
+                miterLimit * scalar, newDash, dashOffset * scalar);
+    }
 }

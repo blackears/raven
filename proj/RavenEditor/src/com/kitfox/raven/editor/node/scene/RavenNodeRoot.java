@@ -488,6 +488,21 @@ public class RavenNodeRoot extends NodeDocument
         return graphDisplay.getValue();
     }
 
+    public RavenPaint getFillPaint()
+    {
+        return fillPaint.getValue();
+    }
+
+    public RavenPaint getStrokePaint()
+    {
+        return strokePaint.getValue();
+    }
+
+    public RavenStroke getStrokeStyle()
+    {
+        return strokeStyle.getValue();
+    }
+    
     //-----------------------------------------------
 
     class ViewUpdater extends PropertyWrapperAdapter

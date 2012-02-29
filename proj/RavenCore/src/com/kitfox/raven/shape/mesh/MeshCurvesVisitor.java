@@ -20,6 +20,7 @@ package com.kitfox.raven.shape.mesh;
  *
  * @author kitfox
  */
+@Deprecated
 public interface MeshCurvesVisitor
 {
     public void paintLeft(int id);

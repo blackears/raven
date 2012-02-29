@@ -29,6 +29,7 @@ import java.util.List;
  *
  * @author kitfox
  */
+@Deprecated
 public class MeshContourBuilder implements MeshCurvesVisitor
 {
     int paintLeft;

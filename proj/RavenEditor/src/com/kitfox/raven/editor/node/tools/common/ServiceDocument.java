@@ -25,7 +25,6 @@ import com.kitfox.raven.editor.node.tools.ToolService;
 import com.kitfox.raven.util.Selection;
 import com.kitfox.raven.util.tree.NodeDocument;
 import com.kitfox.raven.util.tree.NodeObject;
-import com.kitfox.raven.util.tree.SelectionRecord;
 import java.util.ArrayList;
 
 /**

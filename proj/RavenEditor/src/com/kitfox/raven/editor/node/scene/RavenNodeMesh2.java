@@ -26,11 +26,18 @@ import com.kitfox.coyote.shape.*;
 import com.kitfox.coyote.shape.bezier.mesh.BezierMeshEdge2i;
 import com.kitfox.coyote.shape.bezier.mesh.BezierMeshVertex2i;
 import com.kitfox.coyote.shape.bezier.mesh.CutLoop;
-import com.kitfox.coyote.shape.bezier.mesh.CutLoop.PathVisitor;
+import com.kitfox.coyote.shape.bezier.mesh.CutSegHalf;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import com.kitfox.raven.editor.node.renderer.RavenRenderer;
 import com.kitfox.raven.editor.node.tools.common.pen.ServiceBezierMesh;
+import com.kitfox.raven.paint.RavenPaint;
+import com.kitfox.raven.paint.RavenPaintLayout;
+import com.kitfox.raven.paint.RavenStroke;
+import com.kitfox.raven.shape.network.NetworkDataEdge;
 import com.kitfox.raven.shape.network.NetworkMesh;
+import com.kitfox.raven.shape.network.keys.NetworkDataTypePaint;
+import com.kitfox.raven.shape.network.keys.NetworkDataTypePaintLayout;
+import com.kitfox.raven.shape.network.keys.NetworkDataTypeStroke;
 import com.kitfox.raven.util.service.ServiceInst;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
 import com.kitfox.raven.util.tree.PropertyWrapper;
@@ -68,34 +75,50 @@ public class RavenNodeMesh2 extends RavenNodeXformable
         }
         
         CyDrawStack stack = ctx.getDrawStack();
-        CyMatrix4d mvp = stack.getModelViewProjXform();
-        mvp.scale(.01, .01, 1);
+        stack.pushFrame(null);
+        stack.scale(.01, .01, 1);
+        
+//        CyMatrix4d mvp = stack.getModelViewProjXform();
+//        mvp.scale(.01, .01, 1);
         
         for (FaceLayout lay: meshLayout.paths)
         {
-            CyMaterialColorDrawRecord rec =
-                    CyMaterialColorDrawRecordFactory.inst().allocRecord();
-
-            rec.setColor(lay.color);
-            rec.setMesh(lay.vertBuf);
-            rec.setOpacity(1);
-            rec.setMvpMatrix(mvp);
+            if (lay.paint != null)
+            {
+                lay.paint.fillShape(stack, lay.paintLayout, lay.vertBuf);
+            }
             
-            stack.addDrawRecord(rec);
+//            CyMaterialColorDrawRecord rec =
+//                    CyMaterialColorDrawRecordFactory.inst().allocRecord();
+//
+//            rec.setColor(lay.color);
+//            rec.setMesh(lay.vertBuf);
+//            rec.setOpacity(1);
+//            rec.setMvpMatrix(mvp);
+//            
+//            stack.addDrawRecord(rec);
         }
         
         for (EdgeLayout lay: meshLayout.edgeLayouts)
         {
-            CyMaterialColorDrawRecord rec =
-                    CyMaterialColorDrawRecordFactory.inst().allocRecord();
-
-            rec.setColor(lay.color);
-            rec.setMesh(lay.vertBuf);
-            rec.setOpacity(1);
-            rec.setMvpMatrix(mvp);
+            if (lay.paint != null && lay.vertBuf != null)
+            {
+                lay.paint.fillShape(stack, lay.paintLayout, lay.vertBuf);
+            }
             
-            stack.addDrawRecord(rec);            
+            
+//            CyMaterialColorDrawRecord rec =
+//                    CyMaterialColorDrawRecordFactory.inst().allocRecord();
+//
+//            rec.setColor(lay.color);
+//            rec.setMesh(lay.vertBuf);
+//            rec.setOpacity(1);
+//            rec.setMvpMatrix(mvp);
+//            
+//            stack.addDrawRecord(rec);            
         }
+        
+        stack.popFrame();
     }
 
     protected MeshLayout getFaceSet()
@@ -149,33 +172,47 @@ public class RavenNodeMesh2 extends RavenNodeXformable
 
     
     //----------------------------------------
-    protected class MeshLayout implements PathVisitor
+    protected class MeshLayout //implements PathVisitor
     {
         ArrayList<EdgeLayout> edgeLayouts = new ArrayList<EdgeLayout>();
         ArrayList<FaceLayout> paths = new ArrayList<FaceLayout>();
-        CyPath2d combinedPath = new CyPath2d();
+        CyPath2d combinedPath;
 
         public MeshLayout(NetworkMesh mesh)
         {
             buildEdges(mesh);
             
-            CutLoop faces = mesh.createFaces();
+            ArrayList<CutLoop> faces = mesh.createFaces();
 
-            if (faces != null)
+            for (CutLoop loop: faces)
             {
-                for (int i = 0; i < faces.getNumChildren(); ++i)
+                if (loop.isCcw())
                 {
-                    faces.getChild(i).buildFaces(this);
+//                    CyPath2d path = loop.createPath();
+//                    paths.add(new FaceLayout(path, CyColor4f.randomRGB()));
+                  paths.add(new FaceLayout(loop));
+                }
+                else
+                {
+                    combinedPath = loop.createPath();
                 }
             }
+            
+//            if (faces != null)
+//            {
+//                for (int i = 0; i < faces.getNumChildren(); ++i)
+//                {
+//                    faces.getChild(i).visitFaces(this);
+//                }
+//            }
         }
 
-        @Override
-        public void emitFace(CutLoop parent, CyPath2d path)
-        {
-            paths.add(new FaceLayout(path, CyColor4f.randomRGB()));
-            combinedPath.append(path);
-        }
+//        @Override
+//        public void emitFace(CutLoop parent, CyPath2d path)
+//        {
+//            paths.add(new FaceLayout(path, CyColor4f.randomRGB()));
+//            combinedPath.append(path);
+//        }
         
         private void buildEdges(NetworkMesh mesh)
         {
@@ -267,6 +304,11 @@ public class RavenNodeMesh2 extends RavenNodeXformable
         CyColor4f color;
         CyVertexBuffer vertBuf;
         
+        CyPath2d strokedPath;
+        RavenStroke stroke;
+        RavenPaint paint;
+        RavenPaintLayout paintLayout;
+        
         EdgeLayout(ArrayList<BezierMeshEdge2i> edgeChain)
         {
             BezierMeshEdge2i edgeStart = edgeChain.get(0);
@@ -294,18 +336,34 @@ public class RavenNodeMesh2 extends RavenNodeXformable
                 }
             }
             
-//System.err.println("EdgeLayout In " + path.toString());
-
-            CyStroke stroke = new CyStroke(100);
-            CyPath2d pathStroked = stroke.outlineShape(path);
+            //Decorate
+            NetworkDataEdge data =  (NetworkDataEdge)edgeStart.getData();
+            stroke = data.getEdge(NetworkDataTypeStroke.class);
+            paint = data.getEdge(NetworkDataTypePaint.class);
+            paintLayout = data.getEdge(NetworkDataTypePaintLayout.class);
             
-//System.err.println("Edge " + path.toString());
-//System.err.println("Stroked " + pathStroked.toString());
-//System.err.println("EdgeLayout Out " + path.toString());
+            if (stroke != null)
+            {
+                CyStroke cyStroke = stroke.getStroke().scale(100);
+                CyPath2d pathStroked = cyStroke.outlineShape(path);
+                
+                ShapeMeshProvider prov = new ShapeMeshProvider(pathStroked, TESS_FLAT_SQ);
+                vertBuf = new CyVertexBuffer(prov);
+            }
+
+            //Color for debugging - remove later
             color = CyColor4f.randomRGB();
-//            ShapeLinesProvider prov = new ShapeLinesProvider(path);
-            ShapeMeshProvider prov = new ShapeMeshProvider(pathStroked, TESS_FLAT_SQ);
-            vertBuf = new CyVertexBuffer(prov);
+            
+//            CyStroke stroke = new CyStroke(100);
+//            CyPath2d pathStroked = stroke.outlineShape(path);
+//            
+////System.err.println("Edge " + path.toString());
+////System.err.println("Stroked " + pathStroked.toString());
+////System.err.println("EdgeLayout Out " + path.toString());
+//            color = CyColor4f.randomRGB();
+////            ShapeLinesProvider prov = new ShapeLinesProvider(path);
+//            ShapeMeshProvider prov = new ShapeMeshProvider(pathStroked, TESS_FLAT_SQ);
+//            vertBuf = new CyVertexBuffer(prov);
             
         }
     }
@@ -315,14 +373,54 @@ public class RavenNodeMesh2 extends RavenNodeXformable
         CyPath2d path;
         CyColor4f color;
         CyVertexBuffer vertBuf;
+        RavenPaint paint;
+        RavenPaintLayout paintLayout;
 
-        public FaceLayout(CyPath2d path, CyColor4f color)
+//        public FaceLayout(CyPath2d path, CyColor4f color)
+//        {
+//            this.path = path;
+//            this.color = color;
+//            ShapeMeshProvider prov = new ShapeMeshProvider(path, TESS_FLAT_SQ);
+//            vertBuf = new CyVertexBuffer(prov);
+//        }
+
+        private FaceLayout(CutLoop loop)
         {
-            this.path = path;
-            this.color = color;
+            this.path = loop.createPath();
+            this.color = CyColor4f.randomRGB();
             ShapeMeshProvider prov = new ShapeMeshProvider(path, TESS_FLAT_SQ);
             vertBuf = new CyVertexBuffer(prov);
-        }        
+
+            //Decorate
+            ArrayList<CutSegHalf> segs = loop.getSegs();
+            for (CutSegHalf seg: segs)
+            {
+                BezierMeshEdge2i edge = (BezierMeshEdge2i)seg.getData();
+                if (edge == null)
+                {
+                    continue;
+                }
+                NetworkDataEdge data = (NetworkDataEdge)edge.getData();
+                if (data == null)
+                {
+                    continue;
+                }
+                
+                //We found data.  Use to decorate face
+                if (seg.isRight())
+                {
+                    paint = data.getRight(NetworkDataTypePaint.class);
+                    paintLayout = data.getRight(NetworkDataTypePaintLayout.class);
+                    break;
+                }
+                else
+                {
+                    paint = data.getLeft(NetworkDataTypePaint.class);
+                    paintLayout = data.getLeft(NetworkDataTypePaintLayout.class);
+                    break;
+                }
+            }
+        }
     }
     
     @ServiceInst(service=NodeObjectProvider.class)

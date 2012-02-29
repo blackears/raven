@@ -22,6 +22,7 @@ import com.kitfox.rabbit.util.NumberText;
  *
  * @author kitfox
  */
+@Deprecated
 public class MeshSegPaintRight extends MeshSegment
 {
     private final int id;

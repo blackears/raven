@@ -20,6 +20,7 @@ package com.kitfox.raven.shape.mesh;
  *
  * @author kitfox
  */
+@Deprecated
 abstract public class MeshSegment
 {
     abstract public void visit(MeshCurvesVisitor visitor);

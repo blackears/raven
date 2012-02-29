@@ -16,7 +16,7 @@
 
 package com.kitfox.raven.shape.network.keys;
 
-import com.kitfox.raven.paint.RavenTexTransform;
+import com.kitfox.raven.paint.RavenPaintLayout;
 import com.kitfox.raven.shape.network.NetworkDataType;
 import com.kitfox.raven.util.service.ServiceInst;
 
@@ -24,24 +24,24 @@ import com.kitfox.raven.util.service.ServiceInst;
  *
  * @author kitfox
  */
-@ServiceInst(service=RavenTexTransform.class)
-public class NetworkDataTypeTransform extends NetworkDataType<RavenTexTransform>
+@ServiceInst(service=NetworkDataType.class)
+public class NetworkDataTypePaintLayout extends NetworkDataType<RavenPaintLayout>
 {
-    public NetworkDataTypeTransform()
+    public NetworkDataTypePaintLayout()
     {
-        super(RavenTexTransform.class);
+        super(RavenPaintLayout.class);
     }
 
     @Override
-    public String asText(RavenTexTransform value)
+    public String asText(RavenPaintLayout value)
     {
         return value.toString();
     }
 
     @Override
-    public RavenTexTransform fromText(String text)
+    public RavenPaintLayout fromText(String text)
     {
-        return RavenTexTransform.create(text);
+        return RavenPaintLayout.create(text);
     }
     
 }

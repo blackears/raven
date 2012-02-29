@@ -20,6 +20,7 @@ package com.kitfox.raven.shape.mesh;
  *
  * @author kitfox
  */
+@Deprecated
 public class MeshStyle
 {
     private final int paintLeft;

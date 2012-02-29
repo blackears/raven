@@ -26,7 +26,7 @@ import com.kitfox.raven.util.service.ServiceInst;
  *
  * @author kitfox
  */
-@ServiceInst(service=RavenPaint.class)
+@ServiceInst(service=NetworkDataType.class)
 public class NetworkDataTypePaint extends NetworkDataType<RavenPaint>
 {
 

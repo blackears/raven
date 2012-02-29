@@ -24,7 +24,7 @@ import com.kitfox.raven.util.service.ServiceInst;
  *
  * @author kitfox
  */
-@ServiceInst(service=RavenStroke.class)
+@ServiceInst(service=NetworkDataType.class)
 public class NetworkDataTypeStroke extends NetworkDataType<RavenStroke>
 {
 

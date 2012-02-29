@@ -24,6 +24,7 @@ import com.kitfox.coyote.renderer.CyDrawStack;
 import com.kitfox.coyote.renderer.CyVertexBuffer;
 import com.kitfox.coyote.renderer.vertex.CyVertexBufferDataSquare;
 import com.kitfox.coyote.shape.CyPath2d;
+import com.kitfox.coyote.shape.CyRectangle2i;
 import com.kitfox.coyote.shape.ShapeLinesProvider;
 import com.kitfox.coyote.shape.bezier.BezierCubic2i;
 import com.kitfox.coyote.shape.bezier.BezierCurve2i;
@@ -31,12 +32,21 @@ import com.kitfox.coyote.shape.bezier.BezierLine2i;
 import com.kitfox.coyote.shape.bezier.PickPoint;
 import com.kitfox.coyote.shape.bezier.mesh.BezierMeshEdge2i;
 import com.kitfox.coyote.shape.bezier.mesh.BezierMeshVertex2i;
+import com.kitfox.coyote.shape.bezier.mesh.CutLoop;
+import com.kitfox.coyote.shape.bezier.mesh.CutSegHalf;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
+import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
 import com.kitfox.raven.editor.node.scene.RenderContext;
 import com.kitfox.raven.editor.node.scene.snap.GraphLayout;
+import com.kitfox.raven.paint.RavenPaint;
+import com.kitfox.raven.paint.RavenPaintLayout;
+import com.kitfox.raven.paint.RavenStroke;
 import com.kitfox.raven.shape.network.NetworkDataEdge;
 import com.kitfox.raven.shape.network.NetworkDataVertex;
 import com.kitfox.raven.shape.network.NetworkMesh;
+import com.kitfox.raven.shape.network.keys.NetworkDataTypePaint;
+import com.kitfox.raven.shape.network.keys.NetworkDataTypePaintLayout;
+import com.kitfox.raven.shape.network.keys.NetworkDataTypeStroke;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -168,6 +178,32 @@ public class ToolPenMesh extends ToolPenDelegate
             }
         }
         
+        //Get decoration info
+        CyRectangle2i bounds = mesh.getBounds();
+        for (int i = 0; i < plan.size() - 1; ++i)
+        {
+            Step s0 = plan.get(i);
+            
+            if (bounds == null)
+            {
+                bounds = new CyRectangle2i((int)s0.point.x, (int)s0.point.y);
+            }
+            bounds.union((int)s0.point.x, (int)s0.point.y);
+            if (s0.tangent != null)
+            {
+                bounds.union((int)(s0.point.x + s0.tangent.x), 
+                        (int)(s0.point.y + s0.tangent.y));
+                bounds.union((int)(s0.point.x - s0.tangent.x), 
+                        (int)(s0.point.y - s0.tangent.y));
+            }
+        }
+        
+        RavenNodeRoot root = (RavenNodeRoot)getDocument();
+        RavenPaint strokePaint = root.getStrokePaint();
+        RavenStroke stroke = root.getStrokeStyle();
+        RavenPaintLayout layout = new RavenPaintLayout(bounds);
+        RavenPaint fillPaint = root.getFillPaint();
+        
         //Add curves
         for (int i = 0; i < plan.size() - 1; ++i)
         {
@@ -176,13 +212,113 @@ public class ToolPenMesh extends ToolPenDelegate
             
             BezierCurve2i curve = buildCurve(s0, s1);
             
-            mesh.addEdge(curve, new NetworkDataEdge());
+            NetworkDataEdge data = new NetworkDataEdge();
+            data.putEdge(NetworkDataTypePaint.class, strokePaint);
+            data.putEdge(NetworkDataTypeStroke.class, stroke);
+            data.putEdge(NetworkDataTypePaintLayout.class, layout);
+            mesh.addEdge(curve, data);
+        }
+
+        //Build faces
+        ArrayList<CutLoop> faces = mesh.createFaces();
+        for (int i = 0; i < faces.size(); ++i)
+        {
+            CutLoop loop = faces.get(i);
+            if (loop.isCcw())
+            {
+                decorateFace(loop, fillPaint, layout);
+            }
         }
         
         //Set value
         setMesh(mesh, true);
         
         dispatch.delegateDone();
+    }
+    
+    private void decorateFace(CutLoop face, RavenPaint fillPaint, RavenPaintLayout fillLayout)
+    {
+        RavenPaint curPaint = null;
+        RavenPaintLayout curLayout = null;
+        
+        //Check existing face edges to see if a color is already set
+        ArrayList<CutSegHalf> segs = face.getSegs();
+        for (CutSegHalf half: segs)
+        {
+            BezierMeshEdge2i<NetworkDataEdge> e 
+                    = (BezierMeshEdge2i)half.getData();
+            if (e == null)
+            {
+                //Skip extra segments that were added by cutter to
+                // connect graph
+                continue;
+            }
+            NetworkDataEdge data = e.getData();
+            RavenPaint edgePaint;
+            RavenPaintLayout edgeLayout;
+            if (half.isRight())
+            {
+                edgePaint = data.getRight(NetworkDataTypePaint.class);
+                edgeLayout = data.getRight(NetworkDataTypePaintLayout.class);
+            }
+            else
+            {
+                edgePaint = data.getLeft(NetworkDataTypePaint.class);
+                edgeLayout = data.getLeft(NetworkDataTypePaintLayout.class);
+            }
+            
+            if (curPaint == null)
+            {
+                curPaint = edgePaint;
+            }
+            if (curLayout == null)
+            {
+                curLayout = edgeLayout;
+            }
+        }
+        
+        //Use default color if face has none
+        if (curPaint == null)
+        {
+            curPaint = fillPaint;
+        }
+        if (curLayout == null)
+        {
+            curLayout = fillLayout;
+        }
+        
+        //Decorate face
+        for (CutSegHalf half: segs)
+        {
+            BezierMeshEdge2i<NetworkDataEdge> e 
+                    = (BezierMeshEdge2i)half.getData();
+            if (e == null)
+            {
+                continue;
+            }
+            NetworkDataEdge data = e.getData();
+            if (half.isRight())
+            {
+                data.putRight(NetworkDataTypePaint.class, curPaint);
+                data.putRight(NetworkDataTypePaintLayout.class, curLayout);
+            }
+            else
+            {
+                data.putLeft(NetworkDataTypePaint.class, curPaint);
+                data.putLeft(NetworkDataTypePaintLayout.class, curLayout);
+            }
+        }
+        
+        //Decorate child faces
+//        for (int i = 0; i < face.getNumChildren(); ++i)
+//        {
+//            CutLoop hole = face.getChild(i);
+//            for (int j = 0; j < hole.getNumChildren(); ++j)
+//            {
+//                CutLoop subface = hole.getChild(j);
+//                decorateFace(subface, fillPaint, fillLayout);
+//            }
+//        }
     }
     
     @Override

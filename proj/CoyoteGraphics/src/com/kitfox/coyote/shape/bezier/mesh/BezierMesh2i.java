@@ -262,7 +262,7 @@ public class BezierMesh2i<VertexData, EdgeData>
         }
     }
 
-    public CutLoop createFaces()
+    public ArrayList<CutLoop> createFaces()
     {
         ArrayList<BezierMeshEdge2i> edges = getEdges();
         

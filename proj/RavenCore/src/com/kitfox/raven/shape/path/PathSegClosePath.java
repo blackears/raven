@@ -22,6 +22,7 @@ import java.awt.geom.Path2D;
  *
  * @author kitfox
  */
+@Deprecated
 public class PathSegClosePath extends PathSeg
 {
     @Override

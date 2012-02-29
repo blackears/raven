@@ -166,7 +166,7 @@ public class TessMain
 
         for (CtrLoop loop: tess.getContours())
         {
-            if (loop.getWindingLevel() == 0)
+            if (loop.getWinding() == 0)
             {
                 continue;
             }
@@ -189,7 +189,7 @@ public class TessMain
 
         for (CtrLoop loop: tess.getContours())
         {
-            if (loop.getWindingLevel() == 0)
+            if (loop.getWinding() == 0)
             {
                 continue;
             }

@@ -28,17 +28,19 @@ public class CutSegHalf<EdgeData>
     final double t1;
     final Coord c0;
     final Coord c1;
-    final EdgeData data;
+    private final EdgeData data;
+    private final boolean right;
     
     private CutSegHalf peer;
 
-    public CutSegHalf(double t0, double t1, Coord c0, Coord c1, EdgeData data)
+    public CutSegHalf(double t0, double t1, Coord c0, Coord c1, EdgeData data, boolean right)
     {
         this.t0 = t0;
         this.t1 = t1;
         this.c0 = c0;
         this.c1 = c1;
         this.data = data;
+        this.right = right;
     }
     
     public int getDx()
@@ -70,7 +72,24 @@ public class CutSegHalf<EdgeData>
     @Override
     public String toString()
     {
-        return "{" + c0 + " " + c1 + " t[" + t0 + " " + t1 + "]}";
+        return "{" + c0 + " " + c1 + " t[" + t0 + " " + t1 + "] " 
+                + (right ? "right" : "left") + "}";
+    }
+
+    /**
+     * @return the data
+     */
+    public EdgeData getData()
+    {
+        return data;
+    }
+
+    /**
+     * @return the right
+     */
+    public boolean isRight()
+    {
+        return right;
     }
     
 }

@@ -55,4 +55,33 @@ public class NetworkDataEdge extends NetworkData
                 new HashMap<Class<? extends NetworkDataType>, Object>(data.dataMapRight));
     }
 
+    public <R, T extends NetworkDataType<R>> R getLeft(Class<T> key)
+    {
+        return (R)dataMapLeft.get(key);
+    }
+
+    public <R, T extends NetworkDataType<R>> void putLeft(Class<T> key, R data)
+    {
+        dataMapLeft.put(key, data);
+    }
+
+    public <R, T extends NetworkDataType<R>> R getRight(Class<T> key)
+    {
+        return (R)dataMapRight.get(key);
+    }
+
+    public <R, T extends NetworkDataType<R>> void putRight(Class<T> key, R data)
+    {
+        dataMapRight.put(key, data);
+    }
+
+    public <R, T extends NetworkDataType<R>> R getEdge(Class<T> key)
+    {
+        return (R)dataMapEdge.get(key);
+    }
+
+    public <R, T extends NetworkDataType<R>> void putEdge(Class<T> key, R data)
+    {
+        dataMapEdge.put(key, data);
+    }
 }

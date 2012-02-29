@@ -22,6 +22,7 @@ import java.awt.geom.Path2D;
  *
  * @author kitfox
  */
+@Deprecated
 public class PathSegCubicTo extends PathSeg
 {
     private final int k0x;
