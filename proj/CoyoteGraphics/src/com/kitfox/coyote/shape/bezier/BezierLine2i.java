@@ -16,6 +16,7 @@
 
 package com.kitfox.coyote.shape.bezier;
 
+import com.kitfox.coyote.math.CyMatrix4d;
 import static java.lang.Math.*;
 import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.math.Math2DUtil;
@@ -321,6 +322,18 @@ public class BezierLine2i extends BezierCurve2i
     public boolean isPoint()
     {
         return ax0 == ax1 && ay0 == ay1;
+    }
+
+    @Override
+    public BezierLine2d transfrom(CyMatrix4d xform)
+    {
+        CyVector2d a0 = new CyVector2d(ax0, ay0);
+        CyVector2d a1 = new CyVector2d(ax1, ay1);
+        
+        xform.transformPoint(a0);
+        xform.transformPoint(a1);
+        
+        return new BezierLine2d(a0.x, a0.y, a1.x, a1.y);
     }
 
     @Override

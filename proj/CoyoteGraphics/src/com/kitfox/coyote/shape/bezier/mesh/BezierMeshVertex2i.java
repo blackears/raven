@@ -25,6 +25,7 @@ import java.util.ArrayList;
  */
 public class BezierMeshVertex2i<VertexData>
 {
+    private final int id;
     private Coord coord;
     //User defined data stored per vertex
     private VertexData data;
@@ -32,8 +33,9 @@ public class BezierMeshVertex2i<VertexData>
     final ArrayList<BezierMeshEdge2i> edgesIn = new ArrayList<BezierMeshEdge2i>();
     final ArrayList<BezierMeshEdge2i> edgesOut = new ArrayList<BezierMeshEdge2i>();
 
-    public BezierMeshVertex2i(Coord coord, VertexData data)
+    public BezierMeshVertex2i(int id, Coord coord, VertexData data)
     {
+        this.id = id;
         this.coord = coord;
         this.data = data;
     }
@@ -100,6 +102,14 @@ public class BezierMeshVertex2i<VertexData>
     public ArrayList<BezierMeshEdge2i> getEdgesOut()
     {
         return new ArrayList<BezierMeshEdge2i>(edgesOut);
+    }
+
+    /**
+     * @return the id
+     */
+    public int getId()
+    {
+        return id;
     }
 
 }

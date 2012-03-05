@@ -38,7 +38,7 @@ public class ColorViewProvider extends ViewProvider
     @Override
     public Component createComponent(RavenEditor editor)
     {
-        return new ColorPanel(editor);
+        return new ColorPanel2(editor);
     }
 
 }

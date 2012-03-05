@@ -25,6 +25,7 @@ import java.awt.Stroke;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenStrokeNone extends RavenStrokeInline
 {
     public static final String CACHE_NAME = "none";

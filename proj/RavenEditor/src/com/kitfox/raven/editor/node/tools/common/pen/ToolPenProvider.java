@@ -31,8 +31,8 @@ import java.util.Properties;
 @ServiceInst(service=ToolProvider.class)
 public class ToolPenProvider extends ToolProvider<ToolPenDispatch>
 {
-    private PenEditMode editMode = PenEditMode.EDIT;
-    public static final String PROP_EDITMODE = "editMode";
+//    private PenEditMode editMode = PenEditMode.EDIT;
+//    public static final String PROP_EDITMODE = "editMode";
 
     public ToolPenProvider()
     {
@@ -45,7 +45,7 @@ public class ToolPenProvider extends ToolProvider<ToolPenDispatch>
         super.loadPreferences(properties);
 
         PropertiesData prop = new PropertiesData(properties);
-        editMode = prop.getEnum(PROP_EDITMODE, PenEditMode.EDIT);
+//        editMode = prop.getEnum(PROP_EDITMODE, PenEditMode.EDIT);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ToolPenProvider extends ToolProvider<ToolPenDispatch>
         Properties properties = new Properties();
         PropertiesData prop = new PropertiesData(properties);
         
-        prop.setEnum(PROP_EDITMODE, editMode);
+//        prop.setEnum(PROP_EDITMODE, editMode);
         
         return properties;
     }
@@ -71,20 +71,20 @@ public class ToolPenProvider extends ToolProvider<ToolPenDispatch>
         return new ToolPenSettings(editor, this);
     }
 
-    /**
-     * @return the editMode
-     */
-    public PenEditMode getEditMode()
-    {
-        return editMode;
-    }
-
-    /**
-     * @param editMode the editMode to set
-     */
-    public void setEditMode(PenEditMode editMode)
-    {
-        this.editMode = editMode;
-    }
+//    /**
+//     * @return the editMode
+//     */
+//    public PenEditMode getEditMode()
+//    {
+//        return editMode;
+//    }
+//
+//    /**
+//     * @param editMode the editMode to set
+//     */
+//    public void setEditMode(PenEditMode editMode)
+//    {
+//        this.editMode = editMode;
+//    }
     
 }

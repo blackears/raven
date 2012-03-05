@@ -16,8 +16,10 @@
 
 package com.kitfox.coyote.shape.bezier;
 
+import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.math.Math2DUtil;
+import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.PathConsumer;
 
 /**
@@ -295,6 +297,29 @@ public class BezierQuad2d extends BezierCurve2d
     {
         out.quadTo(ax1, ay1, ax2, ay2);
     }
+
+    @Override
+    public BezierQuad2d transfrom(CyMatrix4d xform)
+    {
+        CyVector2d a0 = new CyVector2d(ax0, ay0);
+        CyVector2d a1 = new CyVector2d(ax1, ay1);
+        CyVector2d a2 = new CyVector2d(ax2, ay2);
+        
+        xform.transformPoint(a0);
+        xform.transformPoint(a1);
+        xform.transformPoint(a2);
+        
+        return new BezierQuad2d(a0.x, a0.y, a1.x, a1.y, a2.x, a2.y);
+    }
+
+    @Override
+    public CyPath2d asPath()
+    {
+        CyPath2d path = new CyPath2d();
+        path.moveTo(ax0, ay0);
+        path.quadTo(ax1, ay1, ax2, ay2);
+        return path;
+    }
     
     public void clip(BezierCurve2d curve)
     {
@@ -302,7 +327,5 @@ public class BezierQuad2d extends BezierCurve2d
         double d1 = Math2DUtil.distPointLineSigned(ax1, ay1, ax0, ay0, ax2 - ax0, ay2 - ay0);
         double dmin = Math.min(0, d1 / 2);
         double dmax = Math.max(0, d1 / 2);
-        
-        
     }
 }

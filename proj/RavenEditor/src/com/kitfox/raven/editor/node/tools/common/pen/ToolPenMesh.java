@@ -200,7 +200,7 @@ public class ToolPenMesh extends ToolPenDelegate
         
         RavenNodeRoot root = (RavenNodeRoot)getDocument();
         RavenPaint strokePaint = root.getStrokePaint();
-        RavenStroke stroke = root.getStrokeStyle();
+        RavenStroke stroke = root.getStrokeShape();
         RavenPaintLayout layout = new RavenPaintLayout(bounds);
         RavenPaint fillPaint = root.getFillPaint();
         
@@ -246,7 +246,7 @@ public class ToolPenMesh extends ToolPenDelegate
         for (CutSegHalf half: segs)
         {
             BezierMeshEdge2i<NetworkDataEdge> e 
-                    = (BezierMeshEdge2i)half.getData();
+                    = (BezierMeshEdge2i)half.getEdge();
             if (e == null)
             {
                 //Skip extra segments that were added by cutter to
@@ -291,7 +291,7 @@ public class ToolPenMesh extends ToolPenDelegate
         for (CutSegHalf half: segs)
         {
             BezierMeshEdge2i<NetworkDataEdge> e 
-                    = (BezierMeshEdge2i)half.getData();
+                    = (BezierMeshEdge2i)half.getEdge();
             if (e == null)
             {
                 continue;

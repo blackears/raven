@@ -48,15 +48,15 @@ abstract public class ToolPenDelegate extends ToolDisplay
         return null;
     }
 
-    protected NodeDocument getDocument()
-    {
-        ServiceDocument provider = user.getToolService(ServiceDocument.class);
-        if (provider != null)
-        {
-            return provider.getDocument();
-        }
-        return null;
-    }
+//    protected NodeDocument getDocument()
+//    {
+//        ServiceDocument provider = user.getToolService(ServiceDocument.class);
+//        if (provider != null)
+//        {
+//            return provider.getDocument();
+//        }
+//        return null;
+//    }
 
     @Override
     abstract protected void click(MouseEvent evt);

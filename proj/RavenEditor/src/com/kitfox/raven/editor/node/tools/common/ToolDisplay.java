@@ -21,6 +21,8 @@ import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.action.ActionManager;
+import com.kitfox.raven.editor.node.scene.RavenNodeGroup;
+import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
 import com.kitfox.raven.editor.node.scene.RavenNodeXformable;
 import com.kitfox.raven.editor.node.scene.snap.Snapping;
 import com.kitfox.raven.editor.node.tools.ToolDraggable;
@@ -28,13 +30,14 @@ import com.kitfox.raven.editor.node.tools.ToolUser;
 import com.kitfox.raven.util.Selection;
 import com.kitfox.raven.util.cursor.CursorProvider;
 import com.kitfox.raven.util.cursor.CursorProviderIndex;
+import com.kitfox.raven.util.tree.FrameKey;
 import com.kitfox.raven.util.tree.NodeObject;
-import com.kitfox.raven.util.tree.SelectionRecord;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
+import java.util.ArrayList;
 import java.util.Timer;
 import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
@@ -223,6 +226,69 @@ abstract public class ToolDisplay extends ToolDraggable
         setCursor(cp.getCursor());
     }
 
+    protected Selection<NodeObject> getSelection()
+    {
+        ServiceDocument provider = user.getToolService(ServiceDocument.class);
+        if (provider == null)
+        {
+            return null;
+        }
+        
+        return provider.getSelection();
+    }
+
+    protected RavenNodeRoot getDocument()
+    {
+        ServiceDocument provider = user.getToolService(ServiceDocument.class);
+        if (provider == null)
+        {
+            return null;
+        }
+        
+        return (RavenNodeRoot)provider.getDocument();
+    }
+
+    /**
+     * Build list of all nodes in the scene, sorted from topmost to
+     * bottommost.
+     * 
+     * @param onlyVisible
+     * @return 
+     */
+    protected ArrayList<RavenNodeXformable> getNodes(boolean onlyVisible)
+    {
+        ArrayList<RavenNodeXformable> list = new ArrayList<RavenNodeXformable>();
+        RavenNodeRoot root = getDocument();
+        
+        for (int i = root.sceneGraph.size() - 1; i >= 0; --i)
+        {
+            RavenNodeXformable child = root.sceneGraph.get(i);
+            getNodes(child, onlyVisible, list);
+        }
+        
+        return list;
+    }
+
+    private void getNodes(RavenNodeXformable node, boolean onlyVisible, ArrayList<RavenNodeXformable> list)
+    {
+        if (onlyVisible && !node.isVisible(FrameKey.DIRECT))
+        {
+            return;
+        }
+        
+        if (node instanceof RavenNodeGroup)
+        {
+            RavenNodeGroup g = (RavenNodeGroup)node;
+            for (int i = g.children.size() - 1; i >= 0; --i)
+            {
+                RavenNodeXformable child = g.children.get(i);
+                getNodes(child, onlyVisible, list);
+            }
+        }
+        
+        list.add(node);
+    }
+    
     @Override
     public void mousePressed(MouseEvent evt)
     {

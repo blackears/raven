@@ -26,6 +26,7 @@ import com.kitfox.cache.parser.ParseException;
  *
  * @author kitfox
  */
+@Deprecated
 abstract public class RavenStrokeInline implements RavenStroke
 {
     abstract public CacheIdentifier toCache();

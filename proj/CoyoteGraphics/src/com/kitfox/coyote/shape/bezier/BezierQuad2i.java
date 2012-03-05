@@ -16,6 +16,7 @@
 
 package com.kitfox.coyote.shape.bezier;
 
+import com.kitfox.coyote.math.CyMatrix4d;
 import static java.lang.Math.*;
 import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.math.Math2DUtil;
@@ -404,6 +405,20 @@ public class BezierQuad2i extends BezierCurve2i
     {
         return ax0 == ax1 && ax0 == ax2
                 && ay0 == ay1 && ay0 == ay2;
+    }
+
+    @Override
+    public BezierQuad2d transfrom(CyMatrix4d xform)
+    {
+        CyVector2d a0 = new CyVector2d(ax0, ay0);
+        CyVector2d a1 = new CyVector2d(ax1, ay1);
+        CyVector2d a2 = new CyVector2d(ax2, ay2);
+        
+        xform.transformPoint(a0);
+        xform.transformPoint(a1);
+        xform.transformPoint(a2);
+        
+        return new BezierQuad2d(a0.x, a0.y, a1.x, a1.y, a2.x, a2.y);
     }
 
     @Override

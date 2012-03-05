@@ -25,25 +25,25 @@ import java.util.ArrayList;
  *
  * @author kitfox
  */
-public class CutSegment<EdgeData>
+public class CutSegment
 {
     final double t0;
     final double t1;
     final Coord c0;
     final Coord c1;
-    EdgeData data;
+    BezierMeshEdge2i edge;
 
-    public CutSegment(double t0, double t1, Coord c0, Coord c1, EdgeData data)
+    public CutSegment(double t0, double t1, Coord c0, Coord c1, BezierMeshEdge2i edge)
     {
         this.t0 = t0;
         this.t1 = t1;
         this.c0 = c0;
         this.c1 = c1;
-        this.data = data;
+        this.edge = edge;
     }
 
     public static ArrayList<CutSegment> createSegments(
-            BezierCurve2i curve, Object data, double flatnessSquared, 
+            BezierCurve2i curve, BezierMeshEdge2i edge, double flatnessSquared, 
             ArrayList<CutSegment> list)
     {
         if (list == null)
@@ -54,12 +54,12 @@ public class CutSegment<EdgeData>
         {
             return list;
         }
-        createSegments(curve, data, flatnessSquared, 0, 1, list);
+        createSegments(curve, edge, flatnessSquared, 0, 1, list);
         return list;
     }
 
     private static void createSegments(
-            BezierCurve2i curve, Object data, double flatnessSquared,
+            BezierCurve2i curve, BezierMeshEdge2i edge, double flatnessSquared,
             double t0, double t1, ArrayList<CutSegment> list)
     {
         if (curve.getCurvatureSquared() <= flatnessSquared)
@@ -68,7 +68,7 @@ public class CutSegment<EdgeData>
             Coord c1 = new Coord(curve.getEndX(), curve.getEndY());
             if (!c0.equals(c1))
             {
-                CutSegment seg = new CutSegment(t0, t1, c0, c1, data);
+                CutSegment seg = new CutSegment(t0, t1, c0, c1, edge);
                 list.add(seg);
             }
             return;
@@ -76,9 +76,9 @@ public class CutSegment<EdgeData>
         
         double tm = (t0 + t1) / 2;
         BezierCurve2i[] curves = curve.split(.5);
-        createSegments(curves[0], data, flatnessSquared,
+        createSegments(curves[0], edge, flatnessSquared,
                 t0, tm, list);
-        createSegments(curves[1], data, flatnessSquared,
+        createSegments(curves[1], edge, flatnessSquared,
                 tm, t1, list);
     }
 
@@ -255,7 +255,7 @@ public class CutSegment<EdgeData>
 
     public CutSegment reverse()
     {
-        return new CutSegment(t1, t0, c1, c0, data);
+        return new CutSegment(t1, t0, c1, c0, edge);
     }
     
 

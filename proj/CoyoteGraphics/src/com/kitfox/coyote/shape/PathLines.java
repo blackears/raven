@@ -111,58 +111,58 @@ public class PathLines extends PathConsumer
         verts.add(new CyVector2d(x1, y1));
     }
 
-    public boolean contains(double x, double y)
-    {
-        int size = verts.size();
-        int crossings = 0;
-        for (int i = 0; i < size; ++i)
-        {
-            CyVector2d v0 = verts.get(i);
-            CyVector2d v1 = verts.get(i == size - 1 ? 0 : i + 1);
-
-            if (v0.x <= x && v1.x > x)
-            {
-                //Line y = mx + b
-                double m = (v1.y - v0.y) / (v1.x - v0.x);
-                double b = v0.y - m * v0.x;
-
-                double yHit = m * x + b;
-                if (yHit > y)
-                {
-                    ++crossings;
-                }
-            }
-            else if (v0.x >= x && v1.x < x)
-            {
-                //Line y = mx + b
-                double m = (v1.y - v0.y) / (v1.x - v0.x);
-                double b = v0.y - m * v0.x;
-
-                double yHit = m * x + b;
-                if (yHit > y)
-                {
-                    --crossings;
-                }
-            }
-        }
-
-        return crossings != 0;
-    }
-
-    /**
-     *
-     * @param rect
-     * @return true if rectangle completely bounded by shape
-     */
-    public boolean contains(CyRectangle2d rect)
-    {
-        if (crosses(rect))
-        {
-            return false;
-        }
-
-        return contains(rect.getX(), rect.getY());
-    }
+//    public boolean contains(double x, double y)
+//    {
+//        int size = verts.size();
+//        int crossings = 0;
+//        for (int i = 0; i < size; ++i)
+//        {
+//            CyVector2d v0 = verts.get(i);
+//            CyVector2d v1 = verts.get(i == size - 1 ? 0 : i + 1);
+//
+//            if (v0.x <= x && v1.x > x)
+//            {
+//                //Line y = mx + b
+//                double m = (v1.y - v0.y) / (v1.x - v0.x);
+//                double b = v0.y - m * v0.x;
+//
+//                double yHit = m * x + b;
+//                if (yHit > y)
+//                {
+//                    ++crossings;
+//                }
+//            }
+//            else if (v0.x >= x && v1.x < x)
+//            {
+//                //Line y = mx + b
+//                double m = (v1.y - v0.y) / (v1.x - v0.x);
+//                double b = v0.y - m * v0.x;
+//
+//                double yHit = m * x + b;
+//                if (yHit > y)
+//                {
+//                    --crossings;
+//                }
+//            }
+//        }
+//
+//        return crossings != 0;
+//    }
+//
+//    /**
+//     *
+//     * @param rect
+//     * @return true if rectangle completely bounded by shape
+//     */
+//    public boolean contains(CyRectangle2d rect)
+//    {
+//        if (crosses(rect))
+//        {
+//            return false;
+//        }
+//
+//        return contains(rect.getX(), rect.getY());
+//    }
 
     /**
      *
@@ -170,89 +170,105 @@ public class PathLines extends PathConsumer
      * @return true if the intersection of this shape and rectangle
      * contain any common points.
      */
-    public boolean intersects(CyRectangle2d rect)
+    public boolean intersectsEdge(CyRectangle2d rect)
     {
-        if (crosses(rect))
-        {
-            return true;
-        }
-
-        if (verts.isEmpty())
-        {
-            return false;
-        }
-        CyVector2d v = verts.get(0);
-        return rect.contains(v.x, v.y) || contains(rect.getX(), rect.getY());
-    }
-
-    private boolean crossing(double[] res)
-    {
-        return res != null && res[0] >= 0 && res[0] <= 1 && res[1] >= 0 && res[1] <= 1;
-    }
-
-    /**
-     *
-     * @param rect
-     * @return true if any line segment of this path crosses any line
-     * segment of the passed rect.
-     */
-    public boolean crosses(CyRectangle2d rect)
-    {
-        double x = rect.getX();
-        double y = rect.getY();
-        double width = rect.getWidth();
-        double height = rect.getHeight();
-        double[] frac = new double[2], res;
-
-        int size = verts.size();
-        for (int i = 0; i < size; ++i)
+        for (int i = 0; i < verts.size(); i += 2)
         {
             CyVector2d v0 = verts.get(i);
-            CyVector2d v1 = verts.get(i == size - 1 ? 0 : i + 1);
-
-            res = Math2DUtil.lineIsectFractions(
-                    v0.x, v0.y, v1.x - v0.x, v1.y - v0.y,
-                    x, y, width, 0,
-                    frac);
-
-            if (crossing(res))
+            CyVector2d v1 = verts.get(i + 1);
+            
+            if (rect.intersectsSegment(v0.x, v0.y, v1.x, v1.y))
             {
                 return true;
             }
-
-            res = Math2DUtil.lineIsectFractions(
-                    v0.x, v0.y, v1.x - v0.x, v1.y - v0.y,
-                    x + width, y, 0, height,
-                    frac);
-
-            if (crossing(res))
-            {
-                return true;
-            }
-
-            res = Math2DUtil.lineIsectFractions(
-                    v0.x, v0.y, v1.x - v0.x, v1.y - v0.y,
-                    x + width, y + height, -width, 0,
-                    frac);
-
-            if (crossing(res))
-            {
-                return true;
-            }
-
-            res = Math2DUtil.lineIsectFractions(
-                    v0.x, v0.y, v1.x - v0.x, v1.y - v0.y,
-                    x, y + height, 0, -height,
-                    frac);
-
-            if (crossing(res))
-            {
-                return true;
-            }
-
         }
-
+        
         return false;
     }
+
+//    public boolean intersectsEdge(CyRectangle2d rect)
+//    {
+//        if (crosses(rect))
+//        {
+//            return true;
+//        }
+//
+//        if (verts.isEmpty())
+//        {
+//            return false;
+//        }
+//        CyVector2d v = verts.get(0);
+//        return rect.contains(v.x, v.y) || contains(rect.getX(), rect.getY());
+//    }
+
+//    private boolean crossing(double[] res)
+//    {
+//        return res != null && res[0] >= 0 && res[0] <= 1 && res[1] >= 0 && res[1] <= 1;
+//    }
+//
+//    /**
+//     *
+//     * @param rect
+//     * @return true if any line segment of this path crosses any line
+//     * segment of the passed rect.
+//     */
+//    public boolean crosses(CyRectangle2d rect)
+//    {
+//        double x = rect.getX();
+//        double y = rect.getY();
+//        double width = rect.getWidth();
+//        double height = rect.getHeight();
+//        double[] frac = new double[2], res;
+//
+//        int size = verts.size();
+//        for (int i = 0; i < size; ++i)
+//        {
+//            CyVector2d v0 = verts.get(i);
+//            CyVector2d v1 = verts.get(i == size - 1 ? 0 : i + 1);
+//
+//            res = Math2DUtil.lineIsectFractions(
+//                    v0.x, v0.y, v1.x - v0.x, v1.y - v0.y,
+//                    x, y, width, 0,
+//                    frac);
+//
+//            if (crossing(res))
+//            {
+//                return true;
+//            }
+//
+//            res = Math2DUtil.lineIsectFractions(
+//                    v0.x, v0.y, v1.x - v0.x, v1.y - v0.y,
+//                    x + width, y, 0, height,
+//                    frac);
+//
+//            if (crossing(res))
+//            {
+//                return true;
+//            }
+//
+//            res = Math2DUtil.lineIsectFractions(
+//                    v0.x, v0.y, v1.x - v0.x, v1.y - v0.y,
+//                    x + width, y + height, -width, 0,
+//                    frac);
+//
+//            if (crossing(res))
+//            {
+//                return true;
+//            }
+//
+//            res = Math2DUtil.lineIsectFractions(
+//                    v0.x, v0.y, v1.x - v0.x, v1.y - v0.y,
+//                    x, y + height, 0, -height,
+//                    frac);
+//
+//            if (crossing(res))
+//            {
+//                return true;
+//            }
+//
+//        }
+//
+//        return false;
+//    }
 
 }

@@ -320,6 +320,31 @@ public class Math2DUtil
         return ry * (px - tx) + rx * (ty - py);
     }
 
+    /**
+     * Determine which side of the given line (px, py) is on.
+     * 
+     * @param px X coord of point on line
+     * @param py Y coord of point on line
+     * @param rx X coord of ray of line direction
+     * @param ry Y coord of ray of line direction
+     * @param tx X coord of point to test against line
+     * @param ty Y coord of point to test against line
+     * @return > 0 if point is to left of line, < 0 if point is to right,
+     * 0 if on line.
+     */
+    public static double getLineSide(double px, double py, double rx, double ry, double tx, double ty)
+    {
+        //General form of line is ax + by + c = 0
+        // a = -ry;
+        // b = rx;
+        // c = ry * px - rx * py;
+        //
+        // side = a * tx + b * ty + c
+        //      = (-ry * tx) + (rx * ty) + (ry * px - rx * py)
+        
+        return ry * (px - tx) + rx * (ty - py);
+    }
+
     public static double clamp(double val, double min, double max)
     {
         return val <= min ? min : (val >= max ? max : val);

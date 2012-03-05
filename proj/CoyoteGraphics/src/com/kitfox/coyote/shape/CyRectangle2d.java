@@ -17,6 +17,7 @@
 package com.kitfox.coyote.shape;
 
 import com.kitfox.coyote.math.CyVector2d;
+import com.kitfox.coyote.math.Math2DUtil;
 import static java.lang.Math.*;
 
 /**
@@ -205,6 +206,46 @@ public class CyRectangle2d extends CyShape
     public boolean contains(CyVector2d p)
     {
         return contains(p.x, p.y);
+    }
+    
+    public boolean intersectsSegment(double x0, double y0, double x1, double y1)
+    {
+//        if (contains(x0, y0) || contains(x1, y1))
+//        {
+//            return true;
+//        }
+        
+        double dx = x1 - x0;
+        double dy = y1 - y0;
+        
+        if (sideIsect(x0, y0, dx, dy, x, y, width, 0))
+        {
+            return true;
+        }
+        if (sideIsect(x0, y0, dx, dy, x, y, 0, height))
+        {
+            return true;
+        }
+        if (sideIsect(x0, y0, dx, dy, x + width, y, 0, height))
+        {
+            return true;
+        }
+        if (sideIsect(x0, y0, dx, dy, x, y + height, width, 0))
+        {
+            return true;
+        }
+
+        return false;
+    }
+    
+    private boolean sideIsect(double px, double py, double rx, double ry,
+            double qx, double qy, double sx, double sy)
+    {
+        double[] res = Math2DUtil.lineIsectFractions(px, py, rx, ry,
+                qx, qy, sx, sy, null);
+        return res != null 
+                && res[0] >= 0 && res[0] <= 1
+                && res[1] >= 0 && res[1] <= 1;
     }
 
     @Override

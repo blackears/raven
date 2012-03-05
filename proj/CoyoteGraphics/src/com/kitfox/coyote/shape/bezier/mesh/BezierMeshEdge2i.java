@@ -22,6 +22,7 @@ import com.kitfox.coyote.shape.bezier.BezierLine2i;
 import com.kitfox.coyote.shape.bezier.mesh.BezierVertexSmooth;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import static java.lang.Math.*;
+import java.util.ArrayList;
 
 /**
  *
@@ -29,6 +30,7 @@ import static java.lang.Math.*;
  */
 public class BezierMeshEdge2i<EdgeData>
 {
+    private final int id;
     private BezierMeshVertex2i start;
     private BezierMeshVertex2i end;
     private EdgeData data;
@@ -38,23 +40,24 @@ public class BezierMeshEdge2i<EdgeData>
     private Coord k0;
     private Coord k1;
 
-    public BezierMeshEdge2i(BezierMeshVertex2i start, BezierMeshVertex2i end)
+    public BezierMeshEdge2i(int id, BezierMeshVertex2i start, BezierMeshVertex2i end)
     {
-        this(start, end, null);
+        this(id, start, end, null);
     }
 
-    public BezierMeshEdge2i(BezierMeshVertex2i start, BezierMeshVertex2i end, EdgeData data)
+    public BezierMeshEdge2i(int id, BezierMeshVertex2i start, BezierMeshVertex2i end, EdgeData data)
     {
-        this(start, end, data, 
+        this(id, start, end, data, 
                 BezierVertexSmooth.CORNER, BezierVertexSmooth.CORNER,
                 start.getCoord(), end.getCoord());
     }
 
-    public BezierMeshEdge2i(BezierMeshVertex2i start, BezierMeshVertex2i end,
+    public BezierMeshEdge2i(int id, BezierMeshVertex2i start, BezierMeshVertex2i end,
             EdgeData data, 
             BezierVertexSmooth smooth0, BezierVertexSmooth smooth1, 
             Coord k0, Coord k1)
     {
+        this.id = id;
         this.start = start;
         this.end = end;
         this.data = data;
@@ -268,6 +271,65 @@ public class BezierMeshEdge2i<EdgeData>
         this.smooth1 = smooth1;
     }
 
+    public ArrayList<BezierMeshEdge2i> getConnectedEdges()
+    {
+        ArrayList<BezierMeshEdge2i> list = new ArrayList<BezierMeshEdge2i>();
+        
+        for (BezierMeshEdge2i<EdgeData> e = getPrevEdge(); 
+                e != null && e != this;
+                e = e.getPrevEdge())
+        {
+            list.add(0, e);
+        }
+        
+        list.add(this);
+        
+        for (BezierMeshEdge2i<EdgeData> e = getNextEdge(); 
+                e != null && !list.contains(e);
+                e = e.getNextEdge())
+        {
+            list.add(e);
+        }
+        
+        return list;
+    }
+
+    public BezierMeshEdge2i<EdgeData> getPrevEdge()
+    {
+        if (start.getNumEdges() != 2)
+        {
+            return null;
+        }
+        
+        BezierMeshEdge2i<EdgeData> e0 = start.getEdge(0);
+        BezierMeshEdge2i<EdgeData> e1 = start.getEdge(1);
+        
+        if (e0 == e1)
+        {
+            return null;
+        }
+        
+        return e0 == this ? e1 : e0;
+    }
+
+    public BezierMeshEdge2i<EdgeData> getNextEdge()
+    {
+        if (end.getNumEdges() != 2)
+        {
+            return null;
+        }
+        
+        BezierMeshEdge2i<EdgeData> e0 = end.getEdge(0);
+        BezierMeshEdge2i<EdgeData> e1 = end.getEdge(1);
+        
+        if (e0 == e1)
+        {
+            return null;
+        }
+        
+        return e0 == this ? e1 : e0;
+    }
+    
     @Override
     public String toString()
     {
@@ -278,5 +340,13 @@ public class BezierMeshEdge2i<EdgeData>
                 + end.getCoord() + " "
                 + smooth0 + " "
                 + smooth1 + " ";
+    }
+
+    /**
+     * @return the id
+     */
+    public int getId()
+    {
+        return id;
     }
 }

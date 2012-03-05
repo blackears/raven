@@ -36,6 +36,7 @@ import java.awt.RenderingHints;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenStrokeEditor extends PropertyWrapperEditor<RavenStroke>
 {
     public RavenStrokeEditor(PropertyWrapper wrapper)

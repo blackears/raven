@@ -16,7 +16,9 @@
 
 package com.kitfox.coyote.shape.bezier;
 
+import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.math.CyVector2d;
+import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.PathConsumer;
 
 /**
@@ -204,6 +206,27 @@ public class BezierLine2d extends BezierCurve2d
     public void append(PathConsumer out)
     {
         out.lineTo(ax1, ay1);
+    }
+
+    @Override
+    public CyPath2d asPath()
+    {
+        CyPath2d path = new CyPath2d();
+        path.moveTo(ax0, ay0);
+        path.lineTo(ax1, ay1);
+        return path;
+    }
+
+    @Override
+    public BezierLine2d transfrom(CyMatrix4d xform)
+    {
+        CyVector2d a0 = new CyVector2d(ax0, ay0);
+        CyVector2d a1 = new CyVector2d(ax1, ay1);
+        
+        xform.transformPoint(a0);
+        xform.transformPoint(a1);
+        
+        return new BezierLine2d(a0.x, a0.y, a1.x, a1.y);
     }
 
 

@@ -30,6 +30,7 @@ import java.awt.BorderLayout;
  *
  * @author kitfox
  */
+@Deprecated
 public class ToolPaintFloodSettings extends javax.swing.JPanel
 {
     final RavenEditor editor;

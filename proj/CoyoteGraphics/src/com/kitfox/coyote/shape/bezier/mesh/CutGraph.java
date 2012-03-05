@@ -247,9 +247,9 @@ public class CutGraph<EdgeData>
             for (CutSegment s: v0.segOut)
             {
                 CutSegHalf h0 = 
-                        new CutSegHalf(s.t0, s.t1, s.c0, s.c1, s.data, false);
+                        new CutSegHalf(s.t0, s.t1, s.c0, s.c1, s.edge, false);
                 CutSegHalf h1 = 
-                        new CutSegHalf(s.t1, s.t0, s.c1, s.c0, s.data, true);
+                        new CutSegHalf(s.t1, s.t0, s.c1, s.c0, s.edge, true);
                 h0.setPeer(h1);
                 h1.setPeer(h0);
 
@@ -303,120 +303,4 @@ public class CutGraph<EdgeData>
         CutVertex v = vertMap.get(s0.c1);
         return v.nextSegCW(s0.getPeer());
     }
-    
-//    public CutLoop buildFaces()
-//    {
-//        ArrayList<CutSegHalf> segList = getSegmentsRadial();
-//        if (segList.isEmpty())
-//        {
-//            return null;
-//        }
-//        
-//        //Build loops
-//        ArrayList<CutLoop> loopList = new ArrayList<CutLoop>();
-//        while (!segList.isEmpty())
-//        {
-//            loopList.add(extractLoop(segList));
-//        }
-//        
-//        //Sort loops by size.  Since loops do not cross, parent loops 
-//        // will always have greater area than child loops
-//        Collections.sort(loopList);
-//        
-//        //Nest loops
-//        for (int i = loopList.size() - 1; i >= 1; --i)
-//        {
-//            CutLoop subLoop = loopList.get(i);
-//            
-//            for (int j = i - 1; j >= 0; --j)
-//            {
-//                CutLoop parentLoop = loopList.get(j);
-//                if (contains(parentLoop, subLoop))
-//                {
-//                    parentLoop.children.add(subLoop);
-//                    break;
-//                }
-//            }
-//        }
-//        
-//        return loopList.get(0);
-//    }
-//
-//    private boolean contains(CutLoop parLoop, CutLoop subLoop)
-//    {
-//        if (parLoop.isCcw() == subLoop.isCcw())
-//        {
-//            //Exterior CW loops should encompass interior CCW loops
-//            //Hence two loops with the same winding cannot have a
-//            // parent/child relationship
-//            return false;
-//        }
-//
-//        if (!parLoop.boundingBoxContains(subLoop))
-//        {
-//            //Optimization
-//            return false;
-//        }
-//        
-//        for (CutSegHalf seg: subLoop.segList)
-//        {
-//            Coord c = seg.c0;
-//            if (!parLoop.containsVertex(c))
-//            {
-//                //Since point is not common to both loops, can be used
-//                // for inside/outside test
-//                return parLoop.contains(c.x, c.y);
-//            }
-//        }
-//
-//        //All verts of subloop are also verts of parent loop.
-//        // Since loops cannot overlap, must be contained in loop.
-//        return true;        
-//    }
-//
-//    private CutLoop extractLoop(ArrayList<CutSegHalf> segList)
-//    {
-//        CutSegHalf initSeg = segList.get(0);
-//        
-//        ArrayList<CutSegHalf> loop = new ArrayList<CutSegHalf>();
-//        
-//        CutSegHalf curSeg = initSeg;
-//        do
-//        {
-//            loop.add(curSeg);
-//            
-//            CutVertex v = vertMap.get(curSeg.c1);
-//            curSeg = v.nextSegCW(curSeg.getPeer());
-//        } 
-//        while (curSeg != initSeg);
-//        
-//        segList.removeAll(loop);
-//        return new CutLoop(loop);
-//    }
-//    
-//    private Coord getMinCoord(CutSegment seg)
-//    {
-//        return seg.c0.compareTo(seg.c1) < 0 ? seg.c0 : seg.c1;
-//    }
-//
-//    private Coord getMaxCoord(CutSegment seg)
-//    {
-//        return seg.c0.compareTo(seg.c1) < 0 ? seg.c1 : seg.c0;
-//    }
-        
-    
-    //-------------------------------
-//    class SortSegs implements Comparator<CutSegment>
-//    {
-//        @Override
-//        public int compare(CutSegment o1, CutSegment o2)
-//        {
-//            int comp = getMinCoord(o1).compareTo(getMinCoord(o2));
-//            if (comp != 0)
-//            {
-//                return comp;
-//            }
-//            return getMaxCoord(o1).compareTo(getMaxCoord(o2));
-//        }
-//    }
 }

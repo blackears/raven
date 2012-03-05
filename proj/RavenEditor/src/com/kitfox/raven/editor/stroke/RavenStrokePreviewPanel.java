@@ -32,6 +32,7 @@ import java.awt.RenderingHints;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenStrokePreviewPanel extends javax.swing.JPanel
 {
     private RavenStroke stroke;

@@ -458,12 +458,14 @@ public class RavenNodeRoot extends NodeDocument
         return fillPaint;
     }
 
+    @Deprecated
     @Override
     public RavenNodePaintLibrary getPaintLibrary()
     {
         return paintLibrary.getChild();
     }
 
+    @Deprecated
     @Override
     public RavenNodeStrokeLibrary getStrokeLibrary()
     {
@@ -498,7 +500,7 @@ public class RavenNodeRoot extends NodeDocument
         return strokePaint.getValue();
     }
 
-    public RavenStroke getStrokeStyle()
+    public RavenStroke getStrokeShape()
     {
         return strokeStyle.getValue();
     }

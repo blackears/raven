@@ -77,6 +77,9 @@ abstract public class CyShape
                     m.transformPoint(k1, normalize);
                     newPath.cubicTo(k0.x, k0.y, k1.x, k1.y, pt.x, pt.y);
                     break;
+                case CLOSE:
+                    newPath.close();
+                    break;
             }
         }
 
@@ -125,6 +128,9 @@ abstract public class CyShape
                     m.transformPoint(k0, normalize);
                     m.transformPoint(k1, normalize);
                     newPath.cubicTo(k0.x, k0.y, k1.x, k1.y, pt.x, pt.y);
+                    break;
+                case CLOSE:
+                    newPath.close();
                     break;
             }
         }
@@ -245,7 +251,7 @@ abstract public class CyShape
 
     public boolean contains(double x, double y)
     {
-        PathLines lineTess = new PathLines();
+        PathClosedLoops lineTess = new PathClosedLoops();
         PathFlattener flat = new PathFlattener(lineTess);
 
         flat.feedShape(this);
@@ -255,7 +261,7 @@ abstract public class CyShape
 
     public boolean contains(CyRectangle2d rectangle)
     {
-        PathLines lineTess = new PathLines();
+        PathClosedLoops lineTess = new PathClosedLoops();
         PathFlattener flat = new PathFlattener(lineTess);
 
         flat.feedShape(this);
@@ -265,12 +271,17 @@ abstract public class CyShape
 
     public boolean intersects(CyRectangle2d rectangle)
     {
+        if (contains(rectangle))
+        {
+            return true;
+        }
+        
         PathLines lineTess = new PathLines();
         PathFlattener flat = new PathFlattener(lineTess);
 
         flat.feedShape(this);
 
-        return lineTess.intersects(rectangle);
+        return lineTess.intersectsEdge(rectangle);
     }
 
     public void export(DataOutputStream dout) throws IOException

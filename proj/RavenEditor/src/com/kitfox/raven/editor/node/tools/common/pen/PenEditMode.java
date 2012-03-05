@@ -20,6 +20,7 @@ package com.kitfox.raven.editor.node.tools.common.pen;
  *
  * @author kitfox
  */
+@Deprecated
 public enum PenEditMode
 {
     ADD, DELETE, EDIT

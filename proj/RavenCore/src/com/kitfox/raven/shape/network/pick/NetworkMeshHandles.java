@@ -1,0 +1,347 @@
+/*
+ * Copyright 2011 Mark McKay
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.kitfox.raven.shape.network.pick;
+
+import com.kitfox.coyote.math.CyMatrix4d;
+import com.kitfox.coyote.shape.CyPath2d;
+import com.kitfox.coyote.shape.bezier.BezierCurve2d;
+import com.kitfox.coyote.shape.bezier.BezierCurve2i;
+import com.kitfox.coyote.shape.bezier.mesh.BezierMeshEdge2i;
+import com.kitfox.coyote.shape.bezier.mesh.BezierMeshVertex2i;
+import com.kitfox.coyote.shape.bezier.mesh.CutLoop;
+import com.kitfox.coyote.shape.bezier.mesh.CutSegHalf;
+import com.kitfox.coyote.shape.bezier.path.cut.Coord;
+import com.kitfox.raven.paint.RavenPaint;
+import com.kitfox.raven.paint.RavenPaintLayout;
+import com.kitfox.raven.paint.RavenStroke;
+import com.kitfox.raven.shape.network.NetworkDataEdge;
+import com.kitfox.raven.shape.network.NetworkMesh;
+import com.kitfox.raven.shape.network.keys.NetworkDataTypePaint;
+import com.kitfox.raven.shape.network.keys.NetworkDataTypePaintLayout;
+import com.kitfox.raven.shape.network.keys.NetworkDataTypeStroke;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+/**
+ *
+ * @author kitfox
+ */
+public class NetworkMeshHandles
+{
+    private final NetworkMesh mesh;
+    private HashMap<Integer, HandleVertex> vertList = new HashMap<Integer, HandleVertex>();
+    private HashMap<Integer, HandleEdge> edgeList = new HashMap<Integer, HandleEdge>();
+    private HashMap<Integer, HandleFace> faceList = new HashMap<Integer, HandleFace>();
+
+    HashMap<BezierMeshEdge2i, HandleEdge> edgeMap = new HashMap<BezierMeshEdge2i, HandleEdge>();
+    
+    private CutLoop boundingLoop;
+    
+    private static CyMatrix4d coordToLocal;
+    static
+    {
+        CyMatrix4d m = CyMatrix4d.createIdentity();
+        m.scale(.01, .01, 1);
+        coordToLocal = m;
+    }
+    
+    public NetworkMeshHandles(NetworkMesh mesh)
+    {
+        this.mesh = mesh;
+        
+        //int edgeId = 0;
+        ArrayList<BezierMeshVertex2i> meshVerts = mesh.getVertices();
+        for (int i = 0; i < meshVerts.size(); ++i)
+        {
+            BezierMeshVertex2i v = meshVerts.get(i);
+            int idx = v.getId();
+            vertList.put(idx, new HandleVertex(idx, v));
+            
+            ArrayList<BezierMeshEdge2i> edgeOut = v.getEdgesOut();
+            for (BezierMeshEdge2i e: edgeOut)
+            {
+                HandleEdge handle = new HandleEdge(e.getId(), e);
+                edgeList.put(handle.getIndex(), handle);
+                edgeMap.put(e, handle);
+            }
+        }
+        
+//        int faceId = 0;
+        ArrayList<CutLoop> loops = mesh.createFaces();
+        for (CutLoop loop: loops)
+        {
+            if (loop.isCcw())
+            {
+                HandleFace face = new HandleFace(loop);
+                faceList.put(face.getIndex(), face);
+            }
+            else
+            {
+                if (boundingLoop != null)
+                {
+                    throw new RuntimeException("Mesh has more than one bounding loop");
+                }
+                boundingLoop = loop;
+            }
+        }
+    }
+
+    /**
+     * @return the mesh
+     */
+    public NetworkMesh getMesh()
+    {
+        return mesh;
+    }
+
+    /**
+     * @return the vertList
+     */
+    public ArrayList<HandleVertex> getVertList()
+    {
+        return new ArrayList<HandleVertex>(vertList.values());
+    }
+
+    /**
+     * @return the edgeList
+     */
+    public ArrayList<HandleEdge> getEdgeList()
+    {
+        return new ArrayList<HandleEdge>(edgeList.values());
+    }
+
+    /**
+     * @return the faceList
+     */
+    public ArrayList<HandleFace> getFaceList()
+    {
+        return new ArrayList<HandleFace>(faceList.values());
+    }
+
+    /**
+     * @return the boundingLoop
+     */
+    public CutLoop getBoundingLoop()
+    {
+        return boundingLoop;
+    }
+
+    public BezierMeshEdge2i<NetworkDataEdge> getEdge(NetworkHandleEdge edge)
+    {
+        if (edge instanceof HandleEdge)
+        {
+            return ((HandleEdge)edge).e;
+        }
+        return null;
+    }
+
+    public CutLoop getFace(NetworkHandleFace face)
+    {
+        if (face instanceof HandleFace)
+        {
+            return ((HandleFace)face).loop;
+        }
+        return null;
+    }
+
+    public HandleEdge getEdgeHandle(BezierMeshEdge2i e)
+    {
+        return edgeMap.get(e);
+    }
+
+    public HandleVertex getVertexHandle(int idx)
+    {
+        return vertList.get(idx);
+    }
+
+    public HandleEdge getEdgeHandle(int idx)
+    {
+        return edgeList.get(idx);
+    }
+
+    public HandleFace getFaceHandle(int idx)
+    {
+        return faceList.get(idx);
+    }
+
+    
+    //--------------------------
+    public class HandleVertex implements NetworkHandleVertex
+    {
+        int index;
+        BezierMeshVertex2i v;
+
+        public HandleVertex(int index, BezierMeshVertex2i v)
+        {
+            this.index = index;
+            this.v = v;
+        }
+
+        @Override
+        public int getIndex()
+        {
+            return index;
+        }
+
+        @Override
+        public Coord getCoord()
+        {
+            return v.getCoord();
+        }
+    }
+
+    public class HandleEdge implements NetworkHandleEdge
+    {
+        int index;
+        BezierMeshEdge2i<NetworkDataEdge> e;
+        private CyPath2d path;
+
+        public HandleEdge(int index, BezierMeshEdge2i<NetworkDataEdge> e)
+        {
+            this.index = index;
+            this.e = e;
+            BezierCurve2i c = e.asCurve();
+            BezierCurve2d curveLocal = c.transfrom(coordToLocal);
+            path = curveLocal.asPath();
+        }
+
+        @Override
+        public int getIndex()
+        {
+            return index;
+        }
+        
+        @Override
+        public RavenStroke getStroke()
+        {
+            NetworkDataEdge data = e.getData();
+            return data.getEdge(NetworkDataTypeStroke.class);
+        }
+
+        @Override
+        public RavenPaint getPaint()
+        {
+            NetworkDataEdge data = e.getData();
+            return data.getEdge(NetworkDataTypePaint.class);
+        }
+
+        @Override
+        public RavenPaintLayout getPaintLayout()
+        {
+            NetworkDataEdge data = e.getData();
+            return data.getEdge(NetworkDataTypePaintLayout.class);
+        }
+
+        @Override
+        public BezierCurve2d getCurve()
+        {
+            BezierCurve2i c = e.asCurve();
+            return c.transfrom(coordToLocal);
+        }
+
+        /**
+         * @return the path
+         */
+        public CyPath2d getPath()
+        {
+            return path;
+        }
+    }
+    
+
+    public class HandleFace implements NetworkHandleFace
+    {
+        final int index;
+        CutLoop loop;
+        
+        RavenPaint paint;
+        RavenPaintLayout layout;
+        //Face path in pixel space
+        CyPath2d path;
+
+        public HandleFace(CutLoop loop)
+        {
+//            this.index = index;
+            this.loop = loop;
+            
+            this.path = new CyPath2d();
+            loop.appendPath(path);
+            path = path.createTransformedPath(coordToLocal);
+            
+            //Create a unique hash for the face by combining index of
+            // minimum edge with it's half side
+            int minIndex = Integer.MAX_VALUE;
+            for (CutSegHalf half: loop.getSegs())
+            {
+                BezierMeshEdge2i<NetworkDataEdge> e
+                        = (BezierMeshEdge2i<NetworkDataEdge>)half.getEdge();
+                minIndex = Math.min(minIndex, e.getId() * 2 
+                        + (half.isRight() ? 1 : 0));
+            }
+            this.index = minIndex;
+            
+            //Determine paint for this face
+            for (CutSegHalf half: loop.getSegs())
+            {
+                BezierMeshEdge2i<NetworkDataEdge> e
+                        = (BezierMeshEdge2i<NetworkDataEdge>)half.getEdge();
+                NetworkDataEdge data = e.getData();
+                
+                if (data == null)
+                {
+                    continue;
+                }
+                
+                if (half.isRight())
+                {
+                    paint = data.getRight(NetworkDataTypePaint.class);
+                    layout = data.getRight(NetworkDataTypePaintLayout.class);
+                }
+                else
+                {
+                    paint = data.getLeft(NetworkDataTypePaint.class);
+                    layout = data.getLeft(NetworkDataTypePaintLayout.class);
+                }
+            }
+        }
+
+        @Override
+        public int getIndex()
+        {
+            return index;
+        }
+
+        @Override
+        public RavenPaint getPaint()
+        {
+            return paint;
+        }
+
+        @Override
+        public RavenPaintLayout getPaintLayout()
+        {
+            return layout;
+        }
+
+        public CyPath2d getPath()
+        {
+            return path;
+        }
+        
+    }
+    
+}

@@ -20,6 +20,7 @@ import com.kitfox.coyote.shape.bezier.BezierCubic2i;
 import com.kitfox.coyote.shape.bezier.BezierLine2i;
 import com.kitfox.coyote.shape.bezier.mesh.BezierMesh2i;
 import com.kitfox.coyote.shape.bezier.mesh.CutLoop;
+import java.util.ArrayList;
 
 /**
  *
@@ -46,7 +47,10 @@ public class BezierMeshTestMain
         mesh.addEdge(new BezierLine2i(50, 100, 50, 200), null);
         mesh.addEdge(new BezierLine2i(50, 200, 50, 300), null);
         
-        CutLoop faceTree = mesh.createFaces();
-        faceTree.contains(15, 15);
+        ArrayList<CutLoop> faces = mesh.createFaces();
+        for (CutLoop face: faces)
+        {
+            face.contains(15, 15);
+        }
     }
 }

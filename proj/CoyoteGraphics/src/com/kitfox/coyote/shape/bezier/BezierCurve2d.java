@@ -16,7 +16,9 @@
 
 package com.kitfox.coyote.shape.bezier;
 
+import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.math.CyVector2d;
+import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.PathConsumer;
 
 /**
@@ -85,4 +87,8 @@ abstract public class BezierCurve2d
     abstract public BezierCurve2d offset(double width);
 
     abstract public void append(PathConsumer out);
+
+    abstract public BezierCurve2d transfrom(CyMatrix4d xform);
+
+    abstract public CyPath2d asPath();
 }

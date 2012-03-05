@@ -22,24 +22,24 @@ import com.kitfox.coyote.shape.bezier.path.cut.Coord;
  *
  * @author kitfox
  */
-public class CutSegHalf<EdgeData>
+public class CutSegHalf
 {
     final double t0;
     final double t1;
     final Coord c0;
     final Coord c1;
-    private final EdgeData data;
+    private final BezierMeshEdge2i edge;
     private final boolean right;
     
     private CutSegHalf peer;
 
-    public CutSegHalf(double t0, double t1, Coord c0, Coord c1, EdgeData data, boolean right)
+    public CutSegHalf(double t0, double t1, Coord c0, Coord c1, BezierMeshEdge2i data, boolean right)
     {
         this.t0 = t0;
         this.t1 = t1;
         this.c0 = c0;
         this.c1 = c1;
-        this.data = data;
+        this.edge = data;
         this.right = right;
     }
     
@@ -77,15 +77,16 @@ public class CutSegHalf<EdgeData>
     }
 
     /**
-     * @return the data
+     * @return the parent edge
      */
-    public EdgeData getData()
+    public BezierMeshEdge2i getEdge()
     {
-        return data;
+        return edge;
     }
 
     /**
-     * @return the right
+     * @return True if this half edge is the right side of the 
+     * parent edge, false if it is the left side.
      */
     public boolean isRight()
     {

@@ -31,6 +31,7 @@ import java.awt.BorderLayout;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenStrokeBasicPanel extends javax.swing.JPanel
 {
     private static final long serialVersionUID = 1;

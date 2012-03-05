@@ -34,6 +34,7 @@ import java.util.Arrays;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenStrokeBasic extends RavenStrokeInline
 {
     private final float width;

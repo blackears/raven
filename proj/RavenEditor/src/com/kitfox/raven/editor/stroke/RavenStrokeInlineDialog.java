@@ -32,6 +32,7 @@ import java.beans.PropertyChangeListener;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenStrokeInlineDialog extends javax.swing.JDialog
         implements PropertyChangeListener
 {

@@ -16,6 +16,7 @@
 
 package com.kitfox.coyote.shape.bezier;
 
+import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.math.Math2DUtil;
 import com.kitfox.coyote.shape.PathConsumer;
@@ -261,5 +262,7 @@ abstract public class BezierCurve2i
     }
 
     abstract public boolean isPoint();
+
+    abstract public BezierCurve2d transfrom(CyMatrix4d xform);
 
 }

@@ -40,6 +40,7 @@ import java.util.ArrayList;
  *
  * @author kitfox
  */
+@Deprecated
 public class RavenStrokeCustomEditor extends javax.swing.JPanel
         implements PropertyChangeListener, PropertyCustomEditor
 {

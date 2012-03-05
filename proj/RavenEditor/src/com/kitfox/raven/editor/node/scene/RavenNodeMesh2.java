@@ -16,10 +16,9 @@
 
 package com.kitfox.raven.editor.node.scene;
 
-import com.kitfox.coyote.material.color.CyMaterialColorDrawRecord;
-import com.kitfox.coyote.material.color.CyMaterialColorDrawRecordFactory;
 import com.kitfox.coyote.math.CyColor4f;
 import com.kitfox.coyote.math.CyMatrix4d;
+import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.renderer.CyDrawStack;
 import com.kitfox.coyote.renderer.CyVertexBuffer;
 import com.kitfox.coyote.shape.*;
@@ -30,6 +29,7 @@ import com.kitfox.coyote.shape.bezier.mesh.CutSegHalf;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import com.kitfox.raven.editor.node.renderer.RavenRenderer;
 import com.kitfox.raven.editor.node.tools.common.pen.ServiceBezierMesh;
+import com.kitfox.raven.editor.node.tools.common.shape.ServiceShapeManip;
 import com.kitfox.raven.paint.RavenPaint;
 import com.kitfox.raven.paint.RavenPaintLayout;
 import com.kitfox.raven.paint.RavenStroke;
@@ -38,10 +38,19 @@ import com.kitfox.raven.shape.network.NetworkMesh;
 import com.kitfox.raven.shape.network.keys.NetworkDataTypePaint;
 import com.kitfox.raven.shape.network.keys.NetworkDataTypePaintLayout;
 import com.kitfox.raven.shape.network.keys.NetworkDataTypeStroke;
+import com.kitfox.raven.shape.network.pick.NetworkHandleEdge;
+import com.kitfox.raven.shape.network.pick.NetworkHandleFace;
+import com.kitfox.raven.shape.network.pick.NetworkHandleVertex;
+import com.kitfox.raven.shape.network.pick.NetworkMeshHandles;
+import com.kitfox.raven.shape.network.pick.NetworkMeshHandles.HandleEdge;
+import com.kitfox.raven.shape.network.pick.NetworkMeshHandles.HandleFace;
+import com.kitfox.raven.shape.network.pick.NetworkMeshHandles.HandleVertex;
+import com.kitfox.raven.util.Intersection;
 import com.kitfox.raven.util.service.ServiceInst;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
 import com.kitfox.raven.util.tree.PropertyWrapper;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 
 /**
@@ -49,7 +58,7 @@ import java.util.HashSet;
  * @author kitfox
  */
 public class RavenNodeMesh2 extends RavenNodeXformable
-        implements ServiceBezierMesh
+        implements ServiceBezierMesh, ServiceShapeManip
 {
     public static final String PROP_MESH = "mesh";
     public final PropertyWrapper<RavenNodeMesh2, NetworkMesh> mesh =
@@ -61,8 +70,6 @@ public class RavenNodeMesh2 extends RavenNodeXformable
     protected RavenNodeMesh2(int uid)
     {
         super(uid);
-
-//        path.addPropertyWrapperListener(clearCache);
     }
 
     @Override
@@ -142,14 +149,6 @@ public class RavenNodeMesh2 extends RavenNodeXformable
     {
         MeshLayout faceSet = getFaceSet();
         return faceSet.combinedPath;
-        //return null;
-        
-//        NetworkMesh curMesh = mesh.getValue();
-//        //CutGraph.createFaces(null)
-//        CutLoop faces = curMesh.createFaces();
-        
-        //Outer loop should be bounds
-        
     }
 
     @Override
@@ -170,6 +169,234 @@ public class RavenNodeMesh2 extends RavenNodeXformable
         this.mesh.setValue(mesh, history);
     }
 
+    private NetworkMeshHandles getMeshHandles()
+    {
+        NetworkMeshHandles handles = mesh.getUserCacheValue(NetworkMeshHandles.class);
+        if (handles == null)
+        {
+            handles = new NetworkMeshHandles(mesh.getValue());
+            mesh.setUserCacheValue(NetworkMeshHandles.class, handles);
+        }
+        return handles;
+    }
+    
+    @Override
+    public ArrayList<NetworkHandleVertex> pickVertices(CyRectangle2d region, 
+            CyMatrix4d l2d, Intersection isect)
+    {
+        NetworkMeshHandles handles = getMeshHandles();
+        ArrayList<NetworkHandleVertex> retList = new ArrayList<NetworkHandleVertex>();
+        
+        CyVector2d pt = new CyVector2d();
+        for (HandleVertex v: handles.getVertList())
+        {
+            Coord c = v.getCoord();
+            pt.set(c.x / 100f, c.y / 100f);
+            l2d.transformPoint(pt);
+            
+            if (region.contains(pt))
+            {
+                retList.add(v);
+            }
+        }
+        
+        return retList;
+    }
+
+    @Override
+    public ArrayList<NetworkHandleEdge> pickEdges(CyRectangle2d region, 
+            CyMatrix4d l2d, Intersection isect)
+    {
+        NetworkMeshHandles handles = getMeshHandles();
+        ArrayList<NetworkHandleEdge> retList = new ArrayList<NetworkHandleEdge>();
+        
+        for (HandleEdge e: handles.getEdgeList())
+        {
+            CyPath2d path = e.getPath();
+            CyPath2d devPath = path.createTransformedPath(l2d);
+
+            CyRectangle2d bounds = devPath.getBounds();
+            
+            switch (isect)
+            {
+                case CONTAINS:
+                    if (bounds.contains(region))
+                    {
+                        retList.add(e);
+                    }
+                    break;
+                case INTERSECTS:
+                    if (devPath.intersects(region))
+                    {
+                        retList.add(e);
+                    }
+                    break;
+                case INSIDE:
+                    if (devPath.contains(region))
+                    {
+                        retList.add(e);
+                    }
+                    break;
+            }
+        }
+        
+        return retList;
+    }
+
+    @Override
+    public ArrayList<NetworkHandleFace> pickFaces(CyRectangle2d region, 
+            CyMatrix4d l2d, Intersection isect)
+    {
+        NetworkMeshHandles handles = getMeshHandles();
+        ArrayList<NetworkHandleFace> retList = new ArrayList<NetworkHandleFace>();
+        
+        for (HandleFace face: handles.getFaceList())
+        {
+            CyPath2d path = face.getPath();
+            CyPath2d devPath = path.createTransformedPath(l2d);
+
+            CyRectangle2d bounds = devPath.getBounds();
+            
+            switch (isect)
+            {
+                case CONTAINS:
+                    if (bounds.contains(region))
+                    {
+                        retList.add(face);
+                    }
+                    break;
+                case INTERSECTS:
+                    if (devPath.intersects(region))
+                    {
+                        retList.add(face);
+                    }
+                    break;
+                case INSIDE:
+                    if (devPath.contains(region))
+                    {
+                        retList.add(face);
+                    }
+                    break;
+            }
+        }
+        
+        return retList;
+    }
+
+    @Override
+    public ArrayList<NetworkHandleEdge> getConnectedEdges(NetworkHandleEdge edge)
+    {
+        NetworkMeshHandles handles = getMeshHandles();
+        BezierMeshEdge2i<NetworkDataEdge> bezEdge = handles.getEdge(edge);
+        
+        ArrayList<NetworkHandleEdge> retList = new ArrayList<NetworkHandleEdge>();
+        
+        ArrayList<BezierMeshEdge2i> edges = bezEdge.getConnectedEdges();
+        for (BezierMeshEdge2i e: edges)
+        {
+            retList.add(handles.getEdgeHandle(e));
+        }
+        
+        return retList;
+    }
+
+    @Override
+    public void setEdgePaintAndStroke(RavenPaint paint, RavenStroke stroke, 
+            Collection<NetworkHandleEdge> edges, boolean history)
+    {
+        //Create a new mesh and set coresponding edge data
+        NetworkMesh oldMesh = mesh.getValue();
+        NetworkMesh newMesh = new NetworkMesh(oldMesh);
+        NetworkMeshHandles newHandles = new NetworkMeshHandles(newMesh);
+        
+        for (NetworkHandleEdge edge: edges)
+        {
+            HandleEdge handle = newHandles.getEdgeHandle(edge.getIndex());
+            BezierMeshEdge2i<NetworkDataEdge> bezEdge = newHandles.getEdge(handle);
+            
+            NetworkDataEdge data = bezEdge.getData();
+            data.putEdge(NetworkDataTypePaint.class, paint);
+            data.putEdge(NetworkDataTypeStroke.class, stroke);
+        }
+
+        mesh.setValue(newMesh, history);
+    }
+
+    @Override
+    public void setEdgePaint(RavenPaint paint, Collection<NetworkHandleEdge> edges,
+            boolean history)
+    {
+        //Create a new mesh and set coresponding edge data
+        NetworkMesh oldMesh = mesh.getValue();
+        NetworkMesh newMesh = new NetworkMesh(oldMesh);
+        NetworkMeshHandles newHandles = new NetworkMeshHandles(newMesh);
+        
+        for (NetworkHandleEdge edge: edges)
+        {
+            HandleEdge handle = newHandles.getEdgeHandle(edge.getIndex());
+            BezierMeshEdge2i<NetworkDataEdge> bezEdge = newHandles.getEdge(handle);
+            
+            NetworkDataEdge data = bezEdge.getData();
+            data.putEdge(NetworkDataTypePaint.class, paint);
+        }
+
+        mesh.setValue(newMesh, history);
+    }
+
+    @Override
+    public void setEdgeStroke(RavenStroke stroke, Collection<NetworkHandleEdge> edges,
+            boolean history)
+    {
+        //Create a new mesh and set coresponding edge data
+        NetworkMesh oldMesh = mesh.getValue();
+        NetworkMesh newMesh = new NetworkMesh(oldMesh);
+        NetworkMeshHandles newHandles = new NetworkMeshHandles(newMesh);
+        
+        for (NetworkHandleEdge edge: edges)
+        {
+            HandleEdge handle = newHandles.getEdgeHandle(edge.getIndex());
+            BezierMeshEdge2i<NetworkDataEdge> bezEdge = newHandles.getEdge(handle);
+            
+            NetworkDataEdge data = bezEdge.getData();
+            data.putEdge(NetworkDataTypeStroke.class, stroke);
+        }
+
+        mesh.setValue(newMesh, history);
+    }
+
+    @Override
+    public void setFacePaint(RavenPaint paint, Collection<NetworkHandleFace> faces,
+            boolean history)
+    {
+        //Create a new mesh and set coresponding edge data
+        NetworkMesh oldMesh = mesh.getValue();
+        NetworkMesh newMesh = new NetworkMesh(oldMesh);
+        NetworkMeshHandles newHandles = new NetworkMeshHandles(newMesh);
+        
+        for (NetworkHandleFace face: faces)
+        {
+            HandleFace handle = newHandles.getFaceHandle(face.getIndex());
+            
+            CutLoop loop = newHandles.getFace(handle);
+            for (CutSegHalf half: loop.getSegs())
+            {
+                BezierMeshEdge2i<NetworkDataEdge> bezEdge = half.getEdge();
+                NetworkDataEdge data = bezEdge.getData();
+
+                if (half.isRight())
+                {
+                    data.putRight(NetworkDataTypePaint.class, paint);
+                }
+                else
+                {
+                    data.putLeft(NetworkDataTypePaint.class, paint);
+                }
+            }
+        }
+
+        mesh.setValue(newMesh, history);
+    }
+
     
     //----------------------------------------
     protected class MeshLayout //implements PathVisitor
@@ -188,31 +415,14 @@ public class RavenNodeMesh2 extends RavenNodeXformable
             {
                 if (loop.isCcw())
                 {
-//                    CyPath2d path = loop.createPath();
-//                    paths.add(new FaceLayout(path, CyColor4f.randomRGB()));
-                  paths.add(new FaceLayout(loop));
+                    paths.add(new FaceLayout(loop));
                 }
                 else
                 {
                     combinedPath = loop.createPath();
                 }
             }
-            
-//            if (faces != null)
-//            {
-//                for (int i = 0; i < faces.getNumChildren(); ++i)
-//                {
-//                    faces.getChild(i).visitFaces(this);
-//                }
-//            }
         }
-
-//        @Override
-//        public void emitFace(CutLoop parent, CyPath2d path)
-//        {
-//            paths.add(new FaceLayout(path, CyColor4f.randomRGB()));
-//            combinedPath.append(path);
-//        }
         
         private void buildEdges(NetworkMesh mesh)
         {
@@ -353,18 +563,6 @@ public class RavenNodeMesh2 extends RavenNodeXformable
 
             //Color for debugging - remove later
             color = CyColor4f.randomRGB();
-            
-//            CyStroke stroke = new CyStroke(100);
-//            CyPath2d pathStroked = stroke.outlineShape(path);
-//            
-////System.err.println("Edge " + path.toString());
-////System.err.println("Stroked " + pathStroked.toString());
-////System.err.println("EdgeLayout Out " + path.toString());
-//            color = CyColor4f.randomRGB();
-////            ShapeLinesProvider prov = new ShapeLinesProvider(path);
-//            ShapeMeshProvider prov = new ShapeMeshProvider(pathStroked, TESS_FLAT_SQ);
-//            vertBuf = new CyVertexBuffer(prov);
-            
         }
     }
     
@@ -375,14 +573,6 @@ public class RavenNodeMesh2 extends RavenNodeXformable
         CyVertexBuffer vertBuf;
         RavenPaint paint;
         RavenPaintLayout paintLayout;
-
-//        public FaceLayout(CyPath2d path, CyColor4f color)
-//        {
-//            this.path = path;
-//            this.color = color;
-//            ShapeMeshProvider prov = new ShapeMeshProvider(path, TESS_FLAT_SQ);
-//            vertBuf = new CyVertexBuffer(prov);
-//        }
 
         private FaceLayout(CutLoop loop)
         {
@@ -395,7 +585,7 @@ public class RavenNodeMesh2 extends RavenNodeXformable
             ArrayList<CutSegHalf> segs = loop.getSegs();
             for (CutSegHalf seg: segs)
             {
-                BezierMeshEdge2i edge = (BezierMeshEdge2i)seg.getData();
+                BezierMeshEdge2i edge = (BezierMeshEdge2i)seg.getEdge();
                 if (edge == null)
                 {
                     continue;

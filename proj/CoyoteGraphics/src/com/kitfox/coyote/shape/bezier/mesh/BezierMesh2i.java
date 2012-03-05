@@ -23,21 +23,55 @@ import com.kitfox.coyote.shape.bezier.PickPoint;
 import com.kitfox.coyote.shape.bezier.cutgraph.CurveCutter2i;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 /**
  *
  * @author kitfox
  */
-public class BezierMesh2i<VertexData, EdgeData>
+abstract public class BezierMesh2i<VertexData, EdgeData>
 {
     HashMap<Coord, BezierMeshVertex2i> vertMap = new HashMap<Coord, BezierMeshVertex2i>();
     final double flatnessSquared;
+    int nextVertId;
+    int nextEdgeId;
 
     public BezierMesh2i(double flatnessSquared)
     {
         this.flatnessSquared = flatnessSquared;
+    }
+
+    public BezierMesh2i(BezierMesh2i<VertexData, EdgeData> mesh)
+    {
+        this.flatnessSquared = mesh.flatnessSquared;
+        this.nextVertId = mesh.nextVertId;
+        this.nextEdgeId = mesh.nextEdgeId;
+        
+        //Duplicate verts
+        for (BezierMeshVertex2i v0: mesh.vertMap.values())
+        {
+            BezierMeshVertex2i v1 = new BezierMeshVertex2i(v0.getId(),
+                    v0.getCoord(), copyVertexData((VertexData)v0.getData()));
+            vertMap.put(v1.getCoord(), v1);
+        }
+        
+        //Duplicate edges
+        for (BezierMeshVertex2i v: mesh.vertMap.values())
+        {
+            ArrayList<BezierMeshEdge2i> list = v.getEdgesOut();
+            for (BezierMeshEdge2i e0: list)
+            {
+                BezierMeshVertex2i v0 = vertMap.get(e0.getStart().getCoord());
+                BezierMeshVertex2i v1 = vertMap.get(e0.getEnd().getCoord());
+                
+                BezierMeshEdge2i e1 = new BezierMeshEdge2i(e0.getId(),
+                        v0, v1, copyEdgeData((EdgeData)e0.getData()),
+                        e0.getSmooth0(), e0.getSmooth1(), 
+                        e0.getK0(), e0.getK1());
+                v0.edgesOut.add(e1);
+                v1.edgesIn.add(e1);
+            }
+        }
     }
 
 //    public BezierMesh2i(BezierMesh2i<VertexData, EdgeData> mesh)
@@ -46,6 +80,9 @@ public class BezierMesh2i<VertexData, EdgeData>
 //        
 //        for (
 //    }
+    
+    abstract public VertexData copyVertexData(VertexData data);
+    abstract public EdgeData copyEdgeData(EdgeData data);
     
     public double getFlatnessSquared()
     {
@@ -113,17 +150,14 @@ public class BezierMesh2i<VertexData, EdgeData>
         return new ArrayList<BezierMeshVertex2i>(vertMap.values());
     }
     
-    protected VertexData createDefaultVertexData(Coord c)
-    {
-        return null;
-    }
+    abstract protected VertexData createDefaultVertexData(Coord c);
     
     protected BezierMeshVertex2i getOrCreateVertex(Coord c)
     {
         BezierMeshVertex2i v = vertMap.get(c);
         if (v == null)
         {
-            v = new BezierMeshVertex2i(c, createDefaultVertexData(c));
+            v = new BezierMeshVertex2i(nextVertId++, c, createDefaultVertexData(c));
             vertMap.put(c, v);
         }
         return v;
@@ -228,13 +262,13 @@ public class BezierMesh2i<VertexData, EdgeData>
         BezierMeshEdge2i edge;
         if (curve.getOrder() == 2)
         {
-            edge = new BezierMeshEdge2i(vm0, vm1, data, 
+            edge = new BezierMeshEdge2i(nextEdgeId++, vm0, vm1, data, 
                     BezierVertexSmooth.CORNER, BezierVertexSmooth.CORNER, 
                     k0, k1);
         }
         else
         {
-            edge = new BezierMeshEdge2i(vm0, vm1, data, 
+            edge = new BezierMeshEdge2i(nextEdgeId++, vm0, vm1, data, 
                     BezierVertexSmooth.SMOOTH, BezierVertexSmooth.SMOOTH, 
                     k0, k1);
         }

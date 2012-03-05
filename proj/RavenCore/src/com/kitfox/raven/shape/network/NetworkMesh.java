@@ -56,21 +56,22 @@ public class NetworkMesh extends BezierMesh2i<NetworkDataVertex, NetworkDataEdge
 
     public NetworkMesh(NetworkMesh mesh)
     {
-        super(mesh.getFlatnessSquared());
-
-        for (BezierMeshVertex2i vert: mesh.getVertices())
-        {
-            BezierMeshVertex2i vertNew = getOrCreateVertex(vert.getCoord());
-            
-            vertNew.setData(new NetworkDataVertex((NetworkDataVertex)
-                    vert.getData()));
-        }
-        
-        for (BezierMeshEdge2i edge: mesh.getEdges())
-        {
-            addEdgeDirect(edge.asCurve(), 
-                    new NetworkDataEdge((NetworkDataEdge)edge.getData()));
-        }
+        super(mesh);
+//        super(mesh.getFlatnessSquared());
+//
+//        for (BezierMeshVertex2i vert: mesh.getVertices())
+//        {
+//            BezierMeshVertex2i vertNew = getOrCreateVertex(vert.getCoord());
+//            
+//            vertNew.setData(new NetworkDataVertex((NetworkDataVertex)
+//                    vert.getData()));
+//        }
+//        
+//        for (BezierMeshEdge2i edge: mesh.getEdges())
+//        {
+//            addEdgeDirect(edge.asCurve(), 
+//                    new NetworkDataEdge((NetworkDataEdge)edge.getData()));
+//        }
     }
 
     @Override
@@ -133,6 +134,18 @@ public class NetworkMesh extends BezierMesh2i<NetworkDataVertex, NetworkDataEdge
         }
         
         return bounds;
+    }
+
+    @Override
+    public NetworkDataVertex copyVertexData(NetworkDataVertex data)
+    {
+        return new NetworkDataVertex(data);
+    }
+
+    @Override
+    public NetworkDataEdge copyEdgeData(NetworkDataEdge data)
+    {
+        return new NetworkDataEdge(data);
     }
 
 

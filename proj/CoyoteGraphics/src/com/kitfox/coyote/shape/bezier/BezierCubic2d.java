@@ -17,8 +17,10 @@
 package com.kitfox.coyote.shape.bezier;
 
 import com.kitfox.coyote.math.CyMatrix2d;
+import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.math.Math2DUtil;
+import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.PathConsumer;
 
 /**
@@ -396,6 +398,31 @@ public class BezierCubic2d extends BezierCurve2d
     }
 
     @Override
+    public BezierCubic2d transfrom(CyMatrix4d xform)
+    {
+        CyVector2d a0 = new CyVector2d(ax0, ay0);
+        CyVector2d a1 = new CyVector2d(ax1, ay1);
+        CyVector2d a2 = new CyVector2d(ax2, ay2);
+        CyVector2d a3 = new CyVector2d(ax3, ay3);
+        
+        xform.transformPoint(a0);
+        xform.transformPoint(a1);
+        xform.transformPoint(a2);
+        xform.transformPoint(a3);
+        
+        return new BezierCubic2d(a0.x, a0.y, a1.x, a1.y, a2.x, a2.y, a3.x, a3.y);
+    }
+
+    @Override
+    public CyPath2d asPath()
+    {
+        CyPath2d path = new CyPath2d();
+        path.moveTo(ax0, ay0);
+        path.cubicTo(ax1, ay1, ax2, ay2, ax3, ay3);
+        return path;
+    }
+
+    @Override
     public void append(PathConsumer out)
     {
         out.cubicTo(ax1, ay1, ax2, ay2, ax3, ay3);
@@ -423,5 +450,4 @@ public class BezierCubic2d extends BezierCurve2d
         
     }
 */
-
 }
