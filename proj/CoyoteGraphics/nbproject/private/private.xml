@@ -1,4 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
+        <file>file:/C:/dev/java.net/raven/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/shape/bezier/mesh/CutLoop.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/shape/bezier/mesh/CutSegHalf.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/shape/bezier/mesh/CutGraph.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/shape/bezier/mesh/CutSegment.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/shape/bezier/mesh/BezierMesh2i.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/shape/bezier/BezierCurve2i.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/shape/bezier/BezierCubic2i.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/shape/bezier/BezierCubic2d.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/shape/bezier/BezierCurve2d.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/shape/bezier/BezierLine2d.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/shape/bezier/BezierLine2i.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/shape/bezier/BezierPoint2d.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/shape/bezier/BezierPoint2i.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/shape/bezier/BezierQuad2d.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/shape/bezier/BezierQuad2i.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/shape/PathCollector.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/shape/CyShape.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/shape/PathLines.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/shape/bezier/mesh/BezierMeshEdge2i.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/shape/PathFlattener.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/shape/ShapeLinesProvider.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/shape/PathClosedLoops.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/shape/CyRectangle2d.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/math/Math2DUtil.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/shape/CyPath2d.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/CoyoteGraphics/src/com/kitfox/coyote/shape/bezier/mesh/BezierMeshVertex2i.java</file>
+    </open-files>
 </project-private>

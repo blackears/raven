@@ -35,6 +35,7 @@ import com.kitfox.raven.util.PropertiesData;
 import com.kitfox.raven.util.Selection;
 import com.kitfox.raven.util.service.ServiceInst;
 import com.kitfox.raven.util.tree.NodeObject;
+import com.kitfox.raven.util.undo.History;
 import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -45,11 +46,11 @@ import java.util.Properties;
  *
  * @author kitfox
  */
-public class ToolPaintFlood extends ToolDisplay
+public class ToolPaintSampler extends ToolDisplay
 {
-    ToolPaintFlood.Provider toolProvider;
+    ToolPaintSampler.Provider toolProvider;
 
-    protected ToolPaintFlood(ToolUser user, ToolPaintFlood.Provider toolProvider)
+    protected ToolPaintSampler(ToolUser user, ToolPaintSampler.Provider toolProvider)
     {
         super(user);
         this.toolProvider = toolProvider;
@@ -65,7 +66,7 @@ public class ToolPaintFlood extends ToolDisplay
                     node.getNodeService(ServiceShapeManip.class, false);
             if (servShape != null)
             {
-                if (doFill(node, servShape, evt))
+                if (doSample(node, servShape, evt))
                 {
                     return;
                 }
@@ -73,7 +74,7 @@ public class ToolPaintFlood extends ToolDisplay
         }
     }
      
-    private boolean doFill(RavenNodeXformable node, ServiceShapeManip servShape, MouseEvent evt)
+    private boolean doSample(RavenNodeXformable node, ServiceShapeManip servShape, MouseEvent evt)
     {           
 //        ServiceShapeManip servShape = user.getToolService(ServiceShapeManip.class);
 //        if (servShape == null)
@@ -98,8 +99,23 @@ public class ToolPaintFlood extends ToolDisplay
 
             if (!edges.isEmpty())
             {
-                boolean connectedEdges = evt.getClickCount() > 1;
-                floodEdges(edges, connectedEdges, servShape);
+                NetworkHandleEdge e = edges.get(0);
+                RavenPaint paint = e.getPaint();
+                RavenStroke stroke = e.getStroke();
+
+                History hist = doc.getHistory();
+                hist.beginTransaction("Sample edge paint");
+                
+                if (toolProvider.isStrokePaint())
+                {
+                    doc.strokePaint.setValue(paint);
+                }
+                if (toolProvider.isStrokeShape())
+                {
+                    doc.strokeShape.setValue(stroke);
+                }
+                
+                hist.commitTransaction();
                 return true;
             }
         }
@@ -111,7 +127,11 @@ public class ToolPaintFlood extends ToolDisplay
 
             if (!faces.isEmpty())
             {
-                floodFaces(faces, servShape);
+                NetworkHandleFace face = faces.get(0);
+                RavenPaint paint = face.getPaint();
+                
+                doc.fillPaint.setValue(paint);
+                
                 return true;
             }
         }
@@ -143,130 +163,11 @@ public class ToolPaintFlood extends ToolDisplay
     public void dispose()
     {
     }
-
-    private void floodEdges(ArrayList<NetworkHandleEdge> edges, 
-            boolean connectedEdges, ServiceShapeManip servShape)
-    {
-        HashSet<NetworkHandleEdge> floodSet = new HashSet<NetworkHandleEdge>();
-        Selection<NodeObject> sel = getSelection();
-
-        if (connectedEdges)
-        {
-            for (NetworkHandleEdge curEdge: edges)
-            {
-                ArrayList<NetworkHandleEdge> conn 
-                        = servShape.getConnectedEdges(curEdge);
-                floodSet.addAll(conn);
-            }
-        }
-        else
-        {
-            floodSet.addAll(edges);
-        }
-        
-//        for (NetworkHandleEdge curEdge: edges)
-//        {
-//            if (connectedEdges)
-//            {
-//                ArrayList<NetworkHandleEdge> conn 
-//                        = servShape.getConnectedEdges(curEdge);
-//                floodList.addAll(conn);
-//            }
-//            else
-//            {
-//                floodList.add(curEdge);
-//            }
-//        }
-        
-        //Include selection
-        for (int i = 0; i < sel.size(); ++i)
-        {
-            NodeObject node = sel.get(i);
-            NetworkHandleSelection subSel = 
-                    sel.getSubselection(node, NetworkHandleSelection.class);
-            if (subSel == null)
-            {
-                continue;
-            }
-
-            for (NetworkHandleEdge curEdge: edges)
-            {
-                if (subSel.containsEdge(curEdge))
-                {
-                    floodSet.addAll(subSel.getEdges());
-                }
-            }
-        }
-        
-        //Flood
-        RavenNodeRoot doc = getDocument();
-//        History hist = doc.getHistory();
-        
-        if (toolProvider.isStrokePaint() && toolProvider.isStrokeShape())
-        {
-            RavenPaint paint = doc.getStrokePaint();
-            RavenStroke stroke = doc.getStrokeShape();
-            servShape.setEdgePaintAndStroke(paint, stroke, floodSet, true);
-//            hist.beginTransaction("Flood edge");
-        }
-        else if (toolProvider.isStrokePaint())
-        {
-            RavenPaint paint = doc.getStrokePaint();
-            servShape.setEdgePaint(paint, floodSet, true);
-        }
-        else if (toolProvider.isStrokeShape())
-        {
-            RavenStroke stroke = doc.getStrokeShape();
-            servShape.setEdgeStroke(stroke, floodSet, true);
-        }
-
-//        if (updateMultiple)
-//        {
-//            hist.commitTransaction();
-//        }
-    }
-
-    private void floodFaces(ArrayList<NetworkHandleFace> faces, 
-            ServiceShapeManip servShape)
-    {
-        HashSet<NetworkHandleFace> floodList
-                = new HashSet<NetworkHandleFace>(faces);
-        Selection<NodeObject> sel = getSelection();
-        
-        //Include selection
-        for (int i = 0; i < sel.size(); ++i)
-        {
-            NodeObject node = sel.get(i);
-            NetworkHandleSelection subSel = 
-                    sel.getSubselection(node, NetworkHandleSelection.class);
-            if (subSel == null)
-            {
-                continue;
-            }
-
-            for (NetworkHandleFace curFace: faces)
-            {
-                if (subSel.containsFace(curFace))
-                {
-                    floodList.addAll(subSel.getFaces());
-                }
-            }
-        }
-        
-        //Flood
-        RavenNodeRoot doc = getDocument();
-        if (toolProvider.isFacePaint())
-        {
-            RavenPaint paint = doc.getFillPaint();
-            servShape.setFacePaint(paint, faces, true);
-        }
-    }
-    
     
     //---------------------------------------
 
     @ServiceInst(service=ToolProvider.class)
-    static public class Provider extends ToolProvider<ToolPaintFlood>
+    static public class Provider extends ToolProvider<ToolPaintSampler>
     {
         public static final String PROP_FACEPAINT = "facePaint";
         private boolean facePaint = true;
@@ -277,7 +178,7 @@ public class ToolPaintFlood extends ToolDisplay
 
         public Provider()
         {
-            super("Paint Flood", "/icons/tools/paintFlood.png", "/manual/tools/paintFlood.html");
+            super("Paint Sampler", "/icons/tools/colorSampler.png", "/manual/tools/colorSampler.html");
         }
 
         @Override
@@ -306,15 +207,15 @@ public class ToolPaintFlood extends ToolDisplay
         }
 
         @Override
-        public ToolPaintFlood create(ToolUser user)
+        public ToolPaintSampler create(ToolUser user)
         {
-            return new ToolPaintFlood(user, this);
+            return new ToolPaintSampler(user, this);
         }
 
         @Override
         public Component createToolSettingsEditor(RavenEditor editor)
         {
-            return new ToolPaintFloodSettings(editor, this);
+            return new ToolPaintSamplerSettings(editor, this);
         }
 
         /**

@@ -89,7 +89,7 @@ public class RavenNodeRoot extends NodeDocument
             new RavenPaintColor(CyColor4f.BLACK));
 
     public static final String PROP_STROKESTYLE = "strokeStyle";
-    public final PropertyWrapper<RavenNodeRoot, RavenStroke> strokeStyle =
+    public final PropertyWrapper<RavenNodeRoot, RavenStroke> strokeShape =
             new PropertyWrapper(
             this, PROP_STROKESTYLE, RavenStroke.class,
             new RavenStroke());
@@ -443,7 +443,7 @@ public class RavenNodeRoot extends NodeDocument
     @Override
     public PropertyWrapper<RavenNodeRoot, RavenStroke> getStrokeStyleProp()
     {
-        return strokeStyle;
+        return strokeShape;
     }
 
     @Override
@@ -502,7 +502,7 @@ public class RavenNodeRoot extends NodeDocument
 
     public RavenStroke getStrokeShape()
     {
-        return strokeStyle.getValue();
+        return strokeShape.getValue();
     }
     
     //-----------------------------------------------

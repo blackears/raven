@@ -78,7 +78,7 @@ public class ToolPaintFlood extends ToolDisplay
         if (toolProvider.isStrokeMode())
         {
             floodProv.floodStroke(root.strokePaint.getValue(),
-                    root.strokeStyle.getValue(),
+                    root.strokeShape.getValue(),
                     new CyRectangle2d(evt.getX(), evt.getY(), 1, 1),
                     w2d, Intersection.INTERSECTS);
         }
