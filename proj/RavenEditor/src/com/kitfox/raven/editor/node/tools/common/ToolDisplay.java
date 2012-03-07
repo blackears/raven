@@ -24,7 +24,6 @@ import com.kitfox.raven.editor.action.ActionManager;
 import com.kitfox.raven.editor.node.scene.RavenNodeGroup;
 import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
 import com.kitfox.raven.editor.node.scene.RavenNodeXformable;
-import com.kitfox.raven.editor.node.scene.snap.Snapping;
 import com.kitfox.raven.editor.node.tools.ToolDraggable;
 import com.kitfox.raven.editor.node.tools.ToolUser;
 import com.kitfox.raven.util.Selection;
@@ -124,13 +123,14 @@ abstract public class ToolDisplay extends ToolDraggable
             return v;
         }
         
-        Snapping snap = provDoc.getSnapping();
-        if (snap.isSnapGrid())
+//        Snapping snap = provDoc.getSnapping();
+        RavenNodeRoot root = (RavenNodeRoot)provDoc.getDocument();
+        if (root.isSnapGrid())
         {
             //int major = snap.getGridSpacingMajor();
-            int minor = snap.getGridSpacingMinor();
-            int offX = snap.getGridSpacingOffsetX();
-            int offY = snap.getGridSpacingOffsetY();
+            float minor = root.getGridSpacingMinor();
+            float offX = root.getGridSpacingOffsetX();
+            float offY = root.getGridSpacingOffsetY();
             
             v.sub(offX, offY);
             v.scale(1.0 / minor);

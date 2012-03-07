@@ -88,14 +88,16 @@ public class ToolPenMesh extends ToolPenDelegate
     private Step startStep(MouseEvent evt)
     {
         NetworkMesh mesh = getMesh();
-        GraphLayout layout = getGraphLayout();
+        RavenNodeRoot root = getDocument();
+        //GraphLayout layout = getGraphLayout();
         
         CyVector2d pickPt = xformDev2MeshPoint(
                 new CyVector2d(evt.getX(), evt.getY()), true);
 
         //Look for existing mesh vertex to clamp to
         BezierMeshVertex2i<NetworkDataVertex> v = mesh.getClosestVertex(pickPt.x, pickPt.y);
-        double pickRadiusSq = layout.getPointRadiusPickSq() * 100 * 100;
+        double pickRad = root.getGraphRadiusPick() * 100;
+        double pickRadiusSq = pickRad * pickRad;
         
         if (v != null &&
                 v.getCoord().getDistSquared(pickPt) < pickRadiusSq)
@@ -476,7 +478,8 @@ public class ToolPenMesh extends ToolPenDelegate
         CyDrawStack stack = ctx.getDrawStack();
         stack.pushFrame(null);
 
-        GraphLayout graphLayout = getGraphLayout();
+//        GraphLayout graphLayout = getGraphLayout();
+        RavenNodeRoot root = getDocument();
         
         //Draw curves and handles
         {
@@ -496,7 +499,7 @@ public class ToolPenMesh extends ToolPenDelegate
             mvp.scale(1 / 100.0, 1 / 100.0, 1);
 
             rec.setMesh(lineMesh);
-            rec.setColor(graphLayout.getEdgeColor());
+            rec.setColor(root.getGraphColorEdge().asColor());
             rec.setOpacity(1);
     //mvp.scale(10, 100, 1);
             rec.setMvpMatrix(mvp);
@@ -534,12 +537,12 @@ public class ToolPenMesh extends ToolPenDelegate
                 
                 mvp.translate(viewVert.x, viewVert.y, 0);
 //                int ptRad = graphLayout.getPointRadiusDisplay() * 200;
-                int ptRad = graphLayout.getPointRadiusDisplay() * 2;
+                float ptRad = root.getGraphRadiusDisplay() * 2;
                 mvp.scale(ptRad, ptRad, ptRad);
                 mvp.translate(-.5, -.5, 0);
 
                 rec.setMesh(CyVertexBufferDataSquare.inst().getBuffer());
-                rec.setColor(graphLayout.getEdgeColor());
+                rec.setColor(root.getGraphColorEdge().asColor());
                 rec.setOpacity(1);
                 rec.setMvpMatrix(mvp);
 

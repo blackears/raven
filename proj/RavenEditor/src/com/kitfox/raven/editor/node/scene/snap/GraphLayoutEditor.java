@@ -25,6 +25,7 @@ import java.awt.Rectangle;
  *
  * @author kitfox
  */
+@Deprecated
 public class GraphLayoutEditor extends PropertyWrapperEditor<GraphLayout>
 {
     public GraphLayoutEditor(PropertyWrapper wrapper)

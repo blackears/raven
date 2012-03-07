@@ -50,7 +50,7 @@ public interface ServiceDocument extends ToolService
 
     public Selection<NodeObject> getSelection();
 
-    public Snapping getSnapping();
+//    public Snapping getSnapping();
     
-    public GraphLayout getGraphLayout();
+//    public GraphLayout getGraphLayout();
 }

@@ -38,15 +38,15 @@ abstract public class ToolPenDelegate extends ToolDisplay
         this.dispatch = dispatch;
     }
 
-    protected GraphLayout getGraphLayout()
-    {
-        ServiceDocument provider = user.getToolService(ServiceDocument.class);
-        if (provider != null)
-        {
-            return provider.getGraphLayout();
-        }
-        return null;
-    }
+//    protected GraphLayout getGraphLayout()
+//    {
+//        ServiceDocument provider = user.getToolService(ServiceDocument.class);
+//        if (provider != null)
+//        {
+//            return provider.getGraphLayout();
+//        }
+//        return null;
+//    }
 
 //    protected NodeDocument getDocument()
 //    {

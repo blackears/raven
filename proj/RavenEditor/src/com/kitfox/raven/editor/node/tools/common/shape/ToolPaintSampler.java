@@ -21,7 +21,6 @@ import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
 import com.kitfox.raven.editor.node.scene.RavenNodeXformable;
-import com.kitfox.raven.editor.node.scene.snap.GraphLayout;
 import com.kitfox.raven.editor.node.tools.ToolProvider;
 import com.kitfox.raven.editor.node.tools.ToolUser;
 import com.kitfox.raven.editor.node.tools.common.ToolDisplay;
@@ -29,17 +28,13 @@ import com.kitfox.raven.paint.RavenPaint;
 import com.kitfox.raven.paint.RavenStroke;
 import com.kitfox.raven.shape.network.pick.NetworkHandleEdge;
 import com.kitfox.raven.shape.network.pick.NetworkHandleFace;
-import com.kitfox.raven.shape.network.pick.NetworkHandleSelection;
 import com.kitfox.raven.util.Intersection;
 import com.kitfox.raven.util.PropertiesData;
-import com.kitfox.raven.util.Selection;
 import com.kitfox.raven.util.service.ServiceInst;
-import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.undo.History;
 import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Properties;
 
 /**
@@ -86,8 +81,8 @@ public class ToolPaintSampler extends ToolDisplay
         l2d.mul(l2w);
         
         RavenNodeRoot doc = getDocument();
-        GraphLayout graphLayout = doc.getGraphLayout();
-        int pickRad = graphLayout == null ? 1 : graphLayout.getPointRadiusPick();
+//        GraphLayout graphLayout = doc.getGraphLayout();
+        float pickRad = doc == null ? 1 : doc.getGraphRadiusPick();
         
         CyRectangle2d region = new CyRectangle2d(evt.getX() - pickRad, evt.getY() - pickRad, 
                 pickRad * 2, pickRad * 2);

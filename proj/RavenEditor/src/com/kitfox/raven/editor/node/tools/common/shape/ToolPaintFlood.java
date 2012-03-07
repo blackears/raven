@@ -85,8 +85,8 @@ public class ToolPaintFlood extends ToolDisplay
         l2d.mul(l2w);
         
         RavenNodeRoot doc = getDocument();
-        GraphLayout graphLayout = doc.getGraphLayout();
-        int pickRad = graphLayout == null ? 1 : graphLayout.getPointRadiusPick();
+//        GraphLayout graphLayout = doc.getGraphLayout();
+        float pickRad = doc == null ? 1 : doc.getGraphRadiusPick();
         
         CyRectangle2d region = new CyRectangle2d(evt.getX() - pickRad, evt.getY() - pickRad, 
                 pickRad * 2, pickRad * 2);

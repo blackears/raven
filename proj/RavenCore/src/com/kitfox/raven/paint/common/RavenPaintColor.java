@@ -61,6 +61,15 @@ public class RavenPaintColor implements RavenPaint
     
     public static final RavenPaintColor BLACK = new RavenPaintColor(0, 0, 0, 1);
     public static final RavenPaintColor WHITE = new RavenPaintColor(1, 1, 1, 1);
+    public static final RavenPaintColor RED = new RavenPaintColor(1, 0, 0, 1);
+    public static final RavenPaintColor GREEN = new RavenPaintColor(0, 1, 0, 1);
+    public static final RavenPaintColor BLUE = new RavenPaintColor(0, 0, 1, 1);
+    public static final RavenPaintColor MAGENTA = new RavenPaintColor(1, 0, 1, 1);
+    public static final RavenPaintColor CYAN = new RavenPaintColor(0, 1, 1, 1);
+    public static final RavenPaintColor YELLOW = new RavenPaintColor(1, 1, 0, 1);
+    public static final RavenPaintColor GREY = new RavenPaintColor(.5f, .5f, .5f, 1);
+    public static final RavenPaintColor LIGHT_GREY = new RavenPaintColor(.75f, .75f, .75f, 1);
+    public static final RavenPaintColor DARK_GREY = new RavenPaintColor(.25f, .25f, .25f, 1);
     
     
     public RavenPaintColor(float r, float g, float b)

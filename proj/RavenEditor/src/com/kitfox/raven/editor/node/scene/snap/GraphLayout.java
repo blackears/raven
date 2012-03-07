@@ -27,6 +27,7 @@ import java.util.logging.Logger;
  *
  * @author kitfox
  */
+@Deprecated
 public class GraphLayout
 {
     //Radius for picking/snapping to points in screen pixels

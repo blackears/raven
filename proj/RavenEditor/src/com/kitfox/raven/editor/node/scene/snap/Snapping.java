@@ -26,6 +26,7 @@ import java.util.logging.Logger;
  *
  * @author kitfox
  */
+@Deprecated
 public class Snapping
 {
     public static final String PROP_SNAP_VERTEX = "snapVertex";
