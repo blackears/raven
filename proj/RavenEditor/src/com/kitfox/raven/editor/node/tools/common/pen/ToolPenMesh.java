@@ -37,7 +37,6 @@ import com.kitfox.coyote.shape.bezier.mesh.CutSegHalf;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
 import com.kitfox.raven.editor.node.scene.RenderContext;
-import com.kitfox.raven.editor.node.scene.snap.GraphLayout;
 import com.kitfox.raven.paint.RavenPaint;
 import com.kitfox.raven.paint.RavenPaintLayout;
 import com.kitfox.raven.paint.RavenStroke;

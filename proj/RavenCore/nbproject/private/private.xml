@@ -1,14 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
-    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/shape/network/pick/NetworkHandleSelection.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/shape/network/pick/NetworkMeshHandles.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/util/Intersection.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/shape/bezier/BezierNetwork.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/shape/network/pick/NetworkHandleEdge.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/shape/network/pick/NetworkHandleFace.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/shape/network/pick/NetworkHandleVertex.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/shape/network/NetworkMesh.java</file>
-    </open-files>
 </project-private>

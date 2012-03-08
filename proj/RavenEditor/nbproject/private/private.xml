@@ -1,39 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
-    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/ToolPaintFlood.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/scene/RavenNodeMesh2.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/shape/ToolPaintFlood.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/shape/ToolPaintFloodSettings.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/ToolPaintFloodSettings.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/ServiceMaterial.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/shape/ServiceShapeManip.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/ToolDisplay.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/scene/RavenNodeRenderable.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/scene/RavenNodeShape.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/select/SelectionManipulatorHandle.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/ToolSelect.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/ToolSelectBase.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/ToolDraggable.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/pen/ServiceBezierMesh.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/pen/ToolPenDelegate.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/ToolProvider.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/pen/ToolPenProvider.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/scene/RavenNodeRoot.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/scene/RavenNodeXformable.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/stroke/RavenStrokeCustomEditor.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/stroke/RavenStroke.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/stroke/RavenStrokeBasic.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/stroke/RavenStrokeInline.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/stroke/RavenStrokeBasicPanel.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/stroke/RavenStrokeEditor.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/stroke/RavenStrokeInlineDialog.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/stroke/RavenStrokeList.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/stroke/RavenStrokeListEditor.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/stroke/RavenStrokeNone.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/stroke/RavenStrokePreviewPanel.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/stroke/RavenStrokeProxy.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/view/color/ColorPanel2.java</file>
-    </open-files>
 </project-private>

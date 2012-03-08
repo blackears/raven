@@ -16,7 +16,7 @@
    version="1.1"
    inkscape:version="0.47 r22583"
    sodipodi:docname="toolIcons.svg"
-   inkscape:export-filename="C:\dev\java.net\raven\trunk\proj\RavenEditor\art\icons\tools\colorSampler.png"
+   inkscape:export-filename="C:\dev\java.net\raven\trunk\proj\RavenEditor\art\icons\tools\curveEdit.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90"
    style="display:inline">
@@ -187,6 +187,34 @@
        x2="17.5"
        y2="8.3977842"
        gradientUnits="userSpaceOnUse" />
+    <inkscape:perspective
+       id="perspective3701"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3701-7"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3732"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3732-9"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -196,20 +224,20 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="21.077215"
-     inkscape:cx="6.0606396"
+     inkscape:cx="12"
      inkscape:cy="11.710874"
      inkscape:document-units="px"
-     inkscape:current-layer="layer12"
+     inkscape:current-layer="layer13"
      showgrid="true"
      inkscape:snap-global="true"
-     inkscape:window-width="1117"
+     inkscape:window-width="931"
      inkscape:window-height="828"
-     inkscape:window-x="104"
-     inkscape:window-y="36"
+     inkscape:window-x="27"
+     inkscape:window-y="49"
      inkscape:window-maximized="0"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:snap-grids="false">
+     inkscape:snap-grids="true">
     <inkscape:grid
        type="xygrid"
        id="grid4014"
@@ -590,29 +618,80 @@
   <g
      inkscape:groupmode="layer"
      id="layer12"
-     inkscape:label="Color Sample">
+     inkscape:label="Color Sample"
+     style="display:none">
     <path
-       style="fill:url(#linearGradient3693);stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
+       style="fill:url(#linearGradient3693);fill-opacity:1;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="M 14,7 3,18 3,20 2,21 3,22 4,21 6,21 17,10 14,7 z"
        id="path2903"
        sodipodi:nodetypes="ccccccccc" />
     <path
-       style="fill:#6a5935;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
+       style="fill:#6a5935;fill-opacity:1;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 12,5 7,7 3,-3 -7,-7 -3,3 z"
        id="path2905"
        sodipodi:nodetypes="ccccc" />
     <path
-       style="fill:#6a5935;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
+       style="fill:#6a5935;fill-opacity:1;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="M 16.985166,4.0258241 19,2 c 2.280083,-0.5467674 3.741337,-0.104116 3,3 L 20,7 16.985166,4.0258241 z"
        id="path2909"
        sodipodi:nodetypes="ccccc" />
     <path
-       style="fill:#f4f1ea;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
+       style="fill:#f4f1ea;fill-opacity:1;stroke:none"
        d="M 13.379377,4.9747161 14.945048,3.4564889 17.791724,5.923608 15.087382,4.8798269 13.379377,4.9747161 z"
        id="path3683" />
     <path
-       style="fill:#f4f1ea;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
+       style="fill:#f4f1ea;fill-opacity:1;stroke:none"
        d="m 18.123837,3.9783795 1.186115,-1.3284488 2.182451,0.3321122 -1.850339,0.6167798 -1.518227,0.3795568 z"
        id="path3685" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer13"
+     inkscape:label="Curve Edit">
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 3,21 c 0,0 0,-13 9,-9 9,4 9,-9 9,-9"
+       id="path3689"
+       sodipodi:nodetypes="csc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:1, 2;stroke-dashoffset:0"
+       d="m 3,8 18,8"
+       id="path3691"
+       sodipodi:nodetypes="cc" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-linejoin:round;stroke-opacity:1"
+       id="rect3687"
+       width="3.9999979"
+       height="3.9999979"
+       x="10.000002"
+       y="10.000002" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-opacity:1;display:inline;stroke-linejoin:round"
+       id="rect3687-1"
+       width="3.9999979"
+       height="3.9999979"
+       x="1"
+       y="19.000002" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-opacity:1;display:inline;stroke-linejoin:round"
+       id="rect3687-4"
+       width="3.9999979"
+       height="3.9999979"
+       x="19.000002"
+       y="1" />
+    <rect
+       style="fill:#b5b130;fill-opacity:1;stroke:#000000;stroke-linejoin:round;stroke-opacity:1;display:inline"
+       id="rect3687-4-0"
+       width="3.9999979"
+       height="3.9999979"
+       x="19.000002"
+       y="14" />
+    <rect
+       style="fill:#b5b130;fill-opacity:1;stroke:#000000;stroke-linejoin:round;stroke-opacity:1;display:inline"
+       id="rect3687-4-4"
+       width="3.9999979"
+       height="3.9999979"
+       x="1.0000021"
+       y="6.0000019" />
   </g>
 </svg>

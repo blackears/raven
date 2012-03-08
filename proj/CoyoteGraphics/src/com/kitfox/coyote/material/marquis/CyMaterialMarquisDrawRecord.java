@@ -18,6 +18,7 @@ package com.kitfox.coyote.material.marquis;
 
 import com.kitfox.coyote.material.CyDrawRecordMaterialSimple;
 import com.kitfox.coyote.math.CyColor4f;
+import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.renderer.CyDrawRecord;
 import com.kitfox.coyote.renderer.CyGLContext;
 import com.kitfox.coyote.renderer.CyGLWrapper;
@@ -31,7 +32,8 @@ public class CyMaterialMarquisDrawRecord extends CyDrawRecordMaterialSimple
     private CyColor4f colorFg = CyColor4f.WHITE;
     private CyColor4f colorBg = CyColor4f.BLACK;
     private float lineWidth = 8;
-    private int offset = 0;
+    private float offset = 0;
+    private CyMatrix4d mvMatrix = CyMatrix4d.createIdentity();
 
     @Override
     public void render(CyGLContext ctx, CyGLWrapper gl, CyDrawRecord prevRecord)
@@ -106,7 +108,7 @@ public class CyMaterialMarquisDrawRecord extends CyDrawRecordMaterialSimple
     /**
      * @return the offset
      */
-    public int getOffset()
+    public float getOffset()
     {
         return offset;
     }
@@ -114,9 +116,25 @@ public class CyMaterialMarquisDrawRecord extends CyDrawRecordMaterialSimple
     /**
      * @param offset the offset to set
      */
-    public void setOffset(int offset)
+    public void setOffset(float offset)
     {
         this.offset = offset;
+    }
+
+    /**
+     * @return the mvMatrix
+     */
+    public CyMatrix4d getMvMatrix()
+    {
+        return new CyMatrix4d(mvMatrix);
+    }
+
+    /**
+     * @param mvMatrix the mvMatrix to set
+     */
+    public void setMvMatrix(CyMatrix4d mvMatrix)
+    {
+        this.mvMatrix.set(mvMatrix);
     }
     
 }

@@ -51,6 +51,7 @@ public class CyMaterialMarquis extends CyMaterial
     private int u_lineWidth;
     private int u_offset;
     private int u_mvpMatrix;
+    private int u_mvMatrix;
 
     FloatBuffer matrixBuf = BufferUtil.allocateFloat(16);
 
@@ -82,6 +83,7 @@ public class CyMaterialMarquis extends CyMaterial
             u_lineWidth = gl.glGetUniformLocation(programId, "u_lineWidth");
             u_offset = gl.glGetUniformLocation(programId, "u_offset");
             u_mvpMatrix = gl.glGetUniformLocation(programId, "u_mvpMatrix");
+            u_mvMatrix = gl.glGetUniformLocation(programId, "u_mvMatrix");
         } catch (CyProgramException ex)
         {
             Logger.getLogger(CyMaterialTextureBlit.class.getName()).log(Level.SEVERE, null, ex);
@@ -107,7 +109,7 @@ public class CyMaterialMarquis extends CyMaterial
     {
         CyColor4f colorFg = rec.getColorFg();
         float alphaFg = colorFg.a * rec.getOpacity();
-        CyColor4f colorBg = rec.getColorFg();
+        CyColor4f colorBg = rec.getColorBg();
         float alphaBg = colorBg.a * rec.getOpacity();
 
         if (alphaFg >= 1 || alphaBg >= 1)
@@ -125,6 +127,11 @@ public class CyMaterialMarquis extends CyMaterial
         CyMatrix4d mvpMatrix = rec.getMvpMatrix();
         mvpMatrix.toBufferc(matrixBuf);
         gl.glUniformMatrix4fv(u_mvpMatrix, 1, false, matrixBuf);
+
+        CyMatrix4d mvMatrix = rec.getMvMatrix();
+        mvMatrix.toBufferc(matrixBuf);
+        gl.glUniformMatrix4fv(u_mvMatrix, 1, false, matrixBuf);
+        
         gl.glUniform4f(u_colorFg, colorFg.r, colorFg.g, colorFg.b, alphaFg);
         gl.glUniform4f(u_colorBg, colorBg.r, colorBg.g, colorBg.b, alphaBg);
         gl.glUniform1f(u_lineWidth, rec.getLineWidth());
