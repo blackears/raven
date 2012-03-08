@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.kitfox.raven.editor.view.color;
+package com.kitfox.raven.editor.node.scene.control;
 
 import com.kitfox.raven.editor.RavenDocument;
 import com.kitfox.raven.editor.RavenEditor;
@@ -41,7 +41,7 @@ import javax.swing.SwingUtilities;
  *
  * @author kitfox
  */
-public class ColorPanel2 extends javax.swing.JPanel
+public class ColorPanel extends javax.swing.JPanel
         implements RavenEditorListener
 {
     RavenEditor editor;
@@ -62,7 +62,7 @@ public class ColorPanel2 extends javax.swing.JPanel
     /**
      * Creates new form ColorPanel2
      */
-    public ColorPanel2(RavenEditor editor)
+    public ColorPanel(RavenEditor editor)
     {
         this.editor = editor;
         initComponents();
@@ -224,7 +224,7 @@ public class ColorPanel2 extends javax.swing.JPanel
     private void runEditor(PropertyWrapperEditor editor)
     {
         JDialog dlg =
-                new JDialog(SwingUtilities.getWindowAncestor(ColorPanel2.this), 
+                new JDialog(SwingUtilities.getWindowAncestor(ColorPanel.this), 
                 JDialog.DEFAULT_MODALITY_TYPE);
         PropertyCustomEditor xact = editor.createCustomEditor();
         PropertyCustomEditorPanel custom = new PropertyCustomEditorPanel(

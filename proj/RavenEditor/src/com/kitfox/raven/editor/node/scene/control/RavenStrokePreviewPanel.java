@@ -20,10 +20,10 @@
  * Created on Jan 19, 2011, 10:39:32 AM
  */
 
-package com.kitfox.raven.editor.view.color;
+package com.kitfox.raven.editor.node.scene.control;
 
-import com.kitfox.raven.paint.RavenPaint;
-import com.kitfox.raven.paint.control.UnderlayPaint;
+import com.kitfox.raven.paint.RavenStroke;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -33,12 +33,12 @@ import java.awt.RenderingHints;
  *
  * @author kitfox
  */
-public class RavenPaintPreviewPanel extends javax.swing.JPanel
+public class RavenStrokePreviewPanel extends javax.swing.JPanel
 {
-    private RavenPaint paint;
+    private RavenStroke stroke;
 
     /** Creates new form RavenStrokePreviewPanel */
-    public RavenPaintPreviewPanel()
+    public RavenStrokePreviewPanel()
     {
         initComponents();
     }
@@ -47,20 +47,19 @@ public class RavenPaintPreviewPanel extends javax.swing.JPanel
     protected void paintComponent(Graphics gg)
     {
         Graphics2D g = (Graphics2D)gg;
-
-        g.setPaint(UnderlayPaint.inst().getPaint());
+        g.setColor(Color.WHITE);
         g.fillRect(0, 0, getWidth(), getHeight());
 
-        if (paint == null)
+        if (stroke == null)
         {
             return;
         }
 
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setColor(Color.BLACK);
         Rectangle bounds = getBounds();
         bounds.x = bounds.y = 0;
-        g.setPaint(paint.getPaintSwatch(bounds));
-        g.fillRect(0, 0, getWidth(), getHeight());
+        stroke.drawPreview(g, bounds);
     }
 
     /** This method is called from within the constructor to
@@ -72,22 +71,25 @@ public class RavenPaintPreviewPanel extends javax.swing.JPanel
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents()
     {
+
+        setMinimumSize(new java.awt.Dimension(24, 24));
+        setPreferredSize(new java.awt.Dimension(24, 24));
     }// </editor-fold>//GEN-END:initComponents
 
     /**
-     * @return the paint
+     * @return the stroke
      */
-    public RavenPaint getPaint()
+    public RavenStroke getStroke()
     {
-        return paint;
+        return stroke;
     }
 
     /**
-     * @param paint the paint to set
+     * @param stroke the stroke to set
      */
-    public void setPaint(RavenPaint paint)
+    public void setStroke(RavenStroke stroke)
     {
-        this.paint = paint;
+        this.stroke = stroke;
         repaint();
     }
 

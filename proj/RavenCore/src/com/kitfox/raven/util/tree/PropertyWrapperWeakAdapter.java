@@ -14,32 +14,32 @@
  * limitations under the License.
  */
 
-package com.kitfox.raven.editor.view.color;
+package com.kitfox.raven.util.tree;
 
-import com.kitfox.raven.editor.node.scene.control.ColorPanel;
-import com.kitfox.raven.editor.view.player.*;
-import com.kitfox.raven.editor.RavenEditor;
-import com.kitfox.raven.editor.view.ViewProvider;
-import com.kitfox.raven.util.service.ServiceInst;
-import java.awt.Component;
+import com.kitfox.raven.util.tree.PropertyWrapper;
+import com.kitfox.raven.util.tree.PropertyWrapperAdapter;
+import com.kitfox.raven.util.tree.PropertyWrapperWeakListener;
 
 /**
  *
  * @author kitfox
  */
-@ServiceInst(service=ViewProvider.class)
-public class ColorViewProvider extends ViewProvider
+abstract public class PropertyWrapperWeakAdapter extends PropertyWrapperAdapter
 {
+    final PropertyWrapper source;
+    PropertyWrapperWeakListener listener;
 
-    public ColorViewProvider()
+    public PropertyWrapperWeakAdapter(PropertyWrapper source)
     {
-        super("Color", "/icons/view/color.png");
+        this.source = source;
+        listener = new PropertyWrapperWeakListener(this, source);
+        source.addPropertyWrapperListener(listener);
     }
 
-    @Override
-    public Component createComponent(RavenEditor editor)
+    public void remove()
     {
-        return new ColorPanel(editor);
+        listener.remove();
+        listener = null;
     }
-
+    
 }

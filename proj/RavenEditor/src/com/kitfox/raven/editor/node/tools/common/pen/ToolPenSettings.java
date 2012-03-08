@@ -17,8 +17,9 @@
 package com.kitfox.raven.editor.node.tools.common.pen;
 
 import com.kitfox.raven.editor.RavenEditor;
-import com.kitfox.raven.editor.view.color.ColorPanel2;
-import java.awt.BorderLayout;
+import com.kitfox.raven.editor.node.scene.control.ColorPanel;
+import com.kitfox.raven.editor.node.scene.control.GraphDispPanel;
+import com.kitfox.raven.editor.node.scene.control.SnappingPanel;
 
 /**
  *
@@ -29,7 +30,9 @@ public class ToolPenSettings extends javax.swing.JPanel
     RavenEditor editor;
     ToolPenProvider prov;
 
-    ColorPanel2 colorPanel;
+    ColorPanel colorPanel;
+    SnappingPanel snappingPanel;
+    GraphDispPanel graphDispPanel;
     
     /**
      * Creates new form ToolPen2Settings
@@ -40,8 +43,14 @@ public class ToolPenSettings extends javax.swing.JPanel
         this.prov = prov;
         initComponents();
 
-        colorPanel = new ColorPanel2(editor);
-        panel_colorArea.add(colorPanel, BorderLayout.CENTER);
+        colorPanel = new ColorPanel(editor);
+        panel_boxArea.add(colorPanel);
+
+        snappingPanel = new SnappingPanel(editor);
+        panel_boxArea.add(snappingPanel);
+        
+        graphDispPanel = new GraphDispPanel(editor);
+        panel_boxArea.add(graphDispPanel);
     }
 
     /**

@@ -143,12 +143,12 @@ public class RavenNodeRoot extends NodeDocument
     public static final String PROP_GRID_SPACING_MAJ = "gridSpacingMajor";
     public final PropertyWrapperFloat<RavenNodeRoot> gridSpacingMaj =
             new PropertyWrapperFloat(this, PROP_GRID_SPACING_MAJ, 
-            PropertyWrapper.FLAGS_NOANIM, 100);
+            PropertyWrapper.FLAGS_NOANIM, 128);
 
     public static final String PROP_GRID_SPACING_MIN = "gridSpacingMinor";
     public final PropertyWrapperFloat<RavenNodeRoot> gridSpacingMin =
             new PropertyWrapperFloat(this, PROP_GRID_SPACING_MIN, 
-            PropertyWrapper.FLAGS_NOANIM, 10);
+            PropertyWrapper.FLAGS_NOANIM, 16);
 
     public static final String PROP_GRID_SPACING_OFFX = "gridSpacingOffX";
     public final PropertyWrapperFloat<RavenNodeRoot> gridSpacingOffX =

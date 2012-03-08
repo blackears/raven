@@ -49,16 +49,17 @@ public class RavenPaintTextureEditor
         Graphics2D g = (Graphics2D)gg;
         RavenPaintTexture col = getValueFlat();
         g.setPaint(UnderlayPaint.inst().getPaint());
-        g.fill(box);
+        g.fillRect(0, 0, box.width, box.height);
         
         if (col == null)
         {
             return;
         }
         
-        Paint paint = col.getPaintSwatch(box);
+        Rectangle drawBox = new Rectangle(box.width, box.height);
+        Paint paint = col.getPaintSwatch(drawBox);
         g.setPaint(paint);
-        g.fill(box);
+        g.fillRect(0, 0, box.width, box.height);
     }
 
     @Override

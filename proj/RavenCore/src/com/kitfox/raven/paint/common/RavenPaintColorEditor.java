@@ -51,7 +51,7 @@ public class RavenPaintColorEditor
         if (col == null || col.getA() < 1)
         {
             g.setPaint(UnderlayPaint.inst().getPaint());
-            g.fill(box);
+            g.fillRect(0, 0, box.width, box.height);
         }
         
         if (col == null)
@@ -59,9 +59,10 @@ public class RavenPaintColorEditor
             return;
         }
         
-        Paint paint = col.getPaintSwatch(box);
+        Rectangle drawBox = new Rectangle(box.width, box.height);
+        Paint paint = col.getPaintSwatch(drawBox);
         g.setPaint(paint);
-        g.fill(box);
+        g.fillRect(0, 0, box.width, box.height);
     }
 
     @Override

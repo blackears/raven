@@ -17,7 +17,7 @@
 package com.kitfox.raven.editor.node.tools.common.shape;
 
 import com.kitfox.raven.editor.RavenEditor;
-import com.kitfox.raven.editor.view.color.ColorPanel2;
+import com.kitfox.raven.editor.node.scene.control.ColorPanel;
 import java.awt.BorderLayout;
 
 /**
@@ -29,7 +29,7 @@ public class ToolPaintSamplerSettings extends javax.swing.JPanel
     final RavenEditor editor;
     final ToolPaintSampler.Provider toolProvider;
 
-    ColorPanel2 colorPanel;
+    ColorPanel colorPanel;
 
 
     /**
@@ -41,7 +41,7 @@ public class ToolPaintSamplerSettings extends javax.swing.JPanel
         this.toolProvider = toolProvider;
         initComponents();
 
-        colorPanel = new ColorPanel2(editor);
+        colorPanel = new ColorPanel(editor);
         panel_colorArea.add(colorPanel, BorderLayout.CENTER);
 
         check_facePaint.setSelected(toolProvider.isFacePaint());
