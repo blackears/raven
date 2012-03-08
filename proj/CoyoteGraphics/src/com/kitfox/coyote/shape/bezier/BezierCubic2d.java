@@ -428,6 +428,12 @@ public class BezierCubic2d extends BezierCurve2d
         out.cubicTo(ax1, ay1, ax2, ay2, ax3, ay3);
     }
 
+    @Override
+    public void append(CyPath2d path)
+    {
+        path.cubicTo(ax1, ay1, ax2, ay2, ax3, ay3);
+    }
+
     /*
     public void clip(BezierCurve curve)
     {

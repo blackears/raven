@@ -209,6 +209,12 @@ public class BezierLine2d extends BezierCurve2d
     }
 
     @Override
+    public void append(CyPath2d path)
+    {
+        path.lineTo(ax1, ay1);
+    }
+
+    @Override
     public CyPath2d asPath()
     {
         CyPath2d path = new CyPath2d();

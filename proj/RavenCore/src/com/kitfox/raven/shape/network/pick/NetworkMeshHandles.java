@@ -250,7 +250,8 @@ public class NetworkMeshHandles
         public BezierCurve2d getCurve()
         {
             BezierCurve2i c = e.asCurve();
-            return c.transfrom(coordToLocal);
+            return c.asDouble();
+//            return c.transfrom(coordToLocal);
         }
 
         /**

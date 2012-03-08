@@ -337,6 +337,12 @@ public class BezierLine2i extends BezierCurve2i
     }
 
     @Override
+    public BezierLine2d asDouble()
+    {
+        return new BezierLine2d(ax0, ay0, ax1, ay1);
+    }
+
+    @Override
     public String toString()
     {
         return String.format("line {(%d, %d)(%d, %d)}",

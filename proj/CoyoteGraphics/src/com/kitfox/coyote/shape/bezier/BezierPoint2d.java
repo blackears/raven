@@ -170,7 +170,11 @@ public class BezierPoint2d extends BezierCurve2d
     @Override
     public void append(PathConsumer out)
     {
-        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void append(CyPath2d path)
+    {
     }
 
     @Override

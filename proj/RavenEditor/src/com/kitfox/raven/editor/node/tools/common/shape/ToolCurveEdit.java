@@ -16,22 +16,36 @@
 
 package com.kitfox.raven.editor.node.tools.common.shape;
 
-import com.kitfox.coyote.material.marquis.CyMaterialMarquisDrawRecord;
-import com.kitfox.coyote.material.marquis.CyMaterialMarquisDrawRecordFactory;
+import com.kitfox.coyote.material.color.CyMaterialColorDrawRecord;
+import com.kitfox.coyote.material.color.CyMaterialColorDrawRecordFactory;
 import com.kitfox.coyote.math.CyColor4f;
 import com.kitfox.coyote.math.CyMatrix4d;
+import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.renderer.CyDrawStack;
+import com.kitfox.coyote.renderer.CyVertexBuffer;
+import com.kitfox.coyote.renderer.vertex.CyVertexBufferDataSquare;
 import com.kitfox.coyote.renderer.vertex.CyVertexBufferDataSquareLines;
+import com.kitfox.coyote.shape.CyPath2d;
+import com.kitfox.coyote.shape.ShapeLinesProvider;
+import com.kitfox.coyote.shape.bezier.BezierCurve2d;
+import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import com.kitfox.raven.editor.RavenEditor;
+import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
 import com.kitfox.raven.editor.node.scene.RenderContext;
 import com.kitfox.raven.editor.node.tools.ToolProvider;
 import com.kitfox.raven.editor.node.tools.ToolUser;
 import com.kitfox.raven.editor.node.tools.common.ToolDisplay;
+import com.kitfox.raven.shape.network.pick.NetworkHandleEdge;
+import com.kitfox.raven.shape.network.pick.NetworkHandleSelection;
+import com.kitfox.raven.shape.network.pick.NetworkHandleVertex;
 import com.kitfox.raven.util.PropertiesData;
+import com.kitfox.raven.util.Selection;
 import com.kitfox.raven.util.Selection.Operator;
 import com.kitfox.raven.util.service.ServiceInst;
+import com.kitfox.raven.util.tree.NodeObject;
 import java.awt.Component;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Properties;
 
 /**
@@ -96,7 +110,7 @@ public class ToolCurveEdit extends ToolDisplay
     public void dispose()
     {
     }
-
+    
     @Override
     public void render(RenderContext ctx)
     {
@@ -105,6 +119,8 @@ public class ToolCurveEdit extends ToolDisplay
         CyDrawStack stack = ctx.getDrawStack();
 //        stack.pushFrame(null);
         
+        drawGraph(stack);
+        
         if (mouseStart != null)
         {
             int x0 = mouseStart.getX();
@@ -112,40 +128,139 @@ public class ToolCurveEdit extends ToolDisplay
             int x1 = mouseCur.getX();
             int y1 = mouseCur.getY();
             
-//            CyMatrix4d proj = stack.getProjXform();
-//            CyMatrix4d mvp = CyMatrix4d.createIdentity();
-            CyMatrix4d mv = CyMatrix4d.createIdentity();
-            mv.translate(x0, y0, 0);
-            mv.scale(x1 - x0, y1 - y0, 1);
-
-            CyMatrix4d mvp = stack.getProjXform();
-            mvp.mul(mv);
-            
-            CyMaterialMarquisDrawRecord rec =
-                    CyMaterialMarquisDrawRecordFactory.inst().allocRecord();
-
-            rec.setMesh(CyVertexBufferDataSquareLines.inst().getBuffer());
-            rec.setColorBg(CyColor4f.BLACK);
-            rec.setColorFg(CyColor4f.WHITE);
-            rec.setOpacity(1);
-            rec.setMvpMatrix(mvp);
-            rec.setMvMatrix(mv);
-
-            int lineWidth = 8;
-            int fps = 32;
-            long frames = fps * System.currentTimeMillis() / 1000;
-            int offset = (int)(frames % lineWidth);
-            
-            rec.setOffset(-offset);
-            rec.setLineWidth(lineWidth);
-
-            stack.addDrawRecord(rec);                
-            
+            drawMarquisRect(stack, x0, y0, x1, y1);
         }
         
 //        stack.popFrame();
     }
 
+    private void drawGraph(CyDrawStack stack)
+    {
+        Selection<NodeObject> sel = getSelection();
+        
+        for (NodeObject node: sel.getSelection())
+        {
+            ServiceShapeManip serv = 
+                    node.getNodeService(ServiceShapeManip.class, false);
+            if (serv != null)
+            {
+                drawGraph(stack, sel, node, serv);
+            }
+        }
+    }
+
+    private void drawGraph(CyDrawStack stack, Selection<NodeObject> sel,
+            NodeObject node, ServiceShapeManip serv)
+    {
+        ArrayList<? extends NetworkHandleEdge> edgeList =
+                serv.getEdges();
+        CyMatrix4d g2w = serv.getGraphToWorldXform();
+
+        NetworkHandleSelection subSel = 
+                sel.getSubselection(node, NetworkHandleSelection.class);
+        
+        //Draw paths
+        CyPath2d pathUnsel = new CyPath2d();
+        CyPath2d pathSel = new CyPath2d();
+        for (NetworkHandleEdge e: edgeList)
+        {
+            BezierCurve2d c = e.getCurve();
+            
+            if (subSel != null && subSel.containsEdge(e))
+            {
+                pathSel.moveTo(c.getStartX(), c.getStartY());
+                c.append(pathSel);
+            }
+            else
+            {
+                pathUnsel.moveTo(c.getStartX(), c.getStartY());
+                c.append(pathUnsel);
+            }
+        }
+        
+        RavenNodeRoot root = getDocument();
+        CyMatrix4d w2d = stack.getViewXform();
+        CyMatrix4d d2p = stack.getProjXform();
+        
+        CyMatrix4d g2p = new CyMatrix4d(d2p);
+        g2p.mul(w2d);
+        g2p.mul(g2w);
+        
+        if (!pathUnsel.isEmpty())
+        {
+            ShapeLinesProvider lines = new ShapeLinesProvider(pathUnsel);
+            CyVertexBuffer buf = new CyVertexBuffer(lines);
+            drawShape(stack, buf, g2p, 
+                    root.getGraphColorEdge().asColor());
+        }
+        if (!pathSel.isEmpty())
+        {
+            ShapeLinesProvider lines = new ShapeLinesProvider(pathSel);
+            CyVertexBuffer buf = new CyVertexBuffer(lines);
+            drawShape(stack, buf, g2p, 
+                    root.getGraphColorEdgeSelect().asColor());
+        }
+        
+        //Draw verts
+        ArrayList<? extends NetworkHandleVertex> vertList =
+                serv.getVertices();
+        CyVector2d pt = new CyVector2d();
+        CyMatrix4d v2p = new CyMatrix4d();
+        float radDisp = root.getGraphRadiusDisplay();
+        CyVertexBuffer bufSquare = CyVertexBufferDataSquare.inst().getBuffer();
+        CyVertexBuffer bufSquareLines = CyVertexBufferDataSquareLines.inst().getBuffer();
+        CyMatrix4d g2d = new CyMatrix4d(w2d);
+        g2d.mul(g2w);
+        
+        for (NetworkHandleVertex v: vertList)
+        {
+            Coord c = v.getCoord();
+            pt.set(c.x, c.y);
+            g2d.transformPoint(pt);
+            
+            v2p.set(d2p);
+            v2p.translate(pt.x, pt.y, 0);
+            v2p.scale(radDisp * 2, radDisp * 2, 1);
+            v2p.translate(-.5, -.5, 0);
+            
+            if (subSel != null && subSel.containsVertex(v))
+            {
+                drawShape(stack, bufSquare, v2p, 
+                    root.getGraphColorVertSelect().asColor());
+                drawShape(stack, bufSquareLines, v2p, 
+                    root.getGraphColorEdgeSelect().asColor());
+            }
+            else
+            {
+                drawShape(stack, bufSquare, v2p, 
+                    root.getGraphColorVert().asColor());
+                drawShape(stack, bufSquareLines, v2p, 
+                    root.getGraphColorEdge().asColor());
+            }
+            
+        }
+    }
+    
+    private void drawShape(CyDrawStack stack, 
+            CyVertexBuffer buf, CyMatrix4d mvp, CyColor4f color)
+    {
+        CyMaterialColorDrawRecord rec = 
+                CyMaterialColorDrawRecordFactory.inst().allocRecord();
+
+        rec.setColor(color);
+
+        rec.setMesh(buf);
+
+        rec.setOpacity(1);
+
+//        CyMatrix4d mvp = stack.getModelViewProjXform();
+//        mvp.mul(mvp);
+
+
+        rec.setMvpMatrix(mvp);
+        
+        stack.addDrawRecord(rec);
+    }
     
     //---------------------------------------
 

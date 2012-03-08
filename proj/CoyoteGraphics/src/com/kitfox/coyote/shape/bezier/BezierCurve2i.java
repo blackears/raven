@@ -265,4 +265,6 @@ abstract public class BezierCurve2i
 
     abstract public BezierCurve2d transfrom(CyMatrix4d xform);
 
+    abstract public BezierCurve2d asDouble();
+
 }

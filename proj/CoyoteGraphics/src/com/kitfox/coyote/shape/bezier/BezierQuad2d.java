@@ -299,6 +299,12 @@ public class BezierQuad2d extends BezierCurve2d
     }
 
     @Override
+    public void append(CyPath2d path)
+    {
+        path.quadTo(ax1, ay1, ax2, ay2);
+    }
+
+    @Override
     public BezierQuad2d transfrom(CyMatrix4d xform)
     {
         CyVector2d a0 = new CyVector2d(ax0, ay0);

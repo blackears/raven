@@ -397,6 +397,28 @@ public class RavenNodeMesh2 extends RavenNodeXformable
         mesh.setValue(newMesh, history);
     }
 
+    @Override
+    public CyMatrix4d getGraphToWorldXform()
+    {
+        CyMatrix4d g2w = getLocalToWorldTransform((CyMatrix4d)null);
+        g2w.scale(.01, .01, 1);
+        return g2w;
+    }
+
+    @Override
+    public ArrayList<HandleEdge> getEdges()
+    {
+        NetworkMeshHandles handles = getMeshHandles();
+        return handles.getEdgeList();
+    }
+
+    @Override
+    public ArrayList<HandleVertex> getVertices()
+    {
+        NetworkMeshHandles handles = getMeshHandles();
+        return handles.getVertList();
+    }
+
     
     //----------------------------------------
     protected class MeshLayout //implements PathVisitor

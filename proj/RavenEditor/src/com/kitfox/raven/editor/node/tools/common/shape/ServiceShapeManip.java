@@ -47,5 +47,11 @@ public interface ServiceShapeManip extends ToolService
     public void setEdgePaint(RavenPaint paint, Collection<NetworkHandleEdge> edges, boolean history);
     public void setEdgeStroke(RavenStroke stroke, Collection<NetworkHandleEdge> edges, boolean history);
     public void setFacePaint(RavenPaint paint, Collection<NetworkHandleFace> faces, boolean history);
+
+    public CyMatrix4d getGraphToWorldXform();
+
+    public ArrayList<? extends NetworkHandleEdge> getEdges();
+
+    public ArrayList<? extends NetworkHandleVertex> getVertices();
     
 }

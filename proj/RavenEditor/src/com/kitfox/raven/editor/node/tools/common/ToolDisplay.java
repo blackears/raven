@@ -16,8 +16,13 @@
 
 package com.kitfox.raven.editor.node.tools.common;
 
+import com.kitfox.coyote.material.marquis.CyMaterialMarquisDrawRecord;
+import com.kitfox.coyote.material.marquis.CyMaterialMarquisDrawRecordFactory;
+import com.kitfox.coyote.math.CyColor4f;
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.math.CyVector2d;
+import com.kitfox.coyote.renderer.CyDrawStack;
+import com.kitfox.coyote.renderer.vertex.CyVertexBufferDataSquareLines;
 import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.action.ActionManager;
@@ -391,6 +396,36 @@ abstract public class ToolDisplay extends ToolDraggable
         }
 
         return bounds;
+    }
+
+    protected void drawMarquisRect(CyDrawStack stack, int x0, int y0, int x1, int y1)
+    {
+        CyMatrix4d mv = CyMatrix4d.createIdentity();
+        mv.translate(x0, y0, 0);
+        mv.scale(x1 - x0, y1 - y0, 1);
+
+        CyMatrix4d mvp = stack.getProjXform();
+        mvp.mul(mv);
+
+        CyMaterialMarquisDrawRecord rec =
+                CyMaterialMarquisDrawRecordFactory.inst().allocRecord();
+
+        rec.setMesh(CyVertexBufferDataSquareLines.inst().getBuffer());
+        rec.setColorBg(CyColor4f.BLACK);
+        rec.setColorFg(CyColor4f.WHITE);
+        rec.setOpacity(1);
+        rec.setMvpMatrix(mvp);
+        rec.setMvMatrix(mv);
+
+        int lineWidth = 8;
+        int fps = 32;
+        long frames = fps * System.currentTimeMillis() / 1000;
+        int offset = (int)(frames % lineWidth);
+
+        rec.setOffset(-offset);
+        rec.setLineWidth(lineWidth);
+
+        stack.addDrawRecord(rec);                
     }
 
 }

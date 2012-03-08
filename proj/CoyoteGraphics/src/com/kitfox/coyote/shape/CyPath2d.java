@@ -300,6 +300,11 @@ public class CyPath2d extends CyShape
         ps.println(toString());
     }
 
+    public boolean isEmpty()
+    {
+        return numTypes == 0;
+    }
+
     //------------------------------
 
     public class CyPathIterator2d implements CyPathIterator

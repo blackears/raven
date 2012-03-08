@@ -565,6 +565,12 @@ public class BezierCubic2i extends BezierCurve2i
     }
 
     @Override
+    public BezierCubic2d asDouble()
+    {
+        return new BezierCubic2d(ax0, ay0, ax1, ay1, ax2, ay2, ax3, ay3);
+    }
+
+    @Override
     public String toString()
     {
         return String.format("cubic {(%d, %d)(%d, %d)(%d, %d)(%d, %d)}",
