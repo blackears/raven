@@ -1,24 +1,14 @@
 /*
- * Copyright 2011 Mark McKay
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
-
-package com.kitfox.raven.editor.node.tools.common.pen;
+package com.kitfox.raven.editor.node.tools.common.shape.curveEdit;
 
 import com.kitfox.raven.editor.node.scene.RenderContext;
 import com.kitfox.raven.editor.node.tools.ToolUser;
-import com.kitfox.raven.editor.node.tools.common.*;
+import com.kitfox.raven.editor.node.tools.common.ServiceDocument;
+import com.kitfox.raven.editor.node.tools.common.ToolDisplay;
+import com.kitfox.raven.editor.node.tools.common.pen.ServiceBezierMesh;
 import com.kitfox.raven.util.Selection;
 import com.kitfox.raven.util.tree.NodeObject;
 import java.awt.event.KeyEvent;
@@ -28,27 +18,33 @@ import java.awt.event.MouseEvent;
  *
  * @author kitfox
  */
-public class ToolPenDispatch extends ToolDisplay
+public class ToolCurveEditDispatch extends ToolDisplay
 {
-    final ToolPenProvider toolProvider;
+    final ToolCurveEditProvider toolProvider;
     
-    //NetworkGraph curGraph;
-    ToolPenDelegate delegate;
+    ToolCurveEditMesh delegate;
+    NodeObject delegateNode;
     
-    protected ToolPenDispatch(ToolUser user, ToolPenProvider toolProvider)
+    protected ToolCurveEditDispatch(ToolUser user, ToolCurveEditProvider toolProvider)
     {
         super(user);
         this.toolProvider = toolProvider;
-        
     }
     
-    private void touchDelegate()
+    private void updateDelegate()
     {
+        ServiceDocument servDoc = user.getToolService(ServiceDocument.class);
+        Selection<NodeObject> sel = servDoc.getSelection();
+        NodeObject node = sel.getTopSelected();
+        if (node != delegateNode)
+        {
+            //Clear delegate if top selection changed
+            delegateNode = null;
+            delegate = null;
+        }
+            
         if (delegate == null)
         {
-            ServiceDocument servDoc = user.getToolService(ServiceDocument.class);
-            Selection<NodeObject> sel = servDoc.getSelection();
-            NodeObject node = sel.getTopSelected();
             if (node == null)
             {
                 return;
@@ -58,7 +54,8 @@ public class ToolPenDispatch extends ToolDisplay
             ServiceBezierMesh servMesh = node.getNodeService(ServiceBezierMesh.class, false);
             if (servMesh != null)
             {
-                delegate = new ToolPenMesh(this, servMesh);
+                delegate = new ToolCurveEditMesh(this, node, servMesh);
+                delegateNode = node;
             }
         }
     }
@@ -71,7 +68,7 @@ public class ToolPenDispatch extends ToolDisplay
     @Override
     protected void click(MouseEvent evt)
     {
-        touchDelegate();
+        updateDelegate();
 
         if (delegate != null)
         {
@@ -82,7 +79,7 @@ public class ToolPenDispatch extends ToolDisplay
     @Override
     protected void startDrag(MouseEvent evt)
     {
-        touchDelegate();
+        updateDelegate();
 
         if (delegate != null)
         {
@@ -93,7 +90,7 @@ public class ToolPenDispatch extends ToolDisplay
     @Override
     protected void dragTo(MouseEvent evt)
     {
-        touchDelegate();
+        updateDelegate();
 
         if (delegate != null)
         {
@@ -104,7 +101,7 @@ public class ToolPenDispatch extends ToolDisplay
     @Override
     protected void endDrag(MouseEvent evt)
     {
-        touchDelegate();
+        updateDelegate();
 
         if (delegate != null)
         {
@@ -126,7 +123,7 @@ public class ToolPenDispatch extends ToolDisplay
     {
         super.render(ctx);
         
-//        updateDelegate();
+        updateDelegate();
 
         if (delegate != null)
         {
@@ -142,7 +139,7 @@ public class ToolPenDispatch extends ToolDisplay
     @Override
     public void keyPressed(KeyEvent evt)
     {
-        touchDelegate();
+        updateDelegate();
 
         if (delegate != null)
         {
@@ -154,6 +151,6 @@ public class ToolPenDispatch extends ToolDisplay
     {
         delegate = null;
     }
-
+    
     
 }

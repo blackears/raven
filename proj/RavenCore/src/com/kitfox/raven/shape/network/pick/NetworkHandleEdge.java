@@ -32,5 +32,8 @@ public interface NetworkHandleEdge
     public RavenPaint getPaint();
     public RavenPaintLayout getPaintLayout();
     public BezierCurve2d getCurve();
-    
+    public NetworkHandleVertex getStartVertex();
+    public NetworkHandleVertex getEndVertex();
+
+    public boolean isLine();
 }

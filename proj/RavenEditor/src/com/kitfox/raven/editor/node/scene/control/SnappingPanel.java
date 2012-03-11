@@ -36,7 +36,8 @@ public class SnappingPanel extends javax.swing.JPanel
         implements RavenEditorListener
 {
     RavenEditor editor;
-//    RavenNodeRoot root;
+
+    boolean init;
 
     RavenEditorWeakListener edListener;
     
@@ -51,7 +52,6 @@ public class SnappingPanel extends javax.swing.JPanel
     DocumentPropMonitor snapGridPropMon;
     DocumentPropMonitor snapVertexPropMon;
     
-//    private GridColorCtrlMonitor gridColorCtrlMonitor = new GridColorCtrlMonitor();
     private PropertyControlMonitor gridColorCtrlMonitor;
     
     /**
@@ -70,6 +70,8 @@ public class SnappingPanel extends javax.swing.JPanel
         previewGridColor.addMouseListener(gridColorCtrlMonitor);
 
         rebuildDocument();
+        
+        init = true;
     }
 
     private void rebuildDocument()
@@ -138,35 +140,6 @@ public class SnappingPanel extends javax.swing.JPanel
         spinner_offsetX.setValue(root.getGridSpacingOffsetX());
         spinner_offsetY.setValue(root.getGridSpacingOffsetY());
     }
-    
-//    private void runCustomEditor(PropertyWrapperEditor editor)
-//    {
-//        JDialog dlg =
-//                new JDialog(SwingUtilities.getWindowAncestor(this), 
-//                JDialog.DEFAULT_MODALITY_TYPE);
-//        PropertyCustomEditor xact = editor.createCustomEditor();
-//        PropertyCustomEditorPanel custom = new PropertyCustomEditorPanel(
-//                xact.getCustomEditor(), dlg);
-//        dlg.getContentPane().add(custom, BorderLayout.CENTER);
-//
-//        dlg.pack();
-//        Window win = SwingUtilities.getWindowAncestor(this);
-//        if (win != null)
-//        {
-//            dlg.setLocation(win.getX(), win.getY());
-//        }
-//
-//        dlg.setVisible(true);
-//
-//        if (custom.isOkay())
-//        {
-//            xact.customEditorCommit();
-//        }
-//        else
-//        {
-//            xact.customEditorCancel();
-//        }
-//    }
 
     @Override
     public void recentFilesChanged(EventObject evt)
@@ -347,6 +320,11 @@ public class SnappingPanel extends javax.swing.JPanel
 
     private void check_snapToVertexActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_check_snapToVertexActionPerformed
     {//GEN-HEADEREND:event_check_snapToVertexActionPerformed
+        if (!init)
+        {
+            return;
+        }
+        
         RavenNodeRoot root = getRoot();
         if (root == null)
         {
@@ -358,6 +336,11 @@ public class SnappingPanel extends javax.swing.JPanel
 
     private void check_snapToGridActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_check_snapToGridActionPerformed
     {//GEN-HEADEREND:event_check_snapToGridActionPerformed
+        if (!init)
+        {
+            return;
+        }
+        
         RavenNodeRoot root = getRoot();
         if (root == null)
         {
@@ -369,6 +352,11 @@ public class SnappingPanel extends javax.swing.JPanel
 
     private void check_showGridActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_check_showGridActionPerformed
     {//GEN-HEADEREND:event_check_showGridActionPerformed
+        if (!init)
+        {
+            return;
+        }
+        
         RavenNodeRoot root = getRoot();
         if (root == null)
         {
@@ -380,6 +368,11 @@ public class SnappingPanel extends javax.swing.JPanel
 
     private void spinner_minSpacingStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_spinner_minSpacingStateChanged
     {//GEN-HEADEREND:event_spinner_minSpacingStateChanged
+        if (!init)
+        {
+            return;
+        }
+        
         RavenNodeRoot root = getRoot();
         if (root == null)
         {
@@ -391,6 +384,11 @@ public class SnappingPanel extends javax.swing.JPanel
 
     private void spinner_majSpacingStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_spinner_majSpacingStateChanged
     {//GEN-HEADEREND:event_spinner_majSpacingStateChanged
+        if (!init)
+        {
+            return;
+        }
+        
         RavenNodeRoot root = getRoot();
         if (root == null)
         {
@@ -402,6 +400,11 @@ public class SnappingPanel extends javax.swing.JPanel
 
     private void spinner_offsetXStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_spinner_offsetXStateChanged
     {//GEN-HEADEREND:event_spinner_offsetXStateChanged
+        if (!init)
+        {
+            return;
+        }
+        
         RavenNodeRoot root = getRoot();
         if (root == null)
         {
@@ -413,6 +416,11 @@ public class SnappingPanel extends javax.swing.JPanel
 
     private void spinner_offsetYStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_spinner_offsetYStateChanged
     {//GEN-HEADEREND:event_spinner_offsetYStateChanged
+        if (!init)
+        {
+            return;
+        }
+        
         RavenNodeRoot root = getRoot();
         if (root == null)
         {
@@ -438,24 +446,6 @@ public class SnappingPanel extends javax.swing.JPanel
     // End of variables declaration//GEN-END:variables
 
     //--------------------------
-
-//    private class GridColorCtrlMonitor extends MouseAdapter
-//    {
-//        @Override
-//        public void mouseClicked(MouseEvent e)
-//        {
-//            RavenNodeRoot root = getRoot();
-//            if (root == null)
-//            {
-//                return;
-//            }
-//            
-//            RavenPaintColorEditor editor = new RavenPaintColorEditor(
-//                    root.gridColor);
-//            runCustomEditor(editor);
-//        }
-//    }
-
     
     private class DocumentPropMonitor extends PropertyWrapperWeakAdapter
     {

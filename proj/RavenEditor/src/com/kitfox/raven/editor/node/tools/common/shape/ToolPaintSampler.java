@@ -89,7 +89,7 @@ public class ToolPaintSampler extends ToolDisplay
 
         if (toolProvider.isStrokePaint() || toolProvider.isStrokeShape())
         {
-            ArrayList<NetworkHandleEdge> edges = 
+            ArrayList<? extends NetworkHandleEdge> edges = 
                     servShape.pickEdges(region, l2d, Intersection.INTERSECTS);
 
             if (!edges.isEmpty())
@@ -117,7 +117,7 @@ public class ToolPaintSampler extends ToolDisplay
 
         if (toolProvider.isFacePaint())
         {
-            ArrayList<NetworkHandleFace> faces = 
+            ArrayList<? extends NetworkHandleFace> faces = 
                     servShape.pickFaces(region, l2d, Intersection.INTERSECTS);
 
             if (!faces.isEmpty())

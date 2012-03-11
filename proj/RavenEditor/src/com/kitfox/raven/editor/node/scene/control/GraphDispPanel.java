@@ -37,6 +37,8 @@ public class GraphDispPanel extends javax.swing.JPanel
     final RavenEditor editor;
 
     RavenEditorWeakListener edListener;
+    
+    boolean init;
 
     private RavenColorPreviewPanel previewEdgeColor = new RavenColorPreviewPanel();
     private RavenColorPreviewPanel previewEdgeColorSel = new RavenColorPreviewPanel();
@@ -54,6 +56,7 @@ public class GraphDispPanel extends javax.swing.JPanel
     private DocumentPropMonitor edgeColorSelPropMonitor;
     private DocumentPropMonitor vertColorPropMonitor;
     private DocumentPropMonitor vertColorSelPropMonitor;
+    
     /**
      * Creates new form GraphDispPanel
      */
@@ -82,6 +85,8 @@ public class GraphDispPanel extends javax.swing.JPanel
         previewVertColorSel.addMouseListener(vertColorSelCtrlMonitor);
 
         rebuildDocument();
+        
+        init = true;
     }
 
     private void rebuildDocument()
@@ -188,6 +193,7 @@ public class GraphDispPanel extends javax.swing.JPanel
 
         jLabel1.setText("Vertex Pick Radius");
 
+        spinner_vertRadPick.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.0f), Float.valueOf(1.0f), null, Float.valueOf(1.0f)));
         spinner_vertRadPick.addChangeListener(new javax.swing.event.ChangeListener()
         {
             public void stateChanged(javax.swing.event.ChangeEvent evt)
@@ -198,6 +204,7 @@ public class GraphDispPanel extends javax.swing.JPanel
 
         jLabel2.setText("Vertex Display Radius");
 
+        spinner_vertRadDisp.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.0f), Float.valueOf(1.0f), null, Float.valueOf(1.0f)));
         spinner_vertRadDisp.addChangeListener(new javax.swing.event.ChangeListener()
         {
             public void stateChanged(javax.swing.event.ChangeEvent evt)
@@ -262,6 +269,11 @@ public class GraphDispPanel extends javax.swing.JPanel
 
     private void spinner_vertRadPickStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_spinner_vertRadPickStateChanged
     {//GEN-HEADEREND:event_spinner_vertRadPickStateChanged
+        if (!init)
+        {
+            return;
+        }
+        
         RavenNodeRoot root = getRoot();
         if (root == null)
         {
@@ -273,6 +285,11 @@ public class GraphDispPanel extends javax.swing.JPanel
 
     private void spinner_vertRadDispStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_spinner_vertRadDispStateChanged
     {//GEN-HEADEREND:event_spinner_vertRadDispStateChanged
+        if (!init)
+        {
+            return;
+        }
+
         RavenNodeRoot root = getRoot();
         if (root == null)
         {

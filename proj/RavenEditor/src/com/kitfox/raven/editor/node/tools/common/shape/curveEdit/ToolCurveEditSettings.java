@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.kitfox.raven.editor.node.tools.common.shape;
+package com.kitfox.raven.editor.node.tools.common.shape.curveEdit;
 
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.node.scene.control.GraphDispPanel;
@@ -27,7 +27,7 @@ import com.kitfox.raven.editor.node.scene.control.SnappingPanel;
 public class ToolCurveEditSettings extends javax.swing.JPanel
 {
     RavenEditor editor;
-    ToolCurveEdit.Provider prov;
+    ToolCurveEditProvider prov;
 
     SnappingPanel snappingPanel;
     GraphDispPanel graphDispPanel;
@@ -35,7 +35,7 @@ public class ToolCurveEditSettings extends javax.swing.JPanel
     /**
      * Creates new form ToolPen2Settings
      */
-    public ToolCurveEditSettings(RavenEditor editor, ToolCurveEdit.Provider prov)
+    public ToolCurveEditSettings(RavenEditor editor, ToolCurveEditProvider prov)
     {
         this.editor = editor;
         this.prov = prov;

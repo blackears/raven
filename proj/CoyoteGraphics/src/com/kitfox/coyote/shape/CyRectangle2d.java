@@ -48,6 +48,11 @@ public class CyRectangle2d extends CyShape
         this.height = height;
     }
 
+    public CyRectangle2d(double x, double y)
+    {
+        this(x, y, 0, 0);
+    }
+
     public void union(double x, double y)
     {
         double minX = min(getMinX(), x);

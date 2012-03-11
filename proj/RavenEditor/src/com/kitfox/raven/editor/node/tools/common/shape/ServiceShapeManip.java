@@ -34,24 +34,32 @@ import java.util.Collection;
  */
 public interface ServiceShapeManip extends ToolService
 {
-    public ArrayList<NetworkHandleVertex>
+    public ArrayList<? extends NetworkHandleVertex>
             pickVertices(CyRectangle2d region, CyMatrix4d l2d, Intersection isect);
-    public ArrayList<NetworkHandleEdge>
+    public ArrayList<? extends NetworkHandleEdge>
             pickEdges(CyRectangle2d region, CyMatrix4d l2d, Intersection isect);
-    public ArrayList<NetworkHandleFace>
+    public ArrayList<? extends NetworkHandleFace>
             pickFaces(CyRectangle2d region, CyMatrix4d l2d, Intersection isect);
     
-    public ArrayList<NetworkHandleEdge> getConnectedEdges(NetworkHandleEdge edge);
+    public ArrayList<? extends NetworkHandleEdge> getConnectedEdges(NetworkHandleEdge edge);
     
-    public void setEdgePaintAndStroke(RavenPaint paint, RavenStroke stroke, Collection<NetworkHandleEdge> edges, boolean history);
-    public void setEdgePaint(RavenPaint paint, Collection<NetworkHandleEdge> edges, boolean history);
-    public void setEdgeStroke(RavenStroke stroke, Collection<NetworkHandleEdge> edges, boolean history);
-    public void setFacePaint(RavenPaint paint, Collection<NetworkHandleFace> faces, boolean history);
+    public void setEdgePaintAndStroke(RavenPaint paint, RavenStroke stroke, 
+            Collection<? extends NetworkHandleEdge> edges, boolean history);
+    public void setEdgePaint(RavenPaint paint, 
+            Collection<? extends NetworkHandleEdge> edges, boolean history);
+    public void setEdgeStroke(RavenStroke stroke, 
+            Collection<? extends NetworkHandleEdge> edges, boolean history);
+    public void setFacePaint(RavenPaint paint, 
+            Collection<? extends NetworkHandleFace> faces, boolean history);
 
     public CyMatrix4d getGraphToWorldXform();
 
     public ArrayList<? extends NetworkHandleEdge> getEdges();
 
     public ArrayList<? extends NetworkHandleVertex> getVertices();
+
+    public ArrayList<? extends NetworkHandleEdge> getEdgesByIds(ArrayList<Integer> edgeIds);
+
+    public ArrayList<? extends NetworkHandleFace> getFacesByIds(ArrayList<Integer> faceIds);
     
 }

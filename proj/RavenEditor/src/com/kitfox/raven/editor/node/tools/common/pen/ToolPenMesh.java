@@ -309,17 +309,6 @@ public class ToolPenMesh extends ToolPenDelegate
                 data.putLeft(NetworkDataTypePaintLayout.class, curLayout);
             }
         }
-        
-        //Decorate child faces
-//        for (int i = 0; i < face.getNumChildren(); ++i)
-//        {
-//            CutLoop hole = face.getChild(i);
-//            for (int j = 0; j < hole.getNumChildren(); ++j)
-//            {
-//                CutLoop subface = hole.getChild(j);
-//                decorateFace(subface, fillPaint, fillLayout);
-//            }
-//        }
     }
     
     @Override

@@ -17,18 +17,16 @@
 package com.kitfox.raven.shape.network.pick;
 
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
-import java.util.ArrayList;
 
 /**
  *
  * @author kitfox
  */
-public interface NetworkHandleVertex
+public interface NetworkHandleKnot
 {
     public int getIndex();
+    public NetworkHandleVertex getVertex();
+    public NetworkHandleEdge getEdge();
     public Coord getCoord();
 
-    public ArrayList<? extends NetworkHandleEdge> getInputEdges();
-
-    public ArrayList<? extends NetworkHandleEdge> getOutputEdges();
 }

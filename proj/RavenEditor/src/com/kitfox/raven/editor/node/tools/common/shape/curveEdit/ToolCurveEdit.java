@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.kitfox.raven.editor.node.tools.common.shape;
+package com.kitfox.raven.editor.node.tools.common.shape.curveEdit;
 
 import com.kitfox.coyote.material.color.CyMaterialColorDrawRecord;
 import com.kitfox.coyote.material.color.CyMaterialColorDrawRecordFactory;
@@ -35,6 +35,7 @@ import com.kitfox.raven.editor.node.scene.RenderContext;
 import com.kitfox.raven.editor.node.tools.ToolProvider;
 import com.kitfox.raven.editor.node.tools.ToolUser;
 import com.kitfox.raven.editor.node.tools.common.ToolDisplay;
+import com.kitfox.raven.editor.node.tools.common.shape.ServiceShapeManip;
 import com.kitfox.raven.shape.network.pick.NetworkHandleEdge;
 import com.kitfox.raven.shape.network.pick.NetworkHandleSelection;
 import com.kitfox.raven.shape.network.pick.NetworkHandleVertex;
@@ -46,12 +47,14 @@ import com.kitfox.raven.util.tree.NodeObject;
 import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Properties;
 
 /**
  *
  * @author kitfox
  */
+@Deprecated
 public class ToolCurveEdit extends ToolDisplay
 {
     Provider toolProvider;
@@ -154,10 +157,45 @@ public class ToolCurveEdit extends ToolDisplay
     {
         ArrayList<? extends NetworkHandleEdge> edgeList =
                 serv.getEdges();
+        ArrayList<? extends NetworkHandleVertex> vertList =
+                serv.getVertices();
         CyMatrix4d g2w = serv.getGraphToWorldXform();
 
         NetworkHandleSelection subSel = 
                 sel.getSubselection(node, NetworkHandleSelection.class);
+        
+        //Find tangent handles to draw
+        HashSet<TanRecord> tanRecords = new HashSet<TanRecord>();
+        for (NetworkHandleEdge e: edgeList)
+        {
+            if (subSel != null && subSel.containsEdge(e.getIndex())
+                    && !e.isLine())
+            {
+                tanRecords.add(new TanRecord(e, false));
+                tanRecords.add(new TanRecord(e, true));
+            }
+        }
+        
+        for (NetworkHandleVertex v: vertList)
+        {
+            if (subSel != null && subSel.containsVertex(v.getIndex()))
+            {
+                for (NetworkHandleEdge e: v.getInputEdges())
+                {
+                    if (!e.isLine())
+                    {
+                        tanRecords.add(new TanRecord(e, false));
+                    }
+                }
+                for (NetworkHandleEdge e: v.getOutputEdges())
+                {
+                    if (!e.isLine())
+                    {
+                        tanRecords.add(new TanRecord(e, true));
+                    }
+                }
+            }
+        }
         
         //Draw paths
         CyPath2d pathUnsel = new CyPath2d();
@@ -166,7 +204,7 @@ public class ToolCurveEdit extends ToolDisplay
         {
             BezierCurve2d c = e.getCurve();
             
-            if (subSel != null && subSel.containsEdge(e))
+            if (subSel != null && subSel.containsEdge(e.getIndex()))
             {
                 pathSel.moveTo(c.getStartX(), c.getStartY());
                 c.append(pathSel);
@@ -202,8 +240,6 @@ public class ToolCurveEdit extends ToolDisplay
         }
         
         //Draw verts
-        ArrayList<? extends NetworkHandleVertex> vertList =
-                serv.getVertices();
         CyVector2d pt = new CyVector2d();
         CyMatrix4d v2p = new CyMatrix4d();
         float radDisp = root.getGraphRadiusDisplay();
@@ -223,7 +259,7 @@ public class ToolCurveEdit extends ToolDisplay
             v2p.scale(radDisp * 2, radDisp * 2, 1);
             v2p.translate(-.5, -.5, 0);
             
-            if (subSel != null && subSel.containsVertex(v))
+            if (subSel != null && subSel.containsVertex(v.getIndex()))
             {
                 drawShape(stack, bufSquare, v2p, 
                     root.getGraphColorVertSelect().asColor());
@@ -237,7 +273,6 @@ public class ToolCurveEdit extends ToolDisplay
                 drawShape(stack, bufSquareLines, v2p, 
                     root.getGraphColorEdge().asColor());
             }
-            
         }
     }
     
@@ -264,7 +299,7 @@ public class ToolCurveEdit extends ToolDisplay
     
     //---------------------------------------
 
-    @ServiceInst(service=ToolProvider.class)
+//    @ServiceInst(service=ToolProvider.class)
     static public class Provider extends ToolProvider<ToolCurveEdit>
     {
 
@@ -299,8 +334,54 @@ public class ToolCurveEdit extends ToolDisplay
         @Override
         public Component createToolSettingsEditor(RavenEditor editor)
         {
-            return new ToolCurveEditSettings(editor, this);
+            return null;
+//            return new ToolCurveEditSettings(editor, this);
         }
     }
-    
+
+    class TanRecord
+    {
+        NetworkHandleEdge edge;
+        boolean head;
+
+        public TanRecord(NetworkHandleEdge edge, boolean head)
+        {
+            this.edge = edge;
+            this.head = head;
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+            if (getClass() != obj.getClass())
+            {
+                return false;
+            }
+            final TanRecord other = (TanRecord)obj;
+            if (this.edge != other.edge && (this.edge == null || !this.edge.equals(other.edge)))
+            {
+                return false;
+            }
+            if (this.head != other.head)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            int hash = 5;
+            hash = 97 * hash + (this.edge != null ? this.edge.hashCode() : 0);
+            hash = 97 * hash + (this.head ? 1 : 0);
+            return hash;
+        }
+        
+    }
+        
 }

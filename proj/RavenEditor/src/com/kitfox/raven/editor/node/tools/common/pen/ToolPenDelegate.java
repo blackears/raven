@@ -16,10 +16,7 @@
 
 package com.kitfox.raven.editor.node.tools.common.pen;
 
-import com.kitfox.raven.editor.node.scene.snap.GraphLayout;
-import com.kitfox.raven.editor.node.tools.common.ServiceDocument;
 import com.kitfox.raven.editor.node.tools.common.ToolDisplay;
-import com.kitfox.raven.util.tree.NodeDocument;
 import java.awt.event.MouseEvent;
 
 /**
@@ -37,26 +34,6 @@ abstract public class ToolPenDelegate extends ToolDisplay
         this.toolProvider = dispatch.toolProvider;
         this.dispatch = dispatch;
     }
-
-//    protected GraphLayout getGraphLayout()
-//    {
-//        ServiceDocument provider = user.getToolService(ServiceDocument.class);
-//        if (provider != null)
-//        {
-//            return provider.getGraphLayout();
-//        }
-//        return null;
-//    }
-
-//    protected NodeDocument getDocument()
-//    {
-//        ServiceDocument provider = user.getToolService(ServiceDocument.class);
-//        if (provider != null)
-//        {
-//            return provider.getDocument();
-//        }
-//        return null;
-//    }
 
     @Override
     abstract protected void click(MouseEvent evt);

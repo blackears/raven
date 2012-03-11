@@ -92,7 +92,7 @@ public class ToolPaintFlood extends ToolDisplay
 
         if (toolProvider.isStrokePaint() || toolProvider.isStrokeShape())
         {
-            ArrayList<NetworkHandleEdge> edges = 
+            ArrayList<? extends NetworkHandleEdge> edges = 
                     servShape.pickEdges(region, l2d, Intersection.INTERSECTS);
 
             if (!edges.isEmpty())
@@ -105,7 +105,7 @@ public class ToolPaintFlood extends ToolDisplay
 
         if (toolProvider.isFacePaint())
         {
-            ArrayList<NetworkHandleFace> faces = 
+            ArrayList<? extends NetworkHandleFace> faces = 
                     servShape.pickFaces(region, l2d, Intersection.INTERSECTS);
 
             if (!faces.isEmpty())
@@ -143,7 +143,7 @@ public class ToolPaintFlood extends ToolDisplay
     {
     }
 
-    private void floodEdges(ArrayList<NetworkHandleEdge> edges, 
+    private void floodEdges(ArrayList<? extends NetworkHandleEdge> edges, 
             boolean connectedEdges, ServiceShapeManip servShape)
     {
         HashSet<NetworkHandleEdge> floodSet = new HashSet<NetworkHandleEdge>();
@@ -153,7 +153,7 @@ public class ToolPaintFlood extends ToolDisplay
         {
             for (NetworkHandleEdge curEdge: edges)
             {
-                ArrayList<NetworkHandleEdge> conn 
+                ArrayList<? extends NetworkHandleEdge> conn 
                         = servShape.getConnectedEdges(curEdge);
                 floodSet.addAll(conn);
             }
@@ -190,9 +190,11 @@ public class ToolPaintFlood extends ToolDisplay
 
             for (NetworkHandleEdge curEdge: edges)
             {
-                if (subSel.containsEdge(curEdge))
+                if (subSel.containsEdge(curEdge.getIndex()))
                 {
-                    floodSet.addAll(subSel.getEdges());
+                    ArrayList<? extends NetworkHandleEdge> fs =
+                            servShape.getEdgesByIds(subSel.getEdgeIds());
+                    floodSet.addAll(fs);
                 }
             }
         }
@@ -225,7 +227,7 @@ public class ToolPaintFlood extends ToolDisplay
 //        }
     }
 
-    private void floodFaces(ArrayList<NetworkHandleFace> faces, 
+    private void floodFaces(ArrayList<? extends NetworkHandleFace> faces, 
             ServiceShapeManip servShape)
     {
         HashSet<NetworkHandleFace> floodList
@@ -245,9 +247,11 @@ public class ToolPaintFlood extends ToolDisplay
 
             for (NetworkHandleFace curFace: faces)
             {
-                if (subSel.containsFace(curFace))
+                if (subSel.containsFace(curFace.getIndex()))
                 {
-                    floodList.addAll(subSel.getFaces());
+                    ArrayList<? extends NetworkHandleFace> fs =
+                            servShape.getFacesByIds(subSel.getFaceIds());
+                    floodList.addAll(fs);
                 }
             }
         }
