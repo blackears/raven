@@ -17,9 +17,12 @@
 package com.kitfox.raven.shape.network.pick;
 
 import com.kitfox.coyote.shape.bezier.BezierCurve2d;
+import com.kitfox.coyote.shape.bezier.BezierCurve2i;
+import com.kitfox.coyote.shape.bezier.mesh.BezierVertexSmooth;
 import com.kitfox.raven.paint.RavenPaint;
 import com.kitfox.raven.paint.RavenPaintLayout;
 import com.kitfox.raven.paint.RavenStroke;
+import com.kitfox.raven.shape.network.NetworkDataEdge;
 
 /**
  *
@@ -31,9 +34,16 @@ public interface NetworkHandleEdge
     public RavenStroke getStroke();
     public RavenPaint getPaint();
     public RavenPaintLayout getPaintLayout();
-    public BezierCurve2d getCurve();
+    public BezierCurve2d getCurveLocal();
     public NetworkHandleVertex getStartVertex();
     public NetworkHandleVertex getEndVertex();
 
     public boolean isLine();
+    public void remove();
+    public BezierCurve2i getCurveGraph();
+    public NetworkDataEdge getData();
+    public BezierVertexSmooth getSmooth0();
+    public BezierVertexSmooth getSmooth1();
+    public void setSmooth0(BezierVertexSmooth smooth);
+    public void setSmooth1(BezierVertexSmooth smooth);
 }

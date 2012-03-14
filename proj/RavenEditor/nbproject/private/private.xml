@@ -1,4 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/shape/ToolPaintSampler.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/shape/ToolPaintSamplerSettings.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/shape/ToolPaintFlood.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/shape/ToolPaintFloodSettings.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/scene/snap/Snapping.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/scene/snap/SnappingEditor.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/scene/RavenNodeRoot.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/ServiceDocument.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/scene/snap/GraphLayout.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/ToolDisplay.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/pen/ToolPenDelegate.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/scene/snap/GraphLayoutEditor.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/pen/ToolPenMesh.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/scene/control/SnappingPanel.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/scene/control/ColorPanel.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/scene/control/RavenPaintPreviewPanel.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/scene/control/RavenColorPreviewPanel.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/pen/ToolPenSettings.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/scene/control/RavenStrokePreviewPanel.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/scene/control/GraphDispPanel.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/scene/control/PropertyControlMonitor.java</file>
+    </open-files>
 </project-private>

@@ -18,14 +18,12 @@ package com.kitfox.raven.shape.network.pick;
 
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.math.CyVector2d;
+import com.kitfox.coyote.math.Math2DUtil;
 import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.coyote.shape.bezier.BezierCurve2d;
 import com.kitfox.coyote.shape.bezier.BezierCurve2i;
-import com.kitfox.coyote.shape.bezier.mesh.BezierMeshEdge2i;
-import com.kitfox.coyote.shape.bezier.mesh.BezierMeshVertex2i;
-import com.kitfox.coyote.shape.bezier.mesh.CutLoop;
-import com.kitfox.coyote.shape.bezier.mesh.CutSegHalf;
+import com.kitfox.coyote.shape.bezier.mesh.*;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import com.kitfox.raven.paint.RavenPaint;
 import com.kitfox.raven.paint.RavenPaintLayout;
@@ -61,6 +59,9 @@ public class NetworkMeshHandles
     
     private CutLoop boundingLoop;
     
+    static final double smoothAngle = 5;
+    static final double smoothCutoff = Math.cos(Math.PI - Math.toRadians(smoothAngle));
+        
     private static CyMatrix4d coordToLocal;
     static
     {
@@ -404,7 +405,7 @@ public class NetworkMeshHandles
         public ArrayList<HandleEdge> getInputEdges()
         {
             ArrayList<HandleEdge> list = new ArrayList<HandleEdge>();
-            ArrayList<BezierMeshEdge2i> edges = v.getEdgesOut();
+            ArrayList<BezierMeshEdge2i> edges = v.getEdgesIn();
             for (BezierMeshEdge2i e: edges)
             {
                 list.add(edgeMap.get(e));
@@ -416,7 +417,7 @@ public class NetworkMeshHandles
         public ArrayList<HandleEdge> getOutputEdges()
         {
             ArrayList<HandleEdge> list = new ArrayList<HandleEdge>();
-            ArrayList<BezierMeshEdge2i> edges = v.getEdgesIn();
+            ArrayList<BezierMeshEdge2i> edges = v.getEdgesOut();
             for (BezierMeshEdge2i e: edges)
             {
                 list.add(edgeMap.get(e));
@@ -468,7 +469,7 @@ public class NetworkMeshHandles
         }
 
         @Override
-        public BezierCurve2d getCurve()
+        public BezierCurve2d getCurveLocal()
         {
             BezierCurve2i c = e.asCurve();
             return c.asDouble();
@@ -499,6 +500,48 @@ public class NetworkMeshHandles
         public boolean isLine()
         {
             return e.isLine();
+        }
+
+        @Override
+        public void remove()
+        {
+            mesh.removeEdge(e);
+        }
+
+        @Override
+        public BezierCurve2i getCurveGraph()
+        {
+            return e.asCurve();
+        }
+
+        @Override
+        public NetworkDataEdge getData()
+        {
+            return e.getData();
+        }
+
+        @Override
+        public BezierVertexSmooth getSmooth0()
+        {
+            return e.getSmooth0();
+        }
+
+        @Override
+        public BezierVertexSmooth getSmooth1()
+        {
+            return e.getSmooth1();
+        }
+
+        @Override
+        public void setSmooth0(BezierVertexSmooth smooth)
+        {
+            e.setSmooth0(smooth);
+        }
+
+        @Override
+        public void setSmooth1(BezierVertexSmooth smooth)
+        {
+            e.setSmooth1(smooth);
         }
     }
     
@@ -538,6 +581,103 @@ public class NetworkMeshHandles
         {
             return edgeMap.get(edge);
         }
+
+        @Override
+        public boolean isHead()
+        {
+            return head;
+        }
+
+        @Override
+        public void setSmoothing(BezierVertexSmooth smooth)
+        {
+            if (head)
+            {
+                edge.setSmooth1(smooth);
+            }
+            else
+            {
+                edge.setSmooth0(smooth);
+            }
+        }
+
+        @Override
+        public BezierVertexSmooth getSmoothing()
+        {
+            return head ? edge.getSmooth1() : edge.getSmooth0();
+        }
+
+        /**
+         * Find a smooth knot on the opposite side of this vertex such that
+         * the angle between these two knots is greater than (PI - smoothAngle)
+         * 
+         * @return 
+         */
+        @Override
+        public NetworkHandleKnot getSmoothingPeer()
+        {
+            BezierMeshVertex2i v = head ? edge.getEnd() : edge.getStart();
+            
+            Coord ck0 = getCoord();
+            Coord cv = v.getCoord();
+            double len0 = Math2DUtil.dist(ck0.x, ck0.y, cv.x, cv.y);
+            
+            for (BezierMeshEdge2i e: 
+                    (ArrayList<BezierMeshEdge2i>)v.getEdgesOut())
+            {
+                HandleKnot k1 = knotList.get(e.getId() * 2);
+                if (k1 == null)
+                {
+                    continue;
+                }
+                BezierVertexSmooth sm = k1.getSmoothing();
+                if (sm != BezierVertexSmooth.SMOOTH 
+                        && sm != BezierVertexSmooth.AUTO_SMOOTH)
+                {
+                    continue;
+                }
+                
+                Coord ck1 = k1.getCoord();
+                double len1 = Math2DUtil.dist(ck1.x, ck1.y, cv.x, cv.y);
+                double cosAngle = Math2DUtil.dot(ck0.x - cv.x, ck0.y - cv.y,
+                        ck1.x - cv.x, ck1.y - cv.y) / (len0 * len1);
+                
+                if (cosAngle < smoothCutoff)
+                {
+                    return k1;
+                }
+            }
+            
+            for (BezierMeshEdge2i e: 
+                    (ArrayList<BezierMeshEdge2i>)v.getEdgesIn())
+            {
+                HandleKnot k1 = knotList.get(e.getId() * 2 + 1);
+                if (k1 == null)
+                {
+                    continue;
+                }
+                BezierVertexSmooth sm = k1.getSmoothing();
+                if (sm != BezierVertexSmooth.SMOOTH 
+                        && sm != BezierVertexSmooth.AUTO_SMOOTH)
+                {
+                    continue;
+                }
+                
+                Coord ck1 = k1.getCoord();
+                double len1 = Math2DUtil.dist(ck1.x, ck1.y, cv.x, cv.y);
+                double cosAngle = Math2DUtil.dot(ck0.x - cv.x, ck0.y - cv.y,
+                        ck1.x - cv.x, ck1.y - cv.y) / (len0 * len1);
+                
+                if (cosAngle < smoothCutoff)
+                {
+                    return k1;
+                }
+            }
+            
+            return null;
+        }
+        
+        
     }
 
     public class HandleFace implements NetworkHandleFace
@@ -617,6 +757,69 @@ public class NetworkMeshHandles
         public CyPath2d getPath()
         {
             return path;
+        }
+
+        public void cleanup()
+        {
+            RavenPaint curPaint = null;
+            RavenPaintLayout curLayout = null;
+            
+            //Find a consistent paint color
+            if (loop.isCcw())
+            {
+                //Only ccw loops should have paints
+                for (CutSegHalf seg: loop.getSegs())
+                {
+                    BezierMeshEdge2i e = seg.getEdge();
+                    NetworkDataEdge data = (NetworkDataEdge)e.getData();
+
+                    if (data != null && curPaint == null)
+                    {
+                        if (seg.isRight())
+                        {
+                            curPaint = data.getRight(NetworkDataTypePaint.class);
+                            curLayout = data.getRight(NetworkDataTypePaintLayout.class);
+                        }
+                        else
+                        {
+                            curPaint = data.getLeft(NetworkDataTypePaint.class);
+                            curLayout = data.getLeft(NetworkDataTypePaintLayout.class);
+                        }
+
+                        if (curPaint != null)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            this.paint = curPaint;
+            this.layout = curLayout;
+            
+            //Set all edges to common face paint
+            for (CutSegHalf seg: loop.getSegs())
+            {
+                BezierMeshEdge2i e = seg.getEdge();
+                NetworkDataEdge data = (NetworkDataEdge)e.getData();
+                
+                if (data == null)
+                {
+                    data = new NetworkDataEdge();
+                    e.setData(data);
+                }
+                
+                if (seg.isRight())
+                {
+                    data.putRight(NetworkDataTypePaint.class, curPaint);
+                    data.putRight(NetworkDataTypePaintLayout.class, curLayout);
+                }
+                else
+                {
+                    data.putLeft(NetworkDataTypePaint.class, curPaint);
+                    data.putLeft(NetworkDataTypePaintLayout.class, curLayout);
+                }
+            }
         }
         
     }

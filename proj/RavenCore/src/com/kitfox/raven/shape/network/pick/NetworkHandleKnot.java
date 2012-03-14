@@ -16,6 +16,7 @@
 
 package com.kitfox.raven.shape.network.pick;
 
+import com.kitfox.coyote.shape.bezier.mesh.BezierVertexSmooth;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 
 /**
@@ -29,4 +30,16 @@ public interface NetworkHandleKnot
     public NetworkHandleEdge getEdge();
     public Coord getCoord();
 
+    /**
+     * 
+     * @return true if this is the knot at the head of the curve (ie, k1).
+     * false if at the tail (ie, k0).
+     */
+    public boolean isHead();
+
+    public BezierVertexSmooth getSmoothing();
+
+    public NetworkHandleKnot getSmoothingPeer();
+
+    public void setSmoothing(BezierVertexSmooth smoothing);
 }

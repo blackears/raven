@@ -24,6 +24,7 @@ import com.kitfox.coyote.shape.bezier.cutgraph.CurveCutter2i;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  *
@@ -285,14 +286,27 @@ abstract public class BezierMesh2i<VertexData, EdgeData>
         v0.edgesOut.remove(e);
         v1.edgesIn.remove(e);
         
-        if (v0.isEmpty())
+//        if (v0.isEmpty())
+//        {
+//            vertMap.remove(v0.getCoord());
+//        }
+//
+//        if (v1.isEmpty())
+//        {
+//            vertMap.remove(v1.getCoord());
+//        }
+    }
+
+    public void removeEmptyVertices()
+    {
+        for (Iterator<BezierMeshVertex2i> it = vertMap.values().iterator();
+                it.hasNext();)
         {
-            vertMap.remove(v0.getCoord());
-        }
-        
-        if (v1.isEmpty())
-        {
-            vertMap.remove(v1.getCoord());
+            BezierMeshVertex2i v = it.next();
+            if (v.isEmpty())
+            {
+                it.remove();
+            }
         }
     }
 

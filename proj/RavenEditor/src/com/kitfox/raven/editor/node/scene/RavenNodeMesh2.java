@@ -18,7 +18,6 @@ package com.kitfox.raven.editor.node.scene;
 
 import com.kitfox.coyote.math.CyColor4f;
 import com.kitfox.coyote.math.CyMatrix4d;
-import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.renderer.CyDrawStack;
 import com.kitfox.coyote.renderer.CyVertexBuffer;
 import com.kitfox.coyote.shape.*;
@@ -85,25 +84,12 @@ public class RavenNodeMesh2 extends RavenNodeXformable
         stack.pushFrame(null);
         stack.scale(.01, .01, 1);
         
-//        CyMatrix4d mvp = stack.getModelViewProjXform();
-//        mvp.scale(.01, .01, 1);
-        
         for (FaceLayout lay: meshLayout.paths)
         {
             if (lay.paint != null)
             {
                 lay.paint.fillShape(stack, lay.paintLayout, lay.vertBuf);
             }
-            
-//            CyMaterialColorDrawRecord rec =
-//                    CyMaterialColorDrawRecordFactory.inst().allocRecord();
-//
-//            rec.setColor(lay.color);
-//            rec.setMesh(lay.vertBuf);
-//            rec.setOpacity(1);
-//            rec.setMvpMatrix(mvp);
-//            
-//            stack.addDrawRecord(rec);
         }
         
         for (EdgeLayout lay: meshLayout.edgeLayouts)
@@ -112,17 +98,6 @@ public class RavenNodeMesh2 extends RavenNodeXformable
             {
                 lay.paint.fillShape(stack, lay.paintLayout, lay.vertBuf);
             }
-            
-            
-//            CyMaterialColorDrawRecord rec =
-//                    CyMaterialColorDrawRecordFactory.inst().allocRecord();
-//
-//            rec.setColor(lay.color);
-//            rec.setMesh(lay.vertBuf);
-//            rec.setOpacity(1);
-//            rec.setMvpMatrix(mvp);
-//            
-//            stack.addDrawRecord(rec);            
         }
         
         stack.popFrame();
@@ -211,126 +186,6 @@ public class RavenNodeMesh2 extends RavenNodeXformable
         NetworkMeshHandles handles = getMeshHandles();
         return handles.getConnectedEdges(edge);
     }
-    
-//    @Override
-//    public ArrayList<NetworkHandleVertex> pickVertices(CyRectangle2d region, 
-//            CyMatrix4d l2d, Intersection isect)
-//    {
-//        NetworkMeshHandles handles = getMeshHandles();
-//        ArrayList<NetworkHandleVertex> retList = new ArrayList<NetworkHandleVertex>();
-//        
-//        CyVector2d pt = new CyVector2d();
-//        for (HandleVertex v: handles.getVertList())
-//        {
-//            Coord c = v.getCoord();
-//            pt.set(c.x / 100f, c.y / 100f);
-//            l2d.transformPoint(pt);
-//            
-//            if (region.contains(pt))
-//            {
-//                retList.add(v);
-//            }
-//        }
-//        
-//        return retList;
-//    }
-//
-//    @Override
-//    public ArrayList<NetworkHandleEdge> pickEdges(CyRectangle2d region, 
-//            CyMatrix4d l2d, Intersection isect)
-//    {
-//        NetworkMeshHandles handles = getMeshHandles();
-//        ArrayList<NetworkHandleEdge> retList = new ArrayList<NetworkHandleEdge>();
-//        
-//        for (HandleEdge e: handles.getEdgeList())
-//        {
-//            CyPath2d path = e.getPath();
-//            CyPath2d devPath = path.createTransformedPath(l2d);
-//
-//            CyRectangle2d bounds = devPath.getBounds();
-//            
-//            switch (isect)
-//            {
-//                case CONTAINS:
-//                    if (bounds.contains(region))
-//                    {
-//                        retList.add(e);
-//                    }
-//                    break;
-//                case INTERSECTS:
-//                    if (devPath.intersects(region))
-//                    {
-//                        retList.add(e);
-//                    }
-//                    break;
-//                case INSIDE:
-//                    if (devPath.contains(region))
-//                    {
-//                        retList.add(e);
-//                    }
-//                    break;
-//            }
-//        }
-//        
-//        return retList;
-//    }
-//
-//    @Override
-//    public ArrayList<NetworkHandleFace> pickFaces(CyRectangle2d region, 
-//            CyMatrix4d l2d, Intersection isect)
-//    {
-//        NetworkMeshHandles handles = getMeshHandles();
-//        ArrayList<NetworkHandleFace> retList = new ArrayList<NetworkHandleFace>();
-//        
-//        for (HandleFace face: handles.getFaceList())
-//        {
-//            CyPath2d path = face.getPath();
-//            CyPath2d devPath = path.createTransformedPath(l2d);
-//
-//            CyRectangle2d bounds = devPath.getBounds();
-//            
-//            switch (isect)
-//            {
-//                case CONTAINS:
-//                    if (bounds.contains(region))
-//                    {
-//                        retList.add(face);
-//                    }
-//                    break;
-//                case INTERSECTS:
-//                    if (devPath.intersects(region))
-//                    {
-//                        retList.add(face);
-//                    }
-//                    break;
-//                case INSIDE:
-//                    if (devPath.contains(region))
-//                    {
-//                        retList.add(face);
-//                    }
-//                    break;
-//            }
-//        }
-//        
-//        return retList;
-//    }
-//
-//    @Override
-//    public ArrayList<NetworkHandleEdge> getConnectedEdges(NetworkHandleEdge edge)
-//    {
-//        NetworkMeshHandles handles = getMeshHandles();
-//        BezierMeshEdge2i<NetworkDataEdge> bezEdge = handles.getEdge(edge);
-//        
-//        ArrayList<NetworkHandleEdge> retList = new ArrayList<NetworkHandleEdge>();
-//        
-//        ArrayList<BezierMeshEdge2i> edges = bezEdge.getConnectedEdges();
-//        for (BezierMeshEdge2i e: edges)
-//        {
-//            retList.add(handles.getEdgeHandle(e));
-//        }
-//        
-//        return retList;
-//    }
 
     @Override
     public void setEdgePaintAndStroke(RavenPaint paint, RavenStroke stroke, 

@@ -35,7 +35,7 @@ public class NetworkDataTypePaintLayout extends NetworkDataType<RavenPaintLayout
     @Override
     public String asText(RavenPaintLayout value)
     {
-        return value.toString();
+        return value == null ? "" : value.toString();
     }
 
     @Override

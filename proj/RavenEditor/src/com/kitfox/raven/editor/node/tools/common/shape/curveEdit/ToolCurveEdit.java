@@ -202,7 +202,7 @@ public class ToolCurveEdit extends ToolDisplay
         CyPath2d pathSel = new CyPath2d();
         for (NetworkHandleEdge e: edgeList)
         {
-            BezierCurve2d c = e.getCurve();
+            BezierCurve2d c = e.getCurveLocal();
             
             if (subSel != null && subSel.containsEdge(e.getIndex()))
             {
