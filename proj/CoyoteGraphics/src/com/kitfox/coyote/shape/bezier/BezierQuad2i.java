@@ -428,6 +428,13 @@ public class BezierQuad2i extends BezierCurve2i
     }
 
     @Override
+    public String asSvg()
+    {
+        return String.format("M %d %d Q %d %d  %d %d",
+                ax0, ay0, ax1, ay1, ax2, ay2);
+    }
+
+    @Override
     public String toString()
     {
         return String.format("quad {(%d, %d)(%d, %d)(%d, %d)}",

@@ -1,14 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
-    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/paint/common/RavenPaintColor.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/paint/RavenPaintEditor.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/paint/common/RavenPaintColorEditor.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/util/tree/PropertyWrapperWeakAdapter.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/util/tree/PropertyWrapperAdapter.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/util/tree/PropertyWrapperWeakListener.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/paint/common/RavenPaintGradientEditor.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/paint/common/RavenPaintTextureEditor.java</file>
-    </open-files>
 </project-private>

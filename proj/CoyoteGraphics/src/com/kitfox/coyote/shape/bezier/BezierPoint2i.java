@@ -260,6 +260,13 @@ public class BezierPoint2i extends BezierCurve2i
     }
 
     @Override
+    public String asSvg()
+    {
+        return String.format("M %d %d",
+                ax0, ay0);
+    }
+
+    @Override
     public String toString()
     {
         return String.format("point {(%d, %d)}",

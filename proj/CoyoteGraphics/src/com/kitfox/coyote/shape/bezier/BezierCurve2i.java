@@ -267,4 +267,5 @@ abstract public class BezierCurve2i
 
     abstract public BezierCurve2d asDouble();
 
+    abstract public String asSvg();
 }

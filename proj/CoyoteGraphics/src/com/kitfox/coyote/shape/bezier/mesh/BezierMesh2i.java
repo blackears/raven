@@ -283,6 +283,13 @@ abstract public class BezierMesh2i<VertexData, EdgeData>
     {
         BezierMeshVertex2i v0 = e.getStart();
         BezierMeshVertex2i v1 = e.getEnd();
+        
+        if (vertMap.get(v0.getCoord()) != v0 
+                || vertMap.get(v1.getCoord()) != v1)
+        {
+            throw new UnsupportedOperationException("Graph does not contain edge");
+        }
+        
         v0.edgesOut.remove(e);
         v1.edgesIn.remove(e);
         
@@ -307,6 +314,58 @@ abstract public class BezierMesh2i<VertexData, EdgeData>
             {
                 it.remove();
             }
+        }
+    }
+
+    public void removeEmptyVertex(BezierMeshVertex2i v)
+    {
+        if (!v.isEmpty())
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        if (!vertMap.containsKey(v.getCoord()))
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        vertMap.remove(v.getCoord());
+    }
+
+    /**
+     * Vertices that are empty can be moved.  This is mainly done
+     * during vertex dragging operations.  Vertices must be empty to be 
+     * moved to prevent overlapping edge segments.
+     * 
+     * @param moveVertexMap 
+     */
+    public void moveEmptyVertices(HashMap<Coord, Coord> moveVertexMap)
+    {
+        //Remove current vertices
+        ArrayList<BezierMeshVertex2i> vertList = new ArrayList<BezierMeshVertex2i>();
+        for (Coord c0: moveVertexMap.keySet())
+        {
+            BezierMeshVertex2i v = vertMap.remove(c0);
+            if (!v.isEmpty())
+            {
+                throw new UnsupportedOperationException("Vertex not empty");
+            }
+            vertList.add(v);
+        }
+        
+        //Reinsert vertices
+        for (BezierMeshVertex2i v: vertList)
+        {
+            Coord c0 = v.getCoord();
+            Coord c1 = moveVertexMap.get(c0);
+            
+            if (vertMap.containsKey(c1))
+            {
+                continue;
+            }
+            
+            v.setCoord(c1);
+            vertMap.put(c1, v);
         }
     }
 

@@ -34,6 +34,7 @@ public class ToolPenDispatch extends ToolDisplay
     
     //NetworkGraph curGraph;
     ToolPenDelegate delegate;
+    NodeObject delegateNode;
     
     protected ToolPenDispatch(ToolUser user, ToolPenProvider toolProvider)
     {
@@ -41,14 +42,42 @@ public class ToolPenDispatch extends ToolDisplay
         this.toolProvider = toolProvider;
         
     }
+//    
+//    private void touchDelegate()
+//    {
+//        if (delegate == null)
+//        {
+//            ServiceDocument servDoc = user.getToolService(ServiceDocument.class);
+//            Selection<NodeObject> sel = servDoc.getSelection();
+//            NodeObject node = sel.getTopSelected();
+//            if (node == null)
+//            {
+//                return;
+//            }
+//            
+//            //Check if we're on a selection layer
+//            ServiceBezierMesh servMesh = node.getNodeService(ServiceBezierMesh.class, false);
+//            if (servMesh != null)
+//            {
+//                delegate = new ToolPenMesh(this, node, servMesh);
+//            }
+//        }
+//    }
     
-    private void touchDelegate()
+    private void updateDelegate()
     {
+        ServiceDocument servDoc = user.getToolService(ServiceDocument.class);
+        Selection<NodeObject> sel = servDoc.getSelection();
+        NodeObject node = sel.getTopSelected();
+        if (node != delegateNode)
+        {
+            //Clear delegate if top selection changed
+            delegateNode = null;
+            delegate = null;
+        }
+            
         if (delegate == null)
         {
-            ServiceDocument servDoc = user.getToolService(ServiceDocument.class);
-            Selection<NodeObject> sel = servDoc.getSelection();
-            NodeObject node = sel.getTopSelected();
             if (node == null)
             {
                 return;
@@ -58,7 +87,8 @@ public class ToolPenDispatch extends ToolDisplay
             ServiceBezierMesh servMesh = node.getNodeService(ServiceBezierMesh.class, false);
             if (servMesh != null)
             {
-                delegate = new ToolPenMesh(this, servMesh);
+                delegate = new ToolPenMesh(this, node, servMesh);
+                delegateNode = node;
             }
         }
     }
@@ -71,7 +101,7 @@ public class ToolPenDispatch extends ToolDisplay
     @Override
     protected void click(MouseEvent evt)
     {
-        touchDelegate();
+        updateDelegate();
 
         if (delegate != null)
         {
@@ -82,7 +112,7 @@ public class ToolPenDispatch extends ToolDisplay
     @Override
     protected void startDrag(MouseEvent evt)
     {
-        touchDelegate();
+        updateDelegate();
 
         if (delegate != null)
         {
@@ -93,7 +123,7 @@ public class ToolPenDispatch extends ToolDisplay
     @Override
     protected void dragTo(MouseEvent evt)
     {
-        touchDelegate();
+        updateDelegate();
 
         if (delegate != null)
         {
@@ -104,7 +134,7 @@ public class ToolPenDispatch extends ToolDisplay
     @Override
     protected void endDrag(MouseEvent evt)
     {
-        touchDelegate();
+        updateDelegate();
 
         if (delegate != null)
         {
@@ -115,6 +145,8 @@ public class ToolPenDispatch extends ToolDisplay
     @Override
     public void mouseMoved(MouseEvent evt)
     {
+        updateDelegate();
+
         if (delegate != null)
         {
             delegate.mouseMoved(evt);
@@ -126,7 +158,7 @@ public class ToolPenDispatch extends ToolDisplay
     {
         super.render(ctx);
         
-//        updateDelegate();
+        updateDelegate();
 
         if (delegate != null)
         {
@@ -142,7 +174,7 @@ public class ToolPenDispatch extends ToolDisplay
     @Override
     public void keyPressed(KeyEvent evt)
     {
-        touchDelegate();
+        updateDelegate();
 
         if (delegate != null)
         {

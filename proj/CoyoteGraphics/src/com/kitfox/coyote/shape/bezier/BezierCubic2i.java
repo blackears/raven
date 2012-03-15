@@ -571,6 +571,13 @@ public class BezierCubic2i extends BezierCurve2i
     }
 
     @Override
+    public String asSvg()
+    {
+        return String.format("M %d %d C %d %d  %d %d  %d %d",
+                ax0, ay0, ax1, ay1, ax2, ay2, ax3, ay3);
+    }
+
+    @Override
     public String toString()
     {
         return String.format("cubic {(%d, %d)(%d, %d)(%d, %d)(%d, %d)}",

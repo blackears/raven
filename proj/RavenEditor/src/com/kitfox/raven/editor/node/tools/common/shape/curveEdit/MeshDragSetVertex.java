@@ -21,6 +21,7 @@ import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.shape.bezier.BezierCubic2i;
 import com.kitfox.coyote.shape.bezier.BezierCurve2i;
 import com.kitfox.coyote.shape.bezier.BezierLine2i;
+import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import com.kitfox.raven.editor.node.tools.common.pen.ServiceBezierMesh;
 import com.kitfox.raven.shape.network.NetworkDataEdge;
 import com.kitfox.raven.shape.network.NetworkMesh;
@@ -54,10 +55,16 @@ public class MeshDragSetVertex extends MeshDragSet
         CyVector2d delta = new CyVector2d(dx, dy);
         xformVectorDev2Graph(delta);
         
+        HashMap<Coord, Coord> moveVertexMap = new HashMap<Coord, Coord>();
+        
         //Pick new positions for selected knots
         UpdateSet updateSet = new UpdateSet();
         for (NetworkHandleVertex v: pickVertex)
         {
+            Coord c = v.getCoord();
+            moveVertexMap.put(c, 
+                    new Coord((int)(c.x + delta.x), (int)(c.y + delta.y)));
+            
             for (NetworkHandleEdge e: v.getInputEdges())
             {
                 EdgeUpdate update = updateSet.getEdgeUpdate(e);
@@ -83,6 +90,8 @@ public class MeshDragSetVertex extends MeshDragSet
             e1.remove();
         }
         
+        newMesh.moveEmptyVertices(moveVertexMap);
+        
         for (EdgeUpdate update: updateSet.edgeMap.values())
         {
             BezierCurve2i curve = update.createCurve();
@@ -90,7 +99,7 @@ public class MeshDragSetVertex extends MeshDragSet
             newMesh.addEdge(curve, data);
         }
         
-        newMesh.removeEmptyVertices();
+//        newMesh.removeEmptyVertices();
         cleanupFaces(newMesh);
         
         servMesh.setNetworkMesh(newMesh, history);

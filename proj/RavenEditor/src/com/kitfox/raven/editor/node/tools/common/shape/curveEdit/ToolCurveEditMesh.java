@@ -16,26 +16,19 @@
 
 package com.kitfox.raven.editor.node.tools.common.shape.curveEdit;
 
-import com.kitfox.coyote.material.color.CyMaterialColorDrawRecord;
-import com.kitfox.coyote.material.color.CyMaterialColorDrawRecordFactory;
-import com.kitfox.coyote.math.CyColor4f;
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.renderer.CyDrawStack;
-import com.kitfox.coyote.renderer.CyVertexBuffer;
-import com.kitfox.coyote.renderer.vertex.CyVertexBufferDataSquare;
-import com.kitfox.coyote.renderer.vertex.CyVertexBufferDataSquareLines;
-import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.CyRectangle2d;
-import com.kitfox.coyote.shape.ShapeLinesProvider;
-import com.kitfox.coyote.shape.bezier.BezierCurve2d;
 import com.kitfox.coyote.shape.bezier.mesh.BezierVertexSmooth;
-import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
 import com.kitfox.raven.editor.node.scene.RenderContext;
 import com.kitfox.raven.editor.node.tools.common.pen.ServiceBezierMesh;
 import com.kitfox.raven.shape.network.NetworkMesh;
 import com.kitfox.raven.shape.network.pick.*;
+import com.kitfox.raven.shape.network.pick.NetworkMeshHandles.HandleEdge;
+import com.kitfox.raven.shape.network.pick.NetworkMeshHandles.HandleFace;
+import com.kitfox.raven.shape.network.pick.NetworkMeshHandles.HandleVertex;
 import com.kitfox.raven.util.Intersection;
 import com.kitfox.raven.util.Selection;
 import com.kitfox.raven.util.tree.NodeObject;
@@ -110,6 +103,15 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
         NetworkHandleSelection subSel = 
                 sel.getSubselection(node, NetworkHandleSelection.class);
 
+        if (subSel == null)
+        {
+            if (v != null)
+            {
+                list.add(v);
+            }
+            return list;
+        }
+        
         if (v == null || subSel.containsVertex(v.getIndex()))
         {
             NetworkMeshHandles handles = getMeshHandles();
@@ -134,6 +136,15 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
         NetworkHandleSelection subSel = 
                 sel.getSubselection(node, NetworkHandleSelection.class);
 
+        if (subSel == null)
+        {
+            if (e != null)
+            {
+                list.add(e);
+            }
+            return list;
+        }
+
         if (e == null || subSel.containsEdge(e.getIndex()))
         {
             NetworkMeshHandles handles = getMeshHandles();
@@ -157,6 +168,15 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
         Selection<NodeObject> sel = getSelection();
         NetworkHandleSelection subSel = 
                 sel.getSubselection(node, NetworkHandleSelection.class);
+
+        if (subSel == null)
+        {
+            if (k != null)
+            {
+                list.add(k);
+            }
+            return list;
+        }
 
         if (k == null || subSel.containsKnot(k.getIndex()))
         {
@@ -384,6 +404,9 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
             case KeyEvent.VK_ESCAPE:
                 cancel();
                 return;
+            case KeyEvent.VK_DELETE:
+                deleteSelection();
+                return;
         }
         
         super.keyPressed(evt);
@@ -431,6 +454,56 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
         }
     }
 
+    private void deleteSelection()
+    {
+        Selection<NodeObject> sel = getSelection();
+        
+        NetworkHandleSelection subSel = 
+                sel.getSubselection(node, NetworkHandleSelection.class);
+        
+        if (subSel == null)
+        {
+            return;
+        }
+        
+        NetworkMeshHandles oldHandles = getMeshHandles();
+        NetworkMesh newMesh = new NetworkMesh(oldHandles.getMesh());
+        NetworkMeshHandles newHandles = new NetworkMeshHandles(newMesh);
+        
+        if (subSel.getNumVertices() == 0
+                && subSel.getNumEdges() == 0
+                && subSel.getNumFaces() == 0)
+        {
+            return;
+        }
+        
+        for (Integer i: subSel.getVertexIds())
+        {
+            HandleVertex h = newHandles.getVertexHandle(i);
+            h.delete();
+        }
+        
+        for (Integer i: subSel.getEdgeIds())
+        {
+            HandleEdge h = newHandles.getEdgeHandle(i);
+            if (h != null)
+            {
+                h.delete();
+            }
+        }
+        
+        for (Integer i: subSel.getFaceIds())
+        {
+            HandleFace h = newHandles.getFaceHandle(i);
+            if (h != null)
+            {
+                h.delete();
+            }
+        }
+        
+        servMesh.setNetworkMesh(newMesh, true);
+    }
+    
     /**
      * Searches list and removes all entries that are not linked to either 
      * a selected vertex or a selected edge.
@@ -463,214 +536,9 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
             it.remove();
         }
     }
-
-//    /**
-//     * Get list of knots that are part of curved lines and for which either
-//     * their parent vertex or edge is selected.
-//     * 
-//     * @return 
-//     */
-//    private ArrayList<? extends NetworkHandleKnot> getVisibleKnots()
-//    {
-//        Selection<NodeObject> sel = getSelection();
-//        
-//        NetworkHandleSelection subSel = 
-//                sel.getSubselection(node, NetworkHandleSelection.class);
-//        
-//        if (subSel == null)
-//        {
-//            return new ArrayList<NetworkHandleKnot>();
-//        }
-//        
-//        NetworkMeshHandles handles = getMeshHandles();
-//        ArrayList<? extends NetworkHandleKnot> knotList = handles.getKnotList();
-//        
-//        //Remove knots not attached to something selected
-//        for (Iterator<? extends NetworkHandleKnot> it = knotList.iterator();
-//                it.hasNext();)
-//        {
-//            NetworkHandleKnot knot = it.next();
-//            if (subSel.containsEdge(knot.getEdge().getIndex())
-//                    || subSel.containsVertex(knot.getVertex().getIndex()))
-//            {
-//                continue;
-//            }
-//
-//            it.remove();
-//        }
-//
-//        return knotList;
-//    }
-//    
-//    private void drawGraph(CyDrawStack stack)
-//    {
-//        NetworkMeshHandles handles = getMeshHandles();
-//        
-//        ArrayList<? extends NetworkHandleEdge> edgeList =
-//                handles.getEdgeList();
-//        ArrayList<? extends NetworkHandleVertex> vertList =
-//                handles.getVertList();
-//        ArrayList<? extends NetworkHandleKnot> knotList =
-//                getVisibleKnots();
-//        
-////        CyMatrix4d g2w = serv.getGraphToWorldXform();
-//        CyMatrix4d g2w = servMesh.getGraphToWorldXform();
-//
-//        Selection<NodeObject> sel = getSelection();
-//        
-//        NetworkHandleSelection subSel = 
-//                sel.getSubselection(node, NetworkHandleSelection.class);
-////                sel.getSubselection(node, NetworkHandleSelection.class);
-//        
-//        RavenNodeRoot root = getDocument();
-//        CyMatrix4d w2d = stack.getViewXform();
-//        CyMatrix4d d2p = stack.getProjXform();
-//        
-//        CyMatrix4d g2p = new CyMatrix4d(d2p);
-//        g2p.mul(w2d);
-//        g2p.mul(g2w);
-//        
-//        CyVector2d pt = new CyVector2d();
-//        CyMatrix4d v2p = new CyMatrix4d();
-//        float radDisp = root.getGraphRadiusDisplay();
-//        CyVertexBuffer bufSquare = CyVertexBufferDataSquare.inst().getBuffer();
-//        CyVertexBuffer bufSquareLines = CyVertexBufferDataSquareLines.inst().getBuffer();
-//        CyMatrix4d g2d = new CyMatrix4d(w2d);
-//        g2d.mul(g2w);
-//        
-//        
-//        //Draw visible knots
-//        CyPath2d pathKnot = new CyPath2d();
-//        for (NetworkHandleKnot k: knotList)
-//        {
-//            Coord c0 = k.getVertex().getCoord();
-//            Coord c1 = k.getCoord();
-//            pathKnot.moveTo(c0.x, c0.y);
-//            pathKnot.lineTo(c1.x, c1.y);
-//        }
-//
-//        if (!pathKnot.isEmpty())
-//        {
-//            ShapeLinesProvider lines = new ShapeLinesProvider(pathKnot);
-//            CyVertexBuffer buf = new CyVertexBuffer(lines);
-//            drawShape(stack, buf, g2p, 
-//                    root.getGraphColorEdge().asColor());
-//        }
-//        
-//        for (NetworkHandleKnot k: knotList)
-//        {
-//            Coord c = k.getCoord();
-//            pt.set(c.x, c.y);
-//            g2d.transformPoint(pt);
-//            
-//            v2p.set(d2p);
-//            v2p.translate(pt.x, pt.y, 0);
-//            v2p.scale(radDisp * 2, radDisp * 2, 1);
-//            v2p.translate(-.5, -.5, 0);
-//
-//            if (subSel != null && subSel.containsKnot(k.getIndex()))
-//            {
-//                drawShape(stack, bufSquare, v2p, 
-//                    root.getGraphColorVertSelect().asColor());
-//                drawShape(stack, bufSquareLines, v2p, 
-//                    root.getGraphColorEdge().asColor());
-//            }
-//            else
-//            {
-//                drawShape(stack, bufSquare, v2p, 
-//                    root.getGraphColorVert().asColor());
-//                drawShape(stack, bufSquareLines, v2p, 
-//                    root.getGraphColorEdge().asColor());
-//            }
-//        }
-//        
-//        //Draw paths
-//        CyPath2d pathUnsel = new CyPath2d();
-//        CyPath2d pathSel = new CyPath2d();
-//        for (NetworkHandleEdge e: edgeList)
-//        {
-//            BezierCurve2d c = e.getCurveLocal();
-//            
-//            if (subSel != null && subSel.containsEdge(e.getIndex()))
-//            {
-//                pathSel.moveTo(c.getStartX(), c.getStartY());
-//                c.append(pathSel);
-//            }
-//            else
-//            {
-//                pathUnsel.moveTo(c.getStartX(), c.getStartY());
-//                c.append(pathUnsel);
-//            }
-//        }
-//        
-//        if (!pathUnsel.isEmpty())
-//        {
-//            ShapeLinesProvider lines = new ShapeLinesProvider(pathUnsel);
-//            CyVertexBuffer buf = new CyVertexBuffer(lines);
-//            drawShape(stack, buf, g2p, 
-//                    root.getGraphColorEdge().asColor());
-//        }
-//        if (!pathSel.isEmpty())
-//        {
-//            ShapeLinesProvider lines = new ShapeLinesProvider(pathSel);
-//            CyVertexBuffer buf = new CyVertexBuffer(lines);
-//            drawShape(stack, buf, g2p, 
-//                    root.getGraphColorEdgeSelect().asColor());
-//        }
-//        
-//        //Draw verts
-//        for (NetworkHandleVertex v: vertList)
-//        {
-//            Coord c = v.getCoord();
-//            pt.set(c.x, c.y);
-//            g2d.transformPoint(pt);
-//            
-//            v2p.set(d2p);
-//            v2p.translate(pt.x, pt.y, 0);
-//            v2p.scale(radDisp * 2, radDisp * 2, 1);
-//            v2p.translate(-.5, -.5, 0);
-//            
-//            if (subSel != null && subSel.containsVertex(v.getIndex()))
-//            {
-//                drawShape(stack, bufSquare, v2p, 
-//                    root.getGraphColorVertSelect().asColor());
-//                drawShape(stack, bufSquareLines, v2p, 
-//                    root.getGraphColorEdge().asColor());
-//            }
-//            else
-//            {
-//                drawShape(stack, bufSquare, v2p, 
-//                    root.getGraphColorVert().asColor());
-//                drawShape(stack, bufSquareLines, v2p, 
-//                    root.getGraphColorEdge().asColor());
-//            }
-//        }
-//    }
-//    
-//    private void drawShape(CyDrawStack stack, 
-//            CyVertexBuffer buf, CyMatrix4d mvp, CyColor4f color)
-//    {
-//        CyMaterialColorDrawRecord rec = 
-//                CyMaterialColorDrawRecordFactory.inst().allocRecord();
-//
-//        rec.setColor(color);
-//
-//        rec.setMesh(buf);
-//
-//        rec.setOpacity(1);
-//
-////        CyMatrix4d mvp = stack.getModelViewProjXform();
-////        mvp.mul(mvp);
-//
-//
-//        rec.setMvpMatrix(mvp);
-//        
-//        stack.addDrawRecord(rec);
-//    }
     
     private void showPopupMenu(MouseEvent evt)
     {
-//        ArrayList<NetworkHandleKnot> knotList = getSelKnots(null);
         ArrayList<NetworkHandleVertex> vertList = getSelVertices(null);
         ArrayList<NetworkHandleVertex> vertListNew = new ArrayList<NetworkHandleVertex>();
 

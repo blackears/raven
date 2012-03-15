@@ -112,4 +112,19 @@ public class NetworkHandleSelection
     {
         return selKnot.getSelection();
     }
+
+    public int getNumVertices()
+    {
+        return selVert.size();
+    }
+
+    public int getNumEdges()
+    {
+        return selEdge.size();
+    }
+
+    public int getNumFaces()
+    {
+        return selFace.size();
+    }
 }

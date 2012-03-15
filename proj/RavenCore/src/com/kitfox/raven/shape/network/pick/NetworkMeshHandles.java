@@ -21,6 +21,7 @@ import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.math.Math2DUtil;
 import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.CyRectangle2d;
+import com.kitfox.coyote.shape.bezier.BezierCubic2i;
 import com.kitfox.coyote.shape.bezier.BezierCurve2d;
 import com.kitfox.coyote.shape.bezier.BezierCurve2i;
 import com.kitfox.coyote.shape.bezier.mesh.*;
@@ -88,7 +89,7 @@ public class NetworkMeshHandles
             ArrayList<BezierMeshEdge2i> edgeOut = v.getEdgesOut();
             for (BezierMeshEdge2i e: edgeOut)
             {
-                HandleEdge handle = new HandleEdge(e.getId(), e);
+                HandleEdge handle = new HandleEdge(e);
                 edgeList.put(handle.getIndex(), handle);
                 edgeMap.put(e, handle);
                 
@@ -101,6 +102,14 @@ public class NetworkMeshHandles
                 }
             }
         }
+        
+        buildFaces();
+    }
+    
+    private void buildFaces()
+    {
+        faceList.clear();
+        boundingLoop = null;
         
 //        int faceId = 0;
         ArrayList<CutLoop> loops = mesh.createFaces();
@@ -122,6 +131,14 @@ public class NetworkMeshHandles
         }
     }
 
+    public void cleanupFaces()
+    {
+        for (HandleFace f: faceList.values())
+        {
+            f.cleanup();
+        }
+    }
+    
     /**
      * @return the mesh
      */
@@ -424,6 +441,91 @@ public class NetworkMeshHandles
             }
             return list;
         }
+
+        public int getNumEdges()
+        {
+            return v.getNumEdges();
+        }
+        
+        public void delete()
+        {
+            if (v.getNumEdges() == 2)
+            {
+                //Connect existing edges
+                BezierMeshEdge2i e0 = v.getEdge(0);
+                BezierMeshEdge2i e1 = v.getEdge(1);
+                
+                BezierMeshVertex2i v0, v1;
+                BezierVertexSmooth s0, s1;
+                Coord k0, k1;
+                if (e0.getStart() == v)
+                {
+                    v0 = e0.getEnd();
+                    s0 = e0.getSmooth1();
+                    k0 = e0.getK1();
+                }
+                else
+                {
+                    v0 = e0.getStart();
+                    s0 = e0.getSmooth0();
+                    k0 = e0.getK0();
+                }
+
+                if (e1.getStart() == v)
+                {
+                    v1 = e1.getEnd();
+                    s1 = e1.getSmooth1();
+                    k1 = e1.getK1();
+                }
+                else
+                {
+                    v1 = e1.getStart();
+                    s1 = e1.getSmooth0();
+                    k1 = e1.getK0();
+                }
+                
+                mesh.removeEdge(e0);
+                mesh.removeEdge(e1);
+                mesh.removeEmptyVertex(v);
+                
+                edgeList.remove(e0.getId());
+                edgeList.remove(e1.getId());
+                vertList.remove(v.getId());
+                
+                Coord c0 = v0.getCoord();
+                Coord c1 = v1.getCoord();
+                
+                //Add merged edge
+                NetworkDataEdge data = new NetworkDataEdge((NetworkDataEdge)e0.getData());
+                BezierCubic2i curve = new BezierCubic2i(
+                        c0.x, c0.y, k0.x, k0.y, k1.x, k1.y, c1.x, c1.y);
+                ArrayList<BezierMeshEdge2i> newEdgeList = mesh.addEdge(curve, data);
+                BezierMeshEdge2i newEdge = newEdgeList.get(0);
+                newEdge.setSmooth0(s0);
+                newEdge.setSmooth1(s1);
+                
+                edgeList.put(newEdge.getId(), new HandleEdge(newEdge));
+            }
+            else
+            {
+                ArrayList<BezierMeshEdge2i> edgeIn = v.getEdgesIn();
+                ArrayList<BezierMeshEdge2i> edgeOut = v.getEdgesOut();
+                
+                for (BezierMeshEdge2i e: edgeIn)
+                {
+                    mesh.removeEdge(e);
+                }
+                
+                for (BezierMeshEdge2i e: edgeOut)
+                {
+                    mesh.removeEdge(e);
+                }
+                
+                mesh.removeEmptyVertices();
+                buildFaces();
+                cleanupFaces();
+            }
+        }
     }
 
     public class HandleEdge implements NetworkHandleEdge
@@ -432,15 +534,20 @@ public class NetworkMeshHandles
         BezierMeshEdge2i<NetworkDataEdge> e;
         private CyPath2d path;
 
-        public HandleEdge(int index, BezierMeshEdge2i<NetworkDataEdge> e)
+        public HandleEdge(BezierMeshEdge2i<NetworkDataEdge> e)
         {
-            this.index = index;
+            this.index = e.getId();
             this.e = e;
             BezierCurve2i c = e.asCurve();
             BezierCurve2d curveLocal = c.transfrom(coordToLocal);
             path = curveLocal.asPath();
         }
 
+        public BezierMeshEdge2i<NetworkDataEdge> getEdge()
+        {
+            return e;
+        }
+        
         @Override
         public int getIndex()
         {
@@ -542,6 +649,15 @@ public class NetworkMeshHandles
         public void setSmooth1(BezierVertexSmooth smooth)
         {
             e.setSmooth1(smooth);
+        }
+
+        public void delete()
+        {
+            mesh.removeEdge(e);
+
+            mesh.removeEmptyVertices();
+            buildFaces();
+            cleanupFaces();
         }
     }
     
@@ -818,6 +934,33 @@ public class NetworkMeshHandles
                 {
                     data.putLeft(NetworkDataTypePaint.class, curPaint);
                     data.putLeft(NetworkDataTypePaintLayout.class, curLayout);
+                }
+            }
+        }
+
+        public void delete()
+        {
+            //Set all edges to null face paint
+            for (CutSegHalf seg: loop.getSegs())
+            {
+                BezierMeshEdge2i e = seg.getEdge();
+                NetworkDataEdge data = (NetworkDataEdge)e.getData();
+                
+                if (data == null)
+                {
+                    data = new NetworkDataEdge();
+                    e.setData(data);
+                }
+                
+                if (seg.isRight())
+                {
+                    data.putRight(NetworkDataTypePaint.class, null);
+                    data.putRight(NetworkDataTypePaintLayout.class, null);
+                }
+                else
+                {
+                    data.putLeft(NetworkDataTypePaint.class, null);
+                    data.putLeft(NetworkDataTypePaintLayout.class, null);
                 }
             }
         }
