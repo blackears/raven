@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.kitfox.coyote.material.checker;
+package com.kitfox.coyote.material.screen;
 
 import com.kitfox.coyote.material.CyDrawRecordMaterialSimple;
 import com.kitfox.coyote.math.CyColor4f;
@@ -27,20 +27,19 @@ import com.kitfox.coyote.renderer.CyGLWrapper;
  *
  * @author kitfox
  */
-public class CyMaterialCheckerDrawRecord extends CyDrawRecordMaterialSimple
+public class CyMaterialScreenDrawRecord extends CyDrawRecordMaterialSimple
 {
     private CyColor4f colorFg = CyColor4f.WHITE;
-    private CyColor4f colorBg = CyColor4f.BLACK;
     private float lineWidth = 8;
     private CyMatrix4d mvMatrix = CyMatrix4d.createIdentity();
 
     @Override
     public void render(CyGLContext ctx, CyGLWrapper gl, CyDrawRecord prevRecord)
     {
-        CyMaterialChecker mat = ctx.getMaterial(CyMaterialChecker.class);
+        CyMaterialScreen mat = ctx.getMaterial(CyMaterialScreen.class);
         if (mat == null)
         {
-            mat = new CyMaterialChecker();
+            mat = new CyMaterialScreen();
             ctx.registerMaterial(mat);
         }
 
@@ -53,7 +52,7 @@ public class CyMaterialCheckerDrawRecord extends CyDrawRecordMaterialSimple
     @Override
     public void dispose()
     {
-        CyMaterialCheckerDrawRecordFactory.inst().recycleRecord(this);
+        CyMaterialScreenDrawRecordFactory.inst().recycleRecord(this);
     }
 
     /**
@@ -70,22 +69,6 @@ public class CyMaterialCheckerDrawRecord extends CyDrawRecordMaterialSimple
     public void setColorFg(CyColor4f colorFg)
     {
         this.colorFg = colorFg;
-    }
-
-    /**
-     * @return the colorBg
-     */
-    public CyColor4f getColorBg()
-    {
-        return colorBg;
-    }
-
-    /**
-     * @param colorBg the colorBg to set
-     */
-    public void setColorBg(CyColor4f colorBg)
-    {
-        this.colorBg = colorBg;
     }
 
     /**

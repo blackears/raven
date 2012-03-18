@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.kitfox.coyote.material.checker;
+package com.kitfox.coyote.material.screen;
 
 import com.kitfox.coyote.material.textureBlit.CyMaterialTextureBlit;
 import com.kitfox.coyote.math.BufferUtil;
@@ -39,7 +39,7 @@ import java.util.logging.Logger;
  *
  * @author kitfox
  */
-public class CyMaterialChecker extends CyMaterial
+public class CyMaterialScreen extends CyMaterial
 {
     private int shaderIdVert;
     private int shaderIdFrag;
@@ -47,14 +47,13 @@ public class CyMaterialChecker extends CyMaterial
 
     private int a_position;
     private int u_colorFg;
-    private int u_colorBg;
     private int u_lineWidth;
     private int u_mvpMatrix;
     private int u_mvMatrix;
 
     FloatBuffer matrixBuf = BufferUtil.allocateFloat(16);
 
-    public CyMaterialChecker()
+    public CyMaterialScreen()
     {
     }
 
@@ -64,10 +63,10 @@ public class CyMaterialChecker extends CyMaterial
         {
             shaderIdVert =
                     loadShader(gl, ShaderType.GL_VERTEX_SHADER,
-                    "/material/checker.vert");
+                    "/material/screen.vert");
             shaderIdFrag =
                     loadShader(gl, ShaderType.GL_FRAGMENT_SHADER,
-                    "/material/checker.frag");
+                    "/material/screen.frag");
 
             programId = gl.glCreateProgram();
             gl.glAttachShader(programId, shaderIdVert);
@@ -78,7 +77,6 @@ public class CyMaterialChecker extends CyMaterial
 
             a_position = gl.glGetAttribLocation(programId, "a_position");
             u_colorFg = gl.glGetUniformLocation(programId, "u_colorFg");
-            u_colorBg = gl.glGetUniformLocation(programId, "u_colorBg");
             u_lineWidth = gl.glGetUniformLocation(programId, "u_lineWidth");
             u_mvpMatrix = gl.glGetUniformLocation(programId, "u_mvpMatrix");
             u_mvMatrix = gl.glGetUniformLocation(programId, "u_mvMatrix");
@@ -103,14 +101,12 @@ public class CyMaterialChecker extends CyMaterial
         gl.glUseProgram(programId);
     }
 
-    protected void render(CyGLContext ctx, CyGLWrapper gl, CyMaterialCheckerDrawRecord rec)
+    protected void render(CyGLContext ctx, CyGLWrapper gl, CyMaterialScreenDrawRecord rec)
     {
         CyColor4f colorFg = rec.getColorFg();
         float alphaFg = colorFg.a * rec.getOpacity();
-        CyColor4f colorBg = rec.getColorBg();
-        float alphaBg = colorBg.a * rec.getOpacity();
 
-        if (alphaFg >= 1 && alphaBg >= 1)
+        if (alphaFg >= 1)
         {
             gl.glDisable(Capability.GL_BLEND);
         }
@@ -131,7 +127,6 @@ public class CyMaterialChecker extends CyMaterial
         gl.glUniformMatrix4fv(u_mvMatrix, 1, false, matrixBuf);
         
         gl.glUniform4f(u_colorFg, colorFg.r, colorFg.g, colorFg.b, alphaFg);
-        gl.glUniform4f(u_colorBg, colorBg.r, colorBg.g, colorBg.b, alphaBg);
         gl.glUniform1f(u_lineWidth, rec.getLineWidth());
 
         //Bind vertex buffers

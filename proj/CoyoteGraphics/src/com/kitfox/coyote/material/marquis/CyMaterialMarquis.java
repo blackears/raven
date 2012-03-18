@@ -112,7 +112,7 @@ public class CyMaterialMarquis extends CyMaterial
         CyColor4f colorBg = rec.getColorBg();
         float alphaBg = colorBg.a * rec.getOpacity();
 
-        if (alphaFg >= 1 || alphaBg >= 1)
+        if (alphaFg >= 1 && alphaBg >= 1)
         {
             gl.glDisable(Capability.GL_BLEND);
         }

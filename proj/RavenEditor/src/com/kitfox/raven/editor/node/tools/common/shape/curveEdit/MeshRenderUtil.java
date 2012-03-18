@@ -18,6 +18,8 @@ package com.kitfox.raven.editor.node.tools.common.shape.curveEdit;
 
 import com.kitfox.coyote.material.color.CyMaterialColorDrawRecord;
 import com.kitfox.coyote.material.color.CyMaterialColorDrawRecordFactory;
+import com.kitfox.coyote.material.screen.CyMaterialScreenDrawRecord;
+import com.kitfox.coyote.material.screen.CyMaterialScreenDrawRecordFactory;
 import com.kitfox.coyote.math.CyColor4f;
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.math.CyVector2d;
@@ -31,6 +33,7 @@ import com.kitfox.coyote.shape.bezier.BezierCurve2d;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
 import com.kitfox.raven.shape.network.pick.*;
+import com.kitfox.raven.shape.network.pick.NetworkMeshHandles.HandleFace;
 import com.kitfox.raven.util.Selection;
 import com.kitfox.raven.util.tree.NodeObject;
 import java.util.ArrayList;
@@ -85,6 +88,8 @@ public class MeshRenderUtil
                 handles.getEdgeList();
         ArrayList<? extends NetworkHandleVertex> vertList =
                 handles.getVertList();
+        ArrayList<HandleFace> faceList =
+                handles.getFaceList();
         ArrayList<? extends NetworkHandleKnot> knotList =
                 getVisibleKnots(sel, node, handles);
         
@@ -109,6 +114,30 @@ public class MeshRenderUtil
         CyVertexBuffer bufSquareLines = CyVertexBufferDataSquareLines.inst().getBuffer();
         CyMatrix4d g2d = new CyMatrix4d(w2d);
         g2d.mul(g2w);
+        
+        long millis = System.currentTimeMillis();
+        boolean blinkOn = (((int)(millis / 250)) & 0x3) != 0;
+        
+        //Draw selected faces
+        if (blinkOn && subSel != null)
+        {
+            for (HandleFace face: faceList)
+            {
+                if (!subSel.containsFace(face.getIndex()))
+                {
+                    continue;
+                }
+
+//                CyPath2d path = face.getPathGraph();
+//
+//                ShapeMeshProvider mesh = new ShapeMeshProvider(path);
+//                CyVertexBuffer buf = new CyVertexBuffer(mesh);
+                CyVertexBuffer buf = face.getMeshBuffer();
+                
+                drawScreen(stack, buf, g2d, g2p, 
+                        root.getGraphColorVertSelect().asColor());
+            }
+        }
         
         
         //Draw visible knots
@@ -231,6 +260,25 @@ public class MeshRenderUtil
 
         rec.setOpacity(1);
 
+        rec.setMvpMatrix(mvp);
+        
+        stack.addDrawRecord(rec);
+    }
+    
+    private static void drawScreen(CyDrawStack stack, 
+            CyVertexBuffer buf, CyMatrix4d mv, CyMatrix4d mvp, CyColor4f color)
+    {
+        CyMaterialScreenDrawRecord rec = 
+                CyMaterialScreenDrawRecordFactory.inst().allocRecord();
+
+        rec.setColorFg(color);
+        rec.setLineWidth(4);
+
+        rec.setMesh(buf);
+
+        rec.setOpacity(1);
+
+        rec.setMvMatrix(mv);
         rec.setMvpMatrix(mvp);
         
         stack.addDrawRecord(rec);

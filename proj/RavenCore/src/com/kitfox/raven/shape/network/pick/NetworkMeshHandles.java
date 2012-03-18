@@ -19,8 +19,10 @@ package com.kitfox.raven.shape.network.pick;
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.math.Math2DUtil;
+import com.kitfox.coyote.renderer.CyVertexBuffer;
 import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.CyRectangle2d;
+import com.kitfox.coyote.shape.ShapeMeshProvider;
 import com.kitfox.coyote.shape.bezier.BezierCubic2i;
 import com.kitfox.coyote.shape.bezier.BezierCurve2d;
 import com.kitfox.coyote.shape.bezier.BezierCurve2i;
@@ -347,7 +349,7 @@ public class NetworkMeshHandles
         
         for (HandleFace face: faceList.values())
         {
-            CyPath2d path = face.getPath();
+            CyPath2d path = face.getPathLocal();
             CyPath2d devPath = path.createTransformedPath(l2d);
 
             CyRectangle2d bounds = devPath.getBounds();
@@ -804,16 +806,19 @@ public class NetworkMeshHandles
         RavenPaint paint;
         RavenPaintLayout layout;
         //Face path in pixel space
-        CyPath2d path;
+        private CyPath2d pathGraph;
+        private CyPath2d pathLocal;
+        
+        CyVertexBuffer meshBuffer;
 
         public HandleFace(CutLoop loop)
         {
 //            this.index = index;
             this.loop = loop;
             
-            this.path = new CyPath2d();
-            loop.appendPath(path);
-            path = path.createTransformedPath(coordToLocal);
+            this.pathGraph = new CyPath2d();
+            loop.appendPath(pathGraph);
+            this.pathLocal = pathGraph.createTransformedPath(coordToLocal);
             
             //Create a unique hash for the face by combining index of
             // minimum edge with it's half side
@@ -852,6 +857,16 @@ public class NetworkMeshHandles
             }
         }
 
+        public CyVertexBuffer getMeshBuffer()
+        {
+            if (meshBuffer == null)
+            {
+                ShapeMeshProvider mesh = new ShapeMeshProvider(pathGraph);
+                meshBuffer = new CyVertexBuffer(mesh);
+            }
+            return meshBuffer;
+        }
+        
         @Override
         public int getIndex()
         {
@@ -870,9 +885,18 @@ public class NetworkMeshHandles
             return layout;
         }
 
-        public CyPath2d getPath()
+        /**
+         * Get the path of this face in local space
+         * @return 
+         */
+        public CyPath2d getPathLocal()
         {
-            return path;
+            return pathLocal;
+        }
+
+        public CyPath2d getPathGraph()
+        {
+            return pathGraph;
         }
 
         public void cleanup()
