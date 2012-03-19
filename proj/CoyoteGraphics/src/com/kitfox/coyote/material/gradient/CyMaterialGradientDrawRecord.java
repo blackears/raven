@@ -29,7 +29,7 @@ import com.kitfox.coyote.renderer.CyGLWrapper;
  */
 public class CyMaterialGradientDrawRecord extends CyDrawRecordMaterialSimple
 {
-    private CyMatrix4d texToLocalMatrix = CyMatrix4d.createIdentity();
+    private CyMatrix4d localToTexMatrix = CyMatrix4d.createIdentity();
 
     private CyGradientStops stops;
 
@@ -57,17 +57,17 @@ public class CyMaterialGradientDrawRecord extends CyDrawRecordMaterialSimple
     /**
      * @return the texMatrix
      */
-    public CyMatrix4d getTexToLocalMatrix()
+    public CyMatrix4d getLocalToTexMatrix()
     {
-        return new CyMatrix4d(texToLocalMatrix);
+        return new CyMatrix4d(localToTexMatrix);
     }
 
     /**
-     * @param texToLocalMatrix the texMatrix to set
+     * @param localToTexMatrix the texMatrix to set
      */
-    public void setTexToLocalMatrix(CyMatrix4d texToLocalMatrix)
+    public void setLocalToTexMatrix(CyMatrix4d localToTexMatrix)
     {
-        this.texToLocalMatrix.set(texToLocalMatrix);
+        this.localToTexMatrix.set(localToTexMatrix);
     }
 
     /**

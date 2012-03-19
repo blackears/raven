@@ -118,7 +118,7 @@ public class RavenPaintGradient extends RavenPaintInline
 //            CyMatrix4d m = CyMatrix4d.createIdentity();
 //            m.set(curFillLayout.getPaintToLocalTransform());
             CyMatrix4d m = curFillLayout.getPaintToLocalTransform();
-            rec.setTexToLocalMatrix(m);
+            rec.setLocalToTexMatrix(m);
         }
 
         rec.setStops(stops.asCyGradientStops());

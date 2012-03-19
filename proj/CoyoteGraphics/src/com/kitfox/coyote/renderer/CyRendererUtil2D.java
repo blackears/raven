@@ -140,7 +140,7 @@ public class CyRendererUtil2D
             tmpMtx.setIdentity();
             tmpMtx.translate(rx, ry, 0);
             tmpMtx.scale(rw, rh, 1);
-            rec.setTexToLocalMatrix(tmpMtx);
+            rec.setLocalToTexMatrix(tmpMtx);
         }
 
 //        {
@@ -179,7 +179,7 @@ public class CyRendererUtil2D
         rec.setMesh(mesh);
 
         tmpMtx.setIdentity();
-        rec.setTexToLocalMatrix(tmpMtx);
+        rec.setLocalToTexMatrix(tmpMtx);
         rec.setTexture(img);
 
         rec.render(ctx, gl, null);

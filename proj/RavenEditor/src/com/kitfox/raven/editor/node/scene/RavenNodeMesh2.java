@@ -64,7 +64,13 @@ public class RavenNodeMesh2 extends RavenNodeXformable
             new PropertyWrapper(
             this, PROP_MESH, NetworkMesh.class, new NetworkMesh());
 
-    final double TESS_FLAT_SQ = 2500;
+    static final double TESS_FLAT_SQ = 2500;
+    
+    static final CyMatrix4d meshToLocal;
+    static {
+        meshToLocal = CyMatrix4d.createIdentity();
+        meshToLocal.scale(.01, .01, 1);
+    }
     
     protected RavenNodeMesh2(int uid)
     {
@@ -81,14 +87,15 @@ public class RavenNodeMesh2 extends RavenNodeXformable
         }
         
         CyDrawStack stack = ctx.getDrawStack();
-        stack.pushFrame(null);
-        stack.scale(.01, .01, 1);
+//        stack.pushFrame(null);
+//        stack.scale(.01, .01, 1);
         
         for (FaceLayout lay: meshLayout.paths)
         {
             if (lay.paint != null)
             {
-                lay.paint.fillShape(stack, lay.paintLayout, lay.vertBuf);
+                lay.paint.fillShape(stack, lay.paintLayout, lay.vertBuf,
+                        meshToLocal);
             }
         }
         
@@ -96,11 +103,12 @@ public class RavenNodeMesh2 extends RavenNodeXformable
         {
             if (lay.paint != null && lay.vertBuf != null)
             {
-                lay.paint.fillShape(stack, lay.paintLayout, lay.vertBuf);
+                lay.paint.fillShape(stack, lay.paintLayout, lay.vertBuf,
+                        meshToLocal);
             }
         }
         
-        stack.popFrame();
+//        stack.popFrame();
     }
 
     protected MeshLayout getFaceSet()

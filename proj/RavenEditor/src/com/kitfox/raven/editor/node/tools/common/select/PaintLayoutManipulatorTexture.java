@@ -129,26 +129,12 @@ public class PaintLayoutManipulatorTexture extends PaintLayoutManipulator
 
         LayoutPoints(RavenPaintLayout layout)
         {
-            layout.getTextureLayout(ptOrigin, ptBasisX, ptBasisY);
-            
-//            ptOrigin = new CyVector2d(
-//                    layout.getTransX(), layout.getTransY());
-////            w2d.transformPoint(ptOrigin, ptOrigin);
-//
-//            double cosX = Math.cos(Math.toRadians(layout.getAngle()));
-//            double sinX = Math.sin(Math.toRadians(layout.getAngle()));
-//            double cosY = Math.cos(Math.toRadians(layout.getAngle() + layout.getSkewAngle()));
-//            double sinY = Math.sin(Math.toRadians(layout.getAngle() + layout.getSkewAngle()));
-//
-//            ptBasisX = new CyVector2d(
-//                    layout.getScaleX() * cosX + layout.getTransX(),
-//                    layout.getScaleX() * sinX + layout.getTransY());
-////            w2d.transformPoint(ptBasisX, ptBasisX);
-//
-//            ptBasisY = new CyVector2d(
-//                    layout.getScaleY() * cosY + layout.getTransX(),
-//                    layout.getScaleY() * sinY + layout.getTransY());
-////            w2d.transformPoint(ptBasisY, ptBasisY);
+            layout.getCenter(ptOrigin);
+            layout.getRadiusX(ptBasisX);
+            layout.getRadiusY(ptBasisY);
+  
+            ptBasisX.add(ptOrigin);
+            ptBasisY.add(ptOrigin);
         }
     }
 
@@ -226,8 +212,12 @@ public class PaintLayoutManipulatorTexture extends PaintLayoutManipulator
 //                    (float)skewAngle
 //                    );
             
+//            lastLayout = RavenPaintLayout.createTexture2D(
+//                    lp.ptOrigin, lp.ptBasisX, lp.ptBasisY);
             lastLayout = RavenPaintLayout.createTexture2D(
-                    lp.ptOrigin, lp.ptBasisX, lp.ptBasisY);
+                    lp.ptOrigin.x, lp.ptOrigin.y, 
+                    lp.ptBasisX.x - lp.ptOrigin.x, lp.ptBasisX.y - lp.ptOrigin.y, 
+                    lp.ptBasisY.x - lp.ptOrigin.x, lp.ptBasisY.y - lp.ptOrigin.y);
 
             for (MaterialElement ele: compList)
             {

@@ -72,12 +72,14 @@ abstract public class RavenNodeShape extends RavenNodeXformable
             this, PROP_STROKE_PAINT_LAYOUT, RavenPaintLayout.class,
             new RavenPaintLayout());
 
-//    private CyVertexBuffer mesh;
-//    private CyVertexBuffer strokeMesh;
-//    private CyShape strokeShape;
-//
     SpaceCache<CyShape, CyVertexBuffer> meshCache
             = new SpaceCache<CyShape, CyVertexBuffer>();
+    
+    static final CyMatrix4d meshToLocal;
+    static {
+        meshToLocal = CyMatrix4d.createIdentity();
+        meshToLocal.scale(.01, .01, 1);
+    }
 
 
     public RavenNodeShape(int uid)
@@ -108,7 +110,6 @@ abstract public class RavenNodeShape extends RavenNodeXformable
     protected void clearCache()
     {
         super.clearCache();
-//        strokeShape = null;
     }
 
     abstract public CyShape createShapeLocal(FrameKey time);
@@ -124,65 +125,6 @@ abstract public class RavenNodeShape extends RavenNodeXformable
         CyShape local = createShapeLocal(time);
         CyStroke st = cStroke.getStroke();
         return st.outlineShape(local);
-        
-//        BasicStroke st = (BasicStroke)cStroke.getStroke();
-//        if (st == null)
-//        {
-//            return null;
-//        }
-//
-//        CyStrokeCap cap;
-//        switch (st.getEndCap())
-//        {
-//            default:
-//            case BasicStroke.CAP_BUTT:
-//                cap = CyStrokeCap.BUTT;
-//                break;
-//            case BasicStroke.CAP_ROUND:
-//                cap = CyStrokeCap.ROUND;
-//                break;
-//            case BasicStroke.CAP_SQUARE:
-//                cap = CyStrokeCap.SQUARE;
-//                break;
-//        }
-//
-//        CyStrokeJoin join;
-//        switch (st.getLineJoin())
-//        {
-//            default:
-//            case BasicStroke.JOIN_BEVEL:
-//                join = CyStrokeJoin.BEVEL;
-//                break;
-//            case BasicStroke.JOIN_MITER:
-//                join = CyStrokeJoin.MITER;
-//                break;
-//            case BasicStroke.JOIN_ROUND:
-//                join = CyStrokeJoin.ROUND;
-//                break;
-//        }
-//
-//        PathCollector col = new PathCollector();
-//        PathConsumer builder = new PathOutliner(col,
-//                st.getLineWidth() / 2,
-//                cap,
-//                join,
-//                st.getMiterLimit());
-//
-//        float[] dash = st.getDashArray();
-//        if (dash != null && dash.length >= 2)
-//        {
-//            double[] dashD = new double[dash.length];
-//            for (int i = 0; i < dash.length; ++i)
-//            {
-//                dashD[i] = dash[i];
-//            }
-//            builder = new PathDasher(builder, dashD, st.getDashPhase());
-//        }
-//
-//        CyShape local = createShapeLocal(time);
-//        builder.feedShape(local);
-//
-//        return col.getPath();
     }
 
     public CyShape getShapeLocal(FrameKey time)
@@ -241,58 +183,11 @@ abstract public class RavenNodeShape extends RavenNodeXformable
         return mesh;
     }
 
-//    protected void clearCacheTrack(PropertyWrapper wrap, int trackUid, int frame)
-//    {
-//    }
-//
-//    protected void clearCacheProp(PropertyWrapper wrap)
-//    {
-//        //Clear all cache spot not writing to 'wrap'
-//    }
-
-//    public CyVertexBuffer getMesh()
-//    {
-//        if (mesh == null)
-//        {
-//            ShapeMeshProvider meshProv = new ShapeMeshProvider(getShapePickLocal());
-//            mesh = new CyVertexBuffer(meshProv);
-//        }
-//
-//        return mesh;
-//    }
-
     @Override
     public CyShape getShapePickLocal()
     {
         return createShapeLocal(FrameKey.DIRECT);
     }
-
-//    private HashKey calcHash(CyShape shape)
-//    {
-//        try
-//        {
-//            HashKeyOutputStream hout = new HashKeyOutputStream();
-//            DataOutputStream dout = new DataOutputStream(hout);
-//            shape.export(dout);
-//            dout.close();
-//
-//            return hout.getKey();
-//        } catch (IOException ex)
-//        {
-//            Logger.getLogger(RavenNodeShape.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//
-//        return null;
-//    }
-//
-//    private FrameCache createCache(FrameKey key)
-//    {
-//        CyShape shape = getShapeLocal(key);
-//
-//        FrameCache cache = new FrameCache();
-//
-//
-//    }
 
     @Override
     protected void renderContent(RenderContext ctx)
@@ -300,15 +195,6 @@ abstract public class RavenNodeShape extends RavenNodeXformable
         CyDrawStack stack = ctx.getDrawStack();
 
         FrameKey frame = ctx.getFrame();
-//        FrameCache cacheInfo = frameCache.get(key);
-//        if (cacheInfo == null)
-//        {
-//            cacheInfo = createCache(key);
-//            frameCache.put(key, cacheInfo);
-//        }
-
-
-
 
         CyRectangle2d bounds = getBoundsLocal(frame);
         if (!stack.intersectsFrustum(bounds))
@@ -322,31 +208,28 @@ abstract public class RavenNodeShape extends RavenNodeXformable
         RavenPaintLayout curFillLayout = paintLayout.getValue(frame);
         RavenPaint curStrokePaint = strokePaint.getValue(frame);
         RavenPaintLayout curStrokeLayout = strokePaintLayout.getValue(frame);
-//        RavenStroke curStroke = stroke.getValue();
 
-        stack.pushFrame(null);
-        stack.scale(.01, .01, 1);
+//        stack.pushFrame(null);
+//        stack.scale(.01, .01, 1);
         if (curFillPaint != null)
         {
-//            CyShape shape = getShapePickLocal();
             CyVertexBuffer mesh = getMeshLocal(frame);
             if (mesh != null)
             {
-                curFillPaint.fillShape(stack, curFillLayout, mesh);
+                curFillPaint.fillShape(stack, curFillLayout, mesh, meshToLocal);
             }
 
         }
 
         if (curStrokePaint != null)
         {
-//            CyShape shape = calcShapeStrokeLocal();
             CyVertexBuffer mesh = getMeshStrokeLocal(frame);
             if (mesh != null)
             {
-                curStrokePaint.fillShape(stack, curStrokeLayout, mesh);
+                curStrokePaint.fillShape(stack, curStrokeLayout, mesh, meshToLocal);
             }
         }
-        stack.popFrame();
+//        stack.popFrame();
     }
 
 
@@ -393,58 +276,6 @@ abstract public class RavenNodeShape extends RavenNodeXformable
 //            renderer.draw(shape);
 //        }
     }
-
-//    @Override
-//    abstract public CyShape getShapeLocal();
-//
-//    public Shape getShapeStrokedLocal()
-//    {
-//        if (strokeShape == null)
-//        {
-//            CyShape shape = getShapeLocal();
-//
-//            RavenStroke cStroke = stroke.getValue();
-//            if (shape != null && cStroke != null && cStroke != RavenStrokeNone.STROKE)
-//            {
-//                Stroke str = cStroke.getStroke();
-//                strokeShape = str.createStrokedShape(shape);
-//            }
-//        }
-//
-//        return strokeShape;
-//    }
-//
-//    @Override
-//    public Shape getPickShapeLocal()
-//    {
-//        Shape fillShape = getShapeLocal();
-//        Shape strokeShape = getShapeStrokedLocal();
-//
-//        RavenPaint cFillPaint = paint.getValue();
-//        if (cFillPaint == null && cFillPaint != RavenPaintNone.PAINT)
-//        {
-//            fillShape = null;
-//        }
-//
-//        RavenPaint cStrokePaint = strokePaint.getValue();
-//        if (cStrokePaint == null && cStrokePaint != RavenPaintNone.PAINT)
-//        {
-//            strokeShape = null;
-//        }
-//
-//        if (fillShape != null && strokeShape != null)
-//        {
-//            Path2D.Double path = new Path2D.Double(fillShape);
-//            path.append(strokeShape, false);
-//            return path;
-//        }
-//        if (fillShape != null)
-//        {
-//            return fillShape;
-//        }
-//
-//        return strokeShape;
-//    }
 
     @Override
     public void floodFill(RavenPaint paint,
@@ -592,15 +423,7 @@ abstract public class RavenNodeShape extends RavenNodeXformable
     @Override
     public void setMaterialFacePaint(Integer subselection, RavenPaint value, boolean history)
     {
-//        if (value instanceof NodeObject)
-//        {
-//            paint.setData(new PropertyDataReference<RavenPaint>(
-//                    ((NodeObject)value).getUid()), history);
-//        }
-//        else
-//        {
-            paint.setValue(value, history);
-//        }
+        paint.setValue(value, history);
     }
 
     @Override
@@ -612,29 +435,13 @@ abstract public class RavenNodeShape extends RavenNodeXformable
     @Override
     public void setMaterialEdgeStroke(Integer subselection, RavenStroke value, boolean history)
     {
-//        if (value instanceof NodeObject)
-//        {
-//            stroke.setData(new PropertyDataReference<RavenStroke>(
-//                    ((NodeObject)value).getUid()), history);
-//        }
-//        else
-//        {
-            stroke.setValue(value, history);
-//        }
+        stroke.setValue(value, history);
     }
 
     @Override
     public void setMaterialEdgePaint(Integer subselection, RavenPaint value, boolean history)
     {
-//        if (value instanceof NodeObject)
-//        {
-//            strokePaint.setData(new PropertyDataReference<RavenPaint>(
-//                    ((NodeObject)value).getUid()), history);
-//        }
-//        else
-//        {
-            strokePaint.setValue(value, history);
-//        }
+        strokePaint.setValue(value, history);
     }
 
     @Override

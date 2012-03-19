@@ -28,6 +28,7 @@ import com.kitfox.coyote.math.CyColor4f;
 import com.kitfox.coyote.math.CyGradientStops;
 import com.kitfox.coyote.math.CyGradientStops.Cycle;
 import com.kitfox.coyote.math.CyGradientStops.Style;
+import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.renderer.CyDrawStack;
 import com.kitfox.coyote.renderer.CyVertexBuffer;
 import com.kitfox.raven.paint.RavenPaint;
@@ -137,16 +138,23 @@ public class RavenPaintGradient implements RavenPaint
 
     @Override
     public void fillShape(CyDrawStack stack, 
-        RavenPaintLayout layout, CyVertexBuffer mesh)
+        RavenPaintLayout layout, CyVertexBuffer mesh, CyMatrix4d meshToLocal)
     {
         CyMaterialGradientDrawRecord rec =
                 CyMaterialGradientDrawRecordFactory.inst().allocRecord();
         
         rec.setStops(stops);
-        rec.setTexToLocalMatrix(layout.getPaintToLocal());
         rec.setMesh(mesh);
-        rec.setMvpMatrix(stack.getModelViewProjXform());
         rec.setOpacity(1);
+        CyMatrix4d mvp = stack.getModelViewProjXform();
+        CyMatrix4d l2p = layout.getLocalToPaint();
+        if (meshToLocal != null)
+        {
+            mvp.mul(meshToLocal);
+            l2p.mul(meshToLocal);
+        }
+        rec.setMvpMatrix(mvp);
+        rec.setLocalToTexMatrix(l2p);
         
         stack.addDrawRecord(rec);
     }

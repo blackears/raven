@@ -96,7 +96,7 @@ public class RavenNodeGradient extends RavenNodePaint
         {
             CyMatrix4d m = CyMatrix4d.createIdentity();
             m.set(curFillLayout.getPaintToLocalTransform());
-            rec.setTexToLocalMatrix(m);
+            rec.setLocalToTexMatrix(m);
         }
 
         rec.setStops(stops.asCyGradientStops());

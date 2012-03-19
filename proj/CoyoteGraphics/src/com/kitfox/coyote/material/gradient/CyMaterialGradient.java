@@ -152,15 +152,15 @@ public class CyMaterialGradient extends CyMaterial
         
         //Upload uniforms
         CyMatrix4d mvpMatrix = rec.getMvpMatrix();
-        CyMatrix4d texMatrix = rec.getTexToLocalMatrix();
-        try
-        {
-            texMatrix.invert();
-        }
-        catch (UnsupportedOperationException ex)
-        {
-            texMatrix = CyMatrix4d.createIdentity();
-        }
+        CyMatrix4d texMatrix = rec.getLocalToTexMatrix();
+//        try
+//        {
+//            texMatrix.invert();
+//        }
+//        catch (UnsupportedOperationException ex)
+//        {
+//            texMatrix = CyMatrix4d.createIdentity();
+//        }
         mvpMatrix.toBufferc(matrixBuf);
         gl.glUniformMatrix4fv(u_mvpMatrix, 1, false, matrixBuf);
         texMatrix.toBufferc(matrixBuf);

@@ -124,8 +124,8 @@ public class CyMaterialTextureBlit extends CyMaterial
 
         //Upload uniforms
         CyMatrix4d mvpMatrix = rec.getMvpMatrix();
-        CyMatrix4d texMatrix = rec.getTexToLocalMatrix();
-        texMatrix.invert();
+        CyMatrix4d texMatrix = rec.getLocalToTexMatrix();
+//        texMatrix.invert();
         mvpMatrix.toBufferc(matrixBuf);
         gl.glUniformMatrix4fv(u_mvpMatrix, 1, false, matrixBuf);
         texMatrix.toBufferc(matrixBuf);

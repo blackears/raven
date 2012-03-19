@@ -38,6 +38,7 @@ public class RavenPaintLayout
 //    public static final String PROP_WIDTH = "matrix";
     
     private CyMatrix4d p2l;
+    private CyMatrix4d l2p;
 
     public RavenPaintLayout()
     {
@@ -99,7 +100,19 @@ public class RavenPaintLayout
                 0, 0, 1, 0,
                 ptCenter.x, ptCenter.y, 0, 1);
         return new RavenPaintLayout(m);
-        
+    }
+
+    public static RavenPaintLayout createTexture2D(
+            double cx, double cy, 
+            double radXx, double radXy,
+            double radYx, double radYy)
+    {
+        CyMatrix4d m = new CyMatrix4d(
+                radXx, radXy, 0, 0,
+                radYx, radYy, 0, 0,
+                0, 0, 1, 0,
+                cx, cy, 0, 1);
+        return new RavenPaintLayout(m);
     }
 
     /**
@@ -108,6 +121,16 @@ public class RavenPaintLayout
     public CyMatrix4d getPaintToLocal()
     {
         return new CyMatrix4d(p2l);
+    }
+    
+    public CyMatrix4d getLocalToPaint()
+    {
+        if (l2p == null)
+        {
+            l2p = new CyMatrix4d(p2l);
+            l2p.invert();
+        }
+        return new CyMatrix4d(l2p);
     }
     
     public RavenPaintLayout transform(CyMatrix4d l2w)
@@ -134,15 +157,30 @@ public class RavenPaintLayout
     /**
      * Get the vital coords for a 2D texture layout.
      * 
-     * @param ptCenter
+     * @param center
      * @param ptRadiusX
      * @param ptRadiusY 
      */
-    public void getTextureLayout(CyVector2d ptCenter, CyVector2d ptRadiusX, CyVector2d ptRadiusY)
+//    public void getTextureLayout(CyVector2d ptCenter, CyVector2d ptRadiusX, CyVector2d ptRadiusY)
+//    {
+//        ptCenter.set(p2l.m03, p2l.m13);
+//        ptRadiusX.set(p2l.m00, p2l.m10);
+//        ptRadiusY.set(p2l.m01, p2l.m11);
+//    }
+
+    public void getCenter(CyVector2d center)
     {
-        ptCenter.set(p2l.m03, p2l.m13);
-        ptRadiusX.set(p2l.m00, p2l.m10);
-        ptRadiusY.set(p2l.m01, p2l.m11);
+        center.set(p2l.m03, p2l.m13);
+    }
+
+    public void getRadiusX(CyVector2d radiusX)
+    {
+        radiusX.set(p2l.m00, p2l.m10);
+    }
+
+    public void getRadiusY(CyVector2d radiusY)
+    {
+        radiusY.set(p2l.m01, p2l.m11);
     }
     
     public static RavenPaintLayout create(String text)

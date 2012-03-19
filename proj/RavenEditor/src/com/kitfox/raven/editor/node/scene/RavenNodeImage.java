@@ -101,7 +101,7 @@ public class RavenNodeImage extends RavenNodeXformable
 
         rec.setOpacity(renderer.getOpacity());
 
-        rec.setTexToLocalMatrix(CyMatrix4d.createIdentity());
+        rec.setLocalToTexMatrix(CyMatrix4d.createIdentity());
 
         TexSourceAWTBufferedImage bi = new TexSourceAWTBufferedImage(img);
         CyTextureImage texImg = new CyTextureImage(

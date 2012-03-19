@@ -23,6 +23,7 @@ import com.kitfox.cache.parser.ParseException;
 import com.kitfox.coyote.material.color.CyMaterialColorDrawRecord;
 import com.kitfox.coyote.material.color.CyMaterialColorDrawRecordFactory;
 import com.kitfox.coyote.math.CyColor4f;
+import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.renderer.CyDrawStack;
 import com.kitfox.coyote.renderer.CyVertexBuffer;
 import com.kitfox.raven.paint.RavenPaint;
@@ -192,14 +193,19 @@ public class RavenPaintColor implements RavenPaint
     
     @Override
     public void fillShape(CyDrawStack stack, 
-        RavenPaintLayout layout, CyVertexBuffer mesh)
+        RavenPaintLayout layout, CyVertexBuffer mesh, CyMatrix4d meshToLocal)
     {
         CyMaterialColorDrawRecord rec =
                 CyMaterialColorDrawRecordFactory.inst().allocRecord();
         
         rec.setColor(color);
         rec.setMesh(mesh);
-        rec.setMvpMatrix(stack.getModelViewProjXform());
+        CyMatrix4d mvp = stack.getModelViewProjXform();
+        if (meshToLocal != null)
+        {
+            mvp.mul(meshToLocal);
+        }
+        rec.setMvpMatrix(mvp);
         rec.setOpacity(1);
         
         stack.addDrawRecord(rec);
