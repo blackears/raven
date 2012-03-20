@@ -54,7 +54,12 @@ public class RavenPaintLayoutCustomEditor extends javax.swing.JPanel
         CyVector2d ptCenter = new CyVector2d();
         CyVector2d ptRadiusX = new CyVector2d();
         CyVector2d ptRadiusY = new CyVector2d();
-        curValue.getTextureLayout(ptCenter, ptRadiusX, ptRadiusY);
+        curValue.getCenter(ptCenter);
+        curValue.getBasisX(ptRadiusX);
+        curValue.getBasisY(ptRadiusY);
+        
+        ptRadiusX.add(ptCenter);
+        ptRadiusY.add(ptCenter);
         
         centerX = ptCenter.x;
         centerY = ptCenter.y;

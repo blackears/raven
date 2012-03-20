@@ -40,6 +40,11 @@ public class CyRectangle2d extends CyShape
         this(rect.x, rect.y, rect.width, rect.height);
     }
 
+    public CyRectangle2d(CyRectangle2i rect)
+    {
+        this(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
+    }
+
     public CyRectangle2d(double x, double y, double width, double height)
     {
         this.x = x;

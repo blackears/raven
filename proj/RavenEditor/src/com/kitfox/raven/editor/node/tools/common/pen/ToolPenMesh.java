@@ -24,6 +24,7 @@ import com.kitfox.coyote.renderer.CyDrawStack;
 import com.kitfox.coyote.renderer.CyVertexBuffer;
 import com.kitfox.coyote.renderer.vertex.CyVertexBufferDataSquare;
 import com.kitfox.coyote.shape.CyPath2d;
+import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.coyote.shape.CyRectangle2i;
 import com.kitfox.coyote.shape.ShapeLinesProvider;
 import com.kitfox.coyote.shape.bezier.BezierCubic2i;
@@ -37,7 +38,7 @@ import com.kitfox.coyote.shape.bezier.mesh.CutSegHalf;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
 import com.kitfox.raven.editor.node.scene.RenderContext;
-import com.kitfox.raven.editor.node.tools.common.shape.curveEdit.MeshRenderUtil;
+import com.kitfox.raven.editor.node.tools.common.shape.MeshUtil;
 import com.kitfox.raven.paint.RavenPaint;
 import com.kitfox.raven.paint.RavenPaintLayout;
 import com.kitfox.raven.paint.RavenStroke;
@@ -233,7 +234,12 @@ public class ToolPenMesh extends ToolPenDelegate
         RavenNodeRoot root = (RavenNodeRoot)getDocument();
         RavenPaint strokePaint = root.getStrokePaint();
         RavenStroke stroke = root.getStrokeShape();
-        RavenPaintLayout layout = new RavenPaintLayout(bounds);
+//        RavenPaintLayout layout = new RavenPaintLayout(bounds);
+        CyRectangle2d boundsLocal = new CyRectangle2d(
+                bounds.getX() / 100, bounds.getY() / 100,
+                bounds.getWidth() / 100, bounds.getHeight() / 100);
+        RavenPaintLayout layout = new RavenPaintLayout(boundsLocal);
+        
         RavenPaint fillPaint = root.getFillPaint();
         
         //Add curves
@@ -420,7 +426,7 @@ public class ToolPenMesh extends ToolPenDelegate
 
         CyDrawStack stack = ctx.getDrawStack();
 
-        MeshRenderUtil.drawGraph(stack, getMeshHandles(), 
+        MeshUtil.drawGraph(stack, getMeshHandles(), 
                 getSelection(), node, servMesh.getGraphToWorldXform());
         
         if (plan.isEmpty())

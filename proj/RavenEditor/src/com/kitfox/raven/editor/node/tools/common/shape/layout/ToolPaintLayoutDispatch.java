@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.kitfox.raven.editor.node.tools.common.shape.curveEdit;
+package com.kitfox.raven.editor.node.tools.common.shape.layout;
 
 import com.kitfox.raven.editor.node.scene.RenderContext;
 import com.kitfox.raven.editor.node.tools.ToolUser;
@@ -30,14 +30,14 @@ import java.awt.event.MouseEvent;
  *
  * @author kitfox
  */
-public class ToolCurveEditDispatch extends ToolDisplay
+public class ToolPaintLayoutDispatch extends ToolDisplay
 {
-    final ToolCurveEditProvider toolProvider;
+    final ToolPaintLayoutProvider toolProvider;
     
-    ToolCurveEditDelegate delegate;
+    ToolPaintLayoutDelegate delegate;
     NodeObject delegateNode;
     
-    protected ToolCurveEditDispatch(ToolUser user, ToolCurveEditProvider toolProvider)
+    protected ToolPaintLayoutDispatch(ToolUser user, ToolPaintLayoutProvider toolProvider)
     {
         super(user);
         this.toolProvider = toolProvider;
@@ -67,7 +67,7 @@ public class ToolCurveEditDispatch extends ToolDisplay
             ServiceBezierMesh servMesh = node.getNodeService(ServiceBezierMesh.class, false);
             if (servMesh != null)
             {
-                delegate = new ToolCurveEditMesh(this, node, servMesh);
+                delegate = new ToolPaintLayoutMesh(this, node, servMesh);
                 delegateNode = node;
             }
         }
@@ -164,6 +164,6 @@ public class ToolCurveEditDispatch extends ToolDisplay
     {
         delegate = null;
     }
-    
+        
     
 }

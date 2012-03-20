@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.kitfox.raven.editor.node.tools.common.shape.curveEdit;
+package com.kitfox.raven.editor.node.tools.common.shape;
 
 import com.kitfox.coyote.material.color.CyMaterialColorDrawRecord;
 import com.kitfox.coyote.material.color.CyMaterialColorDrawRecordFactory;
@@ -28,12 +28,14 @@ import com.kitfox.coyote.renderer.CyVertexBuffer;
 import com.kitfox.coyote.renderer.vertex.CyVertexBufferDataSquare;
 import com.kitfox.coyote.renderer.vertex.CyVertexBufferDataSquareLines;
 import com.kitfox.coyote.shape.CyPath2d;
+import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.coyote.shape.ShapeLinesProvider;
 import com.kitfox.coyote.shape.bezier.BezierCurve2d;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
 import com.kitfox.raven.shape.network.pick.*;
 import com.kitfox.raven.shape.network.pick.NetworkMeshHandles.HandleFace;
+import com.kitfox.raven.util.Intersection;
 import com.kitfox.raven.util.Selection;
 import com.kitfox.raven.util.tree.NodeObject;
 import java.util.ArrayList;
@@ -43,7 +45,7 @@ import java.util.Iterator;
  *
  * @author kitfox
  */
-public class MeshRenderUtil
+public class MeshUtil
 {
     /**
      * Get list of knots that are part of curved lines and for which either
@@ -283,5 +285,256 @@ public class MeshRenderUtil
         
         stack.addDrawRecord(rec);
     }
+
+    public static ArrayList<NetworkHandleVertex> getSelVertices(
+            NetworkHandleVertex v, 
+            Selection<NodeObject> sel,
+            NodeObject node, NetworkMeshHandles handles)
+    {
+        ArrayList<NetworkHandleVertex> list = new ArrayList<NetworkHandleVertex>();
+        
+        NetworkHandleSelection subSel = 
+                sel.getSubselection(node, NetworkHandleSelection.class);
+
+        if (subSel == null)
+        {
+            if (v != null)
+            {
+                list.add(v);
+            }
+            return list;
+        }
+        
+        if (v == null || subSel.containsVertex(v.getIndex()))
+        {
+            for (Integer i: subSel.getVertexIds())
+            {
+                list.add(handles.getVertexHandle(i));
+            }
+        }
+        else
+        {
+            list.add(v);
+        }
+        return list;
+    }
+
+    public static ArrayList<NetworkHandleEdge> getSelEdges(
+            NetworkHandleEdge e, 
+            Selection<NodeObject> sel,
+            NodeObject node, NetworkMeshHandles handles)
+    {
+        ArrayList<NetworkHandleEdge> list = new ArrayList<NetworkHandleEdge>();
+        
+        NetworkHandleSelection subSel = 
+                sel.getSubselection(node, NetworkHandleSelection.class);
+
+        if (subSel == null)
+        {
+            if (e != null)
+            {
+                list.add(e);
+            }
+            return list;
+        }
+
+        if (e == null || subSel.containsEdge(e.getIndex()))
+        {
+            for (Integer i: subSel.getEdgeIds())
+            {
+                list.add(handles.getEdgeHandle(i));
+            }
+        }
+        else
+        {
+            list.add(e);
+        }
+        return list;
+    }
+
+    public static ArrayList<NetworkHandleFace> getSelFaces(
+            NetworkHandleFace f, 
+            Selection<NodeObject> sel,
+            NodeObject node, NetworkMeshHandles handles)
+    {
+        ArrayList<NetworkHandleFace> list = new ArrayList<NetworkHandleFace>();
+        
+        NetworkHandleSelection subSel = 
+                sel.getSubselection(node, NetworkHandleSelection.class);
+
+        if (subSel == null)
+        {
+            if (f != null)
+            {
+                list.add(f);
+            }
+            return list;
+        }
+
+        if (f == null || subSel.containsFace(f.getIndex()))
+        {
+            for (Integer i: subSel.getFaceIds())
+            {
+                list.add(handles.getFaceHandle(i));
+            }
+        }
+        else
+        {
+            list.add(f);
+        }
+        return list;
+    }
+
+    public static ArrayList<NetworkHandleKnot> getSelKnots(
+            NetworkHandleKnot k, 
+            Selection<NodeObject> sel,
+            NodeObject node, NetworkMeshHandles handles)
+    {
+        ArrayList<NetworkHandleKnot> list = new ArrayList<NetworkHandleKnot>();
+        
+        NetworkHandleSelection subSel = 
+                sel.getSubselection(node, NetworkHandleSelection.class);
+
+        if (subSel == null)
+        {
+            if (k != null)
+            {
+                list.add(k);
+            }
+            return list;
+        }
+
+        if (k == null || subSel.containsKnot(k.getIndex()))
+        {
+            for (Integer i: subSel.getKnotIds())
+            {
+                list.add(handles.getKnotHandle(i));
+            }
+        }
+        else
+        {
+            list.add(k);
+        }
+        return list;
+    }
     
+    /**
+     * Searches list and removes all entries that are not linked to either 
+     * a selected vertex or a selected edge.
+     * 
+     * @param knotList 
+     */
+    public static void removeHiddenKnots(
+            ArrayList<NetworkHandleKnot> knotList, 
+            Selection<NodeObject> sel, NodeObject node)
+    {
+        NetworkHandleSelection subSel = 
+                sel.getSubselection(node, NetworkHandleSelection.class);
+        
+        if (subSel == null)
+        {
+            knotList.clear();
+            return;
+        }
+        
+        for (Iterator<NetworkHandleKnot> it = knotList.iterator();
+                it.hasNext();)
+        {
+            NetworkHandleKnot k = it.next();
+            if (subSel.containsVertex(k.getVertex().getIndex())
+                    || subSel.containsEdge(k.getEdge().getIndex()))
+            {
+                continue;
+            }
+
+            it.remove();
+        }
+
+    }
+    
+    public static void adjustSelection(CyRectangle2d region, Selection.Operator op,
+            Intersection isect,
+            Selection<NodeObject> sel,
+            NodeObject node, NetworkMeshHandles handles,
+            CyMatrix4d l2w, CyMatrix4d l2d)
+    {
+//        CyMatrix4d l2w = servMesh.getLocalToWorldTransform((CyMatrix4d)null);
+//        CyMatrix4d l2d = getWorldToDevice(null);
+//        l2d.mul(l2w);
+        
+        ArrayList<NetworkHandleVertex> pickVert =
+                handles.pickVertices(region, l2d, Intersection.CONTAINS);
+        ArrayList<NetworkHandleEdge> pickEdge =
+                handles.pickEdges(region, l2d, isect);
+        ArrayList<NetworkHandleFace> pickFace =
+                handles.pickFaces(region, l2d, isect);
+        ArrayList<NetworkHandleKnot> pickKnot =
+                handles.pickKnots(region, l2d, Intersection.CONTAINS);
+
+        NetworkHandleSelection subSel = 
+                sel.getSubselection(node, NetworkHandleSelection.class);
+
+        MeshUtil.removeHiddenKnots(pickKnot, sel, node);
+
+        NetworkHandleSelection subSelNew = null;
+                
+        if (!pickVert.isEmpty())
+        {
+            subSelNew = subSel == null 
+                    ? new NetworkHandleSelection()
+                    : new NetworkHandleSelection(subSel);
+            
+            ArrayList<Integer> idList = new ArrayList<Integer>();
+            for (NetworkHandleVertex v: pickVert)
+            {
+                idList.add(v.getIndex());
+            }
+            subSelNew.selectVertices(idList, op);
+        }
+        else if (!pickKnot.isEmpty())
+        {
+            subSelNew = subSel == null 
+                    ? new NetworkHandleSelection()
+                    : new NetworkHandleSelection(subSel);
+            
+            ArrayList<Integer> idList = new ArrayList<Integer>();
+            for (NetworkHandleKnot k: pickKnot)
+            {
+                idList.add(k.getIndex());
+            }
+            subSelNew.selectKnots(idList, op);
+        }
+        else if (!pickEdge.isEmpty())
+        {
+            subSelNew = subSel == null 
+                    ? new NetworkHandleSelection()
+                    : new NetworkHandleSelection(subSel);
+            
+            ArrayList<Integer> idList = new ArrayList<Integer>();
+            for (NetworkHandleEdge e: pickEdge)
+            {
+                idList.add(e.getIndex());
+            }
+            subSelNew.selectEdges(idList, op);
+        }
+        else if (!pickFace.isEmpty())
+        {
+            subSelNew = subSel == null 
+                    ? new NetworkHandleSelection()
+                    : new NetworkHandleSelection(subSel);
+            
+            ArrayList<Integer> idList = new ArrayList<Integer>();
+            for (NetworkHandleFace e: pickFace)
+            {
+                idList.add(e.getIndex());
+            }
+            subSelNew.selectFaces(idList, op);
+        }
+        
+        if (subSelNew != null)
+        {
+            sel.setSubselection(node, NetworkHandleSelection.class, subSelNew);
+        }
+    }
+        
 }

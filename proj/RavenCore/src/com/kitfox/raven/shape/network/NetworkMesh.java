@@ -21,6 +21,7 @@ import com.kitfox.cache.CacheList;
 import com.kitfox.cache.CacheMap;
 import com.kitfox.cache.parser.CacheParser;
 import com.kitfox.cache.parser.ParseException;
+import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.coyote.shape.CyRectangle2i;
 import com.kitfox.coyote.shape.bezier.BezierCubic2i;
 import com.kitfox.coyote.shape.bezier.mesh.BezierMesh2i;
@@ -113,7 +114,7 @@ public class NetworkMesh extends BezierMesh2i<NetworkDataVertex, NetworkDataEdge
     {
         return toCache().toString();
     }
-
+    
     public CyRectangle2i getBounds()
     {
         CyRectangle2i bounds = null;

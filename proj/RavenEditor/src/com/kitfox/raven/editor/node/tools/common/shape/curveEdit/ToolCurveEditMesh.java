@@ -16,6 +16,7 @@
 
 package com.kitfox.raven.editor.node.tools.common.shape.curveEdit;
 
+import com.kitfox.raven.editor.node.tools.common.shape.MeshUtil;
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.renderer.CyDrawStack;
@@ -94,7 +95,7 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
         v.scale(100);
         return v;
     }
-
+/*
     private ArrayList<NetworkHandleVertex> getSelVertices(NetworkHandleVertex v)
     {
         ArrayList<NetworkHandleVertex> list = new ArrayList<NetworkHandleVertex>();
@@ -211,11 +212,12 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
                 handles.pickFaces(region, l2d, isect);
         ArrayList<NetworkHandleKnot> pickKnot =
                 handles.pickKnots(region, l2d, Intersection.CONTAINS);
-        removeHiddenKnots(pickKnot);
 
         Selection<NodeObject> sel = getSelection();
         NetworkHandleSelection subSel = 
                 sel.getSubselection(node, NetworkHandleSelection.class);
+
+        MeshUtil.removeHiddenKnots(pickKnot, sel, node);
 
         NetworkHandleSelection subSelNew = null;
                 
@@ -277,7 +279,7 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
             sel.setSubselection(node, NetworkHandleSelection.class, subSelNew);
         }
     }
-    
+    */
     @Override
     protected void click(MouseEvent evt)
     {
@@ -299,7 +301,12 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
         CyRectangle2d region = new CyRectangle2d(evt.getX() - pickRad, evt.getY() - pickRad, 
                 pickRad * 2, pickRad * 2);
         
-        adjustSelection(region, getSelectType(evt), Intersection.INTERSECTS);
+        CyMatrix4d l2w = servMesh.getLocalToWorldTransform((CyMatrix4d)null);
+        CyMatrix4d l2d = getWorldToDevice(null);
+        l2d.mul(l2w);
+        
+        MeshUtil.adjustSelection(region, getSelectType(evt), Intersection.INTERSECTS,
+                getSelection(), node, getMeshHandles(), l2w, l2d);
     }
 
     @Override
@@ -326,7 +333,10 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
                 handles.pickEdges(region, l2d, Intersection.INTERSECTS);
         ArrayList<NetworkHandleKnot> pickKnot =
                 handles.pickKnots(region, l2d, Intersection.CONTAINS);
-        removeHiddenKnots(pickKnot);
+        
+        
+        Selection<NodeObject> sel = getSelection();
+        MeshUtil.removeHiddenKnots(pickKnot, sel, node);
 
         CyMatrix4d g2w = servMesh.getGraphToWorldXform();
         CyMatrix4d g2d = getWorldToDevice(null);
@@ -334,17 +344,20 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
         
         if (!pickKnot.isEmpty())
         {
-            pickKnot = getSelKnots(pickKnot.get(0));
+            pickKnot = MeshUtil.getSelKnots(pickKnot.get(0),
+                    sel, node, handles);
             dragSet = new MeshDragSetKnot(servMesh, handles, g2d, pickKnot);
         }
         else if (!pickVert.isEmpty())
         {
-            pickVert = getSelVertices(pickVert.get(0));
+            pickVert = MeshUtil.getSelVertices(pickVert.get(0),
+                    sel, node, handles);
             dragSet = new MeshDragSetVertex(servMesh, handles, g2d, pickVert);
         }
         else if (!pickEdge.isEmpty())
         {
-            pickEdge = getSelEdges(pickEdge.get(0));
+            pickEdge = MeshUtil.getSelEdges(pickEdge.get(0),
+                    sel, node, handles);
             dragSet = new MeshDragSetEdge(servMesh, handles, g2d, pickEdge);
         }
         else
@@ -387,8 +400,14 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
             int y1 = Math.max(mouseStart.getY(), evt.getY());
             
             CyRectangle2d region = new CyRectangle2d(x0, y0, x1 - x0, y1 - y0);
-
-            adjustSelection(region, getSelectType(evt), Intersection.INTERSECTS);
+        
+            CyMatrix4d l2w = servMesh.getLocalToWorldTransform((CyMatrix4d)null);
+            CyMatrix4d l2d = getWorldToDevice(null);
+            l2d.mul(l2w);
+            
+            MeshUtil.adjustSelection(region, 
+                    getSelectType(evt), Intersection.INTERSECTS,
+                    getSelection(), node, getMeshHandles(), l2w, l2d);
             dragSelRect = false;
         }
         
@@ -439,7 +458,7 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
 
         CyDrawStack stack = ctx.getDrawStack();
 
-        MeshRenderUtil.drawGraph(stack, getMeshHandles(), 
+        MeshUtil.drawGraph(stack, getMeshHandles(), 
                 getSelection(), node, servMesh.getGraphToWorldXform());
 //        drawGraph(stack);
         
@@ -510,6 +529,7 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
      * 
      * @param knotList 
      */
+    /*
     private void removeHiddenKnots(ArrayList<NetworkHandleKnot> knotList)
     {
         Selection<NodeObject> sel = getSelection();
@@ -536,10 +556,14 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
             it.remove();
         }
     }
-    
+*/    
     private void showPopupMenu(MouseEvent evt)
     {
-        ArrayList<NetworkHandleVertex> vertList = getSelVertices(null);
+        NetworkMeshHandles oldHandles = getMeshHandles();
+        Selection<NodeObject> sel = getSelection();
+        
+        ArrayList<NetworkHandleVertex> vertList = 
+                MeshUtil.getSelVertices(null, sel, node, oldHandles);
         ArrayList<NetworkHandleVertex> vertListNew = new ArrayList<NetworkHandleVertex>();
 
         NetworkMesh oldMesh = getMesh();

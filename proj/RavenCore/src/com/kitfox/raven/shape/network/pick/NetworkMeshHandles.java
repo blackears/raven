@@ -549,6 +549,12 @@ public class NetworkMeshHandles
         {
             return e;
         }
+
+        public void setEdgeLayout(RavenPaintLayout layout)
+        {
+            NetworkDataEdge data = e.getData();
+            data.putEdge(NetworkDataTypePaintLayout.class, layout);
+        }
         
         @Override
         public int getIndex()
@@ -986,6 +992,25 @@ public class NetworkMeshHandles
                     data.putLeft(NetworkDataTypePaint.class, null);
                     data.putLeft(NetworkDataTypePaintLayout.class, null);
                 }
+            }
+        }
+
+        public void setFaceLayout(RavenPaintLayout layout)
+        {
+            for (CutSegHalf seg: loop.getSegs())
+            {
+                BezierMeshEdge2i e = seg.getEdge();
+                NetworkDataEdge data = (NetworkDataEdge)e.getData();
+                
+                if (seg.isRight())
+                {
+                    data.putRight(NetworkDataTypePaintLayout.class, layout);
+                }
+                else
+                {
+                    data.putLeft(NetworkDataTypePaintLayout.class, layout);
+                }
+                
             }
         }
         

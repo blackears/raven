@@ -140,7 +140,13 @@ public class PaintLayoutManipulatorRadial extends PaintLayoutManipulator
 
         LayoutPoints(CyMatrix4d w2d, RavenPaintLayout layout)
         {
-            layout.getTextureLayout(ptCenter, ptRadiusX, ptRadiusY);
+            layout.getCenter(ptCenter);
+            layout.getBasisX(ptRadiusX);
+            layout.getBasisY(ptRadiusY);
+
+            ptRadiusX.add(ptCenter);
+            ptRadiusY.add(ptCenter);
+            
             w2d.transformPoint(ptCenter, ptCenter);
             w2d.transformPoint(ptRadiusX, ptRadiusX);
             w2d.transformPoint(ptRadiusY, ptRadiusY);

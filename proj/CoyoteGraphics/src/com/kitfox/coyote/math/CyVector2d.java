@@ -222,4 +222,16 @@ public class CyVector2d
         return new CyVector2d(v.x * scalar, v.y * scalar);
     }
 
+    public void rotate(double angle)
+    {
+        double c = Math.cos(angle);
+        double s = Math.sin(angle);
+        
+        double x0 = x * c - y * s;
+        double y0 = x * s + y * c;
+        
+        this.x = x0;
+        this.y = y0;
+    }
+
 }

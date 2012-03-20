@@ -28,103 +28,153 @@ import java.util.Collection;
  */
 public class NetworkHandleSelection
 {
-    Selection<Integer> selVert;
-    Selection<Integer> selEdge;
-    Selection<Integer> selFace;
-    Selection<Integer> selKnot;
-
+    Selection<NetworkSubselElement> subsel;
+    
     public NetworkHandleSelection(NetworkHandleSelection sel)
     {
-        selVert = new Selection<Integer>(sel.selVert);
-        selEdge = new Selection<Integer>(sel.selEdge);
-        selFace = new Selection<Integer>(sel.selFace);
-        selKnot = new Selection<Integer>(sel.selKnot);
+        subsel = new Selection<NetworkSubselElement>(sel.subsel);
     }
 
     public NetworkHandleSelection()
     {
-        selVert = new Selection<Integer>();
-        selEdge = new Selection<Integer>();
-        selFace = new Selection<Integer>();
-        selKnot = new Selection<Integer>();
+        subsel = new Selection<NetworkSubselElement>();
     }
 
+    public int size()
+    {
+        return subsel.size();
+    }
+    
+    public NetworkSubselElement get(int index)
+    {
+        return subsel.get(index);
+    }
+    
+    private void selectEles(Collection<Integer> idList, 
+            Selection.Operator op, NetworkSubselType type)
+    {
+        ArrayList<NetworkSubselElement> list = new ArrayList<NetworkSubselElement>();
+        for (Integer id: idList)
+        {
+            list.add(new NetworkSubselElement(id, type));
+        }
+        subsel.select(list, op);
+    }
+    
+    private boolean containsEle(Integer curVertex, NetworkSubselType type)
+    {
+        return subsel.isSelected(
+                new NetworkSubselElement(curVertex, type));
+    }
+    
+    private ArrayList<Integer> getEleIds(NetworkSubselType type)
+    {
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        for (int i = 0; i < subsel.size(); ++i)
+        {
+            NetworkSubselElement ele = subsel.get(i);
+            if (ele.getType() == type)
+            {
+                list.add(ele.getId());
+            }
+        }
+        return list;
+    }
+
+    public int getNumEles(NetworkSubselType type)
+    {
+        int count = 0;
+        for (int i = 0; i < subsel.size(); ++i)
+        {
+            NetworkSubselElement ele = subsel.get(i);
+            if (ele.getType() == type)
+            {
+                ++count;
+            }
+        }
+        return count;
+    }
     
     public void selectVertices(Collection<Integer> idList, Selection.Operator op)
     {
-        selVert.select(idList, op);
+        selectEles(idList, op, NetworkSubselType.VERTEX);
     }
     
     public boolean containsVertex(Integer curVertex)
     {
-        return selVert.isSelected(curVertex);
+        return containsEle(curVertex, NetworkSubselType.VERTEX);
     }
     
     public ArrayList<Integer> getVertexIds()
     {
-        return selVert.getSelection();
+        return getEleIds(NetworkSubselType.VERTEX);
+    }
+
+    public int getNumVertices()
+    {
+        return getNumEles(NetworkSubselType.VERTEX);
     }
 
 
     public void selectEdges(Collection<Integer> idList, Selection.Operator op)
     {
-        selEdge.select(idList, op);
+        selectEles(idList, op, NetworkSubselType.EDGE);
     }
     
     public boolean containsEdge(Integer curEdge)
     {
-        return selEdge.isSelected(curEdge);
+        return containsEle(curEdge, NetworkSubselType.EDGE);
     }
     
     public ArrayList<Integer> getEdgeIds()
     {
-        return selEdge.getSelection();
+        return getEleIds(NetworkSubselType.EDGE);
+    }
+
+    public int getNumEdges()
+    {
+        return getNumEles(NetworkSubselType.EDGE);
     }
 
 
     public void selectFaces(Collection<Integer> idList, Selection.Operator op)
     {
-        selFace.select(idList, op);
+        selectEles(idList, op, NetworkSubselType.FACE);
     }
     
     public boolean containsFace(Integer curEdge)
     {
-        return selFace.isSelected(curEdge);
+        return containsEle(curEdge, NetworkSubselType.FACE);
     }
     
     public ArrayList<Integer> getFaceIds()
     {
-        return selFace.getSelection();
+        return getEleIds(NetworkSubselType.FACE);
+    }
+
+    public int getNumFaces()
+    {
+        return getNumEles(NetworkSubselType.FACE);
     }
 
     
     public void selectKnots(Collection<Integer> idList, Selection.Operator op)
     {
-        selKnot.select(idList, op);
+        selectEles(idList, op, NetworkSubselType.KNOT);
     }
     
     public boolean containsKnot(Integer id)
     {
-        return selKnot.isSelected(id);
+        return containsEle(id, NetworkSubselType.KNOT);
     }
     
     public ArrayList<Integer> getKnotIds()
     {
-        return selKnot.getSelection();
+        return getEleIds(NetworkSubselType.KNOT);
     }
 
-    public int getNumVertices()
+    public int getNumKnots()
     {
-        return selVert.size();
-    }
-
-    public int getNumEdges()
-    {
-        return selEdge.size();
-    }
-
-    public int getNumFaces()
-    {
-        return selFace.size();
+        return getNumEles(NetworkSubselType.KNOT);
     }
 }

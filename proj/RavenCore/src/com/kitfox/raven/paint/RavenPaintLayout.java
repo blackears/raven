@@ -45,6 +45,11 @@ public class RavenPaintLayout
         this(CyMatrix4d.createIdentity());
     }
 
+    public RavenPaintLayout(RavenPaintLayout layout)
+    {
+        this(new CyMatrix4d(layout.p2l));
+    }
+
     public RavenPaintLayout(CyMatrix4d xform)
     {
         this.p2l = xform;
@@ -91,14 +96,23 @@ public class RavenPaintLayout
         
     }
 
+    /**
+     * Create a new paint layout with origin at 'center' and
+     * given X and Y basis vectors.
+     * 
+     * @param center Origin of paint
+     * @param basisX Vector along which X coords of the paint will be laid out
+     * @param basisY Vector along which Y coords of the paint will be laid out
+     * @return 
+     */
     public static RavenPaintLayout createTexture2D(
-            CyVector2d ptCenter, CyVector2d ptRadiusX, CyVector2d ptRadiusY)
+            CyVector2d center, CyVector2d basisX, CyVector2d basisY)
     {
         CyMatrix4d m = new CyMatrix4d(
-                ptRadiusX.x, ptRadiusX.y, 0, 0,
-                ptRadiusY.x, ptRadiusY.y, 0, 0,
+                basisX.x, basisX.y, 0, 0,
+                basisY.x, basisY.y, 0, 0,
                 0, 0, 1, 0,
-                ptCenter.x, ptCenter.y, 0, 1);
+                center.x, center.y, 0, 1);
         return new RavenPaintLayout(m);
     }
 
@@ -173,12 +187,12 @@ public class RavenPaintLayout
         center.set(p2l.m03, p2l.m13);
     }
 
-    public void getRadiusX(CyVector2d radiusX)
+    public void getBasisX(CyVector2d radiusX)
     {
         radiusX.set(p2l.m00, p2l.m10);
     }
 
-    public void getRadiusY(CyVector2d radiusY)
+    public void getBasisY(CyVector2d radiusY)
     {
         radiusY.set(p2l.m01, p2l.m11);
     }

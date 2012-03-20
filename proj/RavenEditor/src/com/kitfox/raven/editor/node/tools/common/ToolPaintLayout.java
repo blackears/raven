@@ -44,6 +44,7 @@ import java.util.Properties;
  *
  * @author kitfox
  */
+@Deprecated
 public class ToolPaintLayout extends ToolDisplay
 {
     ToolPaintLayout.Provider toolProvider;
@@ -331,7 +332,7 @@ public class ToolPaintLayout extends ToolDisplay
 //    }
 
 
-    @ServiceInst(service=ToolProvider.class)
+//    @ServiceInst(service=ToolProvider.class)
     static public class Provider extends ToolProvider<ToolPaintLayout>
     {
         public static final String PROP_STROKEMODE = "strokeMode";

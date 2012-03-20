@@ -28,6 +28,9 @@ import java.util.List;
  * Maintains an ordered list of selected objects.  Also keeps track of
  * a subselection for each selected object.
  * 
+ * The selection is an ordered list.  New items are appended to the end
+ * of the list, so the 'top' of the list is the final item.
+ * 
  * Subselection implemented as a hashmap that maps class objects to
  * instances of that object.  
  *
@@ -99,7 +102,7 @@ public class Selection<T>
     public T getTopSelected()
     {
         if (selection.isEmpty()) return null;
-        return selection.get(0);
+        return selection.get(selection.size() - 1);
     }
     
     /**
@@ -111,8 +114,9 @@ public class Selection<T>
      */
     public <R extends T> R getTopSelected(Class<R> filter)
     {
-        for (T node: selection)
+        for (int i = selection.size() - 1; i >= 0; --i)
         {
+            T node = selection.get(i);
             if (filter.isAssignableFrom(node.getClass()))
             {
                 return (R)node;

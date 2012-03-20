@@ -29,6 +29,7 @@ import java.util.ArrayList;
  *
  * @author kitfox
  */
+@Deprecated
 public class PaintLayoutManipulatorTexture extends PaintLayoutManipulator
 {
     RavenPaintLayout initLayout;
@@ -130,8 +131,8 @@ public class PaintLayoutManipulatorTexture extends PaintLayoutManipulator
         LayoutPoints(RavenPaintLayout layout)
         {
             layout.getCenter(ptOrigin);
-            layout.getRadiusX(ptBasisX);
-            layout.getRadiusY(ptBasisY);
+            layout.getBasisX(ptBasisX);
+            layout.getBasisY(ptBasisY);
   
             ptBasisX.add(ptOrigin);
             ptBasisY.add(ptOrigin);

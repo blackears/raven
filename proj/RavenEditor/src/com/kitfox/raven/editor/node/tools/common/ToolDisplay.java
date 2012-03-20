@@ -174,7 +174,7 @@ abstract public class ToolDisplay extends ToolDraggable
     protected CyMatrix4d getLocalToDevice(CyMatrix4d xform)
     {
         xform = getWorldToDevice(xform);
-        CyMatrix4d l2w = getLocalToWorld(xform);
+        CyMatrix4d l2w = getLocalToWorld(null);
         xform.mul(l2w);
         return xform;
     }
