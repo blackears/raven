@@ -49,6 +49,7 @@ public class ToolPaintLayoutMesh extends ToolPaintLayoutDelegate
 //    private MouseEvent mouseCur;
     
     NetworkMesh cacheMesh;
+    NetworkMesh meshDragStart;
     PaintLayoutManipulator cacheManip;
     NetworkMesh initMesh;
     RavenPaintLayout curLayout = new RavenPaintLayout();
@@ -212,6 +213,7 @@ public class ToolPaintLayoutMesh extends ToolPaintLayoutDelegate
         
         CyMatrix4d l2d = getLocalToDevice(null);
         
+        meshDragStart = servMesh.getNetworkMesh();
 //        mouseStart = evt;
         manipHandle = manip.getManipulatorHandle(evt, l2d);
     }
@@ -221,8 +223,7 @@ public class ToolPaintLayoutMesh extends ToolPaintLayoutDelegate
     {
         if (manipHandle != null)
         {
-            applyLayout(
-                    new RavenPaintLayout(manipHandle.getLayout()), false);
+            applyLayout(manipHandle.getLayout(), false);
             manipHandle.dragTo(evt.getX(), evt.getY());
         }
     }
@@ -233,8 +234,8 @@ public class ToolPaintLayoutMesh extends ToolPaintLayoutDelegate
         if (manipHandle != null)
         {
             manipHandle.dragTo(evt.getX(), evt.getY());
-            applyLayout(
-                    new RavenPaintLayout(manipHandle.getLayout()), true);
+            applyLayout(manipHandle.getLayout(), true);
+            meshDragStart = null;
             manipHandle = null;
             cacheManip = null;
         }
@@ -319,7 +320,17 @@ public class ToolPaintLayoutMesh extends ToolPaintLayoutDelegate
             }
         }
         
-        servMesh.setNetworkMesh(newMesh, history);
+        
+        if (history)
+        {
+            //Restore old mesh for undo history
+            servMesh.setNetworkMesh(meshDragStart, false);
+            servMesh.setNetworkMesh(newMesh, true);
+        }
+        else
+        {
+            servMesh.setNetworkMesh(newMesh, false);
+        }
     }
     
     private void showPopupMenu(MouseEvent evt)

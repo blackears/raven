@@ -102,7 +102,16 @@ public class MeshDragSetVertex extends MeshDragSet
 //        newMesh.removeEmptyVertices();
         cleanupFaces(newMesh);
         
-        servMesh.setNetworkMesh(newMesh, history);
+        if (history)
+        {
+            //Restore old mesh for undo history
+            servMesh.setNetworkMesh(oldMesh, false);
+            servMesh.setNetworkMesh(newMesh, true);
+        }
+        else
+        {
+            servMesh.setNetworkMesh(newMesh, false);
+        }
     }
 
     
