@@ -89,7 +89,8 @@ public class MovieCapture
         GLContext context = drawable.getContext();
         context.makeCurrent();
         
-        CyGLWrapperJOGL glWrap = new CyGLWrapperJOGL(drawable);
+        CyGLWrapperJOGL glWrap = new CyGLWrapperJOGL(
+                drawable.getGL().getGL2());
         
         drawgroup.render(glContext, glWrap, drawgroup);
 

@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package com.kitfox.raven.editor.node.tools.common.pen;
-
-import com.kitfox.coyote.math.CyMatrix4d;
-import com.kitfox.raven.editor.node.tools.ToolService;
-import com.kitfox.raven.shape.network.NetworkMesh;
+package com.kitfox.raven.editor.node.tools.common.shape.pen;
 
 /**
  *
  * @author kitfox
  */
-public interface ServiceBezierMesh extends ToolService
+@Deprecated
+public enum PenEditMode
 {
-    public NetworkMesh getNetworkMesh();
-    public void setNetworkMesh(NetworkMesh mesh, boolean history);
-    public CyMatrix4d getLocalToWorldTransform(CyMatrix4d xform);
-
-    public CyMatrix4d getGraphToWorldXform();
+    ADD, DELETE, EDIT
 }

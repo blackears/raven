@@ -47,6 +47,7 @@ import java.util.TimerTask;
  *
  * @author kitfox
  */
+@Deprecated
 abstract public class ToolSubselectBase extends ToolDisplay
         implements SelectionListener, ManipulatorListener
 {

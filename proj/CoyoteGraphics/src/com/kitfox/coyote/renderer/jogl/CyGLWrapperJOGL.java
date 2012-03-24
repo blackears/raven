@@ -28,7 +28,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
-import javax.media.opengl.GLAutoDrawable;
 
 /**
  *
@@ -36,13 +35,12 @@ import javax.media.opengl.GLAutoDrawable;
  */
 public class CyGLWrapperJOGL implements CyGLWrapper
 {
-    private final GLAutoDrawable drawable;
+//    private final GLAutoDrawable drawable;
     private final GL2 gl;
 
-    public CyGLWrapperJOGL(GLAutoDrawable drawable)
+    public CyGLWrapperJOGL(GL2 gl)
     {
-        this.drawable = drawable;
-        this.gl = drawable.getGL().getGL2();
+        this.gl = gl;
     }
 
     @Override
@@ -1034,7 +1032,7 @@ public class CyGLWrapperJOGL implements CyGLWrapper
     @Override
     public void glViewport(int x, int y, int width, int height)
     {
-        drawable.getGL().glViewport(x, y, 
+        gl.glViewport(x, y, 
                 Math.max(1, width),
                 Math.max(1, height));
     }
@@ -1927,14 +1925,6 @@ public class CyGLWrapperJOGL implements CyGLWrapper
             default:
                 throw new RuntimeException();
         }
-    }
-
-    /**
-     * @return the drawable
-     */
-    public GLAutoDrawable getDrawable()
-    {
-        return drawable;
     }
 
     /**

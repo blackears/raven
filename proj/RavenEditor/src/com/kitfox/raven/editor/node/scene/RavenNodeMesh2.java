@@ -27,7 +27,7 @@ import com.kitfox.coyote.shape.bezier.mesh.CutLoop;
 import com.kitfox.coyote.shape.bezier.mesh.CutSegHalf;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import com.kitfox.raven.editor.node.renderer.RavenRenderer;
-import com.kitfox.raven.editor.node.tools.common.pen.ServiceBezierMesh;
+import com.kitfox.raven.editor.node.tools.common.shape.pen.ServiceBezierMesh;
 import com.kitfox.raven.editor.node.tools.common.shape.ServiceShapeManip;
 import com.kitfox.raven.paint.RavenPaint;
 import com.kitfox.raven.paint.RavenPaintLayout;
@@ -279,6 +279,11 @@ public class RavenNodeMesh2 extends RavenNodeXformable
             for (CutSegHalf half: loop.getSegs())
             {
                 BezierMeshEdge2i<NetworkDataEdge> bezEdge = half.getEdge();
+                if (bezEdge == null)
+                {
+                    //Is auto-inserted island connecting segment
+                    continue;
+                }
                 NetworkDataEdge data = bezEdge.getData();
 
                 if (half.isRight())

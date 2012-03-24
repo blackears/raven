@@ -54,17 +54,47 @@
     <p><a href="../../coyoteGraphics/index.html">Coyote Graphics</a></p>
     <p><a href="../../ravenDocking/index.html">Raven Docking</a></p>
     <p><a href="../../ravenServices/index.html">Raven Services</a></p>
+    
+<!--Twitter widget-->    
+<script charset="utf-8" src="http://widgets.twimg.com/j/2/widget.js"></script>
+<script>
+new TWTR.Widget({
+  version: 2,
+  type: 'profile',
+  rpp: 4,
+  interval: 30000,
+  width: 250,
+  height: 300,
+  theme: {
+    shell: {
+      background: '#333333',
+      color: '#ffffff'
+    },
+    tweets: {
+      background: '#000000',
+      color: '#ffffff',
+      links: '#4aed05'
+    }
+  },
+  features: {
+    scrollbar: false,
+    loop: false,
+    live: false,
+    behavior: 'all'
+  }
+}).render().setUser('blackears').start();
+</script>    
   <!-- end #sidebar1 --></div>
   <div id="mainContent"><!-- InstanceBeginEditable name="pageContent" -->
               <h1>Raven Studio</h1>
 
-			<p class="note">Windows users running Java 7: see note below</p>
+			<p class="note">AVG AntiVirus users: see note below</p>
              <p align="center"><a href="RavenStudio.jnlp"><img src="ravenStudioTitle.png" width="482" height="330" alt="Run Raven Studio" /></a></p>
              <p align="center"><a href="RavenStudio.jnlp">Launch Raven Studio</a></p>
              <p align="center">&nbsp;</p>
              
-             <p>There's a bug in Java 7 that prevents Webstart from running properly.  If you're having trouble running Raven Studio from the above
-             link, you may want to <a href="../../downloads.html">install the stand-alone version</a>.  Downgrading to Java 6 should also work.</p>
+             <p>AVG VirusGuard prevents Webstart from running properly.  If you're using AVG and finding that your
+             download stops part way through, you may want to <a href="../../downloads.html">install the stand-alone version</a> instead.</p>
              
     <p style="font-size:small">Here is the <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=7115184">bug report</a> I filed with Oracle on this issue.</p>
 <!-- InstanceEndEditable -->

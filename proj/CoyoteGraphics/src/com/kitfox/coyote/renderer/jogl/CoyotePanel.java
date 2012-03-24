@@ -24,25 +24,14 @@ package com.kitfox.coyote.renderer.jogl;
 import com.jogamp.opengl.util.Animator;
 import com.kitfox.coyote.drawRecord.CyDrawGroupZOrder;
 import com.kitfox.coyote.math.CyMatrix4d;
-import com.kitfox.coyote.renderer.CyDrawStack;
-import com.kitfox.coyote.renderer.CyFramebuffer;
-import com.kitfox.coyote.renderer.CyFramebufferRenderbuffer;
-import com.kitfox.coyote.renderer.CyFramebufferTexture;
-import com.kitfox.coyote.renderer.CyRendererListener;
-import com.kitfox.coyote.renderer.CyRendererUtil2D;
-import com.kitfox.coyote.renderer.CyGLContext;
+import com.kitfox.coyote.renderer.*;
 import com.kitfox.coyote.renderer.CyGLWrapper.Attachment;
 import com.kitfox.coyote.renderer.CyGLWrapper.DataType;
 import com.kitfox.coyote.renderer.CyGLWrapper.InternalFormatBuf;
 import com.kitfox.coyote.renderer.CyGLWrapper.InternalFormatTex;
 import com.kitfox.coyote.renderer.CyGLWrapper.TexTarget;
 import java.util.ArrayList;
-import javax.media.opengl.DebugGL2;
-import javax.media.opengl.GL;
-import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLCapabilities;
-import javax.media.opengl.GLEventListener;
-import javax.media.opengl.GLProfile;
+import javax.media.opengl.*;
 import javax.media.opengl.awt.GLJPanel;
 
 /**
@@ -143,6 +132,21 @@ public class CoyotePanel extends GLJPanel
         depthBuf = null;
     }
 
+    public CyGLOffscreenContext createOffscreenGLContext()
+    {
+        CyGLOffscreenContext ctx = 
+                new CyGLOffscreenContextJOGL(
+                getContext(), getGL().getGL2(), glContext);
+        
+        //drawable.getGL().getGL2()
+//        GLContext context = getContext();
+//        context.makeCurrent();
+//        
+//        GL gl = getGL();
+//        return new CyGLWrapperJOGL(gl.getGL2());
+        return ctx;
+    }
+
     @Override
     public void init(GLAutoDrawable drawable)
     {
@@ -176,7 +180,7 @@ public class CoyotePanel extends GLJPanel
 
         animator.start();
     }
-
+    
     @Override
     public void display(GLAutoDrawable drawable)
     {
@@ -184,12 +188,13 @@ public class CoyotePanel extends GLJPanel
 
 //        drawable.getContext().
 //        GLWrapperJOGL gl = new GLWrapperJOGL(drawable, surfaceInstance);
-        CyGLWrapperJOGL gl = new CyGLWrapperJOGL(drawable);
+        CyGLWrapperJOGL gl = new CyGLWrapperJOGL(
+                drawable.getGL().getGL2());
         //GLActionQueue.inst().processActions(gl);
         glContext.processActions(gl);
 
         ++curPass;
-        long curTime = System.currentTimeMillis();
+//        long curTime = System.currentTimeMillis();
 
         //Write everything to tile
         CyDrawGroupZOrder drawGroup = new CyDrawGroupZOrder();
@@ -214,6 +219,12 @@ public class CoyotePanel extends GLJPanel
             }
             tileBuffer.bind(glContext, gl);
 //            System.err.println("FBO!");
+        }
+        else
+        {
+            //Remove any framebuffer that may currently be bound
+            gl.glBindFramebuffer(0);
+            gl.glViewport(0, 0, deviceWidth, deviceHeight);
         }
 
 

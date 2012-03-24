@@ -16,6 +16,7 @@
 
 package com.kitfox.raven.editor.node.tools.common;
 
+import com.kitfox.coyote.renderer.CyGLOffscreenContext;
 import com.kitfox.raven.editor.node.tools.ToolService;
 import java.awt.Component;
 import java.awt.Rectangle;
@@ -27,6 +28,6 @@ import java.awt.Rectangle;
 public interface ServiceDevice extends ToolService
 {
     public void getDeviceBounds(Rectangle bounds);
-
     public Component getComponent();
+    public CyGLOffscreenContext createOffscreenGLContext();
 }

@@ -18,7 +18,7 @@ package com.kitfox.raven.editor.node.tools.common.shape.curveEdit;
 
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.math.CyVector2d;
-import com.kitfox.raven.editor.node.tools.common.pen.ServiceBezierMesh;
+import com.kitfox.raven.editor.node.tools.common.shape.pen.ServiceBezierMesh;
 import com.kitfox.raven.shape.network.NetworkMesh;
 import com.kitfox.raven.shape.network.pick.NetworkMeshHandles;
 import com.kitfox.raven.shape.network.pick.NetworkMeshHandles.HandleFace;

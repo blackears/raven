@@ -24,7 +24,7 @@ import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.coyote.shape.bezier.mesh.BezierVertexSmooth;
 import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
 import com.kitfox.raven.editor.node.scene.RenderContext;
-import com.kitfox.raven.editor.node.tools.common.pen.ServiceBezierMesh;
+import com.kitfox.raven.editor.node.tools.common.shape.pen.ServiceBezierMesh;
 import com.kitfox.raven.shape.network.NetworkMesh;
 import com.kitfox.raven.shape.network.pick.*;
 import com.kitfox.raven.shape.network.pick.NetworkMeshHandles.HandleEdge;

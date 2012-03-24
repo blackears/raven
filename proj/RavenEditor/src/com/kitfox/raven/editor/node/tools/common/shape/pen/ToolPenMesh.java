@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.kitfox.raven.editor.node.tools.common.pen;
+package com.kitfox.raven.editor.node.tools.common.shape.pen;
 
 import com.kitfox.coyote.material.color.CyMaterialColorDrawRecord;
 import com.kitfox.coyote.material.color.CyMaterialColorDrawRecordFactory;

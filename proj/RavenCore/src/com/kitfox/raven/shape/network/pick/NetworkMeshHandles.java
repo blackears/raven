@@ -833,6 +833,13 @@ public class NetworkMeshHandles
             {
                 BezierMeshEdge2i<NetworkDataEdge> e
                         = (BezierMeshEdge2i<NetworkDataEdge>)half.getEdge();
+                if (e == null)
+                {
+                    //This is an automatically inserted segment which connects 
+                    // two parts of the graph that would otherwise be separate
+                    // islands
+                    continue;
+                }
                 minIndex = Math.min(minIndex, e.getId() * 2 
                         + (half.isRight() ? 1 : 0));
             }
@@ -843,6 +850,10 @@ public class NetworkMeshHandles
             {
                 BezierMeshEdge2i<NetworkDataEdge> e
                         = (BezierMeshEdge2i<NetworkDataEdge>)half.getEdge();
+                if (e == null)
+                {
+                    continue;
+                }
                 NetworkDataEdge data = e.getData();
                 
                 if (data == null)
@@ -917,6 +928,10 @@ public class NetworkMeshHandles
                 for (CutSegHalf seg: loop.getSegs())
                 {
                     BezierMeshEdge2i e = seg.getEdge();
+                    if (e == null)
+                    {
+                        continue;
+                    }
                     NetworkDataEdge data = (NetworkDataEdge)e.getData();
 
                     if (data != null && curPaint == null)
@@ -947,6 +962,10 @@ public class NetworkMeshHandles
             for (CutSegHalf seg: loop.getSegs())
             {
                 BezierMeshEdge2i e = seg.getEdge();
+                if (e == null)
+                {
+                    continue;
+                }
                 NetworkDataEdge data = (NetworkDataEdge)e.getData();
                 
                 if (data == null)
@@ -974,6 +993,10 @@ public class NetworkMeshHandles
             for (CutSegHalf seg: loop.getSegs())
             {
                 BezierMeshEdge2i e = seg.getEdge();
+                if (e == null)
+                {
+                    continue;
+                }
                 NetworkDataEdge data = (NetworkDataEdge)e.getData();
                 
                 if (data == null)
@@ -1000,6 +1023,10 @@ public class NetworkMeshHandles
             for (CutSegHalf seg: loop.getSegs())
             {
                 BezierMeshEdge2i e = seg.getEdge();
+                if (e == null)
+                {
+                    continue;
+                }
                 NetworkDataEdge data = (NetworkDataEdge)e.getData();
                 
                 if (seg.isRight())

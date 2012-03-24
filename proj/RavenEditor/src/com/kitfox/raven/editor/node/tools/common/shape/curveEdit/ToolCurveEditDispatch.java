@@ -20,7 +20,7 @@ import com.kitfox.raven.editor.node.scene.RenderContext;
 import com.kitfox.raven.editor.node.tools.ToolUser;
 import com.kitfox.raven.editor.node.tools.common.ServiceDocument;
 import com.kitfox.raven.editor.node.tools.common.ToolDisplay;
-import com.kitfox.raven.editor.node.tools.common.pen.ServiceBezierMesh;
+import com.kitfox.raven.editor.node.tools.common.shape.pen.ServiceBezierMesh;
 import com.kitfox.raven.util.Selection;
 import com.kitfox.raven.util.tree.NodeObject;
 import java.awt.event.KeyEvent;

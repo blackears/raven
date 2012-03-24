@@ -31,6 +31,7 @@ import java.awt.geom.AffineTransform;
  *
  * @author kitfox
  */
+@Deprecated
 public class ToolSubselectSettings extends javax.swing.JPanel
 {
     RavenEditor editor;

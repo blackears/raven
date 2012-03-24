@@ -349,4 +349,19 @@ public class Math2DUtil
     {
         return val <= min ? min : (val >= max ? max : val);
     }
+    
+    public static int square(int value)
+    {
+        return value * value;
+    }
+    
+    public static float square(float value)
+    {
+        return value * value;
+    }
+    
+    public static double square(double value)
+    {
+        return value * value;
+    }
 }

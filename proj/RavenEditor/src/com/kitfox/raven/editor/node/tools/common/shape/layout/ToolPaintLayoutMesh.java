@@ -21,7 +21,7 @@ import com.kitfox.coyote.renderer.CyDrawStack;
 import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
 import com.kitfox.raven.editor.node.scene.RenderContext;
-import com.kitfox.raven.editor.node.tools.common.pen.ServiceBezierMesh;
+import com.kitfox.raven.editor.node.tools.common.shape.pen.ServiceBezierMesh;
 import com.kitfox.raven.editor.node.tools.common.shape.MeshUtil;
 import com.kitfox.raven.paint.RavenPaintLayout;
 import com.kitfox.raven.shape.network.NetworkMesh;

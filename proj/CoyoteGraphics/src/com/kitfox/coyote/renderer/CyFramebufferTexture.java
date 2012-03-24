@@ -48,8 +48,6 @@ public class CyFramebufferTexture extends CyFramebufferAttachment
     private final int height;
 
     int dirty;
-//    int id;
-//    int surfInst;
 
     public CyFramebufferTexture(Attachment attcahment,
             TexTarget target, InternalFormatTex format, DataType dataType,
@@ -118,55 +116,7 @@ public class CyFramebufferTexture extends CyFramebufferAttachment
         gl.glTexImage2D(target,
                 0, format, width, height,
                 dataType, null);
-
-//        gl.glFramebufferTexture2D(attachment, target, id, 0);
     }
-
-//    private void init(GLWrapper gl)
-//    {
-//        surfInst = gl.getSurfaceInstanceNumber();
-//
-////System.err.println("Init CyFramebufferTexture");
-//        IntBuffer ibuf = BufferUtil.allocateInt(1);
-//        gl.glGenTextures(1, ibuf);
-//        id = ibuf.get(0);
-//
-//        gl.glBindTexture(target, id);
-//        gl.glTexParameter(target,
-//                TexParamName.GL_TEXTURE_MIN_FILTER, TexParam.GL_LINEAR);
-//        gl.glTexParameter(target,
-//                TexParamName.GL_TEXTURE_MAG_FILTER, TexParam.GL_LINEAR);
-//        gl.glTexParameter(target,
-//                TexParamName.GL_TEXTURE_WRAP_S, TexParam.GL_CLAMP_TO_EDGE);
-//        gl.glTexParameter(target,
-//                TexParamName.GL_TEXTURE_WRAP_T, TexParam.GL_CLAMP_TO_EDGE);
-//        gl.glGenerateMipmap(target);
-//
-//        switch (target)
-//        {
-//            case GL_TEXTURE_2D:
-//            {
-//                initTex(gl, TexSubTarget.GL_TEXTURE_2D);
-//                setFramebufferTexture(gl, TexSubTarget.GL_TEXTURE_2D);
-//                break;
-//            }
-//            case GL_TEXTURE_CUBE_MAP:
-//            {
-//                initTex(gl, TexSubTarget.GL_TEXTURE_CUBE_MAP_NEGATIVE_X);
-//                initTex(gl, TexSubTarget.GL_TEXTURE_CUBE_MAP_NEGATIVE_Y);
-//                initTex(gl, TexSubTarget.GL_TEXTURE_CUBE_MAP_NEGATIVE_Z);
-//                initTex(gl, TexSubTarget.GL_TEXTURE_CUBE_MAP_POSITIVE_X);
-//                initTex(gl, TexSubTarget.GL_TEXTURE_CUBE_MAP_POSITIVE_Y);
-//                initTex(gl, TexSubTarget.GL_TEXTURE_CUBE_MAP_POSITIVE_Z);
-//
-//                //Just pick one to start with.  User will need to
-//                // manually switch this to cover entire cube
-//                setFramebufferTexture(gl, TexSubTarget.GL_TEXTURE_CUBE_MAP_NEGATIVE_X);
-//                break;
-//            }
-//        }
-//
-//    }
 
     @Override
     public void bind(CyGLContext ctx, CyGLWrapper gl)
@@ -192,7 +142,8 @@ public class CyFramebufferTexture extends CyFramebufferAttachment
                 case GL_TEXTURE_2D:
                 {
                     initTex(gl, TexSubTarget.GL_TEXTURE_2D);
-                    setFramebufferTexture(gl, TexSubTarget.GL_TEXTURE_2D, texId);
+                    setFramebufferTexture(gl, 
+                            TexSubTarget.GL_TEXTURE_2D, texId);
                     break;
                 }
                 case GL_TEXTURE_CUBE_MAP:
@@ -206,7 +157,8 @@ public class CyFramebufferTexture extends CyFramebufferAttachment
 
                     //Just pick one to start with.  User will need to
                     // manually switch this to cover entire cube
-                    setFramebufferTexture(gl, TexSubTarget.GL_TEXTURE_CUBE_MAP_NEGATIVE_X, texId);
+                    setFramebufferTexture(gl, 
+                            TexSubTarget.GL_TEXTURE_CUBE_MAP_NEGATIVE_X, texId);
                     break;
                 }
             }
@@ -214,26 +166,7 @@ public class CyFramebufferTexture extends CyFramebufferAttachment
 
             info.setDirty(dirty);
         }
-
-
-
-
-
-//        if (id == 0 || gl.getSurfaceInstanceNumber() != surfInst)
-//        {
-//            init(gl);
-//        }
-//        else
-//        {
-//            gl.glBindTexture(target, id);
-//        }
     }
-
-//    public void dispose()
-//    {
-//        GLActionQueue.inst().postAction(new Dispose(id));
-//        id = 0;
-//    }
 
     public void dumpTexture(CyGLWrapper gl, File file, String fileFormat)
     {

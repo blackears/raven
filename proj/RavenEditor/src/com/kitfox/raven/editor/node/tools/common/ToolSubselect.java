@@ -62,6 +62,7 @@ import java.util.logging.Logger;
  *
  * @author kitfox
  */
+@Deprecated
 public class ToolSubselect extends ToolSubselectBase
 {
     ManipSub manipulator;
@@ -763,7 +764,7 @@ public class ToolSubselect extends ToolSubselectBase
         }
     }
 
-    @ServiceInst(service=ToolProvider.class)
+//    @ServiceInst(service=ToolProvider.class)
     static public class Provider extends ToolProvider<ToolSubselect>
     {
         public Provider()

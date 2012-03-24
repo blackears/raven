@@ -67,6 +67,50 @@ public class PropertiesData
     {
         properties.setProperty(name, "" + value);
     }
+    
+    public float getFloat(String name, float defaultValue)
+    {
+        String value = properties.getProperty(name);
+        if (value == null || "".equals(value))
+        {
+            return defaultValue;
+        }
+        try
+        {
+            return Float.parseFloat(value);
+        }
+        catch (NumberFormatException ex)
+        {
+            return defaultValue;
+        }
+    }
+    
+    public void setFloat(String name, float value)
+    {
+        properties.setProperty(name, "" + value);
+    }
+    
+    public double getDouble(String name, double defaultValue)
+    {
+        String value = properties.getProperty(name);
+        if (value == null || "".equals(value))
+        {
+            return defaultValue;
+        }
+        try
+        {
+            return Double.parseDouble(value);
+        }
+        catch (NumberFormatException ex)
+        {
+            return defaultValue;
+        }
+    }
+    
+    public void setDouble(String name, double value)
+    {
+        properties.setProperty(name, "" + value);
+    }
 
     public <T extends Enum> T getEnum(String name, T defaultValue)
     {

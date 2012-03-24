@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.kitfox.raven.editor.node.tools.common.pen;
+package com.kitfox.raven.editor.node.tools.common.shape.pen;
 
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.node.scene.control.ColorPanel;

@@ -33,13 +33,13 @@ public class CutSegHalf
     
     private CutSegHalf peer;
 
-    public CutSegHalf(double t0, double t1, Coord c0, Coord c1, BezierMeshEdge2i data, boolean right)
+    public CutSegHalf(double t0, double t1, Coord c0, Coord c1, BezierMeshEdge2i edge, boolean right)
     {
         this.t0 = t0;
         this.t1 = t1;
         this.c0 = c0;
         this.c1 = c1;
-        this.edge = data;
+        this.edge = edge;
         this.right = right;
     }
     

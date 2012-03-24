@@ -25,6 +25,7 @@ import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.renderer.CyDrawStack;
 import com.kitfox.coyote.renderer.CyRendererListener;
 import com.kitfox.coyote.renderer.jogl.CoyotePanel;
+import com.kitfox.coyote.renderer.jogl.CyGLWrapperJOGL;
 import com.kitfox.raven.editor.RavenDocument;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.RavenEditorListener;
@@ -340,6 +341,12 @@ public class DisplayCyPanel extends CoyotePanel
             tool.render(ctx);
         }
     }
+
+//    @Override
+//    public CyGLWrapperJOGL createOffscreenGL()
+//    {
+//        return super.createOffscreenGL();
+//    }
 
     @Override
     protected void paintComponent(Graphics g)

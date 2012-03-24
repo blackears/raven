@@ -23,7 +23,7 @@ import com.kitfox.coyote.shape.bezier.BezierCubic2i;
 import com.kitfox.coyote.shape.bezier.BezierCurve2i;
 import com.kitfox.coyote.shape.bezier.mesh.BezierVertexSmooth;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
-import com.kitfox.raven.editor.node.tools.common.pen.ServiceBezierMesh;
+import com.kitfox.raven.editor.node.tools.common.shape.pen.ServiceBezierMesh;
 import com.kitfox.raven.shape.network.NetworkDataEdge;
 import com.kitfox.raven.shape.network.NetworkMesh;
 import com.kitfox.raven.shape.network.pick.NetworkHandleEdge;

@@ -45,6 +45,37 @@
     <p><a href="download.html">Download</a></p>
     <p><a href="../docs/api/RavenService">API Documentation</a></p>
     <p><a href="../index.html">Raven Studio</a></p>
+
+<!--Twitter widget-->    
+<script charset="utf-8" src="http://widgets.twimg.com/j/2/widget.js"></script>
+<script>
+new TWTR.Widget({
+  version: 2,
+  type: 'profile',
+  rpp: 4,
+  interval: 30000,
+  width: 250,
+  height: 300,
+  theme: {
+    shell: {
+      background: '#333333',
+      color: '#ffffff'
+    },
+    tweets: {
+      background: '#000000',
+      color: '#ffffff',
+      links: '#4aed05'
+    }
+  },
+  features: {
+    scrollbar: false,
+    loop: false,
+    live: false,
+    behavior: 'all'
+  }
+}).render().setUser('blackears').start();
+</script>      
+
     <!-- end #sidebar1 -->
   </div>
   <div id="mainContent"> <!-- InstanceBeginEditable name="mainText" -->
