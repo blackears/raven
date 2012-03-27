@@ -227,10 +227,20 @@ public class RavenNodeRoot extends NodeDocument
             new ChildWrapperSingle(
             this, CHILD_STROKELIBRARY, RavenNodeStrokeLibrary.class);
 
+//    public static final String CHILD_SCENEGRAPH = "sceneGraph";
+//    public final ChildWrapperList<RavenNodeRoot, RavenNodeXformable> sceneGraph =
+//            new ChildWrapperList(
+//            this, CHILD_SCENEGRAPH, RavenNodeXformable.class);
+//
+    public static final String CHILD_COMPOSITION_LIBRARY = "compositionLibrary";
+    public final ChildWrapperSingle<RavenNodeRoot, RavenNodeCompositionLibrary> compositionLibrary =
+            new ChildWrapperSingle(
+            this, CHILD_COMPOSITION_LIBRARY, RavenNodeCompositionLibrary.class);
+//
     public static final String CHILD_SCENEGRAPH = "sceneGraph";
-    public final ChildWrapperList<RavenNodeRoot, RavenNodeXformable> sceneGraph =
-            new ChildWrapperList(
-            this, CHILD_SCENEGRAPH, RavenNodeXformable.class);
+    public final ChildWrapperSingle<RavenNodeRoot, RavenNodeSceneGraph> sceneGraph =
+            new ChildWrapperSingle(
+            this, CHILD_SCENEGRAPH, RavenNodeSceneGraph.class);
 
     AffineTransform viewXform = new AffineTransform();
 
@@ -365,85 +375,99 @@ public class RavenNodeRoot extends NodeDocument
         
         ctx.getDrawStack().addDrawRecord(rec);
     }
+
+    @Override
+    public RavenNodeCompositionLibrary getCompositionLibrary()
+    {
+        return compositionLibrary.getChild();
+    }
+
+    @Override
+    public ArrayList<RavenNodeCamera> getCameras()
+    {
+        ArrayList<RavenNodeCamera> cams = getNodes(RavenNodeCamera.class);
+        return cams;
+    }
     
-    @Override
-    public void renderCamerasAll(RenderContext ctx)
-    {
-        CyDrawStack rend = ctx.getDrawStack();
-        FrameKey frame = ctx.getFrame();
-
-        //Find cameras to draw
-        ArrayList<RavenNodeCamera> cams = getNodes(RavenNodeCamera.class);
-
-        class Comp implements Comparator<RavenNodeCamera>
-        {
-            @Override
-            public int compare(RavenNodeCamera o1, RavenNodeCamera o2)
-            {
-                return o1.getCameraOrder() - o2.getCameraOrder();
-            }
-        }
-
-        Collections.sort(cams, new Comp());
-
-        RavenPaintColor col = background.getValue();
-        CyRendererUtil2D.clear(rend, col.r, col.g, col.b, col.a);
-
-        int devW = rend.getDeviceWidth();
-        int devH = rend.getDeviceHeight();
-
-        //Draw cameras
-        CyMatrix4d mat = new CyMatrix4d();
-//        AffineTransform l2w = new AffineTransform();
-        for (int i = 0; i < cams.size(); ++i)
-        {
-            RavenNodeCamera camera = cams.get(i);
-            if (!camera.isVisible(frame))
-            {
-                continue;
-            }
-
-            float opacity = camera.getOpacity(frame);
-            rend.setOpacity(opacity);
-            if (opacity == 0)
-            {
-                continue;
-            }
-
-            double vx = camera.getViewportX();
-            double vy = camera.getViewportY();
-            double vw = camera.getViewportWidth();
-            double vh = camera.getViewportHeight();
-
-            rend.addDrawRecord(new CyDrawRecordViewport(
-                    (int)(vx * devW), (int)(vy * devH),
-                    (int)(vw * devW), (int)(vh * devH)
-                    ));
-
-            double cw = camera.getWidth();
-            double ch = camera.getHeight();
-            mat.gluOrtho2D(-cw / 2, cw / 2, ch / 2, -ch / 2);
-            rend.setProjXform(mat);
-
-            camera.getLocalToWorldTransform(mat);
-            mat.invert();
-            rend.setViewXform(mat);
-
-            //Render scene graph
-            for (int j = 0; j < sceneGraph.size(); ++j)
-            {
-                sceneGraph.get(j).render(ctx);
-            }
-        }
-    }
-
-    @Override
-    public int getNumCameras()
-    {
-        ArrayList<RavenNodeCamera> cams = getNodes(RavenNodeCamera.class);
-        return cams.size();
-    }
-
+    
+//    @Override
+//    public void renderCamerasAll(RenderContext ctx)
+//    {
+//        CyDrawStack rend = ctx.getDrawStack();
+//        FrameKey frame = ctx.getFrame();
+//
+//        //Find cameras to draw
+//        ArrayList<RavenNodeCamera> cams = getNodes(RavenNodeCamera.class);
+//
+//        class Comp implements Comparator<RavenNodeCamera>
+//        {
+//            @Override
+//            public int compare(RavenNodeCamera o1, RavenNodeCamera o2)
+//            {
+//                return o1.getCameraOrder() - o2.getCameraOrder();
+//            }
+//        }
+//
+//        Collections.sort(cams, new Comp());
+//
+//        RavenPaintColor col = background.getValue();
+//        CyRendererUtil2D.clear(rend, col.r, col.g, col.b, col.a);
+//
+//        int devW = rend.getDeviceWidth();
+//        int devH = rend.getDeviceHeight();
+//
+//        //Draw cameras
+//        CyMatrix4d mat = new CyMatrix4d();
+////        AffineTransform l2w = new AffineTransform();
+//        for (int i = 0; i < cams.size(); ++i)
+//        {
+//            RavenNodeCamera camera = cams.get(i);
+//            if (!camera.isVisible(frame))
+//            {
+//                continue;
+//            }
+//
+//            float opacity = camera.getOpacity(frame);
+//            rend.setOpacity(opacity);
+//            if (opacity == 0)
+//            {
+//                continue;
+//            }
+//
+//            double vx = camera.getViewportX();
+//            double vy = camera.getViewportY();
+//            double vw = camera.getViewportWidth();
+//            double vh = camera.getViewportHeight();
+//
+//            rend.addDrawRecord(new CyDrawRecordViewport(
+//                    (int)(vx * devW), (int)(vy * devH),
+//                    (int)(vw * devW), (int)(vh * devH)
+//                    ));
+//
+//            double cw = camera.getWidth();
+//            double ch = camera.getHeight();
+//            mat.gluOrtho2D(-cw / 2, cw / 2, ch / 2, -ch / 2);
+//            rend.setProjXform(mat);
+//
+//            camera.getLocalToWorldTransform(mat);
+//            mat.invert();
+//            rend.setViewXform(mat);
+//
+//            //Render scene graph
+//            for (int j = 0; j < sceneGraph.size(); ++j)
+//            {
+//                sceneGraph.get(j).render(ctx);
+//            }
+//        }
+//    }
+//
+//    @Override
+//    public int getNumCameras()
+//    {
+//        ArrayList<RavenNodeCamera> cams = getNodes(RavenNodeCamera.class);
+//        return cams.size();
+//    }
+//
 //    @Deprecated
 //    @Override
 //    public void render(RavenRenderer renderer)
@@ -559,26 +583,32 @@ public class RavenNodeRoot extends NodeDocument
     @Override
     public NodeObject pickObject(CyRectangle2d rectangle, CyMatrix4d worldToPick, Intersection intersection)
     {
-        for (int i = 0; i < sceneGraph.size(); ++i)
-        {
-            RavenNodeXformable child = sceneGraph.get(i);
-            NodeObject node = child.pickObject(rectangle, worldToPick, intersection);
-            if (node != null)
-            {
-                return node;
-            }
-        }
-        return null;
+        RavenNodeSceneGraph sg = sceneGraph.getChild();
+        return sg.pickObject(rectangle, worldToPick, intersection);
+        
+//        for (int i = 0; i < sceneGraph.size(); ++i)
+//        {
+//            RavenNodeXformable child = sceneGraph.get(i);
+//            NodeObject node = child.pickObject(rectangle, worldToPick, intersection);
+//            if (node != null)
+//            {
+//                return node;
+//            }
+//        }
+//        return null;
     }
 
     @Override
     public void pickObjects(CyRectangle2d rectangle, CyMatrix4d worldToPick, Intersection intersection, ArrayList<NodeObject> pickList)
     {
-        for (int i = 0; i < sceneGraph.size(); ++i)
-        {
-            RavenNodeXformable child = sceneGraph.get(i);
-            child.pickObjects(rectangle, worldToPick, intersection, pickList);
-        }
+        RavenNodeSceneGraph sg = sceneGraph.getChild();
+        sg.pickObjects(rectangle, worldToPick, intersection, pickList);
+        
+//        for (int i = 0; i < sceneGraph.size(); ++i)
+//        {
+//            RavenNodeXformable child = sceneGraph.get(i);
+//            child.pickObjects(rectangle, worldToPick, intersection, pickList);
+//        }
     }
 
     @Override
@@ -739,6 +769,16 @@ public class RavenNodeRoot extends NodeDocument
     public RavenStroke getStrokeShape()
     {
         return strokeShape.getValue();
+    }
+
+    public ArrayList<RavenNodeXformable> getSceneGraphChildren()
+    {
+        return sceneGraph.getChild().getChildren();
+    }
+
+    public RavenNodeSceneGraph getSceneGraph()
+    {
+        return sceneGraph.getChild();
     }
     
     //-----------------------------------------------

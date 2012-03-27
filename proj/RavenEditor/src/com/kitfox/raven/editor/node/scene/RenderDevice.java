@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package com.kitfox.coyote.renderer;
+package com.kitfox.raven.editor.node.scene;
+
+import javax.swing.Icon;
 
 /**
  *
  * @author kitfox
  */
-public interface CyGLOffscreenContext
+public interface RenderDevice
 {
-    public CyGLWrapper getGL();
-    public CyGLContext getGLContext();
-    public void dispose();    
+    public String getName();
+
+    public void renderComposition(RenderContext context);
+
+    public Icon getIcon();
 }

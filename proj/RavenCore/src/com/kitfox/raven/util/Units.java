@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package com.kitfox.coyote.renderer;
+package com.kitfox.raven.util;
 
 /**
  *
  * @author kitfox
  */
-public interface CyGLOffscreenContext
+public enum Units
 {
-    public CyGLWrapper getGL();
-    public CyGLContext getGLContext();
-    public void dispose();    
+    PIXELS,
+    CENTIMETERS,
+    INCHES
 }

@@ -18,6 +18,7 @@ package com.kitfox.raven.editor.node.tools.common.text;
 
 import com.kitfox.raven.editor.node.scene.RavenNodeGroup;
 import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenNodeSceneGraph;
 import com.kitfox.raven.editor.node.scene.RavenNodeText;
 import com.kitfox.raven.paint.RavenPaint;
 import com.kitfox.raven.paint.RavenPaintLayout;
@@ -272,9 +273,10 @@ public class TextManipulator
             node.transX.setValue((float)localToParentXlate.x);
             node.transY.setValue((float)localToParentXlate.y);
 
+            RavenNodeSceneGraph sceneGraph = root.getSceneGraph();
             if (parent == null)
             {
-                root.sceneGraph.add(node);
+                sceneGraph.add(node);
             }
             else
             {
@@ -284,7 +286,7 @@ public class TextManipulator
                 }
                 else
                 {
-                    root.sceneGraph.add(node);
+                    sceneGraph.add(node);
                 }
             }
         }

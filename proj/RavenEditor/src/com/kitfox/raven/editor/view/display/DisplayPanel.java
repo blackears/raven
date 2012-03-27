@@ -23,6 +23,7 @@
 package com.kitfox.raven.editor.view.display;
 
 import com.kitfox.coyote.math.CyMatrix4d;
+import com.kitfox.coyote.renderer.CyGLOffscreenContext;
 import com.kitfox.coyote.renderer.CyGLWrapper;
 import com.kitfox.game.control.color.UnderlayPaint;
 import com.kitfox.raven.editor.RavenDocument;
@@ -396,7 +397,7 @@ public class DisplayPanel extends javax.swing.JPanel
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public CyGLWrapper createOffscreenGL()
+    public CyGLOffscreenContext createOffscreenGLContext()
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }

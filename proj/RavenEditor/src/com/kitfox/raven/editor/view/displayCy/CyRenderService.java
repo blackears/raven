@@ -16,7 +16,10 @@
 
 package com.kitfox.raven.editor.view.displayCy;
 
+import com.kitfox.raven.editor.node.scene.RavenNodeCamera;
+import com.kitfox.raven.editor.node.scene.RavenNodeCompositionLibrary;
 import com.kitfox.raven.editor.node.scene.RenderContext;
+import java.util.ArrayList;
 
 /**
  *
@@ -31,15 +34,18 @@ public interface CyRenderService
      */
     public void renderEditor(RenderContext ctx);
 
-    /**
-     * Render scene with all enabled cameras
-     * 
-     * @param ctx Context to render to
-     */
-    public void renderCamerasAll(RenderContext ctx);
+    public RavenNodeCompositionLibrary getCompositionLibrary();
+    public ArrayList<RavenNodeCamera> getCameras();
     
-    /**
-     * @return Number of cameras available
-     */
-    public int getNumCameras();
+//    /**
+//     * Render scene with all enabled cameras
+//     * 
+//     * @param ctx Context to render to
+//     */
+//    public void renderCamerasAll(RenderContext ctx);
+//    
+//    /**
+//     * @return Number of cameras available
+//     */
+//    public int getNumCameras();
 }

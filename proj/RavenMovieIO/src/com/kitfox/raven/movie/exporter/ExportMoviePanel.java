@@ -16,9 +16,16 @@
 
 package com.kitfox.raven.movie.exporter;
 
+import com.kitfox.raven.editor.node.scene.RavenNodeComposition;
+import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RenderDevice;
 import com.kitfox.raven.wizard.RavenWizardPage;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.util.ArrayList;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.ListCellRenderer;
 
 /**
  *
@@ -49,6 +56,8 @@ public class ExportMoviePanel extends javax.swing.JPanel
         framesPanel = new ExportMovieFramesPanel(ctx);
         seqPanel = new ExportMovieSeqPanel(ctx);
         
+        combo_composition.setRenderer(new Renderer());
+        
         updateFromContext();
     }
 
@@ -56,6 +65,22 @@ public class ExportMoviePanel extends javax.swing.JPanel
     {
         updating = true;
 
+        combo_composition.removeAllItems();
+        RavenNodeRoot root = (RavenNodeRoot)ctx.getDoc();
+        ArrayList<RavenNodeComposition> comps =
+                root.getCompositionLibrary().getCompositions();
+        for (RavenNodeComposition comp: comps)
+        {
+            combo_composition.addItem(comp);
+        }
+        if (combo_composition.getItemCount() != 0)
+        {
+            RavenNodeComposition comp =
+                    (RavenNodeComposition)combo_composition.getItemAt(0);
+            ctx.setComposition(comp);
+            combo_composition.setSelectedItem(0);
+        }
+        
         radio_formatSeq.setSelected(ctx.getFormat() == MovieExporterFormat.SEQ);
         radio_formatFrames.setSelected(ctx.getFormat() == MovieExporterFormat.FRAMES);
         check_frameCur.setSelected(ctx.isFrameCur());
@@ -86,16 +111,13 @@ public class ExportMoviePanel extends javax.swing.JPanel
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
 
         buttonGroup_format = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         radio_formatSeq = new javax.swing.JRadioButton();
         radio_formatFrames = new javax.swing.JRadioButton();
-        jLabel1 = new javax.swing.JLabel();
-        spinner_width = new javax.swing.JSpinner();
-        jLabel2 = new javax.swing.JLabel();
-        spinner_height = new javax.swing.JSpinner();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         spinner_frameStart = new javax.swing.JSpinner();
@@ -104,14 +126,17 @@ public class ExportMoviePanel extends javax.swing.JPanel
         jLabel5 = new javax.swing.JLabel();
         spinner_frameStride = new javax.swing.JSpinner();
         check_frameCur = new javax.swing.JCheckBox();
+        combo_composition = new javax.swing.JComboBox();
         panel_formatArea = new javax.swing.JPanel();
 
         setLayout(new java.awt.BorderLayout());
 
         buttonGroup_format.add(radio_formatSeq);
         radio_formatSeq.setText("Movie");
-        radio_formatSeq.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        radio_formatSeq.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 radio_formatSeqActionPerformed(evt);
             }
         });
@@ -119,27 +144,23 @@ public class ExportMoviePanel extends javax.swing.JPanel
         buttonGroup_format.add(radio_formatFrames);
         radio_formatFrames.setSelected(true);
         radio_formatFrames.setText("Frames");
-        radio_formatFrames.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        radio_formatFrames.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 radio_formatFramesActionPerformed(evt);
             }
         });
-
-        jLabel1.setText("Width");
-
-        spinner_width.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(640), Integer.valueOf(1), null, Integer.valueOf(1)));
-
-        jLabel2.setText("Height");
-
-        spinner_height.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(480), Integer.valueOf(1), null, Integer.valueOf(1)));
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Frame Range"));
 
         jLabel3.setText("Start Frame");
 
         spinner_frameStart.setModel(new javax.swing.SpinnerNumberModel());
-        spinner_frameStart.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+        spinner_frameStart.addPropertyChangeListener(new java.beans.PropertyChangeListener()
+        {
+            public void propertyChange(java.beans.PropertyChangeEvent evt)
+            {
                 spinner_frameStartPropertyChange(evt);
             }
         });
@@ -147,8 +168,10 @@ public class ExportMoviePanel extends javax.swing.JPanel
         jLabel4.setText("End Frame");
 
         spinner_frameEnd.setModel(new javax.swing.SpinnerNumberModel());
-        spinner_frameEnd.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+        spinner_frameEnd.addPropertyChangeListener(new java.beans.PropertyChangeListener()
+        {
+            public void propertyChange(java.beans.PropertyChangeEvent evt)
+            {
                 spinner_frameEndPropertyChange(evt);
             }
         });
@@ -156,15 +179,19 @@ public class ExportMoviePanel extends javax.swing.JPanel
         jLabel5.setText("Frame Stride");
 
         spinner_frameStride.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
-        spinner_frameStride.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+        spinner_frameStride.addPropertyChangeListener(new java.beans.PropertyChangeListener()
+        {
+            public void propertyChange(java.beans.PropertyChangeEvent evt)
+            {
                 spinner_frameStridePropertyChange(evt);
             }
         });
 
         check_frameCur.setText("Current Frame");
-        check_frameCur.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        check_frameCur.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 check_frameCurActionPerformed(evt);
             }
         });
@@ -190,7 +217,7 @@ public class ExportMoviePanel extends javax.swing.JPanel
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(spinner_frameStride)))
                     .addComponent(check_frameCur))
-                .addContainerGap(134, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -208,8 +235,16 @@ public class ExportMoviePanel extends javax.swing.JPanel
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel5)
                     .addComponent(spinner_frameStride, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        combo_composition.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                combo_compositionActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -219,36 +254,28 @@ public class ExportMoviePanel extends javax.swing.JPanel
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(radio_formatFrames)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(radio_formatSeq))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(spinner_width, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(spinner_height, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(69, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(radio_formatFrames)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(radio_formatSeq))
+                            .addComponent(combo_composition, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 148, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(combo_composition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(radio_formatSeq)
-                    .addComponent(radio_formatFrames))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(spinner_width, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
-                    .addComponent(spinner_height, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(radio_formatFrames)
+                    .addComponent(radio_formatSeq))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap(32, Short.MAX_VALUE))
         );
 
         add(jPanel1, java.awt.BorderLayout.NORTH);
@@ -289,11 +316,23 @@ public class ExportMoviePanel extends javax.swing.JPanel
         ctx.setFrameStride((Integer)spinner_frameStride.getValue());
     }//GEN-LAST:event_spinner_frameStridePropertyChange
 
+    private void combo_compositionActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_combo_compositionActionPerformed
+    {//GEN-HEADEREND:event_combo_compositionActionPerformed
+        if (updating)
+        {
+            return;
+        }
+        
+        RavenNodeComposition comp = 
+                (RavenNodeComposition)combo_composition.getSelectedItem();
+
+        ctx.setComposition(comp);
+    }//GEN-LAST:event_combo_compositionActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup_format;
     private javax.swing.JCheckBox check_frameCur;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JComboBox combo_composition;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -305,8 +344,6 @@ public class ExportMoviePanel extends javax.swing.JPanel
     private javax.swing.JSpinner spinner_frameEnd;
     private javax.swing.JSpinner spinner_frameStart;
     private javax.swing.JSpinner spinner_frameStride;
-    private javax.swing.JSpinner spinner_height;
-    private javax.swing.JSpinner spinner_width;
     // End of variables declaration//GEN-END:variables
 
     @Override
@@ -319,6 +356,45 @@ public class ExportMoviePanel extends javax.swing.JPanel
     public Component getComponent()
     {
         return this;
+    }
+
+    //----------------------------------
+
+    class Renderer extends JLabel implements ListCellRenderer
+    {
+        private static final long serialVersionUID = 1;
+
+        public Renderer()
+        {
+            setOpaque(true);
+        }
+
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
+        {
+            if (value instanceof String)
+            {
+                //Empty lists will provide an empty string
+                setText("");
+                return this;
+            }
+
+            if (isSelected)
+            {
+                setBackground(list.getSelectionBackground());
+                setForeground(list.getSelectionForeground());
+            }
+            else
+            {
+                setBackground(list.getBackground());
+                setForeground(list.getForeground());
+            }
+            
+            RenderDevice device = (RenderDevice)value;
+            setIcon(device.getIcon());
+            setText(device == null ? "" : device.getName());
+            return this;
+        }
     }
 
 }

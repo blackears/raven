@@ -23,6 +23,7 @@ import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.node.scene.RavenNodeGroup;
 import com.kitfox.raven.editor.node.scene.RavenNodePath;
 import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenNodeSceneGraph;
 import com.kitfox.raven.editor.node.tools.ToolProvider;
 import com.kitfox.raven.editor.node.tools.ToolUser;
 import com.kitfox.raven.paint.RavenStroke;
@@ -216,6 +217,7 @@ public class ToolPencilLine extends ToolDisplay
             {
                 ServiceDocument provider = user.getToolService(ServiceDocument.class);
                 RavenNodeRoot doc = (RavenNodeRoot)provider.getDocument();
+                RavenNodeSceneGraph sceneGraph = doc.getSceneGraph();
 
                 ServiceDeviceCamera provDevCam = user.getToolService(ServiceDeviceCamera.class);
                 AffineTransform w2d = provDevCam
@@ -294,7 +296,7 @@ public class ToolPencilLine extends ToolDisplay
                 }
                 else
                 {
-                    doc.sceneGraph.add(nodePath);
+                    sceneGraph.add(nodePath);
                 }
 
                 if (doc != null)

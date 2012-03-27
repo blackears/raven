@@ -327,7 +327,7 @@ public class DisplayCyPanel extends CoyotePanel
         }
 
 //        FrameKey.DIRECT;
-        RenderContext ctx = new RenderContext(rend, FrameKey.DIRECT);
+        RenderContext ctx = new RenderContext(rend, FrameKey.DIRECT, true);
 
         CyRenderService serv = doc.getCurDocument().getNodeService(CyRenderService.class, false);
         if (serv != null)

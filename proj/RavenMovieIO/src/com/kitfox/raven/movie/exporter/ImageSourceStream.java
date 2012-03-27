@@ -16,6 +16,7 @@
 
 package com.kitfox.raven.movie.exporter;
 
+import com.kitfox.raven.editor.node.scene.RavenNodeComposition;
 import com.kitfox.raven.util.tree.FrameKey;
 import com.kitfox.raven.util.tree.NodeDocument;
 import java.awt.Dimension;
@@ -57,11 +58,12 @@ public class ImageSourceStream
     {
         this.ctx = ctx;
 
-        NodeDocument doc = ctx.getDoc();
-        width = ctx.getWidth();
-        height = ctx.getHeight();
+        RavenNodeComposition comp = ctx.getComposition();
+        NodeDocument doc = comp.getDocument();
+        width = comp.getWidth();
+        height = comp.getHeight();
         
-        this.capture = new MovieCapture(doc, width, height);
+        this.capture = new MovieCapture(comp);
         
         frameRate = doc.getTrackLibrary().getFps();
         trackUid = doc.getTrackLibrary().getCurTrackUid();
@@ -80,7 +82,7 @@ public class ImageSourceStream
         
         
         format = new VideoFormat(VideoFormat.JPEG,
-                new Dimension(ctx.getWidth(), ctx.getHeight()),
+                new Dimension(comp.getWidth(), comp.getHeight()),
                 Format.NOT_SPECIFIED,
                 Format.byteArray,
                 frameRate);

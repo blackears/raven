@@ -106,6 +106,9 @@ public class PathClosedLoops extends PathConsumer
 //    {
 //        curLoop.segs.add(new Seg(x0, y0, x1, y1));
 //    }
+    
+
+    
     /**
      *
      * @param rect
@@ -113,32 +116,30 @@ public class PathClosedLoops extends PathConsumer
      */
     public boolean contains(CyRectangle2d rect)
     {
+        int crossings = 0;
+        
         for (Loop loop: loops)
         {
             if (loop.edgeIntersects(rect))
             {
-                continue;
+                return false;
             }
-            if (loop.contains(rect.x, rect.y))
-            {
-                return true;
-            }
+            crossings += loop.countCrossings(rect.x, rect.y);
         }
 
-        return false;
+        return crossings != 0;
     }
 
     public boolean contains(double x, double y)
     {
+        int crossings = 0;
+        
         for (Loop loop: loops)
         {
-            if (loop.contains(x, y))
-            {
-                return true;
-            }
+            crossings += loop.countCrossings(x, y);
         }
 
-        return false;
+        return crossings != 0;
     }
 
     
@@ -163,7 +164,7 @@ public class PathClosedLoops extends PathConsumer
             return false;
         }
 
-        private boolean contains(double x, double y)
+        private int countCrossings(double x, double y)
         {
             int crossings = 0;
             
@@ -197,7 +198,8 @@ public class PathClosedLoops extends PathConsumer
                 }
             }
             
-            return crossings != 0;
+            //return crossings != 0;
+            return crossings;
         }
     }
 }

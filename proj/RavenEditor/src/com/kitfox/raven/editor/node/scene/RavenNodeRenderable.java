@@ -373,6 +373,7 @@ abstract public class RavenNodeRenderable extends RavenNode
         renderer.popFrame();
     }
 
+    @Deprecated
     abstract protected void renderContent(RavenRenderer renderer);
 
 }

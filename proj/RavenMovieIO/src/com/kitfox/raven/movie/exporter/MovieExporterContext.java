@@ -16,6 +16,7 @@
 
 package com.kitfox.raven.movie.exporter;
 
+import com.kitfox.raven.editor.node.scene.RavenNodeComposition;
 import com.kitfox.raven.util.tree.FrameKey;
 import com.kitfox.raven.util.PropertiesData;
 import com.kitfox.raven.util.tree.NodeDocument;
@@ -34,14 +35,17 @@ import javax.swing.JOptionPane;
  */
 public class MovieExporterContext
 {
+    private static final String PROP_COMPOSITION = "composition";
+    private RavenNodeComposition composition;
+    
     private static final String PROP_FORMAT = "format";
     private MovieExporterFormat format;
     
-    private static final String PROP_WIDTH = "width";
-    private int width;
-    
-    private static final String PROP_HEIGHT = "height";
-    private int height;
+//    private static final String PROP_WIDTH = "width";
+//    private int width;
+//    
+//    private static final String PROP_HEIGHT = "height";
+//    private int height;
     
     private static final String PROP_FRAME_CURRENT = "frameCurrent";
     private boolean frameCur;
@@ -83,8 +87,8 @@ public class MovieExporterContext
         this.pref = new PropertiesData(preferences);
         
         format = pref.getEnum(PROP_FORMAT, MovieExporterFormat.FRAMES);
-        width = pref.getInt(PROP_WIDTH, 640);
-        height = pref.getInt(PROP_HEIGHT, 480);
+//        width = pref.getInt(PROP_WIDTH, 640);
+//        height = pref.getInt(PROP_HEIGHT, 480);
         frameCur = pref.getBoolean(PROP_FRAME_CURRENT, true);
         frameStart = pref.getInt(PROP_FRAME_START, 0);
         frameEnd = pref.getInt(PROP_FRAME_END, 10);
@@ -102,8 +106,8 @@ public class MovieExporterContext
     public void savePreferences()
     {
         pref.setEnum(PROP_FORMAT, format);
-        pref.setInt(PROP_WIDTH, width);
-        pref.setInt(PROP_HEIGHT, height);
+//        pref.setInt(PROP_WIDTH, width);
+//        pref.setInt(PROP_HEIGHT, height);
         pref.setBoolean(PROP_FRAME_CURRENT, frameCur);
         pref.setInt(PROP_FRAME_START, frameStart);
         pref.setInt(PROP_FRAME_END, frameEnd);
@@ -120,6 +124,11 @@ public class MovieExporterContext
 
     public void doExport()
     {
+        if (composition == null)
+        {
+            return;
+        }
+        
         switch (format)
         {
             case FRAMES:
@@ -148,7 +157,7 @@ public class MovieExporterContext
             return;
         }
 
-        MovieCapture capture = new MovieCapture(doc, width, height);
+        MovieCapture capture = new MovieCapture(composition);
         
         int trackFrame = doc.getTrackLibrary().getCurFrame();
         int trackUid = doc.getTrackLibrary().getCurTrackUid();
@@ -325,37 +334,37 @@ public class MovieExporterContext
         this.seqFormat = seqFormat;
     }
 
-    /**
-     * @return the width
-     */
-    public int getWidth()
-    {
-        return width;
-    }
-
-    /**
-     * @param width the width to set
-     */
-    public void setWidth(int width)
-    {
-        this.width = width;
-    }
-
-    /**
-     * @return the height
-     */
-    public int getHeight()
-    {
-        return height;
-    }
-
-    /**
-     * @param height the height to set
-     */
-    public void setHeight(int height)
-    {
-        this.height = height;
-    }
+//    /**
+//     * @return the width
+//     */
+//    public int getWidth()
+//    {
+//        return width;
+//    }
+//
+//    /**
+//     * @param width the width to set
+//     */
+//    public void setWidth(int width)
+//    {
+//        this.width = width;
+//    }
+//
+//    /**
+//     * @return the height
+//     */
+//    public int getHeight()
+//    {
+//        return height;
+//    }
+//
+//    /**
+//     * @param height the height to set
+//     */
+//    public void setHeight(int height)
+//    {
+//        this.height = height;
+//    }
 
     /**
      * @return the frameCur
@@ -419,6 +428,22 @@ public class MovieExporterContext
     public void setFrameStride(int frameStride)
     {
         this.frameStride = frameStride;
+    }
+
+    /**
+     * @return the composition
+     */
+    public RavenNodeComposition getComposition()
+    {
+        return composition;
+    }
+
+    /**
+     * @param composition the composition to set
+     */
+    public void setComposition(RavenNodeComposition composition)
+    {
+        this.composition = composition;
     }
 
 }

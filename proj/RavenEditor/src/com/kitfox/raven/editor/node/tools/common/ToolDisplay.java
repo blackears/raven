@@ -264,10 +264,11 @@ abstract public class ToolDisplay extends ToolDraggable
     {
         ArrayList<RavenNodeXformable> list = new ArrayList<RavenNodeXformable>();
         RavenNodeRoot root = getDocument();
-        
-        for (int i = root.sceneGraph.size() - 1; i >= 0; --i)
+
+        ArrayList<RavenNodeXformable> children = root.getSceneGraphChildren();
+        for (int i = children.size() - 1; i >= 0; --i)
         {
-            RavenNodeXformable child = root.sceneGraph.get(i);
+            RavenNodeXformable child = children.get(i);
             getNodes(child, onlyVisible, list);
         }
         
@@ -330,21 +331,21 @@ abstract public class ToolDisplay extends ToolDraggable
     }
 
 
-    private void showPopup(MouseEvent evt)
-    {
-        AffineTransform m = new AffineTransform();
-        getWorldToDeviceTransform(m);
-
-        ServicePopupMenuProvider provider = user.getToolService(ServicePopupMenuProvider.class);
-        if (provider == null)
-        {
-            return;
-        }
-
-        JPopupMenu menu = provider.getPopupMenu(evt, m);
-        menu.show(evt.getComponent(), evt.getX(), evt.getY());
-        evt.consume();
-    }
+//    private void showPopup(MouseEvent evt)
+//    {
+//        AffineTransform m = new AffineTransform();
+//        getWorldToDeviceTransform(m);
+//
+//        ServicePopupMenuProvider provider = user.getToolService(ServicePopupMenuProvider.class);
+//        if (provider == null)
+//        {
+//            return;
+//        }
+//
+//        JPopupMenu menu = provider.getPopupMenu(evt, m);
+//        menu.show(evt.getComponent(), evt.getX(), evt.getY());
+//        evt.consume();
+//    }
 
     @Deprecated
     public void paintSelectionBounds(Graphics2D g)

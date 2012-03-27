@@ -24,7 +24,8 @@ import java.util.ArrayList;
  *
  * @author kitfox
  */
-public class ChildWrapperList<NodeType extends NodeObject, ChildType extends NodeObject> extends ChildWrapper<NodeType, ChildType>
+public class ChildWrapperList<NodeType extends NodeObject, ChildType
+        extends NodeObject> extends ChildWrapper<NodeType, ChildType>
 {
     ArrayList<ChildType> list = new ArrayList<ChildType>();
 
@@ -43,6 +44,11 @@ public class ChildWrapperList<NodeType extends NodeObject, ChildType extends Nod
     public ChildType get(int index)
     {
         return list.get(index);
+    }
+
+    public ArrayList<ChildType> getChildren()
+    {
+        return new ArrayList<ChildType>(list);
     }
 
     public int indexOf(ChildType child)

@@ -271,17 +271,17 @@ abstract public class CyShape
 
     public boolean intersects(CyRectangle2d rectangle)
     {
-        if (contains(rectangle))
-        {
-            return true;
-        }
-        
         PathLines lineTess = new PathLines();
         PathFlattener flat = new PathFlattener(lineTess);
 
         flat.feedShape(this);
 
-        return lineTess.intersectsEdge(rectangle);
+        if (lineTess.intersectsEdge(rectangle))
+        {
+            return true;
+        }
+        
+        return contains(rectangle);
     }
 
     public void export(DataOutputStream dout) throws IOException

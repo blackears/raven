@@ -34,6 +34,7 @@ import com.kitfox.raven.shape.builders.BitmapOutliner;
 import com.kitfox.raven.shape.builders.StrokeBuffer;
 import com.kitfox.raven.shape.path.PathCurve;
 import com.kitfox.rabbit.util.NumberText;
+import com.kitfox.raven.editor.node.scene.RavenNodeSceneGraph;
 import com.kitfox.raven.paint.RavenPaintLayout;
 import com.kitfox.raven.util.service.ServiceInst;
 import com.kitfox.raven.util.tree.NodeObject;
@@ -249,7 +250,9 @@ public class ToolPaintStroke extends ToolDisplay
             {
                 ServiceDocument provider = user.getToolService(ServiceDocument.class);
                 RavenNodeRoot doc = (RavenNodeRoot)provider.getDocument();
+                RavenNodeSceneGraph sceneGraph = doc.getSceneGraph();
 
+                
                 ServiceDeviceCamera provDevCam = user.getToolService(ServiceDeviceCamera.class);
                 AffineTransform w2d = provDevCam
                         .getWorldToDeviceTransform((AffineTransform)null);
@@ -369,7 +372,7 @@ public class ToolPaintStroke extends ToolDisplay
                 }
                 else
                 {
-                    doc.sceneGraph.add(nodePath);
+                    sceneGraph.add(nodePath);
                 }
 
                 if (doc != null)

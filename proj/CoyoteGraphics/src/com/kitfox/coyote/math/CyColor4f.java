@@ -37,6 +37,8 @@ public class CyColor4f
     
     public static final CyColor4f TRANSPARENT = new CyColor4f(0, 0, 0, 0);
 
+    public static final CyColor4f ORANGE = new CyColor4f(1, .5f, 0, 1);
+    
     public final float r;
     public final float g;
     public final float b;

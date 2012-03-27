@@ -20,6 +20,7 @@ import com.kitfox.raven.editor.node.scene.RavenNodeDataPlane;
 import com.kitfox.raven.editor.node.scene.RavenNodeGroup;
 import com.kitfox.raven.editor.node.scene.RavenNodeMeshStatic;
 import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenNodeSceneGraph;
 import com.kitfox.raven.paint.common.RavenPaintColor;
 import com.kitfox.raven.util.planeData.PlaneDataProvider;
 import com.kitfox.raven.util.tree.NodeObjectProviderIndex;
@@ -87,7 +88,8 @@ public class ImportSWFBuilder
         importGroup = NodeObjectProviderIndex.inst().createNode(
                 RavenNodeGroup.class, root);
         importGroup.setName("swfImport");
-        root.sceneGraph.add(importGroup);
+        RavenNodeSceneGraph sg = root.getSceneGraph();
+        sg.add(importGroup);
 
         characterGroup = NodeObjectProviderIndex.inst().createNode(
                 RavenNodeGroup.class, root);

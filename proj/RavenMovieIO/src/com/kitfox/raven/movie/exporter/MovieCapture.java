@@ -22,10 +22,9 @@ import com.kitfox.coyote.renderer.CyDrawStack;
 import com.kitfox.coyote.renderer.CyGLContext;
 import com.kitfox.coyote.renderer.CyGLWrapper;
 import com.kitfox.coyote.renderer.jogl.CyGLWrapperJOGL;
+import com.kitfox.raven.editor.node.scene.RavenNodeComposition;
 import com.kitfox.raven.editor.node.scene.RenderContext;
-import com.kitfox.raven.editor.view.displayCy.CyRenderService;
 import com.kitfox.raven.util.tree.FrameKey;
-import com.kitfox.raven.util.tree.NodeDocument;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 import javax.media.nativewindow.AbstractGraphicsDevice;
@@ -44,18 +43,18 @@ import javax.swing.JOptionPane;
  */
 public class MovieCapture
 {
-    NodeDocument doc;
+    private RavenNodeComposition composition;
     int width;
     int height;
     CyGLContext glContext;
     ByteBuffer buf;
     GLPbuffer drawable;
     
-    public MovieCapture(NodeDocument doc, int width, int height)
+    public MovieCapture(RavenNodeComposition comp)
     {
-        this.doc = doc;
-        this.width = width;
-        this.height = height;
+        this.composition = comp;
+        this.width = comp.getWidth();
+        this.height = comp.getHeight();
         buf = BufferUtil.allocateByte(width * height * 4);
         glContext = new CyGLContext();
 
@@ -63,7 +62,7 @@ public class MovieCapture
         
         if (!fact.canCreateGLPbuffer(null))
         {
-            JOptionPane.showMessageDialog(doc.getEnv().getSwingRoot(),
+            JOptionPane.showMessageDialog(comp.getDocument().getEnv().getSwingRoot(),
                 "Cannot create pbuffer to accellerate offscreen rendering", 
                 "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -143,20 +142,21 @@ public class MovieCapture
         CyDrawStack stack = new CyDrawStack(width, height, 
                 drawGroup);
         
-        RenderContext ctx = new RenderContext(stack, key);
+        RenderContext ctx = new RenderContext(stack, key, false);
 
-        CyRenderService serv = doc.getNodeService(CyRenderService.class, false);
-        if (serv != null)
-        {
-            if (serv.getNumCameras() == 0)
-            {
-                serv.renderEditor(ctx);
-            }
-            else
-            {
-                serv.renderCamerasAll(ctx);
-            }
-        }
+        composition.renderComposition(ctx);
+//        CyRenderService serv = composition.getNodeService(CyRenderService.class, false);
+//        if (serv != null)
+//        {
+//            if (serv.getNumCameras() == 0)
+//            {
+//                serv.renderEditor(ctx);
+//            }
+//            else
+//            {
+//                serv.renderCamerasAll(ctx);
+//            }
+//        }
         
         return drawGroup;
     }

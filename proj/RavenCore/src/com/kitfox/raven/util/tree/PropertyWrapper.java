@@ -246,7 +246,8 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
 
     protected void firePropertyDataChanged(Object oldValue, Object newValue)
     {
-        if (oldValue.equals(newValue))
+        if ((oldValue == null && newValue == null) 
+                || (oldValue != null && oldValue.equals(newValue)))
         {
             return;
         }
@@ -519,6 +520,12 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
     {
         PropertyData<PropType> data = getData(key);
         
+//if (data == null)
+//{
+//    data = getData(key);
+//    //throw new RuntimeException();
+//}
+        
         return data == null ? getValue() : data.getValue(node.getDocument());
     }
 
@@ -690,13 +697,23 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
 
     protected void load(PropertyType type)
     {
-        setData(load(type.getDirect()));
-
-        for (TrackType trackType: type.getTrack())
+        try
         {
-            TrackCurve<PropType> curve = createTrackCurve(trackType);
-            
-            setTrackCurve(trackType.getTrackUid(), curve);
+            setData(load(type.getDirect()));
+
+            for (TrackType trackType: type.getTrack())
+            {
+                TrackCurve<PropType> curve = createTrackCurve(trackType);
+
+                setTrackCurve(trackType.getTrackUid(), curve);
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.getLogger(PropertyWrapper.class.getName()).log(
+                    Level.WARNING, "Error loading property " 
+                    + node.getClass().getName() + ": " 
+                    + node.getName() + "." + name, ex);
         }
     }
 

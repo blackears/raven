@@ -29,11 +29,13 @@ public class RenderContext
     private final CyDrawStack drawStack;
     //Current frame we are rendering for
     private final FrameKey frame;
+    private final boolean editor;
 
-    public RenderContext(CyDrawStack drawStack, FrameKey frame)
+    public RenderContext(CyDrawStack drawStack, FrameKey frame, boolean editor)
     {
         this.drawStack = drawStack;
         this.frame = frame;
+        this.editor = editor;
     }
 
     /**
@@ -50,6 +52,14 @@ public class RenderContext
     public FrameKey getFrame()
     {
         return frame;
+    }
+
+    /**
+     * @return the editor
+     */
+    public boolean isEditor()
+    {
+        return editor;
     }
 
     
