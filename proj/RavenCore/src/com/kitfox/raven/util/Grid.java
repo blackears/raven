@@ -256,4 +256,10 @@ public class Grid<T>
         return width == 0 || height == 0;
     }
 
+    public void clear()
+    {
+        data = new Object[0];
+        offsetX = offsetY = width = height = 0;
+    }
+
 }

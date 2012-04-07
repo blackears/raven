@@ -396,13 +396,13 @@ public class ToolPenMesh extends ToolPenDelegate
                 {
                     plan.remove(plan.size() - 1);
                 }
-                break;
+                return;
             case KeyEvent.VK_ESCAPE:
                 cancel();
-                break;
+                return;
             case KeyEvent.VK_ENTER:
                 commit();
-                break;
+                return;
         }
         
         super.keyPressed(evt);

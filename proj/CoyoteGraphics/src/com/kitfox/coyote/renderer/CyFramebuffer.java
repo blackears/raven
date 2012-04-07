@@ -16,10 +16,8 @@
 
 package com.kitfox.coyote.renderer;
 
-import com.kitfox.coyote.math.BufferUtil;
 import com.kitfox.coyote.renderer.CyGLContext.FramebufferInfo;
 import com.kitfox.coyote.renderer.CyGLWrapper.FramebufferStatus;
-import java.nio.IntBuffer;
 
 /**
  *
@@ -30,8 +28,6 @@ public class CyFramebuffer
     CyFramebufferAttachment[] attachments;
 
     int dirty;
-//    private int fboId;
-//    int surfInst;
     private final int width;
     private final int height;
 
@@ -41,31 +37,7 @@ public class CyFramebuffer
         this.height = height;
         this.attachments = attachments;
     }
-
-//    private void init(GLWrapper gl)
-//    {
-//        surfInst = gl.getSurfaceInstanceNumber();
-//
-//        IntBuffer ibuf = BufferUtil.allocateInt(1);
-//        gl.glGenFramebuffers(1, ibuf);
-//        fboId = ibuf.get(0);
-//
-//        gl.glBindFramebuffer(fboId);
-//
-//        for (int i = 0; i < attachments.length; ++i)
-//        {
-//            CyFramebufferAttachment attach = attachments[i];
-//            attach.bind(gl);
-////            gl.glFramebufferRenderbuffer(attach.attcahment, attach.);
-//        }
-//
-//        FramebufferStatus status = gl.glCheckFramebufferStatus();
-//        if (status != FramebufferStatus.GL_FRAMEBUFFER_COMPLETE)
-//        {
-//            throw new RuntimeException("Framebuffer incomplete: " + status);
-//        }
-//    }
-
+    
     public void bind(CyGLContext ctx, CyGLWrapper gl)
     {
         FramebufferInfo info = ctx.getFramebufferInfo(this, gl);
@@ -78,7 +50,7 @@ public class CyFramebuffer
             for (int i = 0; i < attachments.length; ++i)
             {
                 CyFramebufferAttachment attach = attachments[i];
-                attach.bind(ctx, gl);
+                attach.bindFramebuffer(ctx, gl);
             }
 
             FramebufferStatus status = gl.glCheckFramebufferStatus();
@@ -89,27 +61,44 @@ public class CyFramebuffer
 
             info.setDirty(dirty);
         }
-
-
-
-
-
-
-
-//        if (fboId == 0 || gl.getSurfaceInstanceNumber() != surfInst)
-//        {
-//            init(gl);
-//        }
-//        else
-//        {
-//            gl.glBindFramebuffer(fboId);
-//        }
-//        gl.glViewport(0, 0, width, height);
     }
 
-//    public void dispose()
-//    {
-//    }
+    /**
+     * Replace FBO's current attachments with new set.  Will
+     * have side effect of binding the FBO.
+     * 
+     * @param ctx
+     * @param gl
+     * @param attachments 
+     */
+    public void setAttachments(CyGLContext ctx, CyGLWrapper gl,
+            CyFramebufferAttachment... attachments)
+    {
+        FramebufferInfo info = ctx.getFramebufferInfo(this, gl);
+        int fboId = info.getFboId();
+
+        gl.glBindFramebuffer(fboId);
+
+        for (int i = 0; i < this.attachments.length; ++i)
+        {
+            CyFramebufferAttachment attach = attachments[i];
+            attach.unbindFramebuffer(ctx, gl);
+        }
+        
+        this.attachments = attachments;
+
+        for (int i = 0; i < attachments.length; ++i)
+        {
+            CyFramebufferAttachment attach = attachments[i];
+            attach.bindFramebuffer(ctx, gl);
+        }
+
+        FramebufferStatus status = gl.glCheckFramebufferStatus();
+        if (status != FramebufferStatus.GL_FRAMEBUFFER_COMPLETE)
+        {
+            throw new RuntimeException("Framebuffer incomplete: " + status);
+        }
+    }
 
     /**
      * @return the width

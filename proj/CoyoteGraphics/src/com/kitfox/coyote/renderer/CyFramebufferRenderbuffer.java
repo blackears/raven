@@ -16,11 +16,9 @@
 
 package com.kitfox.coyote.renderer;
 
-import com.kitfox.coyote.math.BufferUtil;
 import com.kitfox.coyote.renderer.CyGLContext.RenderbufferInfo;
 import com.kitfox.coyote.renderer.CyGLWrapper.Attachment;
 import com.kitfox.coyote.renderer.CyGLWrapper.InternalFormatBuf;
-import java.nio.IntBuffer;
 
 /**
  *
@@ -33,8 +31,6 @@ public class CyFramebufferRenderbuffer extends CyFramebufferAttachment
     final InternalFormatBuf internalFormat;
 
     int dirty;
-//    int id;
-//    int surfInst;
 
     public CyFramebufferRenderbuffer(Attachment attachment, int width, int height,
             CyGLWrapper.InternalFormatBuf internalFormat)
@@ -70,22 +66,8 @@ public class CyFramebufferRenderbuffer extends CyFramebufferAttachment
         return internalFormat;
     }
 
-//    private void init(GLWrapper gl)
-//    {
-//        surfInst = gl.getSurfaceInstanceNumber();
-//
-//        IntBuffer ibuf = BufferUtil.allocateInt(1);
-//        gl.glGenRenderbuffers(1, ibuf);
-//        id = ibuf.get(0);
-//
-//        gl.glBindRenderbuffer(id);
-//        gl.glRenderbufferStorage(internalFormat, width, height);
-//
-//        gl.glFramebufferRenderbuffer(attachment, id);
-//    }
-
     @Override
-    public void bind(CyGLContext ctx, CyGLWrapper gl)
+    public void bindFramebuffer(CyGLContext ctx, CyGLWrapper gl)
     {
         RenderbufferInfo info = ctx.getRenderbufferInfo(this, gl);
         int rboId = info.getRboId();
@@ -98,42 +80,11 @@ public class CyFramebufferRenderbuffer extends CyFramebufferAttachment
 
             info.setDirty(dirty);
         }
-
-
-
-
-//        if (id == 0 || gl.getSurfaceInstanceNumber() != surfInst)
-//        {
-//            init(gl);
-//        }
-//        else
-//        {
-//            gl.glBindRenderbuffer(id);
-//        }
     }
 
-//    public void dispose()
-//    {
-//        GLActionQueue.inst().postAction(new Dispose(id));
-//        id = 0;
-//    }
-
-    //------------------------------------
-
-    static class Dispose implements CyGLAction
+    @Override
+    public void unbindFramebuffer(CyGLContext ctx, CyGLWrapper gl)
     {
-        int id;
-
-        public Dispose(int id)
-        {
-            this.id = id;
-        }
-
-        public void doAction(CyGLWrapper gl)
-        {
-            IntBuffer ibuf = BufferUtil.allocateInt(1);
-            ibuf.put(0, id);
-            gl.glDeleteRenderbuffers(1, ibuf);
-        }
+        gl.glFramebufferRenderbuffer(attachment, 0);
     }
 }

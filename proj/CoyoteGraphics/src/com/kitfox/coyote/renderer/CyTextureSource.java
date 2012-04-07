@@ -22,7 +22,7 @@ package com.kitfox.coyote.renderer;
  */
 public interface CyTextureSource
 {
-    public void bind(CyGLContext ctx, CyGLWrapper gl);
+    public void bindTexture(CyGLContext ctx, CyGLWrapper gl);
 
     public CyGLWrapper.InternalFormatTex getFormat();
     public CyGLWrapper.TexTarget getTarget();

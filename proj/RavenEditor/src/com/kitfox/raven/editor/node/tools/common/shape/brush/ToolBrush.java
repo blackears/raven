@@ -16,16 +16,27 @@
 
 package com.kitfox.raven.editor.node.tools.common.shape.brush;
 
-import com.kitfox.coyote.math.BufferUtil;
+import com.kitfox.coyote.math.CyMatrix4d;
+import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.math.Math2DUtil;
-import com.kitfox.coyote.renderer.*;
+import com.kitfox.coyote.renderer.CyDrawStack;
+import com.kitfox.coyote.renderer.CyGLOffscreenContext;
+import com.kitfox.coyote.renderer.CyGLWrapper;
+import com.kitfox.coyote.renderer.CyTextureImage;
+import com.kitfox.coyote.renderer.CyTransparency;
+import com.kitfox.raven.editor.node.scene.RenderContext;
 import com.kitfox.raven.editor.node.tools.ToolUser;
 import com.kitfox.raven.editor.node.tools.common.ServiceDevice;
 import com.kitfox.raven.editor.node.tools.common.ServicePen;
 import com.kitfox.raven.editor.node.tools.common.ToolDisplay;
 import java.awt.event.MouseEvent;
-import java.nio.ByteBuffer;
-import jpen.*;
+import jpen.PButtonEvent;
+import jpen.PKindEvent;
+import jpen.PLevel;
+import jpen.PLevelEvent;
+import jpen.PScrollEvent;
+import jpen.Pen;
+import jpen.PenManager;
 import jpen.event.PenListener;
 
 /**
@@ -39,18 +50,23 @@ public class ToolBrush extends ToolDisplay
     
     final PenManager penManager;
 
+//    DragSource dragState = DragSource.NONE;
+    boolean dragging;
+    boolean penDown;
+    
     private float penX;
     private float penY;
     private float penPressure;
+    private float penTiltX;
+    private float penTiltY;
 
     private float penNextX;
     private float penNextY;
     private float penNextPressure;
-
-    boolean penDown;
-    boolean readingPen = false;
+    private float penNextTiltX;
+    private float penNextTiltY;
     
-//    final int strokeBufferSize = 128;
+    StrokeBuilder strokeBuilder;
     
     protected ToolBrush(ToolUser user, ToolBrushProvider toolProvider)
     {
@@ -67,32 +83,33 @@ public class ToolBrush extends ToolDisplay
         this.penManager = mgr;
     }
 
-    private void startReadingFromPen()
+    private void createStrokeBuilder()
     {
-        if (readingPen)
-        {
-            return;
-        }
-
-        //Restart drawing, using pen now
-        Pen pen = penManager.pen;
-        penNextX = penX = pen.getLevelValue(PLevel.Type.X);
-        penNextY = penY = pen.getLevelValue(PLevel.Type.Y);
-        penNextPressure = penPressure = pen.getLevelValue(PLevel.Type.PRESSURE);
-
-        ServiceDevice dev = user.getToolService(ServiceDevice.class);
-//        bubbleOutliner = new StrokeBuffer(strokeBufferSize, strokeBufferSize,
-//                dev.getComponent().getGraphicsConfiguration());
-        readingPen = true;
+        RoundBrushSource brush = 
+                new RoundBrushSource(
+                toolProvider.getStrokeWidthMax(), 
+                toolProvider.getHardness(), 
+                toolProvider.isAntialias());
+        
+        int size = brush.getSize();
+        CyTextureImage source = new CyTextureImage(
+                CyGLWrapper.TexTarget.GL_TEXTURE_2D, 
+                CyGLWrapper.InternalFormatTex.GL_RGBA,
+                CyGLWrapper.DataType.GL_UNSIGNED_BYTE,
+                size, size, CyTransparency.TRANSLUCENT, brush);
+        
+        strokeBuilder = new StrokeBuilder(source);
     }
 
     private void samplePen(MouseEvent evt)
     {
-        if (!readingPen && evt != null)
+        if (evt != null)
         {
             penNextX = evt.getX();
             penNextY = evt.getY();
             penNextPressure = 1;
+            penNextTiltX = 0;
+            penNextTiltY = 0;
             return;
         }
 
@@ -100,17 +117,14 @@ public class ToolBrush extends ToolDisplay
         penNextX = pen.getLevelValue(PLevel.Type.X);
         penNextY = pen.getLevelValue(PLevel.Type.Y);
         penNextPressure = pen.getLevelValue(PLevel.Type.PRESSURE);
+        penNextTiltX = pen.getLevelValue(PLevel.Type.TILT_X);
+        penNextTiltY = pen.getLevelValue(PLevel.Type.TILT_Y);
+        
+//System.err.println("Pen pressure " + penNextPressure);
     }
 
-    private void strokeSegment(MouseEvent evt)
+    private void strokeToNextSample()
     {
-        if (!penDown)
-        {
-            return;
-        }
-
-        samplePen(evt);
-
         //Only record if minimum distance traveled
         if (Math2DUtil.square(penX - penNextX) +
                 + Math2DUtil.square(penY - penNextY) < 4)
@@ -118,33 +132,65 @@ public class ToolBrush extends ToolDisplay
             return;
         }
 
+        StrokeBuilder curStrokeBuilder = strokeBuilder;
+        if (curStrokeBuilder == null)
+        {
+            //Pen thread may call this after AWT thread has already
+            // released strokeBuilder
+            return;
+        }
+        
+        ServiceDevice dev = user.getToolService(ServiceDevice.class);
+        CyGLOffscreenContext ctxOff = dev.createOffscreenGLContext();
+        
         final float spacing = toolProvider.getStrokeSpacing();
-        final float penWeightMin = toolProvider.getStrokeWidthMin();
-        final float penWeightMax = toolProvider.getStrokeWidthMax();
+        final float penWidthMin = toolProvider.getHardness();
+        final float penWidthMax = toolProvider.getStrokeWidthMax();
 
-        float gap = Math.max(spacing * penPressure * penWeightMax, 1);
+        float gap = Math.max(spacing * penPressure * penWidthMax, 1);
         double dist = Math2DUtil.dist(penX, penY, penNextX, penNextY);
         int numDots = (int)Math.ceil(dist / gap);
 
+        CyVector2d penOld = new CyVector2d(penX, penY);
+        CyVector2d penNew = new CyVector2d(penNextX, penNextY);
+        CyMatrix4d d2w = getDeviceToWorld(null);
+        d2w.transformPoint(penOld, false);
+        d2w.transformPoint(penNew, false);
+        
+        
+//if (penPressure == 1)
+//{
+//    int j = 9;
+//}
+//System.err.println("-penPres " + penPressure + ", " + penNextPressure);
         for (int i = 0; i < numDots; ++i)
         {
             double dt = (double)i / numDots;
             double dPressure = Math2DUtil.lerp(penPressure, penNextPressure, dt);
-//            bubbleOutliner.addCircle(
-//                    Math2DUtil.lerp(penX, penNextX, dt),
-//                    Math2DUtil.lerp(penY, penNextY, dt),
-//                    Math2DUtil.lerp(penWeightMin, penWeightMax, dPressure));
-
+//System.err.println("dPressure " + dPressure + ", " + i + " " + numDots);
+            
+            curStrokeBuilder.daubBrush(ctxOff,
+                    Math2DUtil.lerp(penOld.x, penNew.x, dt),
+                    Math2DUtil.lerp(penOld.y, penNew.y, dt),
+                    Math2DUtil.lerp(penWidthMin, penWidthMax, dPressure) / penWidthMax);
         }
 
+        //Make sure to release context
+        ctxOff.dispose();
+        
         penX = penNextX;
         penY = penNextY;
         penPressure = penNextPressure;
+        penTiltX = penNextTiltX;
+        penTiltY = penNextTiltY;
     }
 
     @Override
     protected void click(MouseEvent evt)
     {
+        //This entire method is just temporary code to test out 
+        // a few ideas
+        /*
         ServiceDevice dev = user.getToolService(ServiceDevice.class);
 
         CyGLOffscreenContext ctx = dev.createOffscreenGLContext();
@@ -187,34 +233,63 @@ public class ToolBrush extends ToolDisplay
         
         
         ctx.dispose();
+        */
     }
 
     @Override
     protected void startDrag(MouseEvent evt)
     {
-        samplePen(evt);
+//System.err.println("Start drag: " + dragState);
+        
+//        if (dragState == DragSource.NONE)
+        if (!penDown)
+        {
+            //samplePen(evt);
 
-        penX = penNextX;
-        penY = penNextY;
-        penPressure = penNextPressure;
+            penX = penNextX = evt.getX();
+            penY = penNextY = evt.getY();
+            penPressure = penNextPressure = 1;
+            penTiltX = penNextTiltX = 0;
+            penTiltY = penNextTiltY = 0;
+            
+//            strokeBuider = new StrokeBuilder();
+//    System.err.println("Created builder - start drag");
 
-        ServiceDevice dev = user.getToolService(ServiceDevice.class);
+//            penDown = true;
+//            readingPen = false;
+        }
+        
+        createStrokeBuilder();
+//        dragState = DragSource.MOUSE;
+        dragging = true;
+
+//        ServiceDevice dev = user.getToolService(ServiceDevice.class);
 //        bubbleOutliner = new StrokeBuffer(strokeBufferSize, strokeBufferSize,
 //                dev.getComponent().getGraphicsConfiguration());
-        penDown = true;
-        readingPen = false;
     }
 
     @Override
     protected void dragTo(MouseEvent evt)
     {
-        strokeSegment(evt);
+//System.err.println("Drag to: " + dragState);
+//        strokeSegment(evt);
 //        fireToolDisplayChanged();
+//        if (dragState == DragSource.MOUSE)
+        if (!penDown)
+        {
+            samplePen(evt);
+            strokeToNextSample();
+        }
     }
 
     @Override
     protected void endDrag(MouseEvent evt)
     {
+//System.err.println("End drag: " + dragState);
+        strokeBuilder = null;
+//        dragState = DragSource.NONE;
+        dragging = false;
+        
 //        if (bubbleOutliner == null)
 //        {
 //            //Will be null if canceled or more than one mouse button pushed
@@ -233,7 +308,9 @@ public class ToolBrush extends ToolDisplay
     public void cancel()
     {
 //        bubbleOutliner = null;
-        penDown = false;
+//        penDown = false;
+        strokeBuilder = null;
+//        dragState = DragSource.NONE;
     }
 
     @Override
@@ -249,24 +326,87 @@ public class ToolBrush extends ToolDisplay
     public void penKindEvent(PKindEvent pke)
     {
     }
+    
+//    private void startReadingFromPen()
+//    {
+////        if (readingPen)
+////        {
+////            return;
+////        }
+//System.err.println("Start reading from pen: " + dragState);
+//
+//        //Restart drawing, using pen now
+//        Pen pen = penManager.pen;
+//        penNextX = penX = pen.getLevelValue(PLevel.Type.X);
+//        penNextY = penY = pen.getLevelValue(PLevel.Type.Y);
+//        penNextTiltX = penTiltX = pen.getLevelValue(PLevel.Type.TILT_X);
+//        penNextTiltY = penTiltY = pen.getLevelValue(PLevel.Type.TILT_Y);
+//        penNextPressure = penPressure = pen.getLevelValue(PLevel.Type.PRESSURE);
+//
+//        createStrokeBuilder();
+////        strokeBuider = new StrokeBuilder();
+////System.err.println("Created builder - pen event");
+////        ServiceDevice dev = user.getToolService(ServiceDevice.class);
+////        bubbleOutliner = new StrokeBuffer(strokeBufferSize, strokeBufferSize,
+////                dev.getComponent().getGraphicsConfiguration());
+////        readingPen = true;
+//        dragState = DragSource.PEN;
+//    }
 
     @Override
     public void penLevelEvent(PLevelEvent ple)
     {
+        //Start reading from pen, if dragging
+        //Pen dragging overrides mouse dragging
         PLevel[] levels = ple.levels;
         for (int i = 0; i < levels.length; ++i)
         {
-            if (penDown && levels[i].getType() == PLevel.Type.PRESSURE)
+            if (levels[i].getType() == PLevel.Type.PRESSURE)
             {
-                startReadingFromPen();
+                boolean curPenDown = levels[i].value > 0;
+//                if (dragState != DragSource.PEN)
+//                {
+//                    if (levels[i].value > 0)
+//                    {
+//                        startReadingFromPen();
+//                    }
+//                }
+//                else
+//                {
+//                    samplePen(null);
+//                    strokeToNextSample();
+//                }
+                samplePen(null);
+                
+                if (curPenDown && !penDown)
+                {
+//System.err.println("+++Start pen stroke ");
+                    penX = penNextX;
+                    penY = penNextY;
+                    penTiltX = penNextTiltX;
+                    penTiltY = penNextTiltY;
+                    penPressure = penNextPressure;
+                    if (strokeBuilder != null)
+                    {
+                        strokeBuilder.clear();
+                    }
+                }
+                penDown = curPenDown;
+                
+                if (dragging && penDown)
+                {
+                    strokeToNextSample();
+                }
+                
+                break;
             }
         }
 
-        if (penDown)
-        {
-            //If pen is down, do extra sampling to overcome sluggish API calls
-            samplePen(null);
-        }
+//        if (dragState != DragState.NONE)
+//        {
+//            //If pen is down, do extra sampling to overcome sluggish API calls
+//            samplePen(null);
+//        }
     }
 
     @Override
@@ -283,5 +423,22 @@ public class ToolBrush extends ToolDisplay
     public void penTock(long l)
     {
     }
+
+    @Override
+    public void render(RenderContext ctx)
+    {
+        if (strokeBuilder != null)
+        {
+            CyDrawStack stack = ctx.getDrawStack();
+            strokeBuilder.render(stack);
+        }
+        
+    }
+    
+    //----------------------------
+//    enum DragSource
+//    {
+//        NONE, MOUSE, PEN
+//    }
     
 }

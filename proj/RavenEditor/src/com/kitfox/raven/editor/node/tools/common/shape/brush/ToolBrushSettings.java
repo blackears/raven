@@ -19,7 +19,6 @@ package com.kitfox.raven.editor.node.tools.common.shape.brush;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.node.scene.control.ColorPanel;
 import com.kitfox.raven.editor.node.scene.control.GraphDispPanel;
-import com.kitfox.raven.editor.node.scene.control.SnappingPanel;
 
 /**
  *
@@ -48,8 +47,23 @@ public class ToolBrushSettings extends javax.swing.JPanel
         graphDispPanel = new GraphDispPanel(editor);
         panel_boxArea.add(graphDispPanel);
         
+        updateFromProvider();
+    }
+    
+    private void updateFromProvider()
+    {
+        spinner_strokeWidthMax.setValue(prov.getStrokeWidthMax());
+        spinner_strokeWidthMin.setValue(prov.getStrokeWidthMin());
+        spinner_hardness.setValue(prov.getHardness());
+
+        spinner_strokeSpacing.setValue(prov.getStrokeSpacing());
+        spinner_strokeSmoothing.setValue(prov.getStrokeSmoothing());
+        spinner_vertexSmoothAngle.setValue(prov.getVertexSmoothAngle());
+        
+        check_antiAlias.setSelected(prov.isAntialias());
     }
 
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -62,7 +76,20 @@ public class ToolBrushSettings extends javax.swing.JPanel
 
         panel_spacer = new javax.swing.JPanel();
         panel_boxArea = new javax.swing.JPanel();
-        panel_colorArea = new javax.swing.JPanel();
+        panel_control = new javax.swing.JPanel();
+        spinner_strokeWidthMax = new javax.swing.JSpinner();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        spinner_strokeWidthMin = new javax.swing.JSpinner();
+        jLabel3 = new javax.swing.JLabel();
+        spinner_hardness = new javax.swing.JSpinner();
+        check_antiAlias = new javax.swing.JCheckBox();
+        jLabel4 = new javax.swing.JLabel();
+        spinner_strokeSpacing = new javax.swing.JSpinner();
+        jLabel5 = new javax.swing.JLabel();
+        spinner_strokeSmoothing = new javax.swing.JSpinner();
+        jLabel6 = new javax.swing.JLabel();
+        spinner_vertexSmoothAngle = new javax.swing.JSpinner();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -71,14 +98,199 @@ public class ToolBrushSettings extends javax.swing.JPanel
 
         panel_boxArea.setLayout(new javax.swing.BoxLayout(panel_boxArea, javax.swing.BoxLayout.Y_AXIS));
 
-        panel_colorArea.setLayout(new java.awt.BorderLayout());
-        panel_boxArea.add(panel_colorArea);
+        spinner_strokeWidthMax.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(0.0f), null, Float.valueOf(1.0f)));
+        spinner_strokeWidthMax.addChangeListener(new javax.swing.event.ChangeListener()
+        {
+            public void stateChanged(javax.swing.event.ChangeEvent evt)
+            {
+                spinner_strokeWidthMaxStateChanged(evt);
+            }
+        });
+
+        jLabel1.setText("Stroke Width Max");
+
+        jLabel2.setText("Stroke Width Min");
+
+        spinner_strokeWidthMin.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(0.0f), null, Float.valueOf(1.0f)));
+        spinner_strokeWidthMin.addChangeListener(new javax.swing.event.ChangeListener()
+        {
+            public void stateChanged(javax.swing.event.ChangeEvent evt)
+            {
+                spinner_strokeWidthMinStateChanged(evt);
+            }
+        });
+
+        jLabel3.setText("Hardness");
+
+        spinner_hardness.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(0.0f), Float.valueOf(1.0f), Float.valueOf(0.05f)));
+        spinner_hardness.addChangeListener(new javax.swing.event.ChangeListener()
+        {
+            public void stateChanged(javax.swing.event.ChangeEvent evt)
+            {
+                spinner_hardnessStateChanged(evt);
+            }
+        });
+
+        check_antiAlias.setText("Anti Alias");
+        check_antiAlias.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                check_antiAliasActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("Stroke Spacing");
+
+        spinner_strokeSpacing.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(0.0f), null, Float.valueOf(0.05f)));
+        spinner_strokeSpacing.addChangeListener(new javax.swing.event.ChangeListener()
+        {
+            public void stateChanged(javax.swing.event.ChangeEvent evt)
+            {
+                spinner_strokeSpacingStateChanged(evt);
+            }
+        });
+
+        jLabel5.setText("Stroke Smoothing");
+
+        spinner_strokeSmoothing.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(0.0f), null, Float.valueOf(1.0f)));
+        spinner_strokeSmoothing.addChangeListener(new javax.swing.event.ChangeListener()
+        {
+            public void stateChanged(javax.swing.event.ChangeEvent evt)
+            {
+                spinner_strokeSmoothingStateChanged(evt);
+            }
+        });
+
+        jLabel6.setText("Vertex Smooth Angle");
+
+        spinner_vertexSmoothAngle.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(0.0f), null, Float.valueOf(1.0f)));
+        spinner_vertexSmoothAngle.addChangeListener(new javax.swing.event.ChangeListener()
+        {
+            public void stateChanged(javax.swing.event.ChangeEvent evt)
+            {
+                spinner_vertexSmoothAngleStateChanged(evt);
+            }
+        });
+
+        javax.swing.GroupLayout panel_controlLayout = new javax.swing.GroupLayout(panel_control);
+        panel_control.setLayout(panel_controlLayout);
+        panel_controlLayout.setHorizontalGroup(
+            panel_controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panel_controlLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panel_controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel_controlLayout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(spinner_strokeSmoothing, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(spinner_vertexSmoothAngle))
+                    .addGroup(panel_controlLayout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(spinner_strokeWidthMax, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(spinner_strokeWidthMin, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panel_controlLayout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(spinner_hardness, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(check_antiAlias))
+                    .addGroup(panel_controlLayout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(spinner_strokeSpacing, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(72, Short.MAX_VALUE))
+        );
+        panel_controlLayout.setVerticalGroup(
+            panel_controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panel_controlLayout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addGroup(panel_controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(spinner_strokeWidthMax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(spinner_strokeWidthMin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panel_controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(spinner_hardness, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(check_antiAlias))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panel_controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(spinner_strokeSpacing, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panel_controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(spinner_vertexSmoothAngle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5)
+                    .addComponent(spinner_strokeSmoothing, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        panel_boxArea.add(panel_control);
 
         add(panel_boxArea, java.awt.BorderLayout.NORTH);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void spinner_strokeWidthMaxStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_spinner_strokeWidthMaxStateChanged
+    {//GEN-HEADEREND:event_spinner_strokeWidthMaxStateChanged
+        prov.setStrokeWidthMax((Float)spinner_strokeWidthMax.getValue());
+    }//GEN-LAST:event_spinner_strokeWidthMaxStateChanged
+
+    private void spinner_strokeWidthMinStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_spinner_strokeWidthMinStateChanged
+    {//GEN-HEADEREND:event_spinner_strokeWidthMinStateChanged
+        prov.setStrokeWidthMin((Float)spinner_strokeWidthMin.getValue());
+    }//GEN-LAST:event_spinner_strokeWidthMinStateChanged
+
+    private void spinner_hardnessStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_spinner_hardnessStateChanged
+    {//GEN-HEADEREND:event_spinner_hardnessStateChanged
+        prov.setHardness((Float)spinner_hardness.getValue());
+    }//GEN-LAST:event_spinner_hardnessStateChanged
+
+    private void check_antiAliasActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_check_antiAliasActionPerformed
+    {//GEN-HEADEREND:event_check_antiAliasActionPerformed
+        prov.setAntialias(check_antiAlias.isSelected());
+    }//GEN-LAST:event_check_antiAliasActionPerformed
+
+    private void spinner_strokeSpacingStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_spinner_strokeSpacingStateChanged
+    {//GEN-HEADEREND:event_spinner_strokeSpacingStateChanged
+        prov.setStrokeSpacing((Float)spinner_strokeSpacing.getValue());
+    }//GEN-LAST:event_spinner_strokeSpacingStateChanged
+
+    private void spinner_strokeSmoothingStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_spinner_strokeSmoothingStateChanged
+    {//GEN-HEADEREND:event_spinner_strokeSmoothingStateChanged
+        prov.setStrokeSmoothing((Float)spinner_strokeSmoothing.getValue());
+    }//GEN-LAST:event_spinner_strokeSmoothingStateChanged
+
+    private void spinner_vertexSmoothAngleStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_spinner_vertexSmoothAngleStateChanged
+    {//GEN-HEADEREND:event_spinner_vertexSmoothAngleStateChanged
+        prov.setVertexSmoothAngle((Float)spinner_vertexSmoothAngle.getValue());
+    }//GEN-LAST:event_spinner_vertexSmoothAngleStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox check_antiAlias;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel panel_boxArea;
-    private javax.swing.JPanel panel_colorArea;
+    private javax.swing.JPanel panel_control;
     private javax.swing.JPanel panel_spacer;
+    private javax.swing.JSpinner spinner_hardness;
+    private javax.swing.JSpinner spinner_strokeSmoothing;
+    private javax.swing.JSpinner spinner_strokeSpacing;
+    private javax.swing.JSpinner spinner_strokeWidthMax;
+    private javax.swing.JSpinner spinner_strokeWidthMin;
+    private javax.swing.JSpinner spinner_vertexSmoothAngle;
     // End of variables declaration//GEN-END:variables
 }

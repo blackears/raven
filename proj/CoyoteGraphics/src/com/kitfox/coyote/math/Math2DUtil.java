@@ -345,6 +345,16 @@ public class Math2DUtil
         return ry * (px - tx) + rx * (ty - py);
     }
 
+    public static int clamp(int val, int min, int max)
+    {
+        return val <= min ? min : (val >= max ? max : val);
+    }
+
+    public static float clamp(float val, float min, float max)
+    {
+        return val <= min ? min : (val >= max ? max : val);
+    }
+
     public static double clamp(double val, double min, double max)
     {
         return val <= min ? min : (val >= max ? max : val);

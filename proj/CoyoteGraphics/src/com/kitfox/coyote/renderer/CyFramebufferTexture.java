@@ -119,7 +119,7 @@ public class CyFramebufferTexture extends CyFramebufferAttachment
     }
 
     @Override
-    public void bind(CyGLContext ctx, CyGLWrapper gl)
+    public void bindTexture(CyGLContext ctx, CyGLWrapper gl)
     {
         TextureBufferInfo info = ctx.getTextureBufferInfo(this, gl);
         int texId = info.getTexId();
@@ -142,8 +142,6 @@ public class CyFramebufferTexture extends CyFramebufferAttachment
                 case GL_TEXTURE_2D:
                 {
                     initTex(gl, TexSubTarget.GL_TEXTURE_2D);
-                    setFramebufferTexture(gl, 
-                            TexSubTarget.GL_TEXTURE_2D, texId);
                     break;
                 }
                 case GL_TEXTURE_CUBE_MAP:
@@ -154,18 +152,61 @@ public class CyFramebufferTexture extends CyFramebufferAttachment
                     initTex(gl, TexSubTarget.GL_TEXTURE_CUBE_MAP_POSITIVE_X);
                     initTex(gl, TexSubTarget.GL_TEXTURE_CUBE_MAP_POSITIVE_Y);
                     initTex(gl, TexSubTarget.GL_TEXTURE_CUBE_MAP_POSITIVE_Z);
-
-                    //Just pick one to start with.  User will need to
-                    // manually switch this to cover entire cube
-                    setFramebufferTexture(gl, 
-                            TexSubTarget.GL_TEXTURE_CUBE_MAP_NEGATIVE_X, texId);
                     break;
                 }
             }
 
-
             info.setDirty(dirty);
         }
+    }
+
+    @Override
+    public void bindFramebuffer(CyGLContext ctx, CyGLWrapper gl)
+    {
+        bindTexture(ctx, gl);
+        
+        TextureBufferInfo info = ctx.getTextureBufferInfo(this, gl);
+        int texId = info.getTexId();
+        
+        switch (target)
+        {
+            case GL_TEXTURE_2D:
+            {
+                setFramebufferTexture(gl, 
+                        TexSubTarget.GL_TEXTURE_2D, texId);
+                break;
+            }
+            case GL_TEXTURE_CUBE_MAP:
+            {
+                //Just pick one to start with.  User will need to
+                // manually switch this to cover entire cube
+                setFramebufferTexture(gl, 
+                        TexSubTarget.GL_TEXTURE_CUBE_MAP_NEGATIVE_X, texId);
+                break;
+            }
+        }
+        
+    }
+    
+    @Override
+    public void unbindFramebuffer(CyGLContext ctx, CyGLWrapper gl)
+    {
+        switch (target)
+        {
+            case GL_TEXTURE_2D:
+            {
+                gl.glFramebufferTexture2D(attachment, 
+                        TexSubTarget.GL_TEXTURE_2D, 0, 0);
+                break;
+            }
+            case GL_TEXTURE_CUBE_MAP:
+            {
+                gl.glFramebufferTexture2D(attachment, 
+                        TexSubTarget.GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, 0);
+                break;
+            }
+        }
+            
     }
 
     public void dumpTexture(CyGLWrapper gl, File file, String fileFormat)

@@ -209,12 +209,14 @@ abstract public class RavenNodeRenderable extends RavenNode
 
     public CyRectangle2d getBoundsLocal()
     {
-        return getShapePickLocal().getBounds();
+        CyShape shape = getShapePickLocal();
+        return shape  == null ? null : getShapePickLocal().getBounds();
     }
 
     public CyRectangle2d getBoundsLocal(FrameKey frame)
     {
-        return getShapePickLocal().getBounds();
+        CyShape shape = getShapePickLocal();
+        return shape  == null ? null : getShapePickLocal().getBounds();
     }
 
     public CyRectangle2d getBoundsWorld()

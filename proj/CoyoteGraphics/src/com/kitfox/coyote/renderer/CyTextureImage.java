@@ -171,7 +171,7 @@ public class CyTextureImage
 //    }
 
     @Override
-    public void bind(CyGLContext ctx, CyGLWrapper gl)
+    public void bindTexture(CyGLContext ctx, CyGLWrapper gl)
     {
         TextureBufferInfo info = ctx.getTextureBufferInfo(this, gl);
 //        if (id == 0 || gl.getSurfaceInstanceNumber() != surfInst)

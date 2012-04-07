@@ -31,5 +31,7 @@ abstract public class CyFramebufferAttachment
         this.attachment = attachment;
     }
 
-    abstract public void bind(CyGLContext ctx, CyGLWrapper gl);
+    abstract public void bindFramebuffer(CyGLContext ctx, CyGLWrapper gl);
+
+    abstract public void unbindFramebuffer(CyGLContext ctx, CyGLWrapper gl);
 }

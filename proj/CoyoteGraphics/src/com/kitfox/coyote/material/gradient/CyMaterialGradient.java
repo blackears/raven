@@ -170,7 +170,7 @@ public class CyMaterialGradient extends CyMaterial
         gl.glActiveTexture(ActiveTexture.GL_TEXTURE0);
         if (texture != null)
         {
-            texture.bind(ctx, gl);
+            texture.bindTexture(ctx, gl);
         }
         else
         {

@@ -602,6 +602,7 @@ limitations under the License.
             <source dir="..">
                 <include name="**/*.java"/>
                 <exclude name="**/gen/**"/>
+                <exclude name="**/SVGDragon/src/org/**"/>
             </source>
             
         </setHeader>

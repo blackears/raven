@@ -37,6 +37,12 @@ public class ToolBrushProvider extends ToolProvider<ToolBrush>
     private float strokeWidthMin = 2;
     public static final String PROP_STROKE_WIDTH_MIN = "strokeWidthMin";
 
+    private float hardness = 1;
+    public static final String PROP_HARDNESS = "hardness";
+
+    private boolean antialias = false;
+    public static final String PROP_ANTIALIAS = "antialias";
+
     private float strokeSpacing = .2f;
     public static final String PROP_STROKE_SPACING = "strokeSpacing";
 
@@ -60,6 +66,8 @@ public class ToolBrushProvider extends ToolProvider<ToolBrush>
 
         strokeWidthMax = prop.getFloat(PROP_STROKE_WIDTH_MAX, 4);
         strokeWidthMin = prop.getFloat(PROP_STROKE_WIDTH_MIN, 2);
+        hardness = prop.getFloat(PROP_HARDNESS, 1);
+        antialias = prop.getBoolean(PROP_ANTIALIAS, false);
         strokeSpacing = prop.getFloat(PROP_STROKE_SPACING, .2f);
         strokeSmoothing = prop.getFloat(PROP_STROKE_SMOOTHING, 10);
         vertexSmoothAngle = prop.getFloat(PROP_VERTEX_SMOOTH_ANGLE, 10);
@@ -74,6 +82,8 @@ public class ToolBrushProvider extends ToolProvider<ToolBrush>
         
         prop.setFloat(PROP_STROKE_WIDTH_MAX, strokeWidthMax);
         prop.setFloat(PROP_STROKE_WIDTH_MIN, strokeWidthMin);
+        prop.setFloat(PROP_HARDNESS, hardness);
+        prop.setBoolean(PROP_ANTIALIAS, antialias);
         prop.setFloat(PROP_STROKE_SPACING, strokeSpacing);
         prop.setFloat(PROP_STROKE_SMOOTHING, strokeSmoothing);
         prop.setFloat(PROP_VERTEX_SMOOTH_ANGLE, vertexSmoothAngle);
@@ -113,17 +123,17 @@ public class ToolBrushProvider extends ToolProvider<ToolBrush>
     /**
      * @return the strokeWidthMin
      */
-    public float getStrokeWidthMin()
+    public float getHardness()
     {
-        return strokeWidthMin;
+        return hardness;
     }
 
     /**
-     * @param strokeWidthMin the strokeWidthMin to set
+     * @param hardness the strokeWidthMin to set
      */
-    public void setStrokeWidthMin(float strokeWidthMin)
+    public void setHardness(float hardness)
     {
-        this.strokeWidthMin = strokeWidthMin;
+        this.hardness = hardness;
     }
 
     /**
@@ -172,6 +182,38 @@ public class ToolBrushProvider extends ToolProvider<ToolBrush>
     public void setVertexSmoothAngle(float vertexSmoothAngle)
     {
         this.vertexSmoothAngle = vertexSmoothAngle;
+    }
+
+    /**
+     * @return the antialias
+     */
+    public boolean isAntialias()
+    {
+        return antialias;
+    }
+
+    /**
+     * @param antialias the antialias to set
+     */
+    public void setAntialias(boolean antialias)
+    {
+        this.antialias = antialias;
+    }
+
+    /**
+     * @return the strokeWidthMin
+     */
+    public float getStrokeWidthMin()
+    {
+        return strokeWidthMin;
+    }
+
+    /**
+     * @param strokeWidthMin the strokeWidthMin to set
+     */
+    public void setStrokeWidthMin(float strokeWidthMin)
+    {
+        this.strokeWidthMin = strokeWidthMin;
     }
     
 }
