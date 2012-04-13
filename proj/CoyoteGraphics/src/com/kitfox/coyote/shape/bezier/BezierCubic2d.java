@@ -29,14 +29,14 @@ import com.kitfox.coyote.shape.PathConsumer;
  */
 public class BezierCubic2d extends BezierCurve2d
 {
-    final double ax0;
-    final double ay0;
-    final double ax1;
-    final double ay1;
-    final double ax2;
-    final double ay2;
-    final double ax3;
-    final double ay3;
+    private final double ax0;
+    private final double ay0;
+    private final double ax1;
+    private final double ay1;
+    private final double ax2;
+    private final double ay2;
+    private final double ax3;
+    private final double ay3;
 
     public BezierCubic2d(double ax0, double ay0, double ax1, double ay1, double ax2, double ay2, double ax3, double ay3)
     {
@@ -434,6 +434,26 @@ public class BezierCubic2d extends BezierCurve2d
         path.cubicTo(ax1, ay1, ax2, ay2, ax3, ay3);
     }
 
+    public double getStartKnotX()
+    {
+        return ax1;
+    }
+
+    public double getStartKnotY()
+    {
+        return ay1;
+    }
+
+    public double getEndKnotX()
+    {
+        return ax2;
+    }
+
+    public double getEndKnotY()
+    {
+        return ay2;
+    }
+    
     /*
     public void clip(BezierCurve curve)
     {
@@ -456,4 +476,68 @@ public class BezierCubic2d extends BezierCurve2d
         
     }
 */
+
+    /**
+     * @return the ax0
+     */
+    public double getAx0()
+    {
+        return ax0;
+    }
+
+    /**
+     * @return the ay0
+     */
+    public double getAy0()
+    {
+        return ay0;
+    }
+
+    /**
+     * @return the ax1
+     */
+    public double getAx1()
+    {
+        return ax1;
+    }
+
+    /**
+     * @return the ay1
+     */
+    public double getAy1()
+    {
+        return ay1;
+    }
+
+    /**
+     * @return the ax2
+     */
+    public double getAx2()
+    {
+        return ax2;
+    }
+
+    /**
+     * @return the ay2
+     */
+    public double getAy2()
+    {
+        return ay2;
+    }
+
+    /**
+     * @return the ax3
+     */
+    public double getAx3()
+    {
+        return ax3;
+    }
+
+    /**
+     * @return the ay3
+     */
+    public double getAy3()
+    {
+        return ay3;
+    }
 }

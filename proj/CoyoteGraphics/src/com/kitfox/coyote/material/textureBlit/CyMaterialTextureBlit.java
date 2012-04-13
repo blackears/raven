@@ -118,8 +118,12 @@ public class CyMaterialTextureBlit extends CyMaterial
         else
         {
             gl.glEnable(Capability.GL_BLEND);
-            gl.glBlendFunc(CyGLWrapper.BlendFactor.GL_SRC_ALPHA,
-                    CyGLWrapper.BlendFactor.GL_ONE_MINUS_SRC_ALPHA);
+            gl.glBlendFuncSeparate(CyGLWrapper.BlendFactor.GL_SRC_ALPHA,
+                    CyGLWrapper.BlendFactor.GL_ONE_MINUS_SRC_ALPHA,
+                    CyGLWrapper.BlendFactor.GL_ONE,
+                    CyGLWrapper.BlendFactor.GL_ONE);
+//                    CyGLWrapper.BlendFactor.GL_SRC_ALPHA,
+//                    CyGLWrapper.BlendFactor.GL_DST_ALPHA);
         }
 
         //Upload uniforms

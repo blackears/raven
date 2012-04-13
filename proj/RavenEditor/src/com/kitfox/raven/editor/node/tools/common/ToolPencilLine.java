@@ -16,6 +16,8 @@
 
 package com.kitfox.raven.editor.node.tools.common;
 
+import com.kitfox.coyote.math.CyVector2d;
+import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.CyStroke;
 import com.kitfox.coyote.shape.CyStrokeCap;
 import com.kitfox.coyote.shape.CyStrokeJoin;
@@ -29,14 +31,12 @@ import com.kitfox.raven.editor.node.tools.ToolUser;
 import com.kitfox.raven.paint.RavenStroke;
 import com.kitfox.raven.paint.common.RavenPaintColor;
 import com.kitfox.raven.shape.bezier.BezierMath;
-import com.kitfox.raven.shape.builders.PencilBuilder;
-import com.kitfox.raven.shape.builders.PencilBuilder.PenPoint;
+import com.kitfox.coyote.shape.PiecewiseBezierBuilder;
 import com.kitfox.raven.shape.path.PathCurve;
 import com.kitfox.raven.util.service.ServiceInst;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
 import com.kitfox.raven.util.tree.NodeObjectProviderIndex;
-import com.kitfox.raven.util.tree.SelectionRecord;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
@@ -63,7 +63,7 @@ import jpen.event.PenListener;
 public class ToolPencilLine extends ToolDisplay
         implements PenListener
 {
-    PencilBuilder bubbleOutliner;
+    PiecewiseBezierBuilder pencilBuilder;
 
     final PenManager penManager;
 
@@ -114,12 +114,12 @@ public class ToolPencilLine extends ToolDisplay
 
         g.setColor(Color.blue);
         g.setStroke(new BasicStroke(5));
-        if (bubbleOutliner != null)
+        if (pencilBuilder != null)
         {
-            Path2D.Double path = bubbleOutliner.getPath();
+            CyPath2d path = pencilBuilder.getPath();
             if (path != null)
             {
-                g.draw(path);
+                g.draw(path.asPathAWT());
             }
         }
     }
@@ -137,7 +137,7 @@ public class ToolPencilLine extends ToolDisplay
         penNextY = penY = pen.getLevelValue(PLevel.Type.Y);
         penNextPressure = penPressure = pen.getLevelValue(PLevel.Type.PRESSURE);
 
-        bubbleOutliner = new PencilBuilder(smoothing);
+        pencilBuilder = new PiecewiseBezierBuilder(smoothing);
         readingPen = true;
     }
 
@@ -167,7 +167,7 @@ public class ToolPencilLine extends ToolDisplay
         penY = penNextY;
         penPressure = penNextPressure;
 
-        bubbleOutliner = new PencilBuilder(smoothing);
+        pencilBuilder = new PiecewiseBezierBuilder(smoothing);
         penDown = true;
         readingPen = false;
 
@@ -191,7 +191,7 @@ public class ToolPencilLine extends ToolDisplay
             penY = penNextY;
             penPressure = penNextPressure;
             
-            bubbleOutliner.addPoint(new PenPoint(penNextX, penNextY, penNextPressure));
+            pencilBuilder.addPoint(new CyVector2d(penNextX, penNextY));
             fireToolDisplayChanged();
         }
 
@@ -200,18 +200,18 @@ public class ToolPencilLine extends ToolDisplay
     @Override
     protected void endDrag(MouseEvent evt)
     {
-        if (bubbleOutliner == null)
+        if (pencilBuilder == null)
         {
             //Will be null if canceled or more than one mouse button pushed
             return;
         }
 
         samplePen(evt);
-        bubbleOutliner.addPoint(new PenPoint(penNextX, penNextY, penNextPressure));
+        pencilBuilder.addPoint(new CyVector2d(penNextX, penNextY));
 
 //        if (!bubbleOutliner.isEmpty())
         {
-            final Path2D.Double path = bubbleOutliner.getPath();
+            final CyPath2d path = pencilBuilder.getPath();
 
             if (path != null)
             {
@@ -260,9 +260,10 @@ public class ToolPencilLine extends ToolDisplay
                     devToLocal.invert();
                 } catch (NoninvertibleTransformException ex)
                 {
-                    Logger.getLogger(ToolPaintStroke.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(ToolPencilLine.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                Path2D.Double shape = (Path2D.Double)devToLocal.createTransformedShape(path);
+                Path2D.Double shape = (Path2D.Double)devToLocal.createTransformedShape(
+                        path.asPathAWT());
 
 
 
@@ -306,7 +307,7 @@ public class ToolPencilLine extends ToolDisplay
             }
         }
 
-        bubbleOutliner = null;
+        pencilBuilder = null;
         penDown = false;
         fireToolDisplayChanged();
     }
@@ -314,7 +315,7 @@ public class ToolPencilLine extends ToolDisplay
     @Override
     public void cancel()
     {
-        bubbleOutliner = null;
+        pencilBuilder = null;
         penDown = false;
     }
 

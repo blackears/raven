@@ -22,6 +22,7 @@ import java.awt.geom.PathIterator;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 
 /**
  *
@@ -305,7 +306,148 @@ public class CyPath2d extends CyShape
         return numTypes == 0;
     }
 
+    public CyPath2d reverse()
+    {
+        ArrayList<ReverseSeg> list = new ArrayList<ReverseSeg>();
+        
+        //boolean penDown = false;
+        double mx = 0, my = 0;
+        double[] coords = new double[6];
+        int pass = 0;
+        int insertCloseIdx = 0;
+        for (CyPathIterator2d it = getIterator(); it.hasNext(); ++pass)
+        {
+            switch (it.next(coords))
+            {
+                case MOVETO:
+                {
+                    double x0 = coords[0];
+                    double y0 = coords[1];
+                    if (pass != 0)
+                    {
+                        list.add(new ReverseSeg(Type.MOVETO, mx, my));
+//                        penDown = false;
+                    }
+                    insertCloseIdx = list.size();
+                    mx = x0;
+                    my = y0;
+//                    penDown = false;
+                    break;
+                }
+                case LINETO:
+                {
+                    double x0 = coords[0];
+                    double y0 = coords[1];
+                    list.add(new ReverseSeg(Type.LINETO, mx, my));
+                    mx = x0;
+                    my = y0;
+                    break;
+                }
+                case QUADTO:
+                {
+                    double x0 = coords[0];
+                    double y0 = coords[1];
+                    double kx0 = coords[2];
+                    double ky0 = coords[3];
+                    list.add(new ReverseSeg(
+                            Type.QUADTO, mx, my, kx0, ky0));
+                    mx = x0;
+                    my = y0;
+                    break;
+                }
+                case CUBICTO:
+                {
+                    double x0 = coords[0];
+                    double y0 = coords[1];
+                    double kx0 = coords[2];
+                    double ky0 = coords[3];
+                    double kx1 = coords[4];
+                    double ky1 = coords[5];
+                    list.add(new ReverseSeg(
+                            Type.CUBICTO, mx, my, kx1, ky1, kx0, ky0));
+                    mx = x0;
+                    my = y0;
+                    break;
+                }
+                case CLOSE:
+                {
+                    list.add(insertCloseIdx, new ReverseSeg(Type.CLOSE));
+                    break;
+                }
+            }
+//            pass = false;
+        }
+        
+        if (mx != 0 && my != 0)
+        {
+            list.add(new ReverseSeg(Type.MOVETO, mx, my));
+        }
+        
+        //Create path
+        CyPath2d path = new CyPath2d();
+        for (int i = list.size() - 1; i >= 0; --i)
+        {
+            ReverseSeg seg = list.get(i);
+            switch (seg.type)
+            {
+                case MOVETO:
+                    path.moveTo(seg.x0, seg.y0);
+                    break;
+                case LINETO:
+                    path.lineTo(seg.x0, seg.y0);
+                    break;
+                case QUADTO:
+                    path.quadTo(seg.x0, seg.y0, seg.kx0, seg.ky0);
+                    break;
+                case CUBICTO:
+                    path.cubicTo(seg.x0, seg.y0, seg.kx0, seg.ky0, seg.kx1, seg.ky1);
+                    break;
+                case CLOSE:
+                    path.close();
+                    break;
+            }
+        }
+        
+        return path;
+    }
+
     //------------------------------
+    class ReverseSeg
+    {
+        Type type;
+        double x0;
+        double y0;
+        double kx0;
+        double ky0;
+        double kx1;
+        double ky1;
+
+        public ReverseSeg(Type type, double x0, double y0, double kx0, double ky0, double kx1, double ky1)
+        {
+            this.type = type;
+            this.x0 = x0;
+            this.y0 = y0;
+            this.kx0 = kx0;
+            this.ky0 = ky0;
+            this.kx1 = kx1;
+            this.ky1 = ky1;
+        }
+        
+        public ReverseSeg(Type type, double x0, double y0, double kx0, double ky0)
+        {
+            this(type, x0, y0, kx0, ky0, 0, 0);
+        }
+        
+        public ReverseSeg(Type type, double x0, double y0)
+        {
+            this(type, x0, y0, 0, 0, 0, 0);
+        }
+        
+        public ReverseSeg(Type type)
+        {
+            this(type, 0, 0, 0, 0, 0, 0);
+        }
+    }
 
     public class CyPathIterator2d implements CyPathIterator
     {

@@ -65,6 +65,7 @@ import jpen.event.PenListener;
  *
  * @author kitfox
  */
+@Deprecated
 public class ToolPaintStroke extends ToolDisplay
         implements PenListener
 {
@@ -460,7 +461,7 @@ public class ToolPaintStroke extends ToolDisplay
 
     //---------------------------------------
 
-    @ServiceInst(service=ToolProvider.class)
+//    @ServiceInst(service=ToolProvider.class)
     static public class Provider extends ToolProvider<ToolPaintStroke>
     {
         private float strokeWidthMax = 4;

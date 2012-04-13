@@ -25,7 +25,9 @@ import com.kitfox.coyote.renderer.CyFramebuffer;
 import com.kitfox.coyote.renderer.CyFramebufferTexture;
 import com.kitfox.coyote.renderer.CyGLContext;
 import com.kitfox.coyote.renderer.CyGLWrapper;
+import com.kitfox.coyote.renderer.CyTextureImage;
 import com.kitfox.coyote.renderer.CyTextureSource;
+import com.kitfox.coyote.renderer.CyTransparency;
 import com.kitfox.coyote.renderer.vertex.CyVertexBufferDataSquare;
 import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.raven.util.Grid;
@@ -45,6 +47,10 @@ public class TiledRaster
     CyMatrix4d proj = new CyMatrix4d();
     static final CyMatrix4d local2Tex = CyMatrix4d.createIdentity();
 
+    //Framebuffer will be copied here before any compositing ops 
+    // to allow for destination sensitive compositing
+    CyTextureImage destBuffer;
+    
     public TiledRaster(int tileWidth, int tileHeight)
     {
         this.tileWidth = tileWidth;
@@ -52,11 +58,18 @@ public class TiledRaster
         this.frameBuf = new CyFramebuffer(
                 tileWidth, tileHeight);
 
+        destBuffer = new CyTextureImage(
+                CyGLWrapper.TexTarget.GL_TEXTURE_2D, 
+                CyGLWrapper.InternalFormatTex.GL_RGBA,
+                CyGLWrapper.DataType.GL_UNSIGNED_BYTE, 
+                tileWidth, tileHeight, 
+                CyTransparency.TRANSLUCENT, null);
+        
         //Tile projection matrix
         proj.setIdentity();
         proj.translate(-1, -1, 0);
         proj.scale(2.0 / tileWidth, 2.0 / tileHeight, 1);
-                
+
     }
     
     /**
@@ -129,6 +142,15 @@ int curBuf = (int)fbuf.get(0);
                     gl.glClear(true, true, true);
                 }
                 
+                //Copy framebuffer into 'dst' texture
+                destBuffer.bindTexture(ctx, gl);
+                gl.glCopyTexSubImage2D(
+                        CyGLWrapper.TexSubTarget.GL_TEXTURE_2D, 
+                        0, 
+                        0, 0, 
+                        0, 0, tileWidth, tileHeight);
+                
+                //Draw image
                 mvp.set(proj);
                 mvp.translate(tx * -tileWidth, ty * -tileHeight, 0);
                 mvp.mul(xform);
@@ -138,7 +160,8 @@ int curBuf = (int)fbuf.get(0);
                 rec.render(ctx, gl, null);
             }
         }
-gl.glBindFramebuffer(0);
+gl.glBindFramebuffer(curBuf);
+//gl.glBindFramebuffer(0);
         
     }
     

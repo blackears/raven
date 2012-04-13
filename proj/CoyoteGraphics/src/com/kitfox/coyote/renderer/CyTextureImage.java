@@ -42,10 +42,22 @@ public class CyTextureImage
     private final CyTransparency transparency;
     private final CyTextureDataProvider dataProvider;
 
-//    int id;
-//    int surfInst;
     int dirty;
 
+    /**
+     * Create a new image backed texture
+     * 
+     * @param target
+     * @param format
+     * @param dataType
+     * @param width
+     * @param height
+     * @param transparency
+     * @param dataProvider If non-null, image will initialize itself
+     * with data provided by this object (and will automatically update
+     * when dataProvider data changes).  If null, a blank image will
+     * be created.
+     */
     public CyTextureImage(CyGLWrapper.TexTarget target,
             CyGLWrapper.InternalFormatTex format,
             CyGLWrapper.DataType dataType,
@@ -60,7 +72,10 @@ public class CyTextureImage
         this.transparency = transparency;
         this.dataProvider = dataProvider;
 
-        dataProvider.addCyTextureDataProviderListener(this);
+        if (dataProvider != null)
+        {
+            dataProvider.addCyTextureDataProviderListener(this);
+        }
     }
 
     @Override
@@ -120,71 +135,17 @@ public class CyTextureImage
                 : dataProvider.getData(target));
     }
 
-//    private void uploadData(GLWrapper gl)
-//    {
-//        if (!dirty)
-//        {
-//            return;
-//        }
-//
-//        dirty = false;
-//        switch (target)
-//        {
-//            case GL_TEXTURE_2D:
-//            {
-//                initTex(gl, TexSubTarget.GL_TEXTURE_2D);
-//                break;
-//            }
-//            case GL_TEXTURE_CUBE_MAP:
-//            {
-//                initTex(gl, TexSubTarget.GL_TEXTURE_CUBE_MAP_NEGATIVE_X);
-//                initTex(gl, TexSubTarget.GL_TEXTURE_CUBE_MAP_NEGATIVE_Y);
-//                initTex(gl, TexSubTarget.GL_TEXTURE_CUBE_MAP_NEGATIVE_Z);
-//                initTex(gl, TexSubTarget.GL_TEXTURE_CUBE_MAP_POSITIVE_X);
-//                initTex(gl, TexSubTarget.GL_TEXTURE_CUBE_MAP_POSITIVE_Y);
-//                initTex(gl, TexSubTarget.GL_TEXTURE_CUBE_MAP_POSITIVE_Z);
-//                break;
-//            }
-//        }
-//    }
-
-//    private void init(GLWrapper gl)
-//    {
-////        surfInst = gl.getSurfaceInstanceNumber();
-//
-//        IntBuffer ibuf = BufferUtil.allocateInt(1);
-//        gl.glGenTextures(1, ibuf);
-//        id = ibuf.get(0);
-//
-//        gl.glBindTexture(target, id);
-//        gl.glTexParameter(target,
-//                TexParamName.GL_TEXTURE_MIN_FILTER, TexParam.GL_LINEAR);
-//        gl.glTexParameter(target,
-//                TexParamName.GL_TEXTURE_MAG_FILTER, TexParam.GL_LINEAR);
-//        gl.glTexParameter(target,
-//                TexParamName.GL_TEXTURE_WRAP_S, TexParam.GL_CLAMP_TO_EDGE);
-//        gl.glTexParameter(target,
-//                TexParamName.GL_TEXTURE_WRAP_T, TexParam.GL_CLAMP_TO_EDGE);
-//        gl.glGenerateMipmap(target);
-//
-//        dirty = true;
-//    }
-
     @Override
     public void bindTexture(CyGLContext ctx, CyGLWrapper gl)
     {
         TextureBufferInfo info = ctx.getTextureBufferInfo(this, gl);
-//        if (id == 0 || gl.getSurfaceInstanceNumber() != surfInst)
-//        {
-//            init(gl);
-//        }
+
         int texId = info.getTexId();
 
 
         gl.glBindTexture(target, texId);
         if (info.getDirty() < dirty)
         {
-        //uploadData(gl);
             gl.glTexParameter(target,
                     TexParamName.GL_TEXTURE_MIN_FILTER, TexParam.GL_LINEAR);
             gl.glTexParameter(target,
@@ -217,37 +178,11 @@ public class CyTextureImage
         }
     }
 
-//    public void dispose()
-//    {
-//        GLActionQueue.inst().postAction(new Dispose(id));
-//        id = 0;
-//        dataProvider.removeCyTextureDataProviderListener(this);
-//    }
-
     @Override
     public void textureDataChanged(CyChangeEvent evt)
     {
         ++dirty;
     }
 
-    //------------------------------------
-
-    static class Dispose implements CyGLAction
-    {
-        int id;
-
-        public Dispose(int id)
-        {
-            this.id = id;
-        }
-
-        @Override
-        public void doAction(CyGLWrapper gl)
-        {
-            IntBuffer ibuf = BufferUtil.allocateInt(1);
-            ibuf.put(0, id);
-            gl.glDeleteTextures(1, ibuf);
-        }
-    }
 
 }

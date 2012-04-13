@@ -35,7 +35,7 @@ import java.util.logging.Logger;
  */
 public class FitCurve
 {
-    public FitCurve(int rows, GMatrix P)
+    private FitCurve()
     {
     }
 

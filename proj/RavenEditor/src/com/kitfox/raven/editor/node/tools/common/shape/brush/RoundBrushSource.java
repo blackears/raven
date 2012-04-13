@@ -75,8 +75,11 @@ public class RoundBrushSource extends CyTextureDataProvider
                 double rad = Math2DUtil.dist(i, j, mid, mid);
                 double lum = brushRad == hardRad 
                         ? (rad > brushRad ? 0 : 1)
-                        : (rad - hardRad) / (brushRad - hardRad);
+                        : 1 - (rad - hardRad) / (brushRad - hardRad);
 
+//                lum = Math2DUtil.clamp(lum, 0, 1);
+//                lum = Math.pow(lum, 4);
+                
                 //Create alpha mask
                 byte b = (byte)(Math2DUtil.clamp(lum * 255, 0, 255));
                 buffer.put((byte)0);

@@ -23,20 +23,16 @@ import com.kitfox.coyote.math.CyColor4f;
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.renderer.CyDrawStack;
 import com.kitfox.coyote.renderer.CyRendererUtil2D;
-import com.kitfox.coyote.renderer.CyVertexBuffer;
 import com.kitfox.coyote.renderer.vertex.CyVertexBufferDataSquareLines;
 import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.coyote.shape.CyShape;
-import com.kitfox.coyote.shape.ShapeLinesProvider;
-import com.kitfox.game.control.color.ColorStyle;
 import com.kitfox.raven.editor.node.renderer.RavenRenderer;
 import com.kitfox.raven.paint.common.RavenPaintColor;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
 import com.kitfox.raven.util.service.ServiceInst;
 import com.kitfox.raven.util.tree.FrameKey;
 import com.kitfox.raven.util.tree.PropertyWrapperFloat;
-import javax.swing.Icon;
 
 /**
  *
