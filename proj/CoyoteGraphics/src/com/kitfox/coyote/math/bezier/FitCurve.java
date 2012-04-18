@@ -265,14 +265,16 @@ public class FitCurve
     }
 
     /**
-     * Least squares fitting of the control knots of a bezier.  Initial and final
-     * points of bezier are equal to the first and last entries in P.
+     * Least squares fitting of the control knots of a bezier.  Using this method
+     * will only try to fit the knots, so the start and end points of the final
+     * bezier are equal to the start and end points of the input P vector.
      *
      * @param degree Degree of bezier to build
-     * @param Ptimes Non decreasing set of values that spana [0 1].  Indicate time
+     * @param Ptimes Non decreasing set of values that spans [0 1].  Indicate time
      * samples of each P data point.
      * @param P Data values to fit.
-     * @return Array of the knot values of least squares fit spline
+     * @return Vector of the knot values of least squares fit spline.  The start
+     * and end points of the spline are omitted from this vector.
      */
     public static GMatrix fitBezierKnots(int degree, double[] Ptimes, GMatrix P)
     {

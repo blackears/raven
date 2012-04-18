@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package com.kitfox.coyote.shape;
+package com.kitfox.coyote.shape.bezier.builder;
 
 import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.math.GMatrix;
 import com.kitfox.coyote.math.bezier.FitCurve;
+import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.bezier.BezierCubic2d;
 import java.util.ArrayList;
 
@@ -26,22 +27,19 @@ import java.util.ArrayList;
  *
  * @author kitfox
  */
-public class PiecewiseBezierBuilder
+public class PiecewiseBezierBuilder2d
 {
     ArrayList<CyVector2d> fitPoints = new ArrayList<CyVector2d>();
     CyVector2d ptLast;
 
     //Used to track UI display curve while the stroke is being drawn
     ArrayList<FitCurveRecord> segments = new ArrayList<FitCurveRecord>();
-//    OutlinerPath outlinerPath;
-    static final int degree = 3;
 
     final double maxError;
 
-//    private PathCurve displayPath;
     CyPath2d path;
 
-    public PiecewiseBezierBuilder(double maxError)
+    public PiecewiseBezierBuilder2d(double maxError)
     {
         this.maxError = maxError;
     }
@@ -66,10 +64,6 @@ public class PiecewiseBezierBuilder
         {
             if (ptLast.x == pt.x && ptLast.y == pt.y)
             {
-                //Something other than position changed - like pressure
-                //Replace end record with updated one
-//                points.remove(points.size() - 1);
-//                fitPoints.remove(fitPoints.size() - 1);
                 return;
             }
         }
@@ -79,7 +73,7 @@ public class PiecewiseBezierBuilder
         calculateNewSegments();
     }
 
-    private FitCurveRecord fitCurve(ArrayList<CyVector2d> fitPoints, FitCurveRecord prevSeg)
+    private FitCurveRecord fitCurve(ArrayList<CyVector2d> fitPoints)
     {
         //Prepare points for least squares fit
         GMatrix P = new GMatrix(fitPoints.size(), 2);
@@ -161,28 +155,6 @@ public class PiecewiseBezierBuilder
             return null;
         }
 
-//        if (prevSeg != null)
-//        {
-//            //Tweak this segement to it is C2 continous with prevoius segment
-//            double tan0X = prevSeg.seg.getEndKnotX() - prevSeg.seg.getEndX();
-//            double tan0Y = prevSeg.seg.getEndKnotY() - prevSeg.seg.getEndY();
-//            double tan1X = seg.getStartKnotX() - seg.getStartX();
-//            double tan1Y = seg.getStartKnotY() - seg.getStartY();
-//
-//            //Project tangent of this seg onto tangent of prev seg
-//            //Note that to project vec B onto A then
-//            // B' = (A / |A|) * |B| * cos AB
-//            // B' = A * (A . B) / (A . A)
-//            double scalar = (tan0X * tan1X + tan0Y * tan1Y) / (tan0X * tan0X + tan0Y * tan0Y);
-////DEBUG
-//if ((tan0X == 0 && tan0Y == 0) || (scalar == 0))
-//{
-//    int j = 9;
-//}
-//            seg.setStartKnotX(seg.getStartX() + (int)(tan0X * scalar));
-//            seg.setStartKnotY(seg.getStartY() + (int)(tan0Y * scalar));
-//        }
-
         double error = 0;
         CyVector2d evalPt = new CyVector2d();
         for (int i = 0; i < fitPoints.size(); ++i)
@@ -191,13 +163,9 @@ public class PiecewiseBezierBuilder
             seg.evaluate(Ptimes[i], evalPt);
             double dx = pt.x - evalPt.x;
             double dy = pt.y - evalPt.y;
-//            double dx = pt.x - seg.calcPointX(Ptimes[i]);
-//            double dy = pt.y - seg.calcPointY(Ptimes[i]);
             error += Math.sqrt(dx * dx + dy * dy);
         }
 
-//        double w0 = fitPoints.get(0).pressure;
-//        double w1 = fitPoints.get(fitPoints.size() - 1).pressure;
         return new FitCurveRecord(seg, error);
     }
 
@@ -213,35 +181,16 @@ public class PiecewiseBezierBuilder
         // point the last good segment is pushed and a new top segment begine
         // to build.
 
-        FitCurveRecord prevSeg = null;
-        if (segments.size() >= 2)
-        {
-            prevSeg = segments.get(segments.size() - 2);
-        }
+//        FitCurveRecord prevSeg = null;
+//        if (segments.size() >= 2)
+//        {
+//            prevSeg = segments.get(segments.size() - 2);
+//        }
         //Create new top record based on trailing points
-        FitCurveRecord rec = fitCurve(fitPoints, prevSeg);
-//DEBUG
-//if (rec != null && rec.seg.getA0x() == rec.seg.getA1x()
-//        && rec.seg.getA0y() == rec.seg.getA1y())
-//{
-//    rec = fitCurve(fitPoints, prevSeg);
-//}
+        FitCurveRecord rec = fitCurve(fitPoints);
 
         if (rec != null)
         {
-//if (rec.seg.getHullLength() > rec.seg.getBaseLength() * 10)
-//{
-//    int j = 9;
-//}
-
-//            if (outlinerPath == null)
-//            {
-//                outlinerPath = new OutlinerPath(10000);
-//                outlinerPath.moveTo((int)rec.seg.getStartX(), 
-//                        (int)rec.seg.getStartY(), 
-//                        (float)rec.weight0);
-//            }
-
             //We've accumulated too much error - push last good segment
             // and start fresh
             if (rec.error > maxError)
@@ -257,13 +206,8 @@ public class PiecewiseBezierBuilder
                     fitPoints.remove(0);
                 }
 
-                rec = fitCurve(fitPoints, prevSeg);
+                rec = fitCurve(fitPoints);
                 segments.add(rec);
-
-//                outlinerPath.cubicTo(rec.seg.getA1x(), rec.seg.getA1y(),
-//                        rec.seg.getA2x(), rec.seg.getA2y(),
-//                        rec.seg.getA3x(), rec.seg.getA3y(),
-//                        (float)rec.weight1);
             }
             else
             {
@@ -274,12 +218,6 @@ public class PiecewiseBezierBuilder
                 }
                 //Push current segment
                 segments.add(rec);
-
-//                outlinerPath.removeLast();
-//                outlinerPath.cubicTo(rec.seg.getA1x(), rec.seg.getA1y(),
-//                        rec.seg.getA2x(), rec.seg.getA2y(),
-//                        rec.seg.getA3x(), rec.seg.getA3y(),
-//                        (float)rec.weight1);
             }
         }
 
@@ -289,9 +227,6 @@ public class PiecewiseBezierBuilder
     private void buildDisplayPath()
     {
         //Math is done - now build something to see
-//        displayPath = null;
-
-
         if (segments.isEmpty())
         {
             return;
@@ -315,27 +250,9 @@ public class PiecewiseBezierBuilder
                         pt.getStartKnotX(), pt.getStartKnotY(),
                         pt.getEndKnotX(), pt.getEndKnotY(),
                         pt.getEndX(), pt.getEndY());
-
-//                    System.err.print("*** " + pt.getStartX() + " " + pt.getStartY());
-//                    System.err.print(" " + pt.getStartKnotX() + " " + pt.getStartKnotY());
-//                    System.err.print(" " + pt.getEndKnotX() + " " + pt.getEndKnotY());
-//                    System.err.println(" " + pt.getEndX() + " " + pt.getEndY());
             }
-//                System.err.println();
         }
-
-//        displayPath = new PathCurve(path);
-//        return;
-
     }
-
-    /**
-     * @return the displayPath
-     */
-//    public PathCurve getPathCurve()
-//    {
-//        return displayPath;
-//    }
 
     /**
      * @return the displayPath
@@ -381,37 +298,12 @@ public class PiecewiseBezierBuilder
     class FitCurveRecord
     {
         final BezierCubic2d seg;
-//        final double weight0;
-//        final double weight1;
         final double error;
 
-//        public FitCurveRecord(BezierCubic2d seg, double weight0, double weight1, double error)
         public FitCurveRecord(BezierCubic2d seg, double error)
         {
             this.seg = seg;
-//            this.weight0 = weight0;
-//            this.weight1 = weight1;
             this.error = error;
         }
     }
-
-//    public static class PenPoint
-//    {
-//        final float x;
-//        final float y;
-//        final float pressure;
-//
-//        public PenPoint(float x, float y, float pressure)
-//        {
-//            this.x = x;
-//            this.y = y;
-//            this.pressure = pressure;
-//        }
-//
-//        @Override
-//        public String toString()
-//        {
-//            return "X: " + x + " Y: " + y + " Pres:" + pressure;
-//        }
-//    }
 }

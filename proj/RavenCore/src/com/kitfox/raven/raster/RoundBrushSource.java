@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.kitfox.raven.editor.node.tools.common.shape.brush;
+package com.kitfox.raven.raster;
 
 import com.kitfox.coyote.math.BufferUtil;
 import com.kitfox.coyote.math.Math2DUtil;

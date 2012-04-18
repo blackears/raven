@@ -16,12 +16,14 @@
 
 package com.kitfox.raven.editor.node.tools.common.shape.brush;
 
+import com.kitfox.raven.raster.TiledRaster;
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.renderer.CyDrawStack;
 import com.kitfox.coyote.renderer.CyGLContext;
 import com.kitfox.coyote.renderer.CyGLOffscreenContext;
 import com.kitfox.coyote.renderer.CyGLWrapper;
 import com.kitfox.coyote.renderer.CyTextureSource;
+import com.kitfox.raven.raster.TiledRasterData;
 
 /**
  *
@@ -62,6 +64,14 @@ public class StrokeBuilder
     public void clear()
     {
         raster.clear();
+    }
+
+    public TiledRasterData getData(CyGLOffscreenContext ctxOff)
+    {
+        CyGLWrapper gl = ctxOff.getGL();
+        CyGLContext ctx = ctxOff.getGLContext();
+        
+        return raster.getData(ctx, gl);
     }
     
 }

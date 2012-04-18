@@ -31,7 +31,7 @@ import com.kitfox.raven.editor.node.tools.ToolUser;
 import com.kitfox.raven.paint.RavenStroke;
 import com.kitfox.raven.paint.common.RavenPaintColor;
 import com.kitfox.raven.shape.bezier.BezierMath;
-import com.kitfox.coyote.shape.PiecewiseBezierBuilder;
+import com.kitfox.coyote.shape.bezier.builder.PiecewiseBezierBuilder2d;
 import com.kitfox.raven.shape.path.PathCurve;
 import com.kitfox.raven.util.service.ServiceInst;
 import com.kitfox.raven.util.tree.NodeObject;
@@ -63,7 +63,7 @@ import jpen.event.PenListener;
 public class ToolPencilLine extends ToolDisplay
         implements PenListener
 {
-    PiecewiseBezierBuilder pencilBuilder;
+    PiecewiseBezierBuilder2d pencilBuilder;
 
     final PenManager penManager;
 
@@ -137,7 +137,7 @@ public class ToolPencilLine extends ToolDisplay
         penNextY = penY = pen.getLevelValue(PLevel.Type.Y);
         penNextPressure = penPressure = pen.getLevelValue(PLevel.Type.PRESSURE);
 
-        pencilBuilder = new PiecewiseBezierBuilder(smoothing);
+        pencilBuilder = new PiecewiseBezierBuilder2d(smoothing);
         readingPen = true;
     }
 
@@ -167,7 +167,7 @@ public class ToolPencilLine extends ToolDisplay
         penY = penNextY;
         penPressure = penNextPressure;
 
-        pencilBuilder = new PiecewiseBezierBuilder(smoothing);
+        pencilBuilder = new PiecewiseBezierBuilder2d(smoothing);
         penDown = true;
         readingPen = false;
 

@@ -49,8 +49,8 @@ public class ToolBrushProvider extends ToolProvider<ToolBrush>
     private float strokeSmoothing = 10;
     public static final String PROP_STROKE_SMOOTHING = "strokeSmoothing";
 
-    private float vertexSmoothAngle = 10;
-    public static final String PROP_VERTEX_SMOOTH_ANGLE = "vertexSmoothAngle";
+    private float pathSmoothing = 10;
+    public static final String PROP_PATH_SMOOTHING = "pathSmoothing";
 
     public ToolBrushProvider()
     {
@@ -70,7 +70,7 @@ public class ToolBrushProvider extends ToolProvider<ToolBrush>
         antialias = prop.getBoolean(PROP_ANTIALIAS, false);
         strokeSpacing = prop.getFloat(PROP_STROKE_SPACING, .2f);
         strokeSmoothing = prop.getFloat(PROP_STROKE_SMOOTHING, 10);
-        vertexSmoothAngle = prop.getFloat(PROP_VERTEX_SMOOTH_ANGLE, 10);
+        pathSmoothing = prop.getFloat(PROP_PATH_SMOOTHING, 10);
 //        editMode = prop.getEnum(PROP_EDITMODE, PenEditMode.EDIT);
     }
 
@@ -86,7 +86,7 @@ public class ToolBrushProvider extends ToolProvider<ToolBrush>
         prop.setBoolean(PROP_ANTIALIAS, antialias);
         prop.setFloat(PROP_STROKE_SPACING, strokeSpacing);
         prop.setFloat(PROP_STROKE_SMOOTHING, strokeSmoothing);
-        prop.setFloat(PROP_VERTEX_SMOOTH_ANGLE, vertexSmoothAngle);
+        prop.setFloat(PROP_PATH_SMOOTHING, pathSmoothing);
 //        prop.setEnum(PROP_EDITMODE, editMode);
         
         return properties;
@@ -171,17 +171,17 @@ public class ToolBrushProvider extends ToolProvider<ToolBrush>
     /**
      * @return the vertexSmoothAngle
      */
-    public float getVertexSmoothAngle()
+    public float getPathSmoothing()
     {
-        return vertexSmoothAngle;
+        return pathSmoothing;
     }
 
     /**
-     * @param vertexSmoothAngle the vertexSmoothAngle to set
+     * @param pathSmoothing the vertexSmoothAngle to set
      */
-    public void setVertexSmoothAngle(float vertexSmoothAngle)
+    public void setPathSmoothing(float pathSmoothing)
     {
-        this.vertexSmoothAngle = vertexSmoothAngle;
+        this.pathSmoothing = pathSmoothing;
     }
 
     /**

@@ -523,7 +523,9 @@
             author="true"
             version="true"
             use="true"
-            windowtitle="Raven Editor API">
+            windowtitle="Raven Editor API"
+            maxmemory="512M" 
+            useexternalfile="yes">
               
             <classpath>
                 <pathelement location="../RavenService/dist/RavenService.jar"/>

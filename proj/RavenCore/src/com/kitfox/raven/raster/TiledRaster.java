@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.kitfox.raven.editor.node.tools.common.shape.brush;
+package com.kitfox.raven.raster;
 
 import com.kitfox.coyote.material.textureBlit.CyMaterialTextureBlitDrawRecord;
 import com.kitfox.coyote.material.textureBlit.CyMaterialTextureBlitDrawRecordFactory;
@@ -31,9 +31,11 @@ import com.kitfox.coyote.renderer.CyTransparency;
 import com.kitfox.coyote.renderer.vertex.CyVertexBufferDataSquare;
 import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.raven.util.Grid;
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
 /**
+ * A tiled image that other images can be blitted to.
  *
  * @author kitfox
  */
@@ -113,7 +115,7 @@ public class TiledRaster
 
 FloatBuffer fbuf = BufferUtil.allocateFloat(1);
 gl.glGetFloatv(CyGLWrapper.GetParam.GL_FRAMEBUFFER_BINDING, fbuf);
-int curBuf = (int)fbuf.get(0);
+int cacheBuf = (int)fbuf.get(0);
         //Render across all tiles
         CyMatrix4d mvp = new CyMatrix4d();
         for (int ty = ty0; ty <= ty1; ++ty)
@@ -160,7 +162,7 @@ int curBuf = (int)fbuf.get(0);
                 rec.render(ctx, gl, null);
             }
         }
-gl.glBindFramebuffer(curBuf);
+gl.glBindFramebuffer(cacheBuf);
 //gl.glBindFramebuffer(0);
         
     }
@@ -207,6 +209,55 @@ gl.glBindFramebuffer(curBuf);
             }
         }
         
+    }
+
+    public TiledRasterData getData(CyGLContext ctx, CyGLWrapper gl)
+    {
+        Grid<byte[]> newGrid = new Grid<byte[]>();
+        
+        ByteBuffer pixelData = BufferUtil.allocateByte(tileWidth * tileHeight * 4);
+        
+FloatBuffer fbuf = BufferUtil.allocateFloat(1);
+gl.glGetFloatv(CyGLWrapper.GetParam.GL_FRAMEBUFFER_BINDING, fbuf);
+int cacheBuf = (int)fbuf.get(0);
+        
+        for (int j = 0; j < tileGrid.getHeight(); ++j)
+        {
+            for (int i = 0; i < tileGrid.getWidth(); ++i)
+            {
+                CyFramebufferTexture tile = tileGrid.getValue(
+                        i + tileGrid.getOffsetX(), 
+                        j + tileGrid.getOffsetY());
+                
+                if (tile == null)
+                {
+                    continue;
+                }
+                
+                frameBuf.setAttachments(ctx, gl, tile);
+                frameBuf.bind(ctx, gl);
+                
+//gl.glClearColor(.25f, .5f, .75f, 1);
+//gl.glClear(true, true, true);
+                
+                pixelData.rewind();
+                gl.glReadPixels(
+                        0, 0, tileWidth, tileHeight,
+                        CyGLWrapper.ReadPixelsFormat.GL_RGBA, 
+                        CyGLWrapper.DataType.GL_UNSIGNED_BYTE, pixelData);
+                
+                byte[] buf = new byte[tileWidth * tileHeight * 4];
+                pixelData.rewind();
+                pixelData.get(buf);
+                
+                newGrid.includeRegion(i, j, 1, 1, null);
+                newGrid.setValue(i, j, buf);
+            }
+        }
+
+gl.glBindFramebuffer(cacheBuf);
+
+        return new TiledRasterData(newGrid, tileWidth, tileHeight);
     }
 
     public void clear()

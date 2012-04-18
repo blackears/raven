@@ -58,7 +58,7 @@ public class ToolBrushSettings extends javax.swing.JPanel
 
         spinner_strokeSpacing.setValue(prov.getStrokeSpacing());
         spinner_strokeSmoothing.setValue(prov.getStrokeSmoothing());
-        spinner_vertexSmoothAngle.setValue(prov.getVertexSmoothAngle());
+        spinner_pathSmoothing.setValue(prov.getPathSmoothing());
         
         check_antiAlias.setSelected(prov.isAntialias());
     }
@@ -89,7 +89,7 @@ public class ToolBrushSettings extends javax.swing.JPanel
         jLabel5 = new javax.swing.JLabel();
         spinner_strokeSmoothing = new javax.swing.JSpinner();
         jLabel6 = new javax.swing.JLabel();
-        spinner_vertexSmoothAngle = new javax.swing.JSpinner();
+        spinner_pathSmoothing = new javax.swing.JSpinner();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -154,6 +154,7 @@ public class ToolBrushSettings extends javax.swing.JPanel
         jLabel5.setText("Stroke Smoothing");
 
         spinner_strokeSmoothing.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(0.0f), null, Float.valueOf(1.0f)));
+        spinner_strokeSmoothing.setToolTipText("Smooting applied to exterior outline of stroke");
         spinner_strokeSmoothing.addChangeListener(new javax.swing.event.ChangeListener()
         {
             public void stateChanged(javax.swing.event.ChangeEvent evt)
@@ -162,14 +163,15 @@ public class ToolBrushSettings extends javax.swing.JPanel
             }
         });
 
-        jLabel6.setText("Vertex Smooth Angle");
+        jLabel6.setText("Path Smoothing");
 
-        spinner_vertexSmoothAngle.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(0.0f), null, Float.valueOf(1.0f)));
-        spinner_vertexSmoothAngle.addChangeListener(new javax.swing.event.ChangeListener()
+        spinner_pathSmoothing.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(0.0f), null, Float.valueOf(1.0f)));
+        spinner_pathSmoothing.setToolTipText("Smoothing applied to underlying stroke");
+        spinner_pathSmoothing.addChangeListener(new javax.swing.event.ChangeListener()
         {
             public void stateChanged(javax.swing.event.ChangeEvent evt)
             {
-                spinner_vertexSmoothAngleStateChanged(evt);
+                spinner_pathSmoothingStateChanged(evt);
             }
         });
 
@@ -179,15 +181,15 @@ public class ToolBrushSettings extends javax.swing.JPanel
             panel_controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel_controlLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panel_controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel_controlLayout.createSequentialGroup()
+                .addGroup(panel_controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panel_controlLayout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(spinner_strokeSmoothing, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(spinner_vertexSmoothAngle))
+                        .addComponent(spinner_pathSmoothing, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panel_controlLayout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -228,7 +230,7 @@ public class ToolBrushSettings extends javax.swing.JPanel
                     .addComponent(spinner_strokeSpacing, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panel_controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(spinner_vertexSmoothAngle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(spinner_pathSmoothing, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5)
                     .addComponent(spinner_strokeSmoothing, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6))
@@ -270,10 +272,10 @@ public class ToolBrushSettings extends javax.swing.JPanel
         prov.setStrokeSmoothing((Float)spinner_strokeSmoothing.getValue());
     }//GEN-LAST:event_spinner_strokeSmoothingStateChanged
 
-    private void spinner_vertexSmoothAngleStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_spinner_vertexSmoothAngleStateChanged
-    {//GEN-HEADEREND:event_spinner_vertexSmoothAngleStateChanged
-        prov.setVertexSmoothAngle((Float)spinner_vertexSmoothAngle.getValue());
-    }//GEN-LAST:event_spinner_vertexSmoothAngleStateChanged
+    private void spinner_pathSmoothingStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_spinner_pathSmoothingStateChanged
+    {//GEN-HEADEREND:event_spinner_pathSmoothingStateChanged
+        prov.setPathSmoothing((Float)spinner_pathSmoothing.getValue());
+    }//GEN-LAST:event_spinner_pathSmoothingStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox check_antiAlias;
@@ -287,10 +289,10 @@ public class ToolBrushSettings extends javax.swing.JPanel
     private javax.swing.JPanel panel_control;
     private javax.swing.JPanel panel_spacer;
     private javax.swing.JSpinner spinner_hardness;
+    private javax.swing.JSpinner spinner_pathSmoothing;
     private javax.swing.JSpinner spinner_strokeSmoothing;
     private javax.swing.JSpinner spinner_strokeSpacing;
     private javax.swing.JSpinner spinner_strokeWidthMax;
     private javax.swing.JSpinner spinner_strokeWidthMin;
-    private javax.swing.JSpinner spinner_vertexSmoothAngle;
     // End of variables declaration//GEN-END:variables
 }

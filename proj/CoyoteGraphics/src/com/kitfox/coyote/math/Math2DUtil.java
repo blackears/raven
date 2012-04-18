@@ -41,9 +41,24 @@ public class Math2DUtil
         return sqrt(distSquared(ax, ay, bx, by));
     }
 
-    public static double lerp(double v0, double v1, double t)
+    public static double lerp(double p0, double p1, double t)
     {
-        return v0 * (1 - t) + v1 * t;
+        return p0 * (1 - t) + p1 * t;
+    }
+
+    public static double lerpQuad(double p0, double k0, double p1, double t)
+    {
+        return p0 * (1 - t) * (1 - t) 
+                + 2 * k0 * (1 - t) * t 
+                + p1 * t * t;
+    }
+
+    public static double lerpCubic(double p0, double k0, double k1, double p1, double t)
+    {
+        return p0 * (1 - t) * (1 - t) * (1 - t) 
+                + 3 * k0 * (1 - t) * (1 - t) * t 
+                + 3 * k1 * (1 - t) * t * t
+                + p1 * t * t * t;
     }
 
     public static double dot(double ax, double ay, double bx, double by)

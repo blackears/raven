@@ -16,9 +16,7 @@
 
 package com.kitfox.raven.editor.node.tools.common.shape.brush;
 
-import com.kitfox.coyote.material.color.CyMaterialColorDrawRecord;
-import com.kitfox.coyote.material.color.CyMaterialColorDrawRecordFactory;
-import com.kitfox.coyote.math.CyColor4f;
+import com.kitfox.raven.raster.RoundBrushSource;
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.math.Math2DUtil;
@@ -27,16 +25,15 @@ import com.kitfox.coyote.renderer.CyGLOffscreenContext;
 import com.kitfox.coyote.renderer.CyGLWrapper;
 import com.kitfox.coyote.renderer.CyTextureImage;
 import com.kitfox.coyote.renderer.CyTransparency;
-import com.kitfox.coyote.renderer.CyVertexBuffer;
-import com.kitfox.coyote.shape.CyPath2d;
-import com.kitfox.coyote.shape.PiecewiseBezierBuilder;
-import com.kitfox.coyote.shape.ShapeLinesProvider;
-import com.kitfox.coyote.shape.bezier.BezierCubic2d;
+import com.kitfox.coyote.shape.bezier.builder.BezierCurveNd;
+import com.kitfox.coyote.shape.bezier.builder.BezierPointNd;
+import com.kitfox.coyote.shape.bezier.builder.PiecewiseBezierBuilder.FitCurveRecord;
 import com.kitfox.raven.editor.node.scene.RenderContext;
 import com.kitfox.raven.editor.node.tools.ToolUser;
 import com.kitfox.raven.editor.node.tools.common.ServiceDevice;
 import com.kitfox.raven.editor.node.tools.common.ServicePen;
 import com.kitfox.raven.editor.node.tools.common.ToolDisplay;
+import com.kitfox.raven.raster.TiledRasterData;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import jpen.PButtonEvent;
@@ -47,6 +44,20 @@ import jpen.PScrollEvent;
 import jpen.Pen;
 import jpen.PenManager;
 import jpen.event.PenListener;
+
+/*
+Brush design:
+
+Brush tip is simple bitmap.  No gradients.
+Fit pen points to a smoothed piecewise bezier
+	- 3 dimensions in bezier: (x, y, weight)
+	- May want to include tilt.
+Brush tip mask plotted along smoothed curve
+	- Spacing is 1 pixel
+	- Curve weight, brush width (min, max) used to scale tip mask
+Bubble outliner used to calc stroke contours
+Bubble contours smoothed
+ */
 
 /**
  *
@@ -59,37 +70,26 @@ public class ToolBrush extends ToolDisplay
     
     final PenManager penManager;
 
-//    DragSource dragState = DragSource.NONE;
     boolean dragging;
-    //boolean readingPen;
     boolean penDown;
     boolean plottedPointsFromMouse;
     
-    PiecewiseBezierBuilder curveLeft;
-    PiecewiseBezierBuilder curveRight;
-    CyPath2d strokePath;
+//    PiecewiseBezierBuilder2d curveLeft;
+//    PiecewiseBezierBuilder2d curveRight;
+//    CyPath2d strokePath;
     
-//    private float penX;
-//    private float penY;
-//    private float penPressure;
-//    private float penTiltX;
-//    private float penTiltY;
-//
-//    private float penNextX;
-//    private float penNextY;
-//    private float penNextPressure;
-//    private float penNextTiltX;
-//    private float penNextTiltY;
+    //Track and smooth base bezier curve
+    PenCurveBuilder pathBuilder;
     
+    //Raster that will have pen bitmaps blitted to it for stroke preview
     StrokeBuilder strokeBuilder;
 
     ArrayList<PenPoint> penBuf = new ArrayList<PenPoint>();
     ArrayList<PenPoint> penBackBuf = new ArrayList<PenPoint>();
 
     ArrayList<PenPoint> plotBackBuf = new ArrayList<PenPoint>();
-    ArrayList<PenPoint> plotHistory = new ArrayList<PenPoint>();
+//    ArrayList<PenPoint> plotHistory = new ArrayList<PenPoint>();
     PenPoint plotPrev;
-//    double distAccum;
     
     protected ToolBrush(ToolUser user, ToolBrushProvider toolProvider)
     {
@@ -111,8 +111,8 @@ public class ToolBrush extends ToolDisplay
         RoundBrushSource brush = 
                 new RoundBrushSource(
                 toolProvider.getStrokeWidthMax(), 
-                toolProvider.getHardness(), 
-                toolProvider.isAntialias());
+                1, 
+                false);
         
         int size = brush.getSize();
         CyTextureImage source = new CyTextureImage(
@@ -122,45 +122,9 @@ public class ToolBrush extends ToolDisplay
                 size, size, CyTransparency.TRANSLUCENT, brush);
         
         strokeBuilder = new StrokeBuilder(source);
+        
+        pathBuilder = new PenCurveBuilder(toolProvider.getPathSmoothing());
     }
-
-//    private void samplePen(MouseEvent evt)
-//    {
-//        if (evt != null)
-//        {
-//            penNextX = evt.getX();
-//            penNextY = evt.getY();
-//            penNextPressure = 1;
-//            penNextTiltX = 0;
-//            penNextTiltY = 0;
-//            return;
-//        }
-//
-//        Pen pen = penManager.pen;
-//        penNextX = pen.getLevelValue(PLevel.Type.X);
-//        penNextY = pen.getLevelValue(PLevel.Type.Y);
-//        penNextPressure = pen.getLevelValue(PLevel.Type.PRESSURE);
-//        penNextTiltX = pen.getLevelValue(PLevel.Type.TILT_X);
-//        penNextTiltY = pen.getLevelValue(PLevel.Type.TILT_Y);
-//        
-////System.err.println("Pen pressure " + penNextPressure);
-//    }
-    
-//    private void buildStroke()
-//    {
-//        float smoothing = toolProvider.getStrokeSmoothing();
-//        
-//        if (plotHistory.size() <= 1)
-//        {
-//            return;
-//        }
-//        
-//        
-//        for (int i = 0; i < plotHistory.size(); ++i)
-//        {
-//            
-//        }
-//    }
     
     private void plotStroke()
     {
@@ -170,65 +134,65 @@ public class ToolBrush extends ToolDisplay
             strokeTo(pt);
         }
         plotBackBuf.clear();
-        plotHistory.clear();
+//        plotHistory.clear();
     }
     
-    private CyPath2d calcStroke()
-    {
-        //Examine end points to calc caps
-        BezierCubic2d segL0 = curveLeft.getFirstSegment();
-        BezierCubic2d segL1 = curveLeft.getLastSegment();
-        BezierCubic2d segR0 = curveRight.getFirstSegment();
-        BezierCubic2d segR1 = curveRight.getLastSegment();
-        
-        if (segL0 == null || segR0 == null)
-        {
-            return null;
-        }
-        
-        CyVector2d pL1 = new CyVector2d(segL1.getEndX(), segL1.getEndY());
-        CyVector2d tL1 = new CyVector2d(segL1.getTanOutX(), segL1.getTanOutY());
-        CyVector2d pR0 = new CyVector2d(segR1.getEndX(), segR1.getEndY());
-        CyVector2d tR0 = new CyVector2d(segR1.getTanOutX(), segR1.getTanOutY());
-
-        CyVector2d pR1 = new CyVector2d(segR0.getStartX(), segR0.getStartY());
-        CyVector2d tR1 = new CyVector2d(-segR0.getTanInX(), -segR0.getTanInY());
-        CyVector2d pL0 = new CyVector2d(segL0.getStartX(), segL0.getStartY());
-        CyVector2d tL0 = new CyVector2d(-segL0.getTanInX(), -segL0.getTanInY());
-
-        double diam0 = pL1.distance(pR0);
-        double diam1 = pR1.distance(pL0);
-
-        tL1.normalize();
-        tL1.scale(diam0 * 3 / 4);
-        tR0.normalize();
-        tR0.scale(diam0 * 3 / 4);
-        
-        tL0.normalize();
-        tL0.scale(diam1 * 3 / 4);
-        tR1.normalize();
-        tR1.scale(diam1 * 3 / 4);
-        
-        CyPath2d pathStroke = new CyPath2d();
-
-        pathStroke.moveTo(pL0.x, pL0.y);
-        
-        curveLeft.appendSegs(pathStroke, false);
-        
-        pathStroke.cubicTo(pL1.x + tL1.x, pL1.y + tL1.y, 
-                pR0.x + tR0.x, pR0.y + tR0.y,
-                pR0.x, pR0.y);
-
-        curveRight.appendSegs(pathStroke, true);
-        
-        pathStroke.cubicTo(pR1.x + tR1.x, pR1.y + tR1.y, 
-                pL0.x + tL0.x, pL0.y + tL0.y,
-                pL0.x, pL0.y);
-
-        pathStroke.close();
-        
-        return pathStroke;
-    }
+//    private CyPath2d calcStroke()
+//    {
+//        //Examine end points to calc caps
+//        BezierCubic2d segL0 = curveLeft.getFirstSegment();
+//        BezierCubic2d segL1 = curveLeft.getLastSegment();
+//        BezierCubic2d segR0 = curveRight.getFirstSegment();
+//        BezierCubic2d segR1 = curveRight.getLastSegment();
+//        
+//        if (segL0 == null || segR0 == null)
+//        {
+//            return null;
+//        }
+//        
+//        CyVector2d pL1 = new CyVector2d(segL1.getEndX(), segL1.getEndY());
+//        CyVector2d tL1 = new CyVector2d(segL1.getTanOutX(), segL1.getTanOutY());
+//        CyVector2d pR0 = new CyVector2d(segR1.getEndX(), segR1.getEndY());
+//        CyVector2d tR0 = new CyVector2d(segR1.getTanOutX(), segR1.getTanOutY());
+//
+//        CyVector2d pR1 = new CyVector2d(segR0.getStartX(), segR0.getStartY());
+//        CyVector2d tR1 = new CyVector2d(-segR0.getTanInX(), -segR0.getTanInY());
+//        CyVector2d pL0 = new CyVector2d(segL0.getStartX(), segL0.getStartY());
+//        CyVector2d tL0 = new CyVector2d(-segL0.getTanInX(), -segL0.getTanInY());
+//
+//        double diam0 = pL1.distance(pR0);
+//        double diam1 = pR1.distance(pL0);
+//
+//        tL1.normalize();
+//        tL1.scale(diam0 * 3 / 4);
+//        tR0.normalize();
+//        tR0.scale(diam0 * 3 / 4);
+//        
+//        tL0.normalize();
+//        tL0.scale(diam1 * 3 / 4);
+//        tR1.normalize();
+//        tR1.scale(diam1 * 3 / 4);
+//        
+//        CyPath2d pathStroke = new CyPath2d();
+//
+//        pathStroke.moveTo(pL0.x, pL0.y);
+//        
+//        curveLeft.appendSegs(pathStroke, false);
+//        
+//        pathStroke.cubicTo(pL1.x + tL1.x, pL1.y + tL1.y, 
+//                pR0.x + tR0.x, pR0.y + tR0.y,
+//                pR0.x, pR0.y);
+//
+//        curveRight.appendSegs(pathStroke, true);
+//        
+//        pathStroke.cubicTo(pR1.x + tR1.x, pR1.y + tR1.y, 
+//                pL0.x + tL0.x, pL0.y + tL0.y,
+//                pL0.x, pL0.y);
+//
+//        pathStroke.close();
+//        
+//        return pathStroke;
+//    }
     
     private void strokeTo(PenPoint pt)
     {
@@ -239,11 +203,11 @@ public class ToolBrush extends ToolDisplay
         }
         
         //Only record if minimum distance traveled
-//        if (Math2DUtil.square(penX - penNextX) +
-//                + Math2DUtil.square(penY - penNextY) < 4)
-//        {
-//            return;
-//        }
+        if (Math2DUtil.distSquared(plotPrev.x, plotPrev.y, pt.x, pt.y)
+                < 16)
+        {
+            return;
+        }
 
         StrokeBuilder curStrokeBuilder = strokeBuilder;
         if (curStrokeBuilder == null)
@@ -253,17 +217,18 @@ public class ToolBrush extends ToolDisplay
             return;
         }
         
+        
+        //Plot cursor in preview raster
         final float spacing = toolProvider.getStrokeSpacing();
         final float penWidthMin = toolProvider.getHardness();
         final float penWidthMax = toolProvider.getStrokeWidthMax();
 
 //        double dist = Math2DUtil.dist(penX, penY, penNextX, penNextY);
 
-        
-        CyVector2d penOld = new CyVector2d(plotPrev.x, plotPrev.y);
-        CyVector2d penNew = new CyVector2d(pt.x, pt.y);
 //System.err.println("Old " + penOld);
 //System.err.println("new " + penNew);
+        CyVector2d penOld = new CyVector2d(plotPrev.x, plotPrev.y);
+        CyVector2d penNew = new CyVector2d(pt.x, pt.y);
 
         CyMatrix4d d2w = getDeviceToWorld(null);
         d2w.transformPoint(penOld, false);
@@ -282,41 +247,36 @@ public class ToolBrush extends ToolDisplay
             //Skip points that are not far enough away from prev point
             return;
         }
+        
+        //Build smoothed path
+        pathBuilder.addPoint(new BezierPointNd(penNew.x, penNew.y, pt.pressure));
+        
 //        double gap = Math.max(spacing * penPressure * penWidthMax, 1);
 //        int numDots = (int)Math.ceil(dist / gap);
         int numDots = (int)Math.ceil(dist / spacing);
-        plotHistory.add(pt);
+//        plotHistory.add(pt);
 
-        //Collect points in stroke builder
-        float gap = penWidthMax - penWidthMin;
-        CyVector2d norm = new CyVector2d(pt.x - plotPrev.x, 
-                pt.y - plotPrev.y);
-        norm.normalize();
-        norm.rotCCW90();
-        norm.scale(plotPrev.pressure * gap + penWidthMin);
-        
-        CyVector2d ptLeft = new CyVector2d(
-                plotPrev.x + norm.x, plotPrev.y + norm.y);
-        CyVector2d ptRight = new CyVector2d(
-                plotPrev.x - norm.x, plotPrev.y - norm.y);
-        curveLeft.addPoint(ptLeft);
-        curveRight.addPoint(ptRight);
-        
-        calcStroke();
+//        //Collect points in stroke builder
+//        float gap = penWidthMax - penWidthMin;
+//        CyVector2d norm = new CyVector2d(pt.x - plotPrev.x, 
+//                pt.y - plotPrev.y);
+//        norm.normalize();
+//        norm.rotCCW90();
+//        norm.scale(plotPrev.pressure * gap + penWidthMin);
+//        
+//        CyVector2d ptLeft = new CyVector2d(
+//                plotPrev.x + norm.x, plotPrev.y + norm.y);
+//        CyVector2d ptRight = new CyVector2d(
+//                plotPrev.x - norm.x, plotPrev.y - norm.y);
+//        curveLeft.addPoint(ptLeft);
+//        curveRight.addPoint(ptRight);
+//        
+//        calcStroke();
         
         //Draw point to raster
         ServiceDevice dev = user.getToolService(ServiceDevice.class);
         CyGLOffscreenContext ctxOff = dev.createOffscreenGLContext();
         
-//if (plotPrev.pressure == 1)
-//{
-//    int j = 9;
-//}
-//System.err.println("numDots " + numDots);
-//if (numDots > 10)
-//{
-//    int j = 9;
-//}
         for (int i = 0; i < numDots; ++i)
         {
             double dt = (double)i / numDots;
@@ -335,14 +295,57 @@ public class ToolBrush extends ToolDisplay
         ctxOff.dispose();
         
         plotPrev = pt;
-//        penX = penNextX;
-//        penY = penNextY;
-//        penPressure = penNextPressure;
-//        penTiltX = penNextTiltX;
-//        penTiltY = penNextTiltY;
-//        distAccum = 0;
     }
 
+    private void plotCurve(BezierCurveNd curve, CyGLOffscreenContext ctxOff, double tMin, double tMax)
+    {
+        double spanX = curve.getSpan(0);
+        double spanY = curve.getSpan(1);
+        
+        if (spanX <= 1 && spanY <= 1)
+        {
+            final float penWidthMin = toolProvider.getHardness();
+            final float penWidthMax = toolProvider.getStrokeWidthMax();
+        
+            BezierPointNd pt = curve.eval(tMin);
+            double x = pt.get(0);
+            double y = pt.get(1);
+            double pres = pt.get(2);
+            
+            double pressure = Math2DUtil.lerp(
+                    penWidthMin, penWidthMax, pres) / penWidthMax;
+            
+            strokeBuilder.daubBrush(ctxOff, 
+                    x, y, pressure);
+            return;
+        }
+        
+        double tMid = (tMin + tMax) / 2;
+        BezierCurveNd[] part = curve.split(.5);
+        plotCurve(part[0], ctxOff, tMin, tMid);
+        plotCurve(part[1], ctxOff, tMid, tMax);
+    }
+    
+    public void createStrokeShape()
+    {
+        strokeBuilder.clear();
+
+        ServiceDevice dev = user.getToolService(ServiceDevice.class);
+        CyGLOffscreenContext ctxOff = dev.createOffscreenGLContext();
+
+        //Redraw path using smoothed curve and with spacing == 1
+        for (BezierCurveNd curve: pathBuilder.getAlignedCurves(false))
+        {
+            plotCurve(curve, ctxOff, 0, 1);
+        }
+
+        TiledRasterData rasterData = strokeBuilder.getData(ctxOff);
+        
+        ctxOff.dispose();
+
+rasterData.dump();
+    }
+    
     @Override
     protected void click(MouseEvent evt)
     {
@@ -367,20 +370,8 @@ public class ToolBrush extends ToolDisplay
     {
 //System.err.println("--------------Start drag");
         
-//        if (!penDown)
-//        {
-//            //samplePen(evt);
-//
-//            penX = penNextX = evt.getX();
-//            penY = penNextY = evt.getY();
-//            penPressure = penNextPressure = 1;
-//            penTiltX = penNextTiltX = 0;
-//            penTiltY = penNextTiltY = 0;
-//        }
-
-        
         plotBackBuf.clear();
-        plotHistory.clear();
+//        plotHistory.clear();
         plotPrev = null;
         penDown = false;
         swapPenBuffer();
@@ -407,12 +398,12 @@ public class ToolBrush extends ToolDisplay
             plottedPointsFromMouse = true;
         }
         
-        float smoothing = toolProvider.getStrokeSmoothing();
-        curveLeft = new PiecewiseBezierBuilder(smoothing);
-        curveRight = new PiecewiseBezierBuilder(smoothing);
+//        float smoothing = toolProvider.getStrokeSmoothing();
+//        curveLeft = new PiecewiseBezierBuilder2d(smoothing);
+//        curveRight = new PiecewiseBezierBuilder2d(smoothing);
         
         createStrokeBuilder();
-        strokePath = null;
+//        strokePath = null;
         dragging = true;
     }
 
@@ -429,7 +420,7 @@ public class ToolBrush extends ToolDisplay
                 //Clear plot history created by mouse
                 strokeBuilder.clear();
                 plotBackBuf.clear();
-                plotHistory.clear();
+//                plotHistory.clear();
                 plotPrev = null;
                 plottedPointsFromMouse = false;
             }
@@ -456,22 +447,17 @@ public class ToolBrush extends ToolDisplay
         }
         
         plotStroke();
-        strokePath = calcStroke();
-        
-//        if (!penDown)
-//        {
-//            samplePen(evt);
-//            strokeToNextSample();
-//        }
+//        strokePath = calcStroke();
     }
 
     @Override
     protected void endDrag(MouseEvent evt)
     {
         plotStroke();
-//        buildStroke();
+        createStrokeShape();
 
         strokeBuilder = null;
+        pathBuilder = null;
         dragging = false;
     }
 
@@ -505,29 +491,6 @@ public class ToolBrush extends ToolDisplay
         {
             if (levels[i].getType() == PLevel.Type.PRESSURE)
             {
-//                boolean curPenDown = levels[i].value > 0;
-//                samplePen(null);
-//                
-//                if (curPenDown && !penDown)
-//                {
-////System.err.println("+++Start pen stroke ");
-//                    penX = penNextX;
-//                    penY = penNextY;
-//                    penTiltX = penNextTiltX;
-//                    penTiltY = penNextTiltY;
-//                    penPressure = penNextPressure;
-//                    if (strokeBuilder != null)
-//                    {
-//                        strokeBuilder.clear();
-//                    }
-//                }
-//                penDown = curPenDown;
-//                
-//                if (dragging && penDown)
-//                {
-//                    strokeToNextSample();
-//                }
-                
                 Pen pen = penManager.pen;
                 float x = pen.getLevelValue(PLevel.Type.X);
                 float y = pen.getLevelValue(PLevel.Type.Y);
@@ -567,60 +530,29 @@ public class ToolBrush extends ToolDisplay
             strokeBuilder.render(stack);
         }
         
-        if (strokePath != null)
-        {
-            CyDrawStack stack = ctx.getDrawStack();
-            
-            CyMaterialColorDrawRecord rec = 
-                    CyMaterialColorDrawRecordFactory.inst().allocRecord();
-
-            rec.setColor(CyColor4f.GREEN);
-            rec.setOpacity(1);
-
-            ShapeLinesProvider prov = new ShapeLinesProvider(strokePath);
-            CyVertexBuffer lineMesh = new CyVertexBuffer(prov);
-            rec.setMesh(lineMesh);
-
-            CyMatrix4d mvp = stack.getModelViewProjXform();
-            rec.setMvpMatrix(mvp);
-
-            stack.addDrawRecord(rec);
-            
-        }
+//        if (strokePath != null)
+//        {
+//            CyDrawStack stack = ctx.getDrawStack();
+//            
+//            CyMaterialColorDrawRecord rec = 
+//                    CyMaterialColorDrawRecordFactory.inst().allocRecord();
+//
+//            rec.setColor(CyColor4f.GREEN);
+//            rec.setOpacity(1);
+//
+//            ShapeLinesProvider prov = new ShapeLinesProvider(strokePath);
+//            CyVertexBuffer lineMesh = new CyVertexBuffer(prov);
+//            rec.setMesh(lineMesh);
+//
+//            CyMatrix4d mvp = stack.getModelViewProjXform();
+//            rec.setMvpMatrix(mvp);
+//
+//            stack.addDrawRecord(rec);
+//            
+//        }
   
         
     }
     
-    //---------------------------
-    class PenPoint
-    {
-        float x;
-        float y;
-        float pressure;
-        float tiltX;
-        float tiltY;
-
-        public PenPoint(float x, float y, float pressure, float tiltX, float tiltY)
-        {
-            this.x = x;
-            this.y = y;
-            this.pressure = pressure;
-            this.tiltX = tiltX;
-            this.tiltY = tiltY;
-        }
-
-        public PenPoint(float x, float y)
-        {
-            this(x, y, 1, 0, 0);
-        }
-
-        @Override
-        public String toString()
-        {
-            return String.format("pos (%f %f) pres %f tilt(%f %f)",
-                    x, y, pressure, tiltX, tiltY);
-        }
-
-        
-    }
+    
 }
