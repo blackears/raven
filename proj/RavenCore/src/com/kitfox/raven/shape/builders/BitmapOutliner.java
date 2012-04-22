@@ -16,12 +16,12 @@
 
 package com.kitfox.raven.shape.builders;
 
+import com.kitfox.coyote.math.CyMatrix4d;
+import com.kitfox.coyote.shape.CyPath2d;
+import com.kitfox.coyote.shape.CyRectangle2d;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Transparency;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Path2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +38,7 @@ import javax.imageio.ImageIO;
 public class BitmapOutliner
 {
     final Sampler sampler;
-    Rectangle2D region;
+    private CyRectangle2d region;
     int numSampX;
     int numSampY;
 
@@ -50,7 +50,8 @@ public class BitmapOutliner
     HashMap<Integer, Contour> contourEnds = new HashMap<Integer, Contour>();
     ArrayList<Contour> contours;
 
-    public BitmapOutliner(Sampler sampler, Rectangle2D region, int numSampX, int numSampY)
+    public BitmapOutliner(Sampler sampler, CyRectangle2d region, 
+            int numSampX, int numSampY)
     {
         this.sampler = sampler;
         this.region = region;
@@ -58,51 +59,67 @@ public class BitmapOutliner
         this.numSampY = numSampY;
     }
 
-    public Path2D.Double createSmoothedPath(double maxError)
+//    public Path2D.Double createSmoothedPath(double maxError)
+//    {
+//        Path2D.Double path = new Path2D.Double();
+//
+//        ArrayList<Contour> ctrs = getContours();
+//        for (Contour ctr: ctrs)
+//        {
+//            ctr.cutSegments(4);
+//            ctr.appendSmoothedPath(maxError, path);
+//
+//            path.closePath();
+//        }
+//
+//        double sampDxI = (numSampX - 1) / region.getWidth();
+//        double sampDyI = (numSampY - 1) / region.getHeight();
+//
+//        AffineTransform xform = new AffineTransform();
+//        xform.translate(region.getX(), region.getY());
+//        xform.scale(sampDxI, sampDyI);
+//
+//        return (Path2D.Double)xform.createTransformedShape(path);
+//    }
+//
+//    public Path2D.Double createPath()
+//    {
+//        Path2D.Double path = new Path2D.Double();
+//
+//        ArrayList<Contour> ctrs = getContours();
+//        for (Contour ctr: ctrs)
+//        {
+//            ctr.appendTo(path);
+//        }
+//
+//        double sampDxI = (numSampX - 1) / region.getWidth();
+//        double sampDyI = (numSampY - 1) / region.getHeight();
+//
+////        return path;
+//        AffineTransform xform = new AffineTransform();
+//        xform.translate(region.getX(), region.getY());
+////        xform.scale(region.getWidth(), region.getHeight());
+//        xform.scale(sampDxI, sampDyI);
+//
+//        return (Path2D.Double)xform.createTransformedShape(path);
+//    }
+
+    public CyPath2d getPath(double maxError)
     {
-        Path2D.Double path = new Path2D.Double();
-
-        ArrayList<Contour> ctrs = getContours();
-        for (Contour ctr: ctrs)
+        CyPath2d path = new CyPath2d();
+        
+        for (Contour ctr: getContours())
         {
-            ctr.cutSegments(4);
-            ctr.appendSmoothedPath(maxError, path);
-
-            path.closePath();
+            path.append(ctr.getPath(maxError));
         }
-
-        double sampDxI = (numSampX - 1) / region.getWidth();
-        double sampDyI = (numSampY - 1) / region.getHeight();
-
-        AffineTransform xform = new AffineTransform();
-        xform.translate(region.getX(), region.getY());
-        xform.scale(sampDxI, sampDyI);
-
-        return (Path2D.Double)xform.createTransformedShape(path);
+        
+        CyMatrix4d m = CyMatrix4d.createIdentity();
+        m.translate(region.getX(), region.getY(), 0);
+        path = path.createTransformedPath(m);
+        
+        return path;
     }
-
-    public Path2D.Double createPath()
-    {
-        Path2D.Double path = new Path2D.Double();
-
-        ArrayList<Contour> ctrs = getContours();
-        for (Contour ctr: ctrs)
-        {
-            ctr.appendTo(path);
-        }
-
-        double sampDxI = (numSampX - 1) / region.getWidth();
-        double sampDyI = (numSampY - 1) / region.getHeight();
-
-//        return path;
-        AffineTransform xform = new AffineTransform();
-        xform.translate(region.getX(), region.getY());
-//        xform.scale(region.getWidth(), region.getHeight());
-        xform.scale(sampDxI, sampDyI);
-
-        return (Path2D.Double)xform.createTransformedShape(path);
-    }
-
+    
     public ArrayList<Contour> getContours()
     {
         if (contours == null)
@@ -112,12 +129,12 @@ public class BitmapOutliner
         return new ArrayList<Contour>(contours);
     }
 
-    private void dumpBitmap()
+    public void dumpBitmap()
     {
-        contours = new ArrayList<Contour>();
+//        contours = new ArrayList<Contour>();
 
-        double sampDx = region.getWidth() / (numSampX - 1);
-        double sampDy = region.getHeight() / (numSampY - 1);
+        double sampDx = region.getWidth() / numSampX;
+        double sampDy = region.getHeight() / numSampY;
 
         BufferedImage img = new BufferedImage(numSampX + 2, numSampY + 2, Transparency.OPAQUE);
         Graphics2D g = img.createGraphics();
@@ -131,7 +148,7 @@ public class BitmapOutliner
             //Include 1 unit border
             for (int i = -1; i <= numSampX; ++i)
             {
-                boolean lowerHit = sampler.isHit(
+                boolean lowerHit = sampler.isOpaque(
                         i * sampDx + region.getX(),
                         j * sampDy + region.getY());
 
@@ -144,7 +161,7 @@ public class BitmapOutliner
         
         try
         {
-            ImageIO.write(img, "png", new File("outline.png"));
+            ImageIO.write(img, "png", new File("bitmapOutliner.png"));
         } catch (IOException ex)
         {
             Logger.getLogger(BitmapOutliner.class.getName()).log(Level.SEVERE, null, ex);
@@ -161,8 +178,8 @@ public class BitmapOutliner
 
         contours = new ArrayList<Contour>();
 
-        double sampDx = region.getWidth() / (numSampX - 1);
-        double sampDy = region.getHeight() / (numSampY - 1);
+        double sampDx = region.getWidth() / numSampX;
+        double sampDy = region.getHeight() / numSampY;
 
         //Include 1 unit border
         for (int j = -1; j <= numSampY; ++j)
@@ -176,10 +193,10 @@ public class BitmapOutliner
             //Include 1 unit border
             for (int i = -1; i <= numSampX; ++i)
             {
-                boolean upperHit = sampler.isHit(
+                boolean upperHit = sampler.isOpaque(
                         i * sampDx + region.getX(),
                         (j - 1) * sampDy + region.getY());
-                boolean lowerHit = sampler.isHit(
+                boolean lowerHit = sampler.isOpaque(
                         i * sampDx + region.getX(),
                         j * sampDy + region.getY());
 
@@ -211,7 +228,7 @@ public class BitmapOutliner
         assert (contourEnds.isEmpty());
     }
 
-    private void changePenState(BuildState state, int index, int rowIdx)
+    private void changePenState(BuildState state, int x, int y)
     {
         switch (buildState)
         {
@@ -226,16 +243,16 @@ public class BitmapOutliner
                     //Cup down solid - create new contour
                     //Wind CW
                     Contour ctr = new Contour();
-                    ctr.addStart(lowerMark, rowIdx);
-                    ctr.addEnd(index, rowIdx);
+                    ctr.addStart(lowerMark, y);
+                    ctr.addEnd(x, y);
                     contourEnds.put(lowerMark, ctr);
-                    contourEnds.put(index, ctr);
+                    contourEnds.put(x, ctr);
                 }
                 else if (state == BuildState.UPPER_DOWN)
                 {
                     //Add trailing unit
-                    Contour ctr = contourEnds.remove(index);
-                    ctr.addStart(lowerMark, rowIdx);
+                    Contour ctr = contourEnds.remove(x);
+                    ctr.addStart(lowerMark, y);
                     contourEnds.put(lowerMark, ctr);
                 }
                 else
@@ -251,16 +268,16 @@ public class BitmapOutliner
                     //Cup down hole - create new contour
                     //Wind CCW
                     Contour ctr = new Contour();
-                    ctr.addStart(index, rowIdx);
-                    ctr.addEnd(lowerMark, rowIdx);
-                    contourEnds.put(index, ctr);
+                    ctr.addStart(x, y);
+                    ctr.addEnd(lowerMark, y);
+                    contourEnds.put(x, ctr);
                     contourEnds.put(lowerMark, ctr);
                 }
                 else if (state == BuildState.UPPER_UP)
                 {
                     //Add leading unit
-                    Contour ctr = contourEnds.remove(index);
-                    ctr.addEnd(lowerMark, rowIdx);
+                    Contour ctr = contourEnds.remove(x);
+                    ctr.addEnd(lowerMark, y);
                     contourEnds.put(lowerMark, ctr);
                 }
                 else
@@ -276,7 +293,7 @@ public class BitmapOutliner
                     //Cup up solid - join contours
                     //Wind CW
                     Contour ctrAfter = contourEnds.remove(upperMark);
-                    Contour ctrBefore = contourEnds.remove(index);
+                    Contour ctrBefore = contourEnds.remove(x);
                     if (ctrBefore == ctrAfter)
                     {
                         contours.add(ctrAfter);
@@ -293,8 +310,8 @@ public class BitmapOutliner
                 {
                     //Add trailing unit
                     Contour ctr = contourEnds.remove(upperMark);
-                    ctr.addStart(index, rowIdx);
-                    contourEnds.put(index, ctr);
+                    ctr.addStart(x, y);
+                    contourEnds.put(x, ctr);
                 }
                 else
                 {
@@ -308,7 +325,7 @@ public class BitmapOutliner
                 {
                     //Cup up hole - join contours
                     //Wind CW
-                    Contour ctrAfter = contourEnds.remove(index);
+                    Contour ctrAfter = contourEnds.remove(x);
                     Contour ctrBefore = contourEnds.remove(upperMark);
                     if (ctrBefore == ctrAfter)
                     {
@@ -326,8 +343,8 @@ public class BitmapOutliner
                 {
                     //Add leading unit
                     Contour ctr = contourEnds.remove(upperMark);
-                    ctr.addEnd(index, rowIdx);
-                    contourEnds.put(index, ctr);
+                    ctr.addEnd(x, y);
+                    contourEnds.put(x, ctr);
                 }
                 else
                 {
@@ -342,6 +359,14 @@ public class BitmapOutliner
         buildState = BuildState.NONE;
     }
 
+    /**
+     * @return the region
+     */
+    public CyRectangle2d getRegion()
+    {
+        return new CyRectangle2d(region);
+    }
+
 
     //------------------------
 
@@ -352,6 +377,6 @@ public class BitmapOutliner
 
     public interface Sampler
     {
-        public boolean isHit(double x, double y);
+        public boolean isOpaque(double x, double y);
     }
 }

@@ -33,6 +33,11 @@ public class CyRectangle2i extends CyShape
     {
     }
 
+    public CyRectangle2i(CyRectangle2i bounds)
+    {
+        this(bounds.x, bounds.y, bounds.width, bounds.height);
+    }
+
     public CyRectangle2i(int x, int y)
     {
         this(x, y, 0, 0);

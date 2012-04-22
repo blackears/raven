@@ -240,148 +240,148 @@ public class ToolPaintStroke extends ToolDisplay
 
         strokeSegment(evt);
 
-        if (!bubbleOutliner.isEmpty())
-        {
-            BitmapOutliner outliner = bubbleOutliner.buildOutliner();
-            final float smoothing = toolProvider.getStrokeSmoothing();
-            final Path2D.Double path = outliner.createSmoothedPath(
-                    Math.max(smoothing, .1));
-
-            if (path != null)
-            {
-                ServiceDocument provider = user.getToolService(ServiceDocument.class);
-                RavenNodeRoot doc = (RavenNodeRoot)provider.getDocument();
-                RavenNodeSceneGraph sceneGraph = doc.getSceneGraph();
-
-                
-                ServiceDeviceCamera provDevCam = user.getToolService(ServiceDeviceCamera.class);
-                AffineTransform w2d = provDevCam
-                        .getWorldToDeviceTransform((AffineTransform)null);
-
-                //Find node to add new stroke to
-                NodeObject topSel = doc.getSelection().getTopSelected();
-                RavenNodeGroup parentGroupNode = null;
-                if (topSel != null)
-                {
-                    if (topSel instanceof RavenNodeGroup)
-                    {
-                        parentGroupNode = (RavenNodeGroup)topSel;
-                    }
-                    else if (topSel.getParent() != null)
-                    {
-                        NodeObject topNodeParent = topSel.getParent().getNode();
-                        if (topNodeParent instanceof RavenNodeGroup)
-                        {
-                            parentGroupNode = (RavenNodeGroup)topNodeParent;
-                        }
-                    }
-                }
-
-                AffineTransform devToLocal = null;
-                if (parentGroupNode != null)
-                {
-                    devToLocal = parentGroupNode
-                            .getLocalToWorldTransform((AffineTransform)null);
-                    devToLocal.preConcatenate(w2d);
-                }
-                else
-                {
-                    devToLocal = w2d;
-                }
-                devToLocal.scale(1 / 100.0, 1 / 100.0);
-
-                try
-                {
-                    devToLocal.invert();
-                } catch (NoninvertibleTransformException ex)
-                {
-                    Logger.getLogger(ToolPaintStroke.class.getName()).log(Level.SEVERE, null, ex);
-                }
-//                devToLocal.preConcatenate(toCentipixels);
-                //devToLocal.scale(100, 100);
-                Path2D.Double shape = (Path2D.Double)devToLocal
-                        .createTransformedShape(path);
-
-
-
-
-                //Add node
-                if (doc != null)
-                {
-                    doc.getHistory().beginTransaction("Add paint stroke");
-                }
-
-                NodeObjectProvider<RavenNodePath> prov = 
-                        NodeObjectProviderIndex.inst().getProvider(RavenNodePath.class);
-                RavenNodePath nodePath = prov.createNode(doc);
-
-                String name = doc.createUniqueName("Stroke");
-                nodePath.setName(name);
-
-//                PathCurve curve = new PathCurve(shape);
-//                nodePath.path.setValue(curve);
-
-                RavenNodeDataPlane plane = NodeObjectProviderIndex.inst()
-                        .createNode(RavenNodeDataPlane.class, doc);
-                {
-                    BezierPath bezPath = new BezierPath(10000);
-                    bezPath.append(shape, null);
-
-                    CacheList cacheSmoothList = new CacheList();
-                    ArrayList<VertexSmooth> smoothList;
-                    switch (toolProvider.vertexSmooth)
-                    {
-                        default:
-                        case SMOOTH:
-                            smoothList = bezPath.buildVertexSmoothing(
-                                    toolProvider.getVertexSmoothAngle());
-                            break;
-                        case TENSE:
-                            smoothList = new ArrayList<VertexSmooth>();
-                            for (int i = 0; i < bezPath.getNumVertices(); ++i)
-                            {
-                                smoothList.add(VertexSmooth.TENSE);
-                            }
-                            break;
-                    }
-                    ArrayList<BezierVertex> vertList = bezPath.getVertices();
-                    
-                    for (int i = 0; i < smoothList.size(); ++i)
-                    {
-                        VertexSmooth smooth = smoothList.get(i);
-                        BezierVertex vtx = vertList.get(i);
-                        bezPath.applyVertexSmoothing(smooth, vtx);
-                        cacheSmoothList.add(new CacheIdentifier(smooth.name()));
-                    }
-
-                    PathCurve curve = new PathCurve(bezPath.asPath());
-                    nodePath.path.setValue(curve);
-
-                    plane.dataType.setValue(VertexSmooth.PlaneData.class.getCanonicalName(), false);
-                    plane.dataValues.setValue(cacheSmoothList.toString());
-                    nodePath.vertexPlanes.add(plane);
-                }
-
-                nodePath.paint.setData(doc.fillPaint.getData());
-                nodePath.paintLayout.setValue(new RavenPaintLayout(nodePath.getBoundsLocal()));
-                nodePath.centerPivot(true);
-
-                if (parentGroupNode != null)
-                {
-                    parentGroupNode.children.add(nodePath);
-
-                }
-                else
-                {
-                    sceneGraph.add(nodePath);
-                }
-
-                if (doc != null)
-                {
-                    doc.getHistory().commitTransaction();
-                }
-            }
-        }
+//        if (!bubbleOutliner.isEmpty())
+//        {
+//            BitmapOutliner outliner = bubbleOutliner.buildOutliner();
+//            final float smoothing = toolProvider.getStrokeSmoothing();
+//            final Path2D.Double path = outliner.createSmoothedPath(
+//                    Math.max(smoothing, .1));
+//
+//            if (path != null)
+//            {
+//                ServiceDocument provider = user.getToolService(ServiceDocument.class);
+//                RavenNodeRoot doc = (RavenNodeRoot)provider.getDocument();
+//                RavenNodeSceneGraph sceneGraph = doc.getSceneGraph();
+//
+//                
+//                ServiceDeviceCamera provDevCam = user.getToolService(ServiceDeviceCamera.class);
+//                AffineTransform w2d = provDevCam
+//                        .getWorldToDeviceTransform((AffineTransform)null);
+//
+//                //Find node to add new stroke to
+//                NodeObject topSel = doc.getSelection().getTopSelected();
+//                RavenNodeGroup parentGroupNode = null;
+//                if (topSel != null)
+//                {
+//                    if (topSel instanceof RavenNodeGroup)
+//                    {
+//                        parentGroupNode = (RavenNodeGroup)topSel;
+//                    }
+//                    else if (topSel.getParent() != null)
+//                    {
+//                        NodeObject topNodeParent = topSel.getParent().getNode();
+//                        if (topNodeParent instanceof RavenNodeGroup)
+//                        {
+//                            parentGroupNode = (RavenNodeGroup)topNodeParent;
+//                        }
+//                    }
+//                }
+//
+//                AffineTransform devToLocal = null;
+//                if (parentGroupNode != null)
+//                {
+//                    devToLocal = parentGroupNode
+//                            .getLocalToWorldTransform((AffineTransform)null);
+//                    devToLocal.preConcatenate(w2d);
+//                }
+//                else
+//                {
+//                    devToLocal = w2d;
+//                }
+//                devToLocal.scale(1 / 100.0, 1 / 100.0);
+//
+//                try
+//                {
+//                    devToLocal.invert();
+//                } catch (NoninvertibleTransformException ex)
+//                {
+//                    Logger.getLogger(ToolPaintStroke.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+////                devToLocal.preConcatenate(toCentipixels);
+//                //devToLocal.scale(100, 100);
+//                Path2D.Double shape = (Path2D.Double)devToLocal
+//                        .createTransformedShape(path);
+//
+//
+//
+//
+//                //Add node
+//                if (doc != null)
+//                {
+//                    doc.getHistory().beginTransaction("Add paint stroke");
+//                }
+//
+//                NodeObjectProvider<RavenNodePath> prov = 
+//                        NodeObjectProviderIndex.inst().getProvider(RavenNodePath.class);
+//                RavenNodePath nodePath = prov.createNode(doc);
+//
+//                String name = doc.createUniqueName("Stroke");
+//                nodePath.setName(name);
+//
+////                PathCurve curve = new PathCurve(shape);
+////                nodePath.path.setValue(curve);
+//
+//                RavenNodeDataPlane plane = NodeObjectProviderIndex.inst()
+//                        .createNode(RavenNodeDataPlane.class, doc);
+//                {
+//                    BezierPath bezPath = new BezierPath(10000);
+//                    bezPath.append(shape, null);
+//
+//                    CacheList cacheSmoothList = new CacheList();
+//                    ArrayList<VertexSmooth> smoothList;
+//                    switch (toolProvider.vertexSmooth)
+//                    {
+//                        default:
+//                        case SMOOTH:
+//                            smoothList = bezPath.buildVertexSmoothing(
+//                                    toolProvider.getVertexSmoothAngle());
+//                            break;
+//                        case TENSE:
+//                            smoothList = new ArrayList<VertexSmooth>();
+//                            for (int i = 0; i < bezPath.getNumVertices(); ++i)
+//                            {
+//                                smoothList.add(VertexSmooth.TENSE);
+//                            }
+//                            break;
+//                    }
+//                    ArrayList<BezierVertex> vertList = bezPath.getVertices();
+//                    
+//                    for (int i = 0; i < smoothList.size(); ++i)
+//                    {
+//                        VertexSmooth smooth = smoothList.get(i);
+//                        BezierVertex vtx = vertList.get(i);
+//                        bezPath.applyVertexSmoothing(smooth, vtx);
+//                        cacheSmoothList.add(new CacheIdentifier(smooth.name()));
+//                    }
+//
+//                    PathCurve curve = new PathCurve(bezPath.asPath());
+//                    nodePath.path.setValue(curve);
+//
+//                    plane.dataType.setValue(VertexSmooth.PlaneData.class.getCanonicalName(), false);
+//                    plane.dataValues.setValue(cacheSmoothList.toString());
+//                    nodePath.vertexPlanes.add(plane);
+//                }
+//
+//                nodePath.paint.setData(doc.fillPaint.getData());
+//                nodePath.paintLayout.setValue(new RavenPaintLayout(nodePath.getBoundsLocal()));
+//                nodePath.centerPivot(true);
+//
+//                if (parentGroupNode != null)
+//                {
+//                    parentGroupNode.children.add(nodePath);
+//
+//                }
+//                else
+//                {
+//                    sceneGraph.add(nodePath);
+//                }
+//
+//                if (doc != null)
+//                {
+//                    doc.getHistory().commitTransaction();
+//                }
+//            }
+//        }
 
         bubbleOutliner = null;
         penDown = false;

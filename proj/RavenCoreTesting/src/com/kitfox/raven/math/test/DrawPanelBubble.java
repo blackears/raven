@@ -22,9 +22,11 @@
 
 package com.kitfox.raven.math.test;
 
-import com.kitfox.raven.shape.builders.BubbleOutliner;
+import com.kitfox.coyote.math.CyMatrix4d;
+import com.kitfox.coyote.math.Math2DUtil;
+import com.kitfox.coyote.shape.CyPath2d;
+import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.raven.shape.builders.BitmapOutliner;
-import com.kitfox.raven.shape.bezier.BezierMath;
 import com.kitfox.raven.shape.builders.StrokeBuffer;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -76,6 +78,13 @@ public class DrawPanelBubble extends javax.swing.JPanel
         initComponents();
         penManager = new PenManager(this);
         penManager.pen.addListener(this);
+
+//        penManager.pen.setFirePenTockOnSwing(true);
+//        penManager.pen.levelEmulator.setPressureTriggerForLeftCursorButton(.1f);
+        
+//        penNextX = penManager.pen.getLevelValue(PLevel.Type.X);
+//        penNextY = penManager.pen.getLevelValue(PLevel.Type.Y);
+//        penNextPressure = penManager.pen.getLevelValue(PLevel.Type.PRESSURE);
     }
 
     @Override
@@ -120,11 +129,13 @@ public class DrawPanelBubble extends javax.swing.JPanel
         penNextX = penX = pen.getLevelValue(PLevel.Type.X);
         penNextY = penY = pen.getLevelValue(PLevel.Type.Y);
         penNextPressure = penPressure = pen.getLevelValue(PLevel.Type.PRESSURE);
+//System.err.println("Start read " + penNextX + " " + penNextY + " " + penNextPressure);
 
 //        bubbleOutliner = new BubbleOutliner(16, 16);
         bubbleOutliner = new StrokeBuffer(strokeBufferSize, strokeBufferSize,
                 getGraphicsConfiguration());
         readingPen = true;
+//System.err.println("start readPen " + readingPen);
     }
 
     private void samplePen(MouseEvent evt)
@@ -148,6 +159,8 @@ public class DrawPanelBubble extends javax.swing.JPanel
         penNextX = pen.getLevelValue(PLevel.Type.X);
         penNextY = pen.getLevelValue(PLevel.Type.Y);
         penNextPressure = pen.getLevelValue(PLevel.Type.PRESSURE);
+//System.err.println("Sample " + penNextX + " " + penNextY + " " + penNextPressure);
+
     }
 
     private void penDown(MouseEvent evt)
@@ -162,6 +175,7 @@ public class DrawPanelBubble extends javax.swing.JPanel
                 getGraphicsConfiguration());
         penDown = true;
         readingPen = false;
+//System.err.println("pd readPen " + readingPen);
     }
 
     private void penUp(MouseEvent evt)
@@ -177,7 +191,14 @@ public class DrawPanelBubble extends javax.swing.JPanel
         {
             BitmapOutliner outliner = bubbleOutliner.buildOutliner();
 //            final Path2D.Double path = outliner.createPath();
-            final Path2D.Double path = outliner.createSmoothedPath(20);
+            
+            CyPath2d cyPath = outliner.getPath(5);
+//            CyRectangle2d region = outliner.getRegion();
+//            CyMatrix4d m = CyMatrix4d.createIdentity();
+//            m.translate(region.getX(), region.getY(), 0);
+//            cyPath = cyPath.createTransformedPath(m);
+            
+            final Path2D.Double path = cyPath.asPathAWT();
 
             if (path != null)
             {
@@ -212,14 +233,14 @@ public class DrawPanelBubble extends javax.swing.JPanel
         samplePen(evt);
 
         //Only record if minimum distance traveled
-        if (BezierMath.square(penX - penNextX) +
-                + BezierMath.square(penY - penNextY) < 4)
+        if (Math2DUtil.square(penX - penNextX) +
+                + Math2DUtil.square(penY - penNextY) < 4)
         {
             return;
         }
 
         float gap = Math.max(spacing * penPressure * penWeight, 1);
-        double dist = BezierMath.distance(penX, penY, penNextX, penNextY);
+        double dist = Math2DUtil.dist(penX, penY, penNextX, penNextY);
         int numDots = (int)Math.ceil(dist / gap);
 
 //if (penPressure == 1)
@@ -230,10 +251,11 @@ public class DrawPanelBubble extends javax.swing.JPanel
         for (int i = 0; i < numDots; ++i)
         {
             double dt = (double)i / numDots;
-            bubbleOutliner.addCircle(
-                    BezierMath.lerp(penX, penNextX, dt),
-                    BezierMath.lerp(penY, penNextY, dt),
-                    BezierMath.lerp(penPressure, penNextPressure, dt) * penWeight);
+            double x = Math2DUtil.lerp(penX, penNextX, dt);
+            double y = Math2DUtil.lerp(penY, penNextY, dt);
+            double p = Math2DUtil.lerp(penPressure, penNextPressure, dt) * penWeight;
+//System.err.println("Pressure " + p);
+            bubbleOutliner.addCircle(x, y, p);
 
         }
 
@@ -296,15 +318,32 @@ public class DrawPanelBubble extends javax.swing.JPanel
     @Override
     public void penLevelEvent(PLevelEvent ple)
     {
+        float pressure =
+                penManager.pen.getLevelValue(PLevel.Type.PRESSURE);
+System.err.println("Pres " + pressure);
+        if (pressure > 0)
+        {
+            startReadingFromPen();
+        }
+        
 //        System.err.println(ple);
         PLevel[] levels = ple.levels;
         for (int i = 0; i < levels.length; ++i)
         {
-//System.err.println(levels[i].getType());
-            if (penDown && levels[i].getType() == PLevel.Type.PRESSURE)
-            {
-                startReadingFromPen();
-            }
+System.err.println("Pen event " + i + " " + levels[i].getType() + " " + levels[i].value);
+if (levels[i].getType() == PLevel.Type.PRESSURE)
+{
+    int j = 9;
+}
+            
+//            if (penDown)
+//            {
+//System.err.println("Pen event " + i + " " + levels[i].getType() + " " + levels[i].value);
+//                if (levels[i].getType() == PLevel.Type.PRESSURE)
+//                {
+//                    startReadingFromPen();
+//                }
+//            }
         }
     }
 

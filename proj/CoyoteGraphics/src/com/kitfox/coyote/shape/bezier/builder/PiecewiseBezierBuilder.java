@@ -242,7 +242,8 @@ abstract public class PiecewiseBezierBuilder
             BezierPointNd ptSrc = fitPoints.get(i);
             BezierPointNd ptEval = 
                     curve.eval(Ptimes[i]);
-            error += distanceError(ptSrc, ptEval);
+//            error += distanceError(ptSrc, ptEval);
+            error = Math.max(error, distanceError(ptSrc, ptEval));
         }
 
         return new FitCurveRecord(curve, error);

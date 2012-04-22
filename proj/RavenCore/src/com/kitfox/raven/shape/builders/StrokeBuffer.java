@@ -16,6 +16,7 @@
 
 package com.kitfox.raven.shape.builders;
 
+import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.raven.shape.builders.BitmapOutliner.Sampler;
 import com.kitfox.raven.util.Grid;
 import java.awt.Color;
@@ -23,7 +24,6 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.Transparency;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 
@@ -105,7 +105,7 @@ public class StrokeBuffer
 
 
     @Override
-    public boolean isHit(double px, double py)
+    public boolean isOpaque(double px, double py)
     {
         int cellX = (int)Math.floor(px / gridCellWidth);
         int cellY = (int)Math.floor(py / gridCellHeight);
@@ -132,7 +132,7 @@ public class StrokeBuffer
         double tileAreaWidth = grid.getWidth() * gridCellWidth;
         double tileAreaHeight = grid.getHeight() * gridCellHeight;
 
-        Rectangle2D.Double region = new Rectangle2D.Double(
+        CyRectangle2d region = new CyRectangle2d(
                 tileAreaX, tileAreaY,
                 tileAreaWidth, tileAreaHeight);
 

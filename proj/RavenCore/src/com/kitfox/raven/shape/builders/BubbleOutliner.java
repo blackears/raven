@@ -16,16 +16,17 @@
 
 package com.kitfox.raven.shape.builders;
 
+import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.raven.shape.builders.BitmapOutliner.Sampler;
 import com.kitfox.raven.util.Grid;
 import java.awt.Graphics2D;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
 /**
  *
  * @author kitfox
  */
+@Deprecated
 public class BubbleOutliner
         implements Sampler
 {
@@ -75,7 +76,7 @@ public class BubbleOutliner
     }
 
     @Override
-    public boolean isHit(double px, double py)
+    public boolean isOpaque(double px, double py)
     {
 //        return area.contains(px, py);
 
@@ -121,7 +122,7 @@ public class BubbleOutliner
         double tileAreaWidth = grid.getWidth() * gridCellWidth;
         double tileAreaHeight = grid.getHeight() * gridCellHeight;
 
-        Rectangle2D.Double region = new Rectangle2D.Double(tileAreaX, tileAreaY, tileAreaWidth, tileAreaHeight);
+        CyRectangle2d region = new CyRectangle2d(tileAreaX, tileAreaY, tileAreaWidth, tileAreaHeight);
         return new BitmapOutliner(this,
                     region,
                     (int)tileAreaWidth, (int)tileAreaHeight);

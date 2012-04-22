@@ -195,5 +195,33 @@ public class BezierPoint2d extends BezierCurve2d
         return new BezierPoint2d(a0.x, a0.y);
     }
 
+    @Override
+    public BezierPoint2d setStart(double x, double y)
+    {
+        return new BezierPoint2d(
+                x, y);
+    }
+
+    @Override
+    public BezierPoint2d setEnd(double x, double y)
+    {
+        return new BezierPoint2d(
+                ax0, ay0);
+    }
+
+    @Override
+    public String asSvg()
+    {
+        return String.format("M %f %f",
+                ax0, ay0);
+    }
+
+    @Override
+    public String toString()
+    {
+        return String.format("point {(%f, %f)}",
+                ax0, ay0);
+    }
+
 
 }

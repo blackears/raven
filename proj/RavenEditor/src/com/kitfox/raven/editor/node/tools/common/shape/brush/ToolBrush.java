@@ -16,6 +16,9 @@
 
 package com.kitfox.raven.editor.node.tools.common.shape.brush;
 
+import com.kitfox.coyote.material.color.CyMaterialColorDrawRecord;
+import com.kitfox.coyote.material.color.CyMaterialColorDrawRecordFactory;
+import com.kitfox.coyote.math.CyColor4f;
 import com.kitfox.raven.raster.RoundBrushSource;
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.math.CyVector2d;
@@ -25,15 +28,20 @@ import com.kitfox.coyote.renderer.CyGLOffscreenContext;
 import com.kitfox.coyote.renderer.CyGLWrapper;
 import com.kitfox.coyote.renderer.CyTextureImage;
 import com.kitfox.coyote.renderer.CyTransparency;
+import com.kitfox.coyote.renderer.CyVertexBuffer;
+import com.kitfox.coyote.shape.CyPath2d;
+import com.kitfox.coyote.shape.CyRectangle2d;
+import com.kitfox.coyote.shape.CyRectangle2i;
+import com.kitfox.coyote.shape.ShapeLinesProvider;
 import com.kitfox.coyote.shape.bezier.builder.BezierCurveNd;
 import com.kitfox.coyote.shape.bezier.builder.BezierPointNd;
-import com.kitfox.coyote.shape.bezier.builder.PiecewiseBezierBuilder.FitCurveRecord;
 import com.kitfox.raven.editor.node.scene.RenderContext;
 import com.kitfox.raven.editor.node.tools.ToolUser;
 import com.kitfox.raven.editor.node.tools.common.ServiceDevice;
 import com.kitfox.raven.editor.node.tools.common.ServicePen;
 import com.kitfox.raven.editor.node.tools.common.ToolDisplay;
 import com.kitfox.raven.raster.TiledRasterData;
+import com.kitfox.raven.shape.builders.BitmapOutliner;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import jpen.PButtonEvent;
@@ -76,7 +84,7 @@ public class ToolBrush extends ToolDisplay
     
 //    PiecewiseBezierBuilder2d curveLeft;
 //    PiecewiseBezierBuilder2d curveRight;
-//    CyPath2d strokePath;
+    CyPath2d strokePath;
     
     //Track and smooth base bezier curve
     PenCurveBuilder pathBuilder;
@@ -343,7 +351,19 @@ public class ToolBrush extends ToolDisplay
         
         ctxOff.dispose();
 
-rasterData.dump();
+//rasterData.dump();
+        
+        //Create outline
+        CyRectangle2i bounds = rasterData.getBounds();
+        BitmapOutliner outliner = 
+                new BitmapOutliner(new RasterDataSampler(rasterData),
+                new CyRectangle2d(bounds), 
+                bounds.getWidth(), bounds.getHeight());
+        
+//outliner.dumpBitmap();
+        
+        float strokeSmoothing = toolProvider.getStrokeSmoothing();
+        strokePath = outliner.getPath(strokeSmoothing);
     }
     
     @Override
@@ -489,6 +509,7 @@ rasterData.dump();
         PLevel[] levels = ple.levels;
         for (int i = 0; i < levels.length; ++i)
         {
+//System.err.println("Pen event " + i + " " + levels[i].getType() + " " + levels[i].value);
             if (levels[i].getType() == PLevel.Type.PRESSURE)
             {
                 Pen pen = penManager.pen;
@@ -530,26 +551,26 @@ rasterData.dump();
             strokeBuilder.render(stack);
         }
         
-//        if (strokePath != null)
-//        {
-//            CyDrawStack stack = ctx.getDrawStack();
-//            
-//            CyMaterialColorDrawRecord rec = 
-//                    CyMaterialColorDrawRecordFactory.inst().allocRecord();
-//
-//            rec.setColor(CyColor4f.GREEN);
-//            rec.setOpacity(1);
-//
-//            ShapeLinesProvider prov = new ShapeLinesProvider(strokePath);
-//            CyVertexBuffer lineMesh = new CyVertexBuffer(prov);
-//            rec.setMesh(lineMesh);
-//
-//            CyMatrix4d mvp = stack.getModelViewProjXform();
-//            rec.setMvpMatrix(mvp);
-//
-//            stack.addDrawRecord(rec);
-//            
-//        }
+        if (strokePath != null)
+        {
+            CyDrawStack stack = ctx.getDrawStack();
+            
+            CyMaterialColorDrawRecord rec = 
+                    CyMaterialColorDrawRecordFactory.inst().allocRecord();
+
+            rec.setColor(CyColor4f.GREEN);
+            rec.setOpacity(1);
+
+            ShapeLinesProvider prov = new ShapeLinesProvider(strokePath);
+            CyVertexBuffer lineMesh = new CyVertexBuffer(prov);
+            rec.setMesh(lineMesh);
+
+            CyMatrix4d mvp = stack.getModelViewProjXform();
+            rec.setMvpMatrix(mvp);
+
+            stack.addDrawRecord(rec);
+            
+        }
   
         
     }

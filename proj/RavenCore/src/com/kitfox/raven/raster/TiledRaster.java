@@ -225,9 +225,11 @@ int cacheBuf = (int)fbuf.get(0);
         {
             for (int i = 0; i < tileGrid.getWidth(); ++i)
             {
+                int x = i + tileGrid.getOffsetX();
+                int y = j + tileGrid.getOffsetY();
+                
                 CyFramebufferTexture tile = tileGrid.getValue(
-                        i + tileGrid.getOffsetX(), 
-                        j + tileGrid.getOffsetY());
+                        x, y);
                 
                 if (tile == null)
                 {
@@ -250,8 +252,8 @@ int cacheBuf = (int)fbuf.get(0);
                 pixelData.rewind();
                 pixelData.get(buf);
                 
-                newGrid.includeRegion(i, j, 1, 1, null);
-                newGrid.setValue(i, j, buf);
+                newGrid.includeRegion(x, y, 1, 1, null);
+                newGrid.setValue(x, y, buf);
             }
         }
 

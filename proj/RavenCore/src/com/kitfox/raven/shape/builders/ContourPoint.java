@@ -19,8 +19,7 @@ package com.kitfox.raven.shape.builders;
 /**
  *
  * @author kitfox
- */
-public class ContourPoint
+ */public class ContourPoint
 {
     final int x;
     final int y;

@@ -16,6 +16,7 @@
 
 package com.kitfox.raven.raster;
 
+import com.kitfox.coyote.shape.CyRectangle2i;
 import com.kitfox.raven.util.Grid;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -33,14 +34,25 @@ public class TiledRasterData
     Grid<byte[]> data;
     int tileWidth;
     int tileHeight;
+    CyRectangle2i bounds;
 
     public TiledRasterData(Grid<byte[]> data, int tileWidth, int tileHeight)
     {
         this.data = data;
         this.tileWidth = tileWidth;
         this.tileHeight = tileHeight;
+        
+        bounds = new CyRectangle2i(data.getOffsetX() * tileWidth,
+                data.getOffsetY() * tileHeight,
+                data.getWidth()  * tileWidth,
+                data.getHeight() * tileHeight);
     }
 
+    public CyRectangle2i getBounds()
+    {
+        return new CyRectangle2i(bounds);
+    }
+    
     public void dump()
     {
         BufferedImage img = toBufferedImage();
@@ -98,6 +110,34 @@ public class TiledRasterData
                 img.setRGB(i + imgX, j + imgY, col);
             }
         }
+    }
+
+    public boolean contains(int x, int y)
+    {
+        return bounds.contains(x, y);
+    }
+
+    public int sample(int x, int y, int channel)
+    {
+        double vx = (double)x / tileWidth;
+        double vy = (double)y / tileHeight;
+        int wx = (int)Math.floor(vx);
+        int wy = (int)Math.floor(vy);
+        
+        byte[] raster = data.getValue(wx, wy);
+        if (raster == null)
+        {
+            return -1;
+        }
+        
+        int ix = x - wx * tileWidth;
+        int iy = y - wy * tileHeight;
+        int idx = (ix + iy * tileWidth) * 4 + channel;
+//if (idx < 0)
+//{
+//    int j = 9;
+//}
+        return raster[idx] & 0xff;
     }
 
 }

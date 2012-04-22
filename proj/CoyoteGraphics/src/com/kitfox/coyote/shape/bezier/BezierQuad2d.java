@@ -334,4 +334,32 @@ public class BezierQuad2d extends BezierCurve2d
         double dmin = Math.min(0, d1 / 2);
         double dmax = Math.max(0, d1 / 2);
     }
+
+    @Override
+    public BezierQuad2d setStart(double x, double y)
+    {
+        return new BezierQuad2d(
+                x, y, ax1, ay1, ax2, ay2);
+    }
+
+    @Override
+    public BezierQuad2d setEnd(double x, double y)
+    {
+        return new BezierQuad2d(
+                ax0, ay0, ax1, ay1, x, y);
+    }
+
+    @Override
+    public String asSvg()
+    {
+        return String.format("M %f %f Q %f %f  %f %f",
+                ax0, ay0, ax1, ay1, ax2, ay2);
+    }
+
+    @Override
+    public String toString()
+    {
+        return String.format("quad {(%f, %f)(%f, %f)(%f, %f)}",
+                ax0, ay0, ax1, ay1, ax2, ay2);
+    }
 }

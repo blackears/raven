@@ -116,7 +116,7 @@ public class ToolPencilLine extends ToolDisplay
         g.setStroke(new BasicStroke(5));
         if (pencilBuilder != null)
         {
-            CyPath2d path = pencilBuilder.getPath();
+            CyPath2d path = pencilBuilder.getPath(false);
             if (path != null)
             {
                 g.draw(path.asPathAWT());
@@ -211,7 +211,7 @@ public class ToolPencilLine extends ToolDisplay
 
 //        if (!bubbleOutliner.isEmpty())
         {
-            final CyPath2d path = pencilBuilder.getPath();
+            final CyPath2d path = pencilBuilder.getPath(false);
 
             if (path != null)
             {

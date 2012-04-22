@@ -92,4 +92,9 @@ abstract public class BezierCurve2d
     abstract public BezierCurve2d transfrom(CyMatrix4d xform);
 
     abstract public CyPath2d asPath();
+
+    abstract public BezierCurve2d setStart(double x, double y);
+    abstract public BezierCurve2d setEnd(double x, double y);
+
+    abstract public String asSvg();
 }

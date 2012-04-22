@@ -235,5 +235,33 @@ public class BezierLine2d extends BezierCurve2d
         return new BezierLine2d(a0.x, a0.y, a1.x, a1.y);
     }
 
+    @Override
+    public BezierLine2d setStart(double x, double y)
+    {
+        return new BezierLine2d(
+                x, y, ax1, ay1);
+    }
+
+    @Override
+    public BezierLine2d setEnd(double x, double y)
+    {
+        return new BezierLine2d(
+                ax0, ay0, x, y);
+    }
+
+    @Override
+    public String asSvg()
+    {
+        return String.format("M %f %f L %f %f",
+                ax0, ay0, ax1, ay1);
+    }
+
+    @Override
+    public String toString()
+    {
+        return String.format("line {(%f, %f)(%f, %f)}",
+                ax0, ay0, ax1, ay1);
+    }
+
 
 }

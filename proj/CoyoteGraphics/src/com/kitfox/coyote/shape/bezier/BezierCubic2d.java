@@ -540,4 +540,32 @@ public class BezierCubic2d extends BezierCurve2d
     {
         return ay3;
     }
+
+    @Override
+    public BezierCubic2d setStart(double x, double y)
+    {
+        return new BezierCubic2d(
+                x, y, ax1, ay1, ax2, ay2, ax3, ay3);
+    }
+
+    @Override
+    public BezierCubic2d setEnd(double x, double y)
+    {
+        return new BezierCubic2d(
+                ax0, ay0, ax1, ay1, ax2, ay2, x, y);
+    }
+
+    @Override
+    public String asSvg()
+    {
+        return String.format("M %f %f C %f %f  %f %f  %f %f",
+                ax0, ay0, ax1, ay1, ax2, ay2, ax3, ay3);
+    }
+
+    @Override
+    public String toString()
+    {
+        return String.format("cubic {(%f, %f)(%f, %f)(%f, %f)(%f, %f)}",
+                ax0, ay0, ax1, ay1, ax2, ay2, ax3, ay3);
+    }
 }
