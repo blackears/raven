@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/raster/TiledRaster.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/raster/RoundBrushSource.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/util/tree/NodeObjectTransferable.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/shape/bezier/BezierCurveCubic.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/shape/bezier/OutlinerPath.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/util/Grid.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/raster/TiledRasterData.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/shape/builders/BubbleOutliner.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/shape/builders/BitmapOutliner.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/shape/builders/Contour.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/shape/builders/ContourPoint.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/shape/builders/StrokeBuffer.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/raster/outliner/BitmapOutliner2.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/raster/outliner/BitmapSampler.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/raster/outliner/Cell.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/raster/outliner/WallMarker.java</file>
+        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenCore/src/com/kitfox/raven/raster/outliner/Direction.java</file>
+    </open-files>
 </project-private>

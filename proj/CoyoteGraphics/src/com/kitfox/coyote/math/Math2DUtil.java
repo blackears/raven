@@ -389,4 +389,35 @@ public class Math2DUtil
     {
         return value * value;
     }
+
+    public static double bernstein(int degree, int knotIdx, double t)
+    {
+        return choose(degree, knotIdx) 
+                * Math.pow(t, knotIdx) * Math.pow(1 - t, degree - knotIdx);
+    }
+
+    public static int choose(int a, int b)
+    {
+        int b0 = b;
+        int b1 = a - b;
+        if (b1 < b0)
+        {
+            int tmp = b0;
+            b0 = b1;
+            b1 = tmp;
+        }
+
+        int product = 1;
+        for (int k = b1 + 1; k <= a; ++k)
+        {
+            product *= k;
+        }
+
+        for (int k = b0; k >= 2; --k)
+        {
+            product /= k;
+        }
+
+        return product;
+    }
 }

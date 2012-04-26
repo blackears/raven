@@ -62,6 +62,9 @@ public class Contour
             builder.addPoint(v);
         }
         
+        ContourPoint first = points.get(0);
+        builder.addPoint(new CyVector2d(first.x, first.y));
+        
         return builder.getPath(true);
     }
     

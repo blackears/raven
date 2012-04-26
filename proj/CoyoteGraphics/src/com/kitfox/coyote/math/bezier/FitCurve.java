@@ -17,6 +17,7 @@
 package com.kitfox.coyote.math.bezier;
 
 import com.kitfox.coyote.math.GMatrix;
+import com.kitfox.coyote.math.Math2DUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -243,7 +244,7 @@ public class FitCurve
         {
             for (int n = 0; n <= degree; ++n)
             {
-                A.setElement(m, n, bernstein(degree, n, Ptimes[m]));
+                A.setElement(m, n, Math2DUtil.bernstein(degree, n, Ptimes[m]));
             }
         }
 
@@ -299,9 +300,11 @@ public class FitCurve
             {
                 PC.setElement(r, c, P.getElement(r, c)
                         //Influence of first point
-                        - bernstein(degree, 0, Ptimes[r]) * P.getElement(0, c)
+                        - Math2DUtil.bernstein(
+                            degree, 0, Ptimes[r]) * P.getElement(0, c)
                         //Influence of last point
-                        - bernstein(degree, degree, Ptimes[r]) * P.getElement(P.getNumRow() - 1, c));
+                        - Math2DUtil.bernstein(
+                            degree, degree, Ptimes[r]) * P.getElement(P.getNumRow() - 1, c));
             }
         }
 
@@ -312,7 +315,8 @@ public class FitCurve
         {
             for (int n = 1; n <= degree - 1; ++n)
             {
-                A.setElement(m, n - 1, bernstein(degree, n, Ptimes[m]));
+                A.setElement(m, n - 1, Math2DUtil.bernstein(
+                        degree, n, Ptimes[m]));
             }
         }
 
@@ -340,37 +344,6 @@ public class FitCurve
         return Q;
     }
 
-    private static double bernstein(int degree, int knotIdx, double t)
-    {
-        return choose(degree, knotIdx) 
-                * Math.pow(t, knotIdx) * Math.pow(1 - t, degree - knotIdx);
-    }
-
-    private static int choose(int a, int b)
-    {
-        int b0 = b;
-        int b1 = a - b;
-        if (b1 < b0)
-        {
-            int tmp = b0;
-            b0 = b1;
-            b1 = tmp;
-        }
-
-        int product = 1;
-        for (int k = b1 + 1; k <= a; ++k)
-        {
-            product *= k;
-        }
-
-        for (int k = b0; k >= 2; --k)
-        {
-            product /= k;
-        }
-
-        return product;
-    }
-
     public static double[] evalBezier(GMatrix B, double t)
     {
         return evalBezier(B, t, null);
@@ -390,7 +363,7 @@ public class FitCurve
         
         for (int r = 0; r <= degree; ++r)
         {
-            double b = bernstein(degree, r, t);
+            double b = Math2DUtil.bernstein(degree, r, t);
             for (int c = 0; c < B.getNumCol(); ++c)
             {
                 result[c] += b * B.getElement(r, c);

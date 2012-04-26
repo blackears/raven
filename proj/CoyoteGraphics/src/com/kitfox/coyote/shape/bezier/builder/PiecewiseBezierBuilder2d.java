@@ -18,6 +18,7 @@ package com.kitfox.coyote.shape.bezier.builder;
 
 import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.math.GMatrix;
+import com.kitfox.coyote.math.Math2DUtil;
 import com.kitfox.coyote.math.bezier.FitCurve;
 import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.bezier.BezierCubic2d;
@@ -37,6 +38,7 @@ public class PiecewiseBezierBuilder2d
 
     //Used to track UI display curve while the stroke is being drawn
     ArrayList<FitCurveRecord> segments = new ArrayList<FitCurveRecord>();
+    FitCurveRecord curFit;
 
     final double maxError;
 
@@ -61,25 +63,25 @@ public class PiecewiseBezierBuilder2d
                 : segments.get(segments.size() - 1).curve;
     }
 
-    private CyVector2d alignCurves(BezierCurve2d c0, BezierCurve2d c1)
-    {
-        double k0x = c0.getEndX() - c0.getTanOutX();
-        double k0y = c0.getEndY() - c0.getTanOutY();
-        double k1x = c1.getStartX() + c1.getTanInX();
-        double k1y = c1.getStartY() + c1.getTanInY();
-        
-        double px = (c0.getEndX() + c1.getStartX()) / 2;
-        double py = (c0.getEndY() + c1.getStartY()) / 2;
-        
-        //Find closest point to p on line from k0 to k1
-        CyVector2d v0 = new CyVector2d(k1x - k0x, k1y - k0y);
-        CyVector2d v1 = new CyVector2d(px - k0x, py - k0y);
-        
-        v0.scale(v0.dot(v1) / v0.dot(v0));
-        v0.add(k0x, k0y);
-        
-        return v0;
-    }
+//    private CyVector2d alignCurves(BezierCurve2d c0, BezierCurve2d c1)
+//    {
+//        double k0x = c0.getEndX() - c0.getTanOutX();
+//        double k0y = c0.getEndY() - c0.getTanOutY();
+//        double k1x = c1.getStartX() + c1.getTanInX();
+//        double k1y = c1.getStartY() + c1.getTanInY();
+//        
+//        double px = (c0.getEndX() + c1.getStartX()) / 2;
+//        double py = (c0.getEndY() + c1.getStartY()) / 2;
+//        
+//        //Find closest point to p on line from k0 to k1
+//        CyVector2d v0 = new CyVector2d(k1x - k0x, k1y - k0y);
+//        CyVector2d v1 = new CyVector2d(px - k0x, py - k0y);
+//        
+//        v0.scale(v0.dot(v1) / v0.dot(v0));
+//        v0.add(k0x, k0y);
+//        
+//        return v0;
+//    }
     
     /**
      * Takes piecewise smoothed segments and adjusts the endpoints of their
@@ -99,38 +101,56 @@ public class PiecewiseBezierBuilder2d
             return arr;
         }
         
-        FitCurveRecord s0 = segments.get(0);
-        BezierCurve2d c0 = s0.curve;
-        arr.add(c0);
 System.err.println("-----SVG");
-System.err.println(c0.asSvg());
-        for (int i = 1; i < segments.size(); ++i)
+        for (FitCurveRecord rec: segments)
         {
-            FitCurveRecord s1 = segments.get(i);
-            BezierCurve2d c1 = s1.curve;
-System.err.println(c1.asSvg());
-
-            CyVector2d p = alignCurves(c0, c1);
-            c0 = c0.setEnd(p.x, p.y);
-            c1 = c1.setStart(p.x, p.y);
+            BezierCurve2d c0 = rec.curve;
+System.err.println(c0.asSvg());
             
-            arr.set(arr.size() - 1, c0);
-            arr.add(c1);
-            
-            c0 = c1;
+            arr.add(c0);
         }
         
-        if (alignEndPoints)
+        if (curFit != null)
         {
-            BezierCurve2d c1 = arr.get(0);
-
-            CyVector2d p = alignCurves(c0, c1);
-            c0 = c0.setEnd(p.x, p.y);
-            c1 = c1.setStart(p.x, p.y);
-            
-            arr.set(arr.size() - 1, c0);
-            arr.set(0, c1);
+            arr.add(curFit.curve);
+System.err.println(curFit.curve.asSvg());
         }
+        
+        
+        
+//        
+//        FitCurveRecord s0 = segments.get(0);
+//        BezierCurve2d c0 = s0.curve;
+//        arr.add(c0);
+//System.err.println("-----SVG");
+//System.err.println(c0.asSvg());
+//        for (int i = 1; i < segments.size(); ++i)
+//        {
+//            FitCurveRecord s1 = segments.get(i);
+//            BezierCurve2d c1 = s1.curve;
+//System.err.println(c1.asSvg());
+//
+//            CyVector2d p = alignCurves(c0, c1);
+//            c0 = c0.setEnd(p.x, p.y);
+//            c1 = c1.setStart(p.x, p.y);
+//            
+//            arr.set(arr.size() - 1, c0);
+//            arr.add(c1);
+//            
+//            c0 = c1;
+//        }
+//        
+//        if (alignEndPoints)
+//        {
+//            BezierCurve2d c1 = arr.get(0);
+//
+//            CyVector2d p = alignCurves(c0, c1);
+//            c0 = c0.setEnd(p.x, p.y);
+//            c1 = c1.setStart(p.x, p.y);
+//            
+//            arr.set(arr.size() - 1, c0);
+//            arr.set(0, c1);
+//        }
         
         return arr;
     }
@@ -152,6 +172,142 @@ System.err.println(c1.asSvg());
 
     private FitCurveRecord fitCurve(ArrayList<CyVector2d> fitPoints)
     {
+        if (segments.isEmpty())
+        {
+            return fitCurveInit(fitPoints);
+        }
+
+        FitCurveRecord prev = segments.get(segments.size() - 1);
+        CyVector2d tan = new CyVector2d(prev.curve.getTanOutX(), prev.curve.getTanOutY());
+        tan.normalize();
+
+        //Prepare points for least squares fit
+//        double len = 0;
+//        for (int i = 1; i < fitPoints.size(); ++i)
+//        {
+//            CyVector2d pt0 = fitPoints.get(i - 1);
+//            CyVector2d pt1 = fitPoints.get(i);
+//            len += pt0.distance(pt1);
+//        }
+        
+        //Point times are distributed according to distance from previous point
+        double[] Ptimes = new double[fitPoints.size()];
+        Ptimes[0] = 0;
+        double dist = 0;
+        for (int i = 1; i < fitPoints.size(); ++i)
+        {
+            CyVector2d pt0 = fitPoints.get(i - 1);
+            CyVector2d pt1 = fitPoints.get(i);
+            double dx = pt1.x - pt0.x;
+            double dy = pt1.y - pt0.y;
+            dist += Math.sqrt(dx * dx + dy * dy);
+            Ptimes[i] = dist;
+        }
+
+        //Normalize times
+        double distI = 1 / dist;
+        for (int i = 1; i < fitPoints.size(); ++i)
+        {
+            Ptimes[i] *= distI;
+        }
+
+        //Fit curve where p0, p1, p3 are known.  Need to find best
+        // fit for p2
+        
+        //Use least squares fit to solve:
+        // CP = Q
+        // P = (C^T C)^-1 C^T Q
+        CyVector2d p0 = fitPoints.get(0);
+        CyVector2d p1 = new CyVector2d(tan);
+        p1.scale(dist / 3);
+        p1.add(p0);
+        CyVector2d p3 = fitPoints.get(fitPoints.size() - 1);
+        
+//        GMatrix Q = new GMatrix(fitPoints.size(), 2);
+        CyVector2d[] Q = new CyVector2d[fitPoints.size()];
+        for (int i = 0; i < fitPoints.size(); ++i)
+        {
+            CyVector2d q = new CyVector2d(fitPoints.get(i));
+            q.subScaled(p0, Math2DUtil.bernstein(3, 0, Ptimes[i]));
+            q.subScaled(p1, Math2DUtil.bernstein(3, 1, Ptimes[i]));
+            q.subScaled(p3, Math2DUtil.bernstein(3, 3, Ptimes[i]));
+
+            Q[i] = q;
+//            Q.setElement(i, 0, q.x);
+//            Q.setElement(i, 1, q.y);
+        }
+        
+        //GMatrix C = new GMatrix(fitPoints.size(), 1);
+        double[] C = new double[fitPoints.size()];
+        for (int i = 0; i < fitPoints.size(); ++i)
+        {
+//            C.setElement(i, 0, Math2DUtil.bernstein(3, 2, Ptimes[i]));
+            C[i] = Math2DUtil.bernstein(3, 2, Ptimes[i]);
+        }
+        
+        //calc (C^T C)^-1
+        double CTCI = 0;
+        for (int i = 0; i < C.length; ++i)
+        {
+            CTCI += C[i] * C[i];
+        }
+        CTCI = 1 / CTCI;
+        
+        CyVector2d p2 = new CyVector2d();
+        for (int i = 0; i < fitPoints.size(); ++i)
+        {
+            p2.addScaled(Q[i], CTCI * C[i]);
+        }
+        
+        BezierCurve2d seg = new BezierCubic2d(
+                p0.x, p0.y,
+                p1.x, p1.y,
+                p2.x, p2.y,
+                p3.x, p3.y);
+        
+
+        double error = 0;
+        CyVector2d evalPt = new CyVector2d();
+        for (int i = 0; i < fitPoints.size(); ++i)
+        {
+            CyVector2d pt = fitPoints.get(i);
+            seg.evaluate(Ptimes[i], evalPt);
+            double dx = pt.x - evalPt.x;
+            double dy = pt.y - evalPt.y;
+//            error += Math.sqrt(dx * dx + dy * dy);
+            error = Math.max(error, Math.sqrt(dx * dx + dy * dy));
+        }
+
+        return new FitCurveRecord(seg, error);
+    }
+    
+    private FitCurveRecord fitCurveInit(ArrayList<CyVector2d> fitPoints)
+    {
+        //Handle special cases
+        switch (fitPoints.size())
+        {
+            case 0:
+            case 1:
+                return null;
+            case 2:
+            {
+                CyVector2d p0 = fitPoints.get(0);
+                CyVector2d p1 = fitPoints.get(1);
+                return new FitCurveRecord(
+                        new BezierLine2d(p0.x, p0.y, p1.x, p1.y), 
+                        0);
+            }
+            case 3:
+            {
+                CyVector2d p0 = fitPoints.get(0);
+                CyVector2d p1 = fitPoints.get(1);
+                CyVector2d p2 = fitPoints.get(2);
+                return new FitCurveRecord(
+                        new BezierQuad2d(p0.x, p0.y, p1.x, p1.y, p2.x, p2.y), 
+                        0);
+            }
+        }
+
         //Prepare points for least squares fit
         GMatrix P = new GMatrix(fitPoints.size(), 2);
         for (int i = 0; i < fitPoints.size(); ++i)
@@ -182,67 +338,22 @@ System.err.println(c1.asSvg());
             Ptimes[i] *= distI;
         }
 
-        BezierCurve2d seg = null;
+        GMatrix Q = FitCurve.fitBezierKnots(3, Ptimes, P);
 
-        if (fitPoints.size() == 2)
-        {
-            //Fit line
-            CyVector2d pt0 = fitPoints.get(0);
-            CyVector2d pt1 = fitPoints.get(1);
-            
-            seg = new BezierLine2d(pt0.x, pt0.y, pt1.x, pt1.y);
-            
-//            double dx = pt1.x - pt0.x;
-//            double dy = pt1.y - pt0.y;
-//
-//            //Cubic form of line
-//            seg = new BezierCubic2d(
-//                    pt0.x, pt0.y,
-//                    pt0.x + dx / 3, pt0.y + dy / 3,
-//                    pt0.x + dx * 2 / 3, pt0.y + dy * 2 / 3,
-//                    pt1.x, pt1.y);
-        }
-        else if (fitPoints.size() == 3)
-        {
-            GMatrix Q = FitCurve.fitBezier(2, Ptimes, P);
+        double p0x = P.getElement(0, 0);
+        double p0y = P.getElement(0, 1);
+        double p1x = Q.getElement(0, 0);
+        double p1y = Q.getElement(0, 1);
+        double p2x = Q.getElement(1, 0);
+        double p2y = Q.getElement(1, 1);
+        double p3x = P.getElement(P.getNumRow() - 1, 0);
+        double p3y = P.getElement(P.getNumRow() - 1, 1);
 
-            double p0x = Q.getElement(0, 0);
-            double p0y = Q.getElement(0, 1);
-            double p1x = Q.getElement(1, 0);
-            double p1y = Q.getElement(1, 1);
-            double p2x = Q.getElement(2, 0);
-            double p2y = Q.getElement(2, 1);
-
-            //Convert quadratic curve to cubic
-            seg = new BezierQuad2d(
-                    p0x, p0y,
-                    p1x, p1y,
-                    p2x, p2y);
-        }
-        else if (fitPoints.size() > 3)
-        {
-            GMatrix Q = FitCurve.fitBezier(3, Ptimes, P);
-
-            double p0x = Q.getElement(0, 0);
-            double p0y = Q.getElement(0, 1);
-            double p1x = Q.getElement(1, 0);
-            double p1y = Q.getElement(1, 1);
-            double p2x = Q.getElement(2, 0);
-            double p2y = Q.getElement(2, 1);
-            double p3x = Q.getElement(3, 0);
-            double p3y = Q.getElement(3, 1);
-            
-            seg = new BezierCubic2d(
-                    p0x, p0y,
-                    p1x, p1y,
-                    p2x, p2y,
-                    p3x, p3y);
-        }
-
-        if (seg == null)
-        {
-            return null;
-        }
+        BezierCurve2d seg = new BezierCubic2d(
+                p0x, p0y,
+                p1x, p1y,
+                p2x, p2y,
+                p3x, p3y);
 
         double error = 0;
         CyVector2d evalPt = new CyVector2d();
@@ -258,6 +369,115 @@ System.err.println(c1.asSvg());
 
         return new FitCurveRecord(seg, error);
     }
+    
+//    private FitCurveRecord fitCurve_(ArrayList<CyVector2d> fitPoints)
+//    {
+//        //Prepare points for least squares fit
+//        GMatrix P = new GMatrix(fitPoints.size(), 2);
+//        for (int i = 0; i < fitPoints.size(); ++i)
+//        {
+//            CyVector2d pt = fitPoints.get(i);
+//            P.setElement(i, 0, pt.x);
+//            P.setElement(i, 1, pt.y);
+//        }
+//
+//        //Point times are distributed according to distance from previous point
+//        double[] Ptimes = new double[fitPoints.size()];
+//        Ptimes[0] = 0;
+//        double dist = 0;
+//        for (int i = 1; i < fitPoints.size(); ++i)
+//        {
+//            CyVector2d pt0 = fitPoints.get(i - 1);
+//            CyVector2d pt1 = fitPoints.get(i);
+//            double dx = pt1.x - pt0.x;
+//            double dy = pt1.y - pt0.y;
+//            dist += Math.sqrt(dx * dx + dy * dy);
+//            Ptimes[i] = dist;
+//        }
+//
+//        //Normalize times
+//        double distI = 1 / dist;
+//        for (int i = 1; i < fitPoints.size(); ++i)
+//        {
+//            Ptimes[i] *= distI;
+//        }
+//
+//        BezierCurve2d seg = null;
+//
+//        if (fitPoints.size() == 2)
+//        {
+//            //Fit line
+//            CyVector2d pt0 = fitPoints.get(0);
+//            CyVector2d pt1 = fitPoints.get(1);
+//            
+//            seg = new BezierLine2d(pt0.x, pt0.y, pt1.x, pt1.y);
+//            
+////            double dx = pt1.x - pt0.x;
+////            double dy = pt1.y - pt0.y;
+////
+////            //Cubic form of line
+////            seg = new BezierCubic2d(
+////                    pt0.x, pt0.y,
+////                    pt0.x + dx / 3, pt0.y + dy / 3,
+////                    pt0.x + dx * 2 / 3, pt0.y + dy * 2 / 3,
+////                    pt1.x, pt1.y);
+//        }
+//        else if (fitPoints.size() == 3)
+//        {
+//            GMatrix Q = FitCurve.fitBezierKnots(2, Ptimes, P);
+//
+//            double p0x = P.getElement(0, 0);
+//            double p0y = P.getElement(0, 1);
+//            double p1x = Q.getElement(0, 0);
+//            double p1y = Q.getElement(0, 1);
+//            double p2x = P.getElement(2, 0);
+//            double p2y = P.getElement(2, 1);
+//
+//            //Convert quadratic curve to cubic
+//            seg = new BezierQuad2d(
+//                    p0x, p0y,
+//                    p1x, p1y,
+//                    p2x, p2y);
+//        }
+//        else if (fitPoints.size() > 3)
+//        {
+//            GMatrix Q = FitCurve.fitBezierKnots(3, Ptimes, P);
+//
+//            double p0x = P.getElement(0, 0);
+//            double p0y = P.getElement(0, 1);
+//            double p1x = Q.getElement(0, 0);
+//            double p1y = Q.getElement(0, 1);
+//            double p2x = Q.getElement(1, 0);
+//            double p2y = Q.getElement(1, 1);
+//            double p3x = P.getElement(P.getNumRow() - 1, 0);
+//            double p3y = P.getElement(P.getNumRow() - 1, 1);
+//            
+//            seg = new BezierCubic2d(
+//                    p0x, p0y,
+//                    p1x, p1y,
+//                    p2x, p2y,
+//                    p3x, p3y);
+//        }
+//
+//        if (seg == null)
+//        {
+//            return null;
+//        }
+//
+//        double error = 0;
+//        CyVector2d evalPt = new CyVector2d();
+//        for (int i = 0; i < fitPoints.size(); ++i)
+//        {
+//            CyVector2d pt = fitPoints.get(i);
+//            seg.evaluate(Ptimes[i], evalPt);
+//            double dx = pt.x - evalPt.x;
+//            double dy = pt.y - evalPt.y;
+////            error += Math.sqrt(dx * dx + dy * dy);
+//            error = Math.max(error, Math.sqrt(dx * dx + dy * dy));
+//        }
+//
+//        return new FitCurveRecord(seg, error);
+//    }
 
     private void calculateNewSegments()
     {
@@ -279,70 +499,63 @@ System.err.println(c1.asSvg());
         //Create new top record based on trailing points
         FitCurveRecord rec = fitCurve(fitPoints);
 
-        if (rec != null)
+        if (rec == null)
         {
-            //We've accumulated too much error - push last good segment
-            // and start fresh
-            if (rec.error > maxError)
-            {
-                //Current segment on top of stack was calculated when
-                // error was below threshold.  Keep it and add new
-                // top record
-
-                //Top two points on stack are end point of lastSeg and a new
-                // currently unused point.  Discard all others.
-                while (fitPoints.size() > 2)
-                {
-                    fitPoints.remove(0);
-                }
-
-                rec = fitCurve(fitPoints);
-                segments.add(rec);
-            }
-            else
-            {
-                //Pop top 'working segment'
-                if (!segments.isEmpty())
-                {
-                    segments.remove(segments.size() - 1);
-                }
-                //Push current segment
-                segments.add(rec);
-            }
+            return;
         }
+        
+        if (rec.error > maxError)
+        {
+            if (curFit != null)
+            {
+                segments.add(curFit);
+                curFit = null;
+            }
+
+            while (fitPoints.size() > 2)
+            {
+                fitPoints.remove(0);
+            }
+            return;
+        }
+        
+        curFit = rec;
+        
+        
+//        if (rec != null)
+//        {
+//            //We've accumulated too much error - push last good segment
+//            // and start fresh
+//            if (rec.error > maxError)
+//            {
+//                //Current segment on top of stack was calculated when
+//                // error was below threshold.  Keep it and add new
+//                // top record
+//
+//                //Top two points on stack are end point of lastSeg and a new
+//                // currently unused point.  Discard all others.
+//                while (fitPoints.size() > 2)
+//                {
+//                    fitPoints.remove(0);
+//                }
+//
+//                rec = fitCurve(fitPoints);
+//                segments.add(rec);
+//            }
+//            else
+//            {
+//                //Pop top 'working segment'
+//                if (!segments.isEmpty())
+//                {
+//                    segments.remove(segments.size() - 1);
+//                }
+//                //Push current segment
+//                segments.add(rec);
+//            }
+//        }
 
 //        buildDisplayPath();
     }
-
-//    private void buildDisplayPath()
-//    {
-//        //Math is done - now build something to see
-//        if (segments.isEmpty())
-//        {
-//            return;
-//        }
-//
-//        //Just dump segments directly onto a path of single weight
-//        FitCurveRecord head = segments.get(0);
-//
-//        path = new CyPath2d();
-//
-//        if (true)
-//        {
-//            //Segments should already be in good form.  No need to tweak
-//            path.moveTo(head.seg.getStartX(), head.seg.getStartY());
-//            for (int i = 0; i < segments.size(); ++i)
-//            {
-//                FitCurveRecord recSeg = segments.get(i);
-//                BezierCurve2d pt = recSeg.seg;
-//
-//                path.cubicTo(
-//                        pt.getStartKnotX(), pt.getStartKnotY(),
-//                        pt.getEndKnotX(), pt.getEndKnotY(),
-//                        pt.getEndX(), pt.getEndY());
-//            }
-//        }
-//    }
 
     /**
      * @return the displayPath
@@ -367,37 +580,6 @@ System.err.println(c1.asSvg());
         
         return path;
     }
-
-//    /**
-//     * Append existing segments to path.  Does not include moving
-//     * to the initial point of the first segment.
-//     * 
-//     * @param path Path to append cubic segments to
-//     * @param reverse If true, segments are added in reverse direction
-//     */
-//    public void appendSegs(CyPath2d path, boolean reverse)
-//    {
-//        if (!reverse)
-//        {
-//            for (int i = 0; i < segments.size(); ++i)
-//            {
-//                BezierCurve2d seg = segments.get(i).seg;
-//                path.cubicTo(seg.getAx1(), seg.getAy1(),
-//                        seg.getAx2(), seg.getAy2(),
-//                        seg.getAx3(), seg.getAy3());
-//            }
-//        }
-//        else
-//        {
-//            for (int i = segments.size() - 1; i >= 0; --i)
-//            {
-//                BezierCurve2d seg = segments.get(i).seg;
-//                path.cubicTo(seg.getAx2(), seg.getAy2(),
-//                        seg.getAx1(), seg.getAy1(),
-//                        seg.getAx0(), seg.getAy0());
-//            }
-//        }
-//    }
 
     //------------------------------------
 

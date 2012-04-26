@@ -234,4 +234,16 @@ public class CyVector2d
         this.y = y0;
     }
 
+    public void addScaled(CyVector2d v, double s)
+    {
+        this.x += v.x * s;
+        this.y += v.y * s;
+    }
+
+    public void subScaled(CyVector2d v, double s)
+    {
+        this.x -= v.x * s;
+        this.y -= v.y * s;
+    }
+
 }

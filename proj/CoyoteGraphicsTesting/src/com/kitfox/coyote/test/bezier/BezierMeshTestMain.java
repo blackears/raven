@@ -34,23 +34,23 @@ public class BezierMeshTestMain
      */
     public static void main(String[] args)
     {
-        BezierMesh2i mesh = new BezierMesh2i(2);
-        
-        mesh.addEdge(new BezierLine2i(0, 0, 100, 0), null);
-        mesh.addEdge(new BezierLine2i(100, 0, 100, 100), null);
-        mesh.addEdge(new BezierLine2i(100, 100, 0, 100), null);
-        mesh.addEdge(new BezierLine2i(0, 100, 0, 0), null);
-        
-        mesh.addEdge(new BezierCubic2i(0, 50, 25, 25, 75, 25, 100, 50), null);
-        mesh.addEdge(new BezierLine2i(50, 100, 50, 0), null);
-
-        mesh.addEdge(new BezierLine2i(50, 100, 50, 200), null);
-        mesh.addEdge(new BezierLine2i(50, 200, 50, 300), null);
-        
-        ArrayList<CutLoop> faces = mesh.createFaces();
-        for (CutLoop face: faces)
-        {
-            face.contains(15, 15);
-        }
+//        BezierMesh2i mesh = new BezierMesh2i(2);
+//        
+//        mesh.addEdge(new BezierLine2i(0, 0, 100, 0), null);
+//        mesh.addEdge(new BezierLine2i(100, 0, 100, 100), null);
+//        mesh.addEdge(new BezierLine2i(100, 100, 0, 100), null);
+//        mesh.addEdge(new BezierLine2i(0, 100, 0, 0), null);
+//        
+//        mesh.addEdge(new BezierCubic2i(0, 50, 25, 25, 75, 25, 100, 50), null);
+//        mesh.addEdge(new BezierLine2i(50, 100, 50, 0), null);
+//
+//        mesh.addEdge(new BezierLine2i(50, 100, 50, 200), null);
+//        mesh.addEdge(new BezierLine2i(50, 200, 50, 300), null);
+//        
+//        ArrayList<CutLoop> faces = mesh.createFaces();
+//        for (CutLoop face: faces)
+//        {
+//            face.contains(15, 15);
+//        }
     }
 }
