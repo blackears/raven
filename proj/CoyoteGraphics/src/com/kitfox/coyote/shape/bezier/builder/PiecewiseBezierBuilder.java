@@ -24,6 +24,7 @@ import java.util.ArrayList;
  *
  * @author kitfox
  */
+@Deprecated
 abstract public class PiecewiseBezierBuilder
 {
     ArrayList<BezierPointNd> fitPoints = new ArrayList<BezierPointNd>();

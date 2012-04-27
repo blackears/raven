@@ -50,6 +50,11 @@ public class BezierCubic2d extends BezierCurve2d
         this.ay3 = ay3;
     }
 
+    public BezierCubic2d(CyVector2d p0, CyVector2d p1, CyVector2d p2, CyVector2d p3)
+    {
+        this(p0.x, p0.y, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
+    }
+
     @Override
     public int getOrder()
     {

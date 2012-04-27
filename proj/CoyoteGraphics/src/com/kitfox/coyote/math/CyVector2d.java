@@ -121,6 +121,12 @@ public class CyVector2d
         this.y += y;
     }
 
+    public void add(CyVector2d a, CyVector2d b)
+    {
+        this.x = a.x + b.x;
+        this.y = a.y + b.y;
+    }
+
     public void sub(CyVector2d v)
     {
         x -= v.x;
@@ -131,6 +137,12 @@ public class CyVector2d
     {
         this.x -= x;
         this.y -= y;
+    }
+
+    public void sub(CyVector2d a, CyVector2d b)
+    {
+        this.x = a.x - b.x;
+        this.y = a.y - b.y;
     }
     
     public void normalize()

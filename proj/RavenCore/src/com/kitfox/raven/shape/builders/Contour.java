@@ -20,6 +20,7 @@ import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.math.GMatrix;
 import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.bezier.builder.PiecewiseBezierBuilder2d;
+import com.kitfox.coyote.shape.bezier.builder.PiecewiseBezierSchneider2d;
 import java.util.ArrayList;
 
 /**
@@ -54,7 +55,9 @@ public class Contour
 
     public CyPath2d getPath(double maxError)
     {
-        PiecewiseBezierBuilder2d builder = new PiecewiseBezierBuilder2d(maxError);
+//        PiecewiseBezierBuilder2d builder = new PiecewiseBezierBuilder2d(maxError);
+        PiecewiseBezierSchneider2d builder = 
+                new PiecewiseBezierSchneider2d(true, maxError);
         
         for (ContourPoint pt: points)
         {
@@ -62,10 +65,10 @@ public class Contour
             builder.addPoint(v);
         }
         
-        ContourPoint first = points.get(0);
-        builder.addPoint(new CyVector2d(first.x, first.y));
+//        ContourPoint first = points.get(0);
+//        builder.addPoint(new CyVector2d(first.x, first.y));
         
-        return builder.getPath(true);
+        return builder.getPath();
     }
     
 //    public void appendTo(Path2D path)

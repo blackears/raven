@@ -1,20 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
-    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/shape/brush/ToolBrush.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/shape/brush/StrokeBuilder.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/ToolDisplay.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/shape/brush/ToolBrushSettings.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/build.xml</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/view/displayCy/DisplayCyPanel.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/shape/brush/ToolBrushProvider.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/ToolPencilLine.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/ToolPaintStroke.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/scene/RavenNodeCamera.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/shape/pen/ToolPenMesh.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/shape/brush/PenPoint.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/shape/brush/PenCurveBuilder.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenEditor/src/com/kitfox/raven/editor/node/tools/common/shape/brush/RasterDataSampler.java</file>
-    </open-files>
 </project-private>

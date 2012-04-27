@@ -258,42 +258,43 @@ public class CyPath2d extends CyShape
     @Override
     public String toString()
     {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-                
-        double[] coords = new double[6];
-        
-        for (CyPathIterator2d it = getIterator(); it.hasNext();)
-        {
-            switch (it.next(coords))
-            {
-                case MOVETO:
-                    pw.print("M " + coords[0] + " " + coords[1]);
-                    break;
-                case LINETO:
-                    pw.print("L " + coords[0] + " " + coords[1]);
-                    break;
-                case QUADTO:
-                    pw.print("Q " 
-                            + coords[0] + " " + coords[1] + ", "
-                            + coords[2] + " " + coords[3]
-                            );
-                    break;
-                case CUBICTO:
-                    pw.print("C " 
-                            + coords[0] + " " + coords[1] + ", "
-                            + coords[2] + " " + coords[3] + ", "
-                            + coords[4] + " " + coords[5]
-                            );
-                    break;
-                case CLOSE:
-                    pw.print("z");
-                    break;
-            }
-        }
-        pw.close();
-        
-        return sw.toString();
+        return asPathSVG();
+//        StringWriter sw = new StringWriter();
+//        PrintWriter pw = new PrintWriter(sw);
+//                
+//        double[] coords = new double[6];
+//        
+//        for (CyPathIterator2d it = getIterator(); it.hasNext();)
+//        {
+//            switch (it.next(coords))
+//            {
+//                case MOVETO:
+//                    pw.print("M " + coords[0] + " " + coords[1]);
+//                    break;
+//                case LINETO:
+//                    pw.print("L " + coords[0] + " " + coords[1]);
+//                    break;
+//                case QUADTO:
+//                    pw.print("Q " 
+//                            + coords[0] + " " + coords[1] + ", "
+//                            + coords[2] + " " + coords[3]
+//                            );
+//                    break;
+//                case CUBICTO:
+//                    pw.print("C " 
+//                            + coords[0] + " " + coords[1] + ", "
+//                            + coords[2] + " " + coords[3] + ", "
+//                            + coords[4] + " " + coords[5]
+//                            );
+//                    break;
+//                case CLOSE:
+//                    pw.print("z");
+//                    break;
+//            }
+//        }
+//        pw.close();
+//        
+//        return sw.toString();
     }
 
     public void dump(PrintStream ps)

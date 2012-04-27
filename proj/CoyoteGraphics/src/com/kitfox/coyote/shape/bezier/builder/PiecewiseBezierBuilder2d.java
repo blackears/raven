@@ -31,6 +31,7 @@ import java.util.ArrayList;
  *
  * @author kitfox
  */
+@Deprecated
 public class PiecewiseBezierBuilder2d
 {
     ArrayList<CyVector2d> fitPoints = new ArrayList<CyVector2d>();

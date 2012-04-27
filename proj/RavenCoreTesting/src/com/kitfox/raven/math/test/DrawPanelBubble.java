@@ -22,10 +22,8 @@
 
 package com.kitfox.raven.math.test;
 
-import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.math.Math2DUtil;
 import com.kitfox.coyote.shape.CyPath2d;
-import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.raven.shape.builders.BitmapOutliner;
 import com.kitfox.raven.shape.builders.StrokeBuffer;
 import java.awt.Color;
@@ -43,6 +41,7 @@ import jpen.PScrollEvent;
 import jpen.Pen;
 import jpen.PenManager;
 import jpen.event.PenListener;
+import jpen.owner.multiAwt.AwtPenToolkit;
 
 /**
  *
@@ -53,7 +52,7 @@ public class DrawPanelBubble extends javax.swing.JPanel
 {
 //    BubbleOutliner bubbleOutliner;
     StrokeBuffer bubbleOutliner;
-    final PenManager penManager;
+//    final PenManager penManager;
     static final int strokeBufferSize = 64;
 
     ArrayList<Path2D.Double> history = new ArrayList<Path2D.Double>();
@@ -76,8 +75,14 @@ public class DrawPanelBubble extends javax.swing.JPanel
     public DrawPanelBubble()
     {
         initComponents();
-        penManager = new PenManager(this);
-        penManager.pen.addListener(this);
+        PenManager penManager = AwtPenToolkit.getPenManager();
+        penManager.pen.setFirePenTockOnSwing(true);
+        penManager.pen.setFrequencyLater(40);
+        penManager.pen.levelEmulator.setPressureTriggerForLeftCursorButton(.5f);
+        AwtPenToolkit.addPenListener(this, this);
+        
+//        penManager = new PenManager(this);
+//        penManager.pen.addListener(this);
 
 //        penManager.pen.setFirePenTockOnSwing(true);
 //        penManager.pen.levelEmulator.setPressureTriggerForLeftCursorButton(.1f);
@@ -125,6 +130,7 @@ public class DrawPanelBubble extends javax.swing.JPanel
         }
 
         //Restart drawing, using pen now
+        PenManager penManager = AwtPenToolkit.getPenManager();
         Pen pen = penManager.pen;
         penNextX = penX = pen.getLevelValue(PLevel.Type.X);
         penNextY = penY = pen.getLevelValue(PLevel.Type.Y);
@@ -153,6 +159,7 @@ public class DrawPanelBubble extends javax.swing.JPanel
             return;
         }
 
+        PenManager penManager = AwtPenToolkit.getPenManager();
         Pen pen = penManager.pen;
 //        pen.
 
@@ -197,6 +204,8 @@ public class DrawPanelBubble extends javax.swing.JPanel
 //            CyMatrix4d m = CyMatrix4d.createIdentity();
 //            m.translate(region.getX(), region.getY(), 0);
 //            cyPath = cyPath.createTransformedPath(m);
+System.err.println("---SVG path");
+System.err.println(cyPath.toString());
             
             final Path2D.Double path = cyPath.asPathAWT();
 
@@ -318,9 +327,10 @@ public class DrawPanelBubble extends javax.swing.JPanel
     @Override
     public void penLevelEvent(PLevelEvent ple)
     {
+        PenManager penManager = AwtPenToolkit.getPenManager();
         float pressure =
                 penManager.pen.getLevelValue(PLevel.Type.PRESSURE);
-System.err.println("Pres " + pressure);
+//System.err.println("Pres " + pressure);
         if (pressure > 0)
         {
             startReadingFromPen();
@@ -330,11 +340,11 @@ System.err.println("Pres " + pressure);
         PLevel[] levels = ple.levels;
         for (int i = 0; i < levels.length; ++i)
         {
-System.err.println("Pen event " + i + " " + levels[i].getType() + " " + levels[i].value);
-if (levels[i].getType() == PLevel.Type.PRESSURE)
-{
-    int j = 9;
-}
+//System.err.println("Pen event " + i + " " + levels[i].getType() + " " + levels[i].value);
+//if (levels[i].getType() == PLevel.Type.PRESSURE)
+//{
+//    int j = 9;
+//}
             
 //            if (penDown)
 //            {
