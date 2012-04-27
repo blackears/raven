@@ -17,6 +17,8 @@
 package com.kitfox.coyote.shape.bezier.builder;
 
 import com.kitfox.coyote.math.CyVector2d;
+import com.kitfox.coyote.math.GMatrix;
+import com.kitfox.coyote.math.Math2DUtil;
 import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.bezier.BezierCubic2d;
 import com.kitfox.coyote.shape.bezier.BezierLine2d;
@@ -47,7 +49,12 @@ public class PiecewiseBezierSchneider2d
     private ArrayList<FitCubicRecord> pieces = new ArrayList<FitCubicRecord>();
     private boolean dirty;
     
+    private final int tangentNeighborhood;
+    
     private final boolean verbose = false;
+    
+    private double[][] leastSqCusp;
+    private double[][] leastSqSmooth;
     
     /**
      * 
@@ -56,19 +63,27 @@ public class PiecewiseBezierSchneider2d
      * @param cornerAngle If angle between incoming and outgoing 
      * tangents at this point is smaller than specified angle, then
      * a cusp is created instead of a smooth join.
+     * @param tangentNeighborhood When calculating tangents to the outline,
+     * consider a neighborhood of this many points extending away from the
+     * point under consideration.
      */
-    public PiecewiseBezierSchneider2d(boolean closedLoop, double maxError, double cornerAngle)
+    public PiecewiseBezierSchneider2d(boolean closedLoop, double maxError, 
+            double cornerAngle, int tangentNeighborhood)
     {
         this.error = maxError;
         this.iterationError = maxError * maxError;
         this.cornerAngle = cornerAngle;
         this.cornerAngleCos = Math.cos(cornerAngle);
         this.closedLoop = closedLoop;
+        this.tangentNeighborhood = tangentNeighborhood;
+        
+        leastSqCusp = Math2DUtil.createLeastSquaresMatrix(tangentNeighborhood + 1);
+        leastSqSmooth = Math2DUtil.createLeastSquaresMatrix(tangentNeighborhood * 2 + 1);
     }
 
     public PiecewiseBezierSchneider2d(boolean closedLoop, double maxError)
     {
-        this(closedLoop, maxError, Math.toRadians(45));
+        this(closedLoop, maxError, Math.toRadians(60), 5);
     }
 
     public PiecewiseBezierSchneider2d(boolean closedLoop)
@@ -178,8 +193,8 @@ public class PiecewiseBezierSchneider2d
             if (pieces.isEmpty())
             {
                 int last = points.size() - 1;
-                CyVector2d tHat1 = computeLeftTangent(0);
-                CyVector2d tHat2 = computeRightTangent(last);
+                CyVector2d tHat1 = computeForwardTangent(0);
+                CyVector2d tHat2 = computeBackwardTangent(last);
                 
                 fitCubic(0, last, tHat1, tHat2);
             }
@@ -187,7 +202,7 @@ public class PiecewiseBezierSchneider2d
             {
                 int last = points.size() - 1;
                 FitCubicRecord lastRec = pieces.remove(pieces.size() - 1);
-                CyVector2d tHat2 = computeRightTangent(last);
+                CyVector2d tHat2 = computeBackwardTangent(last);
     
                 fitCubic(lastRec.first, last, lastRec.tHat1, tHat2);
             }
@@ -529,48 +544,122 @@ public class PiecewiseBezierSchneider2d
         }
         return u;
     }
-
-    private CyVector2d computeLeftTangent(int index)
+/*    
+    private CyVector2d computeForwardTangent(int index)
     {
-        CyVector2d p0 = points.get(index);
-        CyVector2d p1 = index == points.size() - 1
-                ? points.get(0)
-                : points.get(index + 1);
-        
-        CyVector2d tan = new CyVector2d(p1);
-        tan.sub(p0);
+        //Calc tangent of line of least squares fit of aproaching points
+        CyVector2d tan = new CyVector2d();
+
+        int size = points.size();
+        for (int i = 0; i <= tangentNeighborhood; ++i)
+        {
+            int idx = Math2DUtil.modPos(index + i,
+                    size);
+            CyVector2d p = points.get(idx);
+            tan.addScaled(p, leastSqCusp[0][i]);
+        }
         tan.normalize();
-        return tan;
+        return tan;        
     }
-
-    private CyVector2d computeRightTangent(int index)
+    
+    private CyVector2d computeBackwardTangent(int index)
     {
-        CyVector2d p0 = index == 0 
-                ? points.get(points.size() - 1)
-                : points.get(index - 1);
-        CyVector2d p1 = points.get(index);
-        
-        CyVector2d tan = new CyVector2d(p0);
-        tan.sub(p1);
+        //Calc tangent of line of least squares fit of aproaching points
+        CyVector2d tan = new CyVector2d();
+
+        int size = points.size();
+        for (int i = 0; i <= tangentNeighborhood; ++i)
+        {
+            int idx = Math2DUtil.modPos(index - i,
+                    size);
+            CyVector2d p = points.get(idx);
+            tan.addScaled(p, leastSqCusp[0][i]);
+        }
         tan.normalize();
         return tan;
     }
 
     private void computeJoinTangents(int index, CyVector2d tBackward, CyVector2d tForward)
     {
-        CyVector2d p0 = index == 0 
-                ? points.get(points.size() - 1)
-                : points.get(index - 1);
-        CyVector2d p1 =  points.get(index);
-        CyVector2d p2 = index == points.size() - 1
-                ? points.get(0)
-                : points.get(index + 1);
+        tBackward.set(computeBackwardTangent(index));
+        tForward.set(computeForwardTangent(index));
         
-        tForward.sub(p2, p1);
-        tForward.normalize();
+        if (tForward.dot(tBackward) >= cornerAngleCos)
+        {
+            //Use cusp tangents
+            return;
+        }
+
+        //Calc least squares fit
+        CyVector2d tan = new CyVector2d();
+
+        int size = points.size();
+        for (int i = 0; i <= tangentNeighborhood * 2; ++i)
+        {
+            int idx = Math2DUtil.modPos(index - tangentNeighborhood + i,
+                    size);
+            CyVector2d p = points.get(idx);
+            tan.addScaled(p, leastSqSmooth[0][i]);
+        }
+        tan.normalize();
+
+        //Use smoothed tangent
+        tForward.set(tan);
+        tBackward.set(tan);
+        tBackward.negate();
+    }
+  */  
+
+    private CyVector2d computeForwardTangent(int index)
+    {
+        CyVector2d tan = new CyVector2d();
         
-        tBackward.sub(p0, p1);
-        tBackward.normalize();
+        int size = points.size();
+        CyVector2d p0 = points.get(index);
+        for (int i = 1; i <= tangentNeighborhood; ++i)
+        {
+//            int idx = index + i;
+//            while (idx >= size)
+//            {
+//                idx -= size;
+//            }
+
+            int idx = Math2DUtil.modPos(index + i, size);
+            tan.add(points.get(idx));
+            tan.sub(p0);
+        }
+        
+        tan.normalize();
+        return tan;
+    }
+
+    private CyVector2d computeBackwardTangent(int index)
+    {
+        CyVector2d tan = new CyVector2d();
+        
+        int size = points.size();
+        CyVector2d p0 = points.get(index);
+        for (int i = 1; i <= tangentNeighborhood; ++i)
+        {
+//            int idx = index - i;
+//            while (idx < 0)
+//            {
+//                idx += size;
+//            }
+            
+            int idx = Math2DUtil.modPos(index - i, size);
+            tan.add(points.get(idx));
+            tan.sub(p0);
+        }
+        
+        tan.normalize();
+        return tan;
+    }
+
+    private void computeJoinTangents(int index, CyVector2d tBackward, CyVector2d tForward)
+    {
+        tBackward.set(computeBackwardTangent(index));
+        tForward.set(computeForwardTangent(index));
         
         if (tForward.dot(tBackward) >= cornerAngleCos)
         {
@@ -579,11 +668,66 @@ public class PiecewiseBezierSchneider2d
         }
 
         //Use smoothed tangent
-        tForward.sub(p2, p0);
+        tForward.sub(tBackward);
         tForward.normalize();
         tBackward.set(tForward);
         tBackward.negate();
     }
+    
+//    private CyVector2d computeLeftTangent(int index)
+//    {
+//        CyVector2d p0 = points.get(index);
+//        CyVector2d p1 = index == points.size() - 1
+//                ? points.get(0)
+//                : points.get(index + 1);
+//        
+//        CyVector2d tan = new CyVector2d(p1);
+//        tan.sub(p0);
+//        tan.normalize();
+//        return tan;
+//    }
+//
+//    private CyVector2d computeRightTangent(int index)
+//    {
+//        CyVector2d p0 = index == 0 
+//                ? points.get(points.size() - 1)
+//                : points.get(index - 1);
+//        CyVector2d p1 = points.get(index);
+//        
+//        CyVector2d tan = new CyVector2d(p0);
+//        tan.sub(p1);
+//        tan.normalize();
+//        return tan;
+//    }
+//
+//    private void computeJoinTangents(int index, CyVector2d tBackward, CyVector2d tForward)
+//    {
+//        CyVector2d p0 = index == 0 
+//                ? points.get(points.size() - 1)
+//                : points.get(index - 1);
+//        CyVector2d p1 =  points.get(index);
+//        CyVector2d p2 = index == points.size() - 1
+//                ? points.get(0)
+//                : points.get(index + 1);
+//        
+//        tForward.sub(p2, p1);
+//        tForward.normalize();
+//        
+//        tBackward.sub(p0, p1);
+//        tBackward.normalize();
+//        
+//        if (tForward.dot(tBackward) >= cornerAngleCos)
+//        {
+//            //Use cusp tangents
+//            return;
+//        }
+//
+//        //Use smoothed tangent
+//        tForward.sub(p2, p0);
+//        tForward.normalize();
+//        tBackward.set(tForward);
+//        tBackward.negate();
+//    }
     
     //--------------------
     private static final class ErrorRecord

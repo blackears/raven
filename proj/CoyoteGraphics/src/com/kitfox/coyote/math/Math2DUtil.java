@@ -420,4 +420,69 @@ public class Math2DUtil
 
         return product;
     }
+
+    /**
+     * Calculates (value mod size).  If result is negative, maps to the 
+     * equivalent positive remainder.  Ie, guarantees result always 
+     * 0 &lt;= result &lt; dividend;
+     * 
+     * @param divisor
+     * @param dividend
+     * @return 
+     */
+    public static int modPos(int divisor, int dividend)
+    {
+        return divisor >= 0 
+                ? divisor % dividend
+                : ((divisor + 1) % dividend) - 1 + dividend;
+    }
+    
+    /**
+     * Compute the matrix (C^T C)^-1 C^t used in least squares solving.
+     * Assumes t values are evenly spaced on [0 1].
+     * 
+     * @param size
+     * @return 
+     */
+    public static double[][] createLeastSquaresMatrix(int size)
+    {
+        //Let input points be spaced evenly in time.
+        //C =
+        //[t(0)         1]
+        //[t(1)         1]
+        //[t(2)         1]
+        //[...           ]
+        //[t(size - 1)  1]
+        
+        double dt = 1.0 / (size - 1);
+        double tSum = 0;
+        double tSqSum = 0;
+        for (int i = 0; i < size; ++i)
+        {
+            double t = i * dt;
+            tSum += t;
+            tSqSum += t * t;
+        }
+        
+        //C^T C =
+        //[sum(t^2) sum(t)]
+        //[sum(t)   size  ]
+        
+        //(C^T C)^-1 =
+        //1 / det * [size    -sum(t) ]
+        //          [-sum(t) sum(t^2)]
+        
+        double det = size * tSqSum - tSum * tSum;
+        double detI = 1 / det;
+        
+        double[][] CtCn1Ct = new double[2][size];
+        for (int i = 0; i < size; ++i)
+        {
+            double t = i * dt;
+            CtCn1Ct[0][i] = (t * size - tSum) * detI;
+            CtCn1Ct[1][i] = (tSqSum - t * tSum) * detI;
+        }
+        
+        return CtCn1Ct;
+    }
 }
