@@ -26,15 +26,24 @@ import com.kitfox.coyote.math.Math2DUtil;
 public class BezierPointNd
 {
     double[] elements;
-    
+
     public BezierPointNd(double... elements)
     {
+        if (elements.length == 0)
+        {
+            throw new IllegalArgumentException("Zero length point");
+        }
         this.elements = elements;
     }
 
     public BezierPointNd(BezierPointNd p)
     {
         this(p.elements.clone());
+    }
+    
+    public static BezierPointNd createZero(int size)
+    {
+        return new BezierPointNd(new double[size]);
     }
     
     /**
@@ -95,5 +104,79 @@ public class BezierPointNd
         {
             elements[i] *= s;
         }        
+    }
+
+    public double distanceSquared(BezierPointNd p)
+    {
+        int sum = 0;
+        for (int i = 0; i < elements.length; ++i)
+        {
+            double d = elements[i] - p.elements[i];
+            sum += d * d;
+        }
+        return sum;
+    }
+
+    public double distance(BezierPointNd p)
+    {
+        return Math.sqrt(distanceSquared(p));
+    }
+
+    public void addScaled(BezierPointNd p, double scalar)
+    {
+        for (int i = 0; i < elements.length; ++i)
+        {
+            this.elements[i] += p.elements[i] * scalar;
+        }
+    }
+
+    public void subScaled(BezierPointNd p, double scalar)
+    {
+        for (int i = 0; i < elements.length; ++i)
+        {
+            this.elements[i] -= p.elements[i] * scalar;
+        }
+    }
+
+    public void set(BezierPointNd p)
+    {
+        for (int i = 0; i < elements.length; ++i)
+        {
+            this.elements[i] = p.elements[i];
+        }
+    }
+
+    public double lengthSquared()
+    {
+        int sum = 0;
+        for (int i = 0; i < elements.length; ++i)
+        {
+            double d = elements[i];
+            sum += d * d;
+        }
+        return sum;
+    }
+
+    public double length()
+    {
+        return Math.sqrt(lengthSquared());
+    }
+
+    public void normalize()
+    {
+        scale(1 / length());
+    }
+
+    public void negate()
+    {
+        for (int i = 0; i < elements.length; ++i)
+        {
+            elements[i] = -elements[i];
+        }        
+    }
+
+    public int numElements()
+    {
+        return elements.length;
     }
 }

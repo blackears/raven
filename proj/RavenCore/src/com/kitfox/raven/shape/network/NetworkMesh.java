@@ -21,9 +21,12 @@ import com.kitfox.cache.CacheList;
 import com.kitfox.cache.CacheMap;
 import com.kitfox.cache.parser.CacheParser;
 import com.kitfox.cache.parser.ParseException;
-import com.kitfox.coyote.shape.CyRectangle2d;
+import com.kitfox.coyote.shape.CyPathIterator;
 import com.kitfox.coyote.shape.CyRectangle2i;
+import com.kitfox.coyote.shape.CyShape;
 import com.kitfox.coyote.shape.bezier.BezierCubic2i;
+import com.kitfox.coyote.shape.bezier.BezierLine2i;
+import com.kitfox.coyote.shape.bezier.BezierQuad2i;
 import com.kitfox.coyote.shape.bezier.mesh.BezierMesh2i;
 import com.kitfox.coyote.shape.bezier.mesh.BezierMeshEdge2i;
 import com.kitfox.coyote.shape.bezier.mesh.BezierMeshVertex2i;
@@ -79,6 +82,78 @@ public class NetworkMesh extends BezierMesh2i<NetworkDataVertex, NetworkDataEdge
     protected NetworkDataVertex createDefaultVertexData(Coord c)
     {
         return new NetworkDataVertex();
+    }
+    
+    public static NetworkMesh create(CyShape shape, NetworkDataEdge data)
+    {
+        NetworkMesh mesh = new NetworkMesh();
+        
+        double[] coords = new double[6];
+        double sx = 0;
+        double sy = 0;
+        double mx = 0;
+        double my = 0;
+        
+        for (CyPathIterator it = shape.getIterator(); it.hasNext();)
+        {
+            switch (it.next(coords))
+            {
+                case MOVETO:
+                {
+                    sx = mx = coords[0];
+                    sy = my = coords[1];
+                    break;
+                }
+                case LINETO:
+                {
+                    BezierLine2i curve = new BezierLine2i(
+                            (int)mx, (int)my, 
+                            (int)coords[0], (int)coords[1]);
+                    mesh.addEdge(curve, new NetworkDataEdge(data));
+                    mx = coords[0];
+                    my = coords[1];
+                    break;
+                }
+                case QUADTO:
+                {
+                    BezierQuad2i curve = new BezierQuad2i(
+                            (int)mx, (int)my, 
+                            (int)coords[0], (int)coords[1],
+                            (int)coords[2], (int)coords[3]);
+                    mesh.addEdge(curve, new NetworkDataEdge(data));
+                    mx = coords[2];
+                    my = coords[3];
+                    break;
+                }
+                case CUBICTO:
+                {
+                    BezierCubic2i curve = new BezierCubic2i(
+                            (int)mx, (int)my, 
+                            (int)coords[0], (int)coords[1],
+                            (int)coords[2], (int)coords[3],
+                            (int)coords[4], (int)coords[5]);
+                    mesh.addEdge(curve, new NetworkDataEdge(data));
+                    mx = coords[4];
+                    my = coords[5];
+                    break;
+                }
+                case CLOSE:
+                {
+                    if (mx != sx || my != sy)
+                    {
+                        BezierLine2i curve = new BezierLine2i(
+                                (int)mx, (int)my, 
+                                (int)coords[0], (int)coords[1]);
+                        mesh.addEdge(curve, new NetworkDataEdge(data));
+                    }
+                    mx = coords[0];
+                    my = coords[1];
+                    break;
+                }
+            }
+        }
+        
+        return mesh;
     }
     
     public static NetworkMesh create(String text)
@@ -147,6 +222,88 @@ public class NetworkMesh extends BezierMesh2i<NetworkDataVertex, NetworkDataEdge
     public NetworkDataEdge copyEdgeData(NetworkDataEdge data)
     {
         return new NetworkDataEdge(data);
+    }
+
+    public ArrayList<BezierMeshEdge2i> addEdge(CyShape meshPath, NetworkDataEdge data)
+    {
+        double[] coords = new double[6];
+        double mx = 0;
+        double my = 0;
+        double sx = 0;
+        double sy = 0;
+        
+        ArrayList<BezierMeshEdge2i> list = new ArrayList<BezierMeshEdge2i>();
+        
+        for (CyPathIterator it = meshPath.getIterator(); it.hasNext();)
+        {
+            switch (it.next(coords))
+            {
+                case MOVETO:
+                    sx = mx = coords[0];
+                    sy = my = coords[1];
+                    break;
+                case LINETO:
+                {
+                    BezierLine2i curve = new BezierLine2i(
+                            (int)mx, (int)my,
+                            (int)coords[0], (int)coords[1]);
+                    ArrayList<BezierMeshEdge2i> part = 
+                            addEdge(curve, data);
+                    
+                    list.addAll(part);
+                    mx = coords[0];
+                    my = coords[1];
+                    break;
+                }
+                case QUADTO:
+                {
+                    BezierQuad2i curve = new BezierQuad2i(
+                            (int)mx, (int)my,
+                            (int)coords[0], (int)coords[1],
+                            (int)coords[2], (int)coords[3]);
+                    ArrayList<BezierMeshEdge2i> part = 
+                            addEdge(curve, data);
+                    
+                    list.addAll(part);
+                    mx = coords[2];
+                    my = coords[3];
+                    break;
+                }
+                case CUBICTO:
+                {
+                    BezierCubic2i curve = new BezierCubic2i(
+                            (int)mx, (int)my,
+                            (int)coords[0], (int)coords[1],
+                            (int)coords[2], (int)coords[3],
+                            (int)coords[4], (int)coords[5]);
+                    ArrayList<BezierMeshEdge2i> part = 
+                            addEdge(curve, data);
+                    
+                    list.addAll(part);
+                    mx = coords[4];
+                    my = coords[5];
+                    break;
+                }
+                case CLOSE:
+                {
+                    if (mx != sx || my != sy)
+                    {
+                        BezierLine2i curve = new BezierLine2i(
+                                (int)mx, (int)my,
+                                (int)sx, (int)sy);
+                        ArrayList<BezierMeshEdge2i> part = 
+                                addEdge(curve, data);
+
+                        list.addAll(part);
+                        mx = sx;
+                        my = sy;
+                    }
+                    break;
+                }
+            }
+        }
+        
+        return list;
     }
 
 

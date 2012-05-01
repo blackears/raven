@@ -45,15 +45,7 @@
                 <id>jar</id>
             </reference>
             <reference>
-                <foreign-project>RavenImportSVG</foreign-project>
-                <artifact-type>jar</artifact-type>
-                <script>build.xml</script>
-                <target>jar</target>
-                <clean-target>clean</clean-target>
-                <id>jar</id>
-            </reference>
-            <reference>
-                <foreign-project>RavenImportSWF</foreign-project>
+                <foreign-project>RavenImportExport</foreign-project>
                 <artifact-type>jar</artifact-type>
                 <script>build.xml</script>
                 <target>jar</target>

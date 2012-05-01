@@ -32,6 +32,7 @@ import com.kitfox.raven.paint.RavenStroke;
 import com.kitfox.raven.paint.common.RavenPaintColor;
 import com.kitfox.raven.shape.bezier.BezierMath;
 import com.kitfox.coyote.shape.bezier.builder.PiecewiseBezierBuilder2d;
+import com.kitfox.coyote.shape.bezier.builder.PiecewiseBezierSchneider2d;
 import com.kitfox.raven.shape.path.PathCurve;
 import com.kitfox.raven.util.service.ServiceInst;
 import com.kitfox.raven.util.tree.NodeObject;
@@ -63,7 +64,7 @@ import jpen.event.PenListener;
 public class ToolPencilLine extends ToolDisplay
         implements PenListener
 {
-    PiecewiseBezierBuilder2d pencilBuilder;
+    PiecewiseBezierSchneider2d pencilBuilder;
 
     final PenManager penManager;
 
@@ -116,7 +117,7 @@ public class ToolPencilLine extends ToolDisplay
         g.setStroke(new BasicStroke(5));
         if (pencilBuilder != null)
         {
-            CyPath2d path = pencilBuilder.getPath(false);
+            CyPath2d path = pencilBuilder.getPath();
             if (path != null)
             {
                 g.draw(path.asPathAWT());
@@ -137,7 +138,7 @@ public class ToolPencilLine extends ToolDisplay
         penNextY = penY = pen.getLevelValue(PLevel.Type.Y);
         penNextPressure = penPressure = pen.getLevelValue(PLevel.Type.PRESSURE);
 
-        pencilBuilder = new PiecewiseBezierBuilder2d(smoothing);
+        pencilBuilder = new PiecewiseBezierSchneider2d(false, smoothing);
         readingPen = true;
     }
 
@@ -167,7 +168,7 @@ public class ToolPencilLine extends ToolDisplay
         penY = penNextY;
         penPressure = penNextPressure;
 
-        pencilBuilder = new PiecewiseBezierBuilder2d(smoothing);
+        pencilBuilder = new PiecewiseBezierSchneider2d(false, smoothing);
         penDown = true;
         readingPen = false;
 
@@ -211,7 +212,7 @@ public class ToolPencilLine extends ToolDisplay
 
 //        if (!bubbleOutliner.isEmpty())
         {
-            final CyPath2d path = pencilBuilder.getPath(false);
+            final CyPath2d path = pencilBuilder.getPath();
 
             if (path != null)
             {

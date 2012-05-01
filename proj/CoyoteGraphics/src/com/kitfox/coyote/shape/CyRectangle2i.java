@@ -181,6 +181,14 @@ public class CyRectangle2i extends CyShape
         return new CyRectangle2d(x, y, width, height);
     }
 
+    public boolean contains(int px, int py)
+    {
+        return px >= x 
+                && px < x + width
+                && py >= y
+                && py < y + height;
+    }
+    
     @Override
     public String toString()
     {

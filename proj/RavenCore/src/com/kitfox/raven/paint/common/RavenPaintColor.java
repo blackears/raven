@@ -91,6 +91,14 @@ public class RavenPaintColor implements RavenPaint
     {
         this(color.r, color.g, color.b, color.a);
     }
+
+    public RavenPaintColor(int argb)
+    {
+        this(((argb >> 16) & 0xff) / 255f, 
+                ((argb >> 8) & 0xff) / 255f, 
+                (argb & 0xff) / 255f, 
+                ((argb >> 24) & 0xff) / 255f);
+    }
     
     public RavenPaintColor(Color color)
     {

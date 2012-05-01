@@ -77,6 +77,11 @@ public class RavenNodeMesh2 extends RavenNodeXformable
         super(uid);
     }
 
+    public static CyMatrix4d getMeshToLocal()
+    {
+        return new CyMatrix4d(meshToLocal);
+    }
+    
     @Override
     protected void renderContent(RenderContext ctx)
     {

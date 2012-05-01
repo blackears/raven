@@ -16,8 +16,6 @@
 
 package com.kitfox.coyote.shape.bezier.builder;
 
-import com.kitfox.coyote.shape.bezier.builder.PiecewiseBezierBuilder.FitCurveRecord;
-
 /**
  *
  * @author kitfox
@@ -36,6 +34,51 @@ public class BezierCurveNd
         this(curve.points.clone());
     }
 
+    public BezierPointNd getStart()
+    {
+        return points[0];
+    }
+    
+    public BezierPointNd getEnd()
+    {
+        return points[points.length - 1];
+    }
+    
+    /**
+     * Find square of maximum distance curve deviates from baseline
+     * at sampling points.
+     * 
+     * @param numSamples
+     * @return 
+     */
+    public double flatnessSq(int numSamples)
+    {
+        double dt = numSamples / (double)(points.length + 1);
+        
+        BezierPointNd r = new BezierPointNd(points[points.length - 1]);
+        r.sub(points[0]);
+        BezierPointNd s = BezierPointNd.createZero(r.numElements());
+        BezierPointNd rPrime = BezierPointNd.createZero(r.numElements());
+        
+        double rDotRI = 1 / r.dot(r);
+        
+        double maxDistSq = 0;
+        for (int i = 1; i < points.length - 1; ++i)
+        {
+            BezierPointNd p = eval(i * dt);
+            s.set(p);
+            s.sub(points[0]);
+            
+            //Project S onto R
+            rPrime.set(r);
+            rPrime.scale(r.dot(s) * rDotRI);
+            
+            maxDistSq = Math.max(rPrime.distanceSquared(s), maxDistSq);
+        }
+        
+        return maxDistSq;
+    }
+    
     public double getSpan(int index)
     {
         double minVal = points[0].get(index);
@@ -179,6 +222,23 @@ public class BezierCurveNd
         //Alter vectors
         points[points.length - 1] = v0;
         s1.points[0] = v0;
+    }
+
+    public BezierCurveNd getDerivative()
+    {
+        int degree = points.length - 1;
+        BezierPointNd[] newPoints = new BezierPointNd[degree];
+        
+        for (int i = 0; i < degree; ++i)
+        {
+            BezierPointNd p = new BezierPointNd(points[i + 1]);
+            p.sub(points[i]);
+            p.scale(degree);
+            
+            newPoints[i] = p;
+        }
+        
+        return new BezierCurveNd(newPoints);
     }
     
 }

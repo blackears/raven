@@ -17,7 +17,6 @@
 package com.kitfox.coyote.shape.bezier.builder;
 
 import com.kitfox.coyote.math.CyVector2d;
-import com.kitfox.coyote.math.GMatrix;
 import com.kitfox.coyote.math.Math2DUtil;
 import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.bezier.BezierCubic2d;
@@ -107,7 +106,11 @@ public class PiecewiseBezierSchneider2d
         {
             rec.curve.append(path);
         }
-        path.close();
+        
+        if (closedLoop)
+        {
+            path.close();
+        }
         return path;
     }
     
@@ -136,6 +139,11 @@ public class PiecewiseBezierSchneider2d
             list.add(rec.curve);
         }
         return list;
+    }
+    
+    public void addPoint(double x, double y)
+    {
+        addPoint(new CyVector2d(x, y));
     }
     
     /**
@@ -275,9 +283,30 @@ public class PiecewiseBezierSchneider2d
             {
                 double[] uPrime = reparameterize(
                         first, last, u, bezCurve);
+                if (uPrime == null)
+                {
+                    //Bad reparameterization.  Just use existing one
+                    break;
+                }
                 bezCurve = generateBezier(
                         first, last, uPrime, tHat1, tHat2);
                 err = computeMaxError(first, last, bezCurve, uPrime);
+                
+//                if (errNew.maxError > err.maxError)
+//                {
+//                    break;
+//                }
+//                err = errNew;
+//                bezCurve = bezCurveNew;
+                
+//if (err.maxError > 5100)
+//{
+
+                //uPrime = reparameterize(first, last, u, bezCurve);
+////generateBezier(first, last, uPrime, tHat1, tHat2);
+//err = computeMaxError(first, last, bezCurve, uPrime);    
+//}
+//bezCurve = bezCurveNew;
 
                 if (verbose)
                 {
@@ -330,7 +359,7 @@ public class PiecewiseBezierSchneider2d
         for (int i = first + 1; i < last; ++i)
         {
             bezCurve.evaluate(u[i - first], P);
-            double dist = P.distance(points.get(i));
+            double dist = P.distanceSquared(points.get(i));
             
             if (dist >= maxDist)
             {
@@ -473,8 +502,21 @@ public class PiecewiseBezierSchneider2d
         double[] uPrime = new double[u.length];
         for (int i = 0; i < u.length; ++i)
         {
-            uPrime[i] = newtonRaphsonRootFind(bezCurve, 
+            double val = newtonRaphsonRootFind(bezCurve, 
                     points.get(i + first), u[i]);
+            
+            if (i != 0 && val < u[i - 1])
+            {
+                //Reparameterization not ascending.  Likely incorrect
+                return null;
+            }
+//            if (val < 0 || val > 1)
+//            {
+//                //Function undefined for these values.  Not sure
+//                // why they're occurring
+//                val = Math2DUtil.clamp(val, 0, 1);
+//            }
+            uPrime[i] = val;
         }
         return uPrime;
     }
@@ -544,7 +586,7 @@ public class PiecewiseBezierSchneider2d
         }
         return u;
     }
-/*    
+
     private CyVector2d computeForwardTangent(int index)
     {
         //Calc tangent of line of least squares fit of aproaching points
@@ -608,11 +650,13 @@ public class PiecewiseBezierSchneider2d
         tBackward.set(tan);
         tBackward.negate();
     }
-  */  
+ 
 
+    /*
     private CyVector2d computeForwardTangent(int index)
     {
         CyVector2d tan = new CyVector2d();
+        CyVector2d dir = new CyVector2d();
         
         int size = points.size();
         CyVector2d p0 = points.get(index);
@@ -625,8 +669,11 @@ public class PiecewiseBezierSchneider2d
 //            }
 
             int idx = Math2DUtil.modPos(index + i, size);
-            tan.add(points.get(idx));
-            tan.sub(p0);
+            dir.set(points.get(idx));
+            dir.sub(p0);
+            dir.normalize();
+
+            tan.add(dir);
         }
         
         tan.normalize();
@@ -636,6 +683,7 @@ public class PiecewiseBezierSchneider2d
     private CyVector2d computeBackwardTangent(int index)
     {
         CyVector2d tan = new CyVector2d();
+        CyVector2d dir = new CyVector2d();
         
         int size = points.size();
         CyVector2d p0 = points.get(index);
@@ -648,8 +696,11 @@ public class PiecewiseBezierSchneider2d
 //            }
             
             int idx = Math2DUtil.modPos(index - i, size);
-            tan.add(points.get(idx));
-            tan.sub(p0);
+            dir.set(points.get(idx));
+            dir.sub(p0);
+            dir.normalize();
+
+            tan.add(dir);
         }
         
         tan.normalize();
@@ -673,61 +724,64 @@ public class PiecewiseBezierSchneider2d
         tBackward.set(tForward);
         tBackward.negate();
     }
+    */
     
-//    private CyVector2d computeLeftTangent(int index)
-//    {
-//        CyVector2d p0 = points.get(index);
-//        CyVector2d p1 = index == points.size() - 1
-//                ? points.get(0)
-//                : points.get(index + 1);
-//        
-//        CyVector2d tan = new CyVector2d(p1);
-//        tan.sub(p0);
-//        tan.normalize();
-//        return tan;
-//    }
-//
-//    private CyVector2d computeRightTangent(int index)
-//    {
-//        CyVector2d p0 = index == 0 
-//                ? points.get(points.size() - 1)
-//                : points.get(index - 1);
-//        CyVector2d p1 = points.get(index);
-//        
-//        CyVector2d tan = new CyVector2d(p0);
-//        tan.sub(p1);
-//        tan.normalize();
-//        return tan;
-//    }
-//
-//    private void computeJoinTangents(int index, CyVector2d tBackward, CyVector2d tForward)
-//    {
-//        CyVector2d p0 = index == 0 
-//                ? points.get(points.size() - 1)
-//                : points.get(index - 1);
-//        CyVector2d p1 =  points.get(index);
-//        CyVector2d p2 = index == points.size() - 1
-//                ? points.get(0)
-//                : points.get(index + 1);
-//        
-//        tForward.sub(p2, p1);
-//        tForward.normalize();
-//        
-//        tBackward.sub(p0, p1);
-//        tBackward.normalize();
-//        
-//        if (tForward.dot(tBackward) >= cornerAngleCos)
-//        {
-//            //Use cusp tangents
-//            return;
-//        }
-//
-//        //Use smoothed tangent
-//        tForward.sub(p2, p0);
-//        tForward.normalize();
-//        tBackward.set(tForward);
-//        tBackward.negate();
-//    }
+    /*
+    private CyVector2d computeForwardTangent(int index)
+    {
+        CyVector2d p0 = points.get(index);
+        CyVector2d p1 = index == points.size() - 1
+                ? points.get(0)
+                : points.get(index + 1);
+        
+        CyVector2d tan = new CyVector2d(p1);
+        tan.sub(p0);
+        tan.normalize();
+        return tan;
+    }
+
+    private CyVector2d computeBackwardTangent(int index)
+    {
+        CyVector2d p0 = index == 0 
+                ? points.get(points.size() - 1)
+                : points.get(index - 1);
+        CyVector2d p1 = points.get(index);
+        
+        CyVector2d tan = new CyVector2d(p0);
+        tan.sub(p1);
+        tan.normalize();
+        return tan;
+    }
+
+    private void computeJoinTangents(int index, CyVector2d tBackward, CyVector2d tForward)
+    {
+        CyVector2d p0 = index == 0 
+                ? points.get(points.size() - 1)
+                : points.get(index - 1);
+        CyVector2d p1 =  points.get(index);
+        CyVector2d p2 = index == points.size() - 1
+                ? points.get(0)
+                : points.get(index + 1);
+        
+        tForward.sub(p2, p1);
+        tForward.normalize();
+        
+        tBackward.sub(p0, p1);
+        tBackward.normalize();
+        
+        if (tForward.dot(tBackward) >= cornerAngleCos)
+        {
+            //Use cusp tangents
+            return;
+        }
+
+        //Use smoothed tangent
+        tForward.sub(p2, p0);
+        tForward.normalize();
+        tBackward.set(tForward);
+        tBackward.negate();
+    }
+    */
     
     //--------------------
     private static final class ErrorRecord
@@ -739,6 +793,12 @@ public class PiecewiseBezierSchneider2d
         {
             this.maxError = error;
             this.splitPoint = splitPoint;
+        }
+
+        @Override
+        public String toString()
+        {
+            return "err " + maxError + " splitPt " + splitPoint;
         }
     }
     

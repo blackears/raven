@@ -30,18 +30,18 @@ import com.kitfox.coyote.renderer.CyTextureImage;
 import com.kitfox.coyote.renderer.CyTransparency;
 import com.kitfox.coyote.renderer.CyVertexBuffer;
 import com.kitfox.coyote.shape.CyPath2d;
-import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.coyote.shape.CyRectangle2i;
 import com.kitfox.coyote.shape.ShapeLinesProvider;
 import com.kitfox.coyote.shape.bezier.builder.BezierCurveNd;
 import com.kitfox.coyote.shape.bezier.builder.BezierPointNd;
+import com.kitfox.coyote.shape.bezier.builder.PiecewiseBezierSchneiderNd;
+import com.kitfox.coyote.shape.outliner.bitmap.BitmapOutliner;
 import com.kitfox.raven.editor.node.scene.RenderContext;
 import com.kitfox.raven.editor.node.tools.ToolUser;
 import com.kitfox.raven.editor.node.tools.common.ServiceDevice;
 import com.kitfox.raven.editor.node.tools.common.ServicePen;
 import com.kitfox.raven.editor.node.tools.common.ToolDisplay;
 import com.kitfox.raven.raster.TiledRasterData;
-import com.kitfox.raven.shape.builders.BitmapOutliner;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import jpen.PButtonEvent;
@@ -87,7 +87,7 @@ public class ToolBrush extends ToolDisplay
     CyPath2d strokePath;
     
     //Track and smooth base bezier curve
-    PenCurveBuilder pathBuilder;
+    PiecewiseBezierSchneiderNd pathBuilder;
     
     //Raster that will have pen bitmaps blitted to it for stroke preview
     StrokeBuilder strokeBuilder;
@@ -131,7 +131,8 @@ public class ToolBrush extends ToolDisplay
         
         strokeBuilder = new StrokeBuilder(source);
         
-        pathBuilder = new PenCurveBuilder(toolProvider.getPathSmoothing());
+        pathBuilder = new PiecewiseBezierSchneiderNd(3, 
+                false, toolProvider.getPathSmoothing());
     }
     
     private void plotStroke()
@@ -305,17 +306,24 @@ public class ToolBrush extends ToolDisplay
         plotPrev = pt;
     }
 
-    private void plotCurve(BezierCurveNd curve, CyGLOffscreenContext ctxOff, double tMin, double tMax)
+    private void plotLine(BezierPointNd p0, BezierPointNd p1,
+            CyGLOffscreenContext ctxOff)
     {
-        double spanX = curve.getSpan(0);
-        double spanY = curve.getSpan(1);
+        final float penWidthMin = toolProvider.getHardness();
+        final float penWidthMax = toolProvider.getStrokeWidthMax();
+
+        double dx = p1.get(0) - p0.get(0);
+        double dy = p1.get(1) - p0.get(1);
+
+        int steps = Math.abs(dx) > Math.abs(dy)
+                ? (int)Math.ceil(Math.abs(dx))
+                : (int)Math.ceil(Math.abs(dy));
         
-        if (spanX <= 1 && spanY <= 1)
+        double dt = 1.0 / steps;
+        for (int i = 0; i < steps; ++i)
         {
-            final float penWidthMin = toolProvider.getHardness();
-            final float penWidthMax = toolProvider.getStrokeWidthMax();
-        
-            BezierPointNd pt = curve.eval(tMin);
+            BezierPointNd pt = p0.lerp(p1, i * dt);
+
             double x = pt.get(0);
             double y = pt.get(1);
             double pres = pt.get(2);
@@ -325,14 +333,53 @@ public class ToolBrush extends ToolDisplay
             
             strokeBuilder.daubBrush(ctxOff, 
                     x, y, pressure);
+        }
+    }
+    
+    private void plotCurve(BezierCurveNd curve, CyGLOffscreenContext ctxOff)
+    {
+        if (curve.flatnessSq(3) < 2)
+        {
+            BezierPointNd p0 = curve.getStart();
+            BezierPointNd p1 = curve.getEnd();
+            plotLine(p0, p1, ctxOff);
             return;
         }
         
-        double tMid = (tMin + tMax) / 2;
         BezierCurveNd[] part = curve.split(.5);
-        plotCurve(part[0], ctxOff, tMin, tMid);
-        plotCurve(part[1], ctxOff, tMid, tMax);
+        plotCurve(part[0], ctxOff);
+        plotCurve(part[1], ctxOff);
     }
+    
+//    private void plotCurve(BezierCurveNd curve, CyGLOffscreenContext ctxOff, 
+//            double tMin, double tMax)
+//    {
+//        double spanX = curve.getSpan(0);
+//        double spanY = curve.getSpan(1);
+//        
+//        if (spanX <= 1 && spanY <= 1)
+//        {
+//            final float penWidthMin = toolProvider.getHardness();
+//            final float penWidthMax = toolProvider.getStrokeWidthMax();
+//        
+//            BezierPointNd pt = curve.eval(tMin);
+//            double x = pt.get(0);
+//            double y = pt.get(1);
+//            double pres = pt.get(2);
+//            
+//            double pressure = Math2DUtil.lerp(
+//                    penWidthMin, penWidthMax, pres) / penWidthMax;
+//            
+//            strokeBuilder.daubBrush(ctxOff, 
+//                    x, y, pressure);
+//            return;
+//        }
+//        
+//        double tMid = (tMin + tMax) / 2;
+//        BezierCurveNd[] part = curve.split(.5);
+//        plotCurve(part[0], ctxOff, tMin, tMid);
+//        plotCurve(part[1], ctxOff, tMid, tMax);
+//    }
     
     public void createStrokeShape()
     {
@@ -342,28 +389,34 @@ public class ToolBrush extends ToolDisplay
         CyGLOffscreenContext ctxOff = dev.createOffscreenGLContext();
 
         //Redraw path using smoothed curve and with spacing == 1
-        for (BezierCurveNd curve: pathBuilder.getAlignedCurves(false))
+        for (BezierCurveNd curve: pathBuilder.getCurves())
         {
-            plotCurve(curve, ctxOff, 0, 1);
+            plotCurve(curve, ctxOff);
         }
 
         TiledRasterData rasterData = strokeBuilder.getData(ctxOff);
         
         ctxOff.dispose();
 
+//System.err.println("Dumping raster");
 //rasterData.dump();
         
         //Create outline
         CyRectangle2i bounds = rasterData.getBounds();
-        BitmapOutliner outliner = 
-                new BitmapOutliner(new RasterDataSampler(rasterData),
-                new CyRectangle2d(bounds), 
-                bounds.getWidth(), bounds.getHeight());
+        RasterDataSampler sampler = new RasterDataSampler(rasterData, 128);
+        float strokeSmoothing = toolProvider.getStrokeSmoothing();
+        BitmapOutliner outliner = new BitmapOutliner(
+                sampler, bounds, sampler.getEmptyLevel(), strokeSmoothing);
+
+//        BitmapOutliner outliner = 
+//                new BitmapOutliner(new RasterDataSampler(rasterData),
+//                new CyRectangle2d(bounds), 
+//                bounds.getWidth(), bounds.getHeight());
         
 //outliner.dumpBitmap();
         
-        float strokeSmoothing = toolProvider.getStrokeSmoothing();
-        strokePath = outliner.getPath(strokeSmoothing);
+//        strokePath = outliner.getPath(strokeSmoothing);
+        strokePath = outliner.getPath();
     }
     
     @Override

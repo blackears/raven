@@ -20,8 +20,6 @@ import com.kitfox.coyote.shape.CyPathIterator.Type;
 import java.awt.Shape;
 import java.awt.geom.PathIterator;
 import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 
 /**
@@ -41,6 +39,14 @@ public class CyPath2d extends CyShape
     {
         types = new Type[ARRAY_INC];
         values = new double[ARRAY_INC];
+    }
+
+    public CyPath2d(CyPath2d path)
+    {
+        this.types = path.types.clone();
+        this.values = path.values.clone();
+        this.numTypes = path.numTypes;
+        this.numValues = path.numValues;
     }
 
     public static CyPath2d create(Shape shape)

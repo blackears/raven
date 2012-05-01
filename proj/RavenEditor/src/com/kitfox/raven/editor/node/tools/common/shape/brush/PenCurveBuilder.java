@@ -24,6 +24,7 @@ import com.kitfox.coyote.shape.bezier.builder.PiecewiseBezierBuilder;
  *
  * @author kitfox
  */
+@Deprecated
 public class PenCurveBuilder extends PiecewiseBezierBuilder
 {
     public PenCurveBuilder(double maxError)

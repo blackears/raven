@@ -196,5 +196,23 @@ public class MathColorUtil
 
         return new float[]{r, g, b};
     }
+
+    public static float[] RGBtoYUV(float r, float g, float b)
+    {
+        float y = 0.299f * r + 0.587f * g + 0.114f * b;
+        float u = -0.14713f * r - 0.28886f * g + 0.436f * b;
+        float v = 0.615f * r - 0.51499f * g - 0.10001f * b;
+
+        return new float[]{y, u, v};
+    }
+
+    public static float[] YUVtoRGB(float y, float u, float v)
+    {
+        float r = 1 * y + 0 * u + 1.13983f * v;
+        float g = 1 * y - 0.39465f * u - 0.58060f * v;
+        float b = 1 * y + 2.03211f * u + 0 * v;
+
+        return new float[]{r, g, b};
+    }
     
 }
