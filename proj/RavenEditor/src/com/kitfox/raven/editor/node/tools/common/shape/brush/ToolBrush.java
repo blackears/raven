@@ -16,9 +16,6 @@
 
 package com.kitfox.raven.editor.node.tools.common.shape.brush;
 
-import com.kitfox.coyote.material.color.CyMaterialColorDrawRecord;
-import com.kitfox.coyote.material.color.CyMaterialColorDrawRecordFactory;
-import com.kitfox.coyote.math.CyColor4f;
 import com.kitfox.raven.raster.RoundBrushSource;
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.math.CyVector2d;
@@ -28,20 +25,34 @@ import com.kitfox.coyote.renderer.CyGLOffscreenContext;
 import com.kitfox.coyote.renderer.CyGLWrapper;
 import com.kitfox.coyote.renderer.CyTextureImage;
 import com.kitfox.coyote.renderer.CyTransparency;
-import com.kitfox.coyote.renderer.CyVertexBuffer;
 import com.kitfox.coyote.shape.CyPath2d;
+import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.coyote.shape.CyRectangle2i;
-import com.kitfox.coyote.shape.ShapeLinesProvider;
 import com.kitfox.coyote.shape.bezier.builder.BezierCurveNd;
 import com.kitfox.coyote.shape.bezier.builder.BezierPointNd;
 import com.kitfox.coyote.shape.bezier.builder.PiecewiseBezierSchneiderNd;
+import com.kitfox.coyote.shape.bezier.mesh.BezierMeshEdge2i;
 import com.kitfox.coyote.shape.outliner.bitmap.BitmapOutliner;
+import com.kitfox.raven.editor.node.scene.RavenNodeMesh2;
+import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenNodeSceneGraph;
 import com.kitfox.raven.editor.node.scene.RenderContext;
 import com.kitfox.raven.editor.node.tools.ToolUser;
 import com.kitfox.raven.editor.node.tools.common.ServiceDevice;
 import com.kitfox.raven.editor.node.tools.common.ServicePen;
 import com.kitfox.raven.editor.node.tools.common.ToolDisplay;
+import com.kitfox.raven.paint.RavenPaint;
+import com.kitfox.raven.paint.RavenPaintLayout;
+import com.kitfox.raven.paint.RavenStroke;
 import com.kitfox.raven.raster.TiledRasterData;
+import com.kitfox.raven.shape.network.NetworkDataEdge;
+import com.kitfox.raven.shape.network.NetworkMesh;
+import com.kitfox.raven.shape.network.keys.NetworkDataTypePaint;
+import com.kitfox.raven.shape.network.keys.NetworkDataTypePaintLayout;
+import com.kitfox.raven.shape.network.keys.NetworkDataTypeStroke;
+import com.kitfox.raven.util.Selection;
+import com.kitfox.raven.util.tree.NodeObject;
+import com.kitfox.raven.util.tree.NodeObjectProviderIndex;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import jpen.PButtonEvent;
@@ -84,7 +95,7 @@ public class ToolBrush extends ToolDisplay
     
 //    PiecewiseBezierBuilder2d curveLeft;
 //    PiecewiseBezierBuilder2d curveRight;
-    CyPath2d strokePath;
+//    CyPath2d strokePath;
     
     //Track and smooth base bezier curve
     PiecewiseBezierSchneiderNd pathBuilder;
@@ -381,7 +392,7 @@ public class ToolBrush extends ToolDisplay
 //        plotCurve(part[1], ctxOff, tMid, tMax);
 //    }
     
-    public void createStrokeShape()
+    private void createStrokeShape()
     {
         strokeBuilder.clear();
 
@@ -416,7 +427,93 @@ public class ToolBrush extends ToolDisplay
 //outliner.dumpBitmap();
         
 //        strokePath = outliner.getPath(strokeSmoothing);
-        strokePath = outliner.getPath();
+        applyStroke(outliner.getPath());
+    }
+    
+    private void applyStroke(CyPath2d path)
+    {
+        Selection<NodeObject> sel = getSelection();
+        NodeObject topObj = sel.getTopSelected();
+
+        if (topObj instanceof RavenNodeMesh2)
+        {
+            applyStrokeToMesh(path, (RavenNodeMesh2)topObj);
+            return;
+        }
+
+        RavenNodeMesh2 meshNode = createStrokeMesh(path);
+                
+        RavenNodeRoot doc = getDocument();
+        RavenNodeSceneGraph sg = doc.getSceneGraph();
+        sg.children.add(meshNode);
+    }
+    
+    private void applyStrokeToMesh(CyPath2d path, RavenNodeMesh2 mesh)
+    {
+        NetworkMesh curNet = mesh.getNetworkMesh();
+        NetworkMesh newNet = new NetworkMesh(curNet);
+        
+        CyMatrix4d scale = RavenNodeMesh2.getMeshToLocal();
+        scale.invert();
+        CyPath2d meshPath = path.createTransformedPath(scale);
+        
+        //Add new edges
+        NetworkDataEdge data = createMeshData(path);
+        ArrayList<BezierMeshEdge2i> edges = newNet.addEdge(meshPath, data);
+        
+        //Delete new curve pieces that have same paint on both sides
+        for (BezierMeshEdge2i e: edges)
+        {
+            NetworkDataEdge edgeData = (NetworkDataEdge)e.getData();
+            if (edgeData.isLeftSideEqualToRightSide())
+            {
+                newNet.removeEdge(e);
+            }
+        }
+        
+        mesh.setNetworkMesh(newNet,true);
+    }
+    
+    private RavenNodeMesh2 createStrokeMesh(CyPath2d path)
+    {
+        CyMatrix4d scale = RavenNodeMesh2.getMeshToLocal();
+        scale.invert();
+        CyPath2d meshPath = path.createTransformedPath(scale);
+
+        RavenNodeRoot root = getDocument();
+        
+        //Create node
+        NetworkDataEdge data = createMeshData(path);
+        
+        NetworkMesh network = NetworkMesh.create(meshPath, data);
+        
+        RavenNodeMesh2 mesh = NodeObjectProviderIndex.inst().createNode(
+                RavenNodeMesh2.class, root);
+        mesh.setNetworkMesh(network, false);
+        
+        return mesh;
+    }
+    
+    private NetworkDataEdge createMeshData(CyPath2d path)
+    {
+        CyRectangle2d boundsLocal = path.getBounds();
+
+        RavenNodeRoot root = getDocument();
+        
+        RavenPaintLayout layout = new RavenPaintLayout(boundsLocal);
+        RavenStroke stroke = root.getStrokeShape();
+        RavenPaint edgeColor = root.getStrokePaint();
+        RavenPaint leftColor = root.getFillPaint();
+        
+        NetworkDataEdge data = new NetworkDataEdge();
+        data.putRight(NetworkDataTypePaint.class, leftColor);
+        data.putRight(NetworkDataTypePaintLayout.class, layout);
+        
+        data.putEdge(NetworkDataTypePaint.class, edgeColor);
+        data.putEdge(NetworkDataTypePaintLayout.class, layout);
+        data.putEdge(NetworkDataTypeStroke.class, stroke);
+        
+        return data;
     }
     
     @Override
@@ -604,29 +701,25 @@ public class ToolBrush extends ToolDisplay
             strokeBuilder.render(stack);
         }
         
-        if (strokePath != null)
-        {
-            CyDrawStack stack = ctx.getDrawStack();
-            
-            CyMaterialColorDrawRecord rec = 
-                    CyMaterialColorDrawRecordFactory.inst().allocRecord();
-
-            rec.setColor(CyColor4f.GREEN);
-            rec.setOpacity(1);
-
-            ShapeLinesProvider prov = new ShapeLinesProvider(strokePath);
-            CyVertexBuffer lineMesh = new CyVertexBuffer(prov);
-            rec.setMesh(lineMesh);
-
-            CyMatrix4d mvp = stack.getModelViewProjXform();
-            rec.setMvpMatrix(mvp);
-
-            stack.addDrawRecord(rec);
-            
-        }
-  
-        
+//        if (strokePath != null)
+//        {
+//            CyDrawStack stack = ctx.getDrawStack();
+//            
+//            CyMaterialColorDrawRecord rec = 
+//                    CyMaterialColorDrawRecordFactory.inst().allocRecord();
+//
+//            rec.setColor(CyColor4f.GREEN);
+//            rec.setOpacity(1);
+//
+//            ShapeLinesProvider prov = new ShapeLinesProvider(strokePath);
+//            CyVertexBuffer lineMesh = new CyVertexBuffer(prov);
+//            rec.setMesh(lineMesh);
+//
+//            CyMatrix4d mvp = stack.getModelViewProjXform();
+//            rec.setMvpMatrix(mvp);
+//
+//            stack.addDrawRecord(rec);
+//            
+//        }
     }
-    
-    
 }

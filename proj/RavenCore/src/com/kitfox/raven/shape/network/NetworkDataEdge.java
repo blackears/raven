@@ -55,6 +55,11 @@ public class NetworkDataEdge extends NetworkData
                 new HashMap<Class<? extends NetworkDataType>, Object>(data.dataMapRight));
     }
 
+    public boolean isLeftSideEqualToRightSide()
+    {
+        return dataMapLeft.equals(dataMapRight);
+    }
+    
     public <R, T extends NetworkDataType<R>> R getLeft(Class<T> key)
     {
         return (R)dataMapLeft.get(key);
