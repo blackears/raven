@@ -16,6 +16,8 @@
 
 package com.kitfox.coyote.math;
 
+import java.awt.Color;
+
 /**
  *
  * @author kitfox
@@ -55,6 +57,20 @@ public class CyColor4f
     public CyColor4f(double r, double g, double b, double a)
     {
         this((float)r, (float)g, (float)b, (float)a);
+    }
+
+    public CyColor4f(int argb)
+    {
+        this(((argb >> 16) & 0xff) / 255f,
+                ((argb >> 8) & 0xff) / 255f,
+                ((argb >> 0) & 0xff) / 255f,
+                ((argb >> 24) & 0xff) / 255f
+                );
+    }
+
+    public CyColor4f(Color c)
+    {
+        this(c.getRGB());
     }
 
     public static CyColor4f randomRGB()

@@ -199,6 +199,11 @@ public class RavenPaintLayout
     
     public static RavenPaintLayout create(String text)
     {
+        if (text == null || "".equals(text))
+        {
+            return null;
+        }
+        
         try
         {
             CacheElement ele = CacheParser.parse(text);
@@ -211,6 +216,7 @@ public class RavenPaintLayout
             return create(list);
         } catch (ParseException ex)
         {
+//System.err.println("Could not parse: " + text);
             Logger.getLogger(RavenPaintLayout.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;

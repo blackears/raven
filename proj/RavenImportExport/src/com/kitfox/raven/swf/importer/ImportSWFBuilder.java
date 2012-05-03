@@ -16,13 +16,11 @@
 
 package com.kitfox.raven.swf.importer;
 
-import com.kitfox.raven.editor.node.scene.RavenNodeDataPlane;
 import com.kitfox.raven.editor.node.scene.RavenNodeGroup;
-import com.kitfox.raven.editor.node.scene.RavenNodeMeshStatic;
+import com.kitfox.raven.editor.node.scene.RavenNodeMesh2;
 import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
 import com.kitfox.raven.editor.node.scene.RavenNodeSceneGraph;
 import com.kitfox.raven.paint.common.RavenPaintColor;
-import com.kitfox.raven.util.planeData.PlaneDataProvider;
 import com.kitfox.raven.util.tree.NodeObjectProviderIndex;
 import com.kitfox.raven.util.tree.PropertyDataReference;
 import com.kitfox.raven.util.tree.Track;
@@ -42,7 +40,6 @@ import com.kitfox.swf.tags.shapes.DefineShape3;
 import com.kitfox.swf.tags.shapes.DefineShape4;
 import com.kitfox.swf.tags.shapes.ShapeWithStyle;
 import java.awt.Color;
-import java.util.ArrayList;
 
 /**
  *
@@ -81,7 +78,6 @@ public class ImportSWFBuilder
     {
         this.importBackgroundColor = importBackgroundColor;
     }
-
 
     public void importDoc(SWFDocument swfDoc)
     {
@@ -186,37 +182,16 @@ public class ImportSWFBuilder
 
     private void importShape(int shapeId, ShapeWithStyle sws)
     {
-        RavenNodeMeshStatic mesh = NodeObjectProviderIndex.inst().createNode(
-                RavenNodeMeshStatic.class, root);
-        mesh.setName(root.createUniqueName("meshStatic"));
+        RavenNodeMesh2 mesh = NodeObjectProviderIndex.inst().createNode(
+                RavenNodeMesh2.class, root);
+        mesh.setName(root.createUniqueName("mesh"));
         characterGroup.children.add(mesh);
 
-        MeshStaticBuilder builder = new MeshStaticBuilder();
+        MeshBuilder builder = new MeshBuilder();
         sws.buildShapes(builder);
 
-        mesh.path.setValue(builder.pathCurve);
-        for (Class<? extends PlaneDataProvider> key: builder.edgeMap.keySet())
-        {
-            ArrayList list = builder.edgeMap.get(key);
-
-            RavenNodeDataPlane plane = NodeObjectProviderIndex.inst().createNode(
-                    RavenNodeDataPlane.class, root);
-            plane.setPlaneData(key, list, false);
-
-            mesh.edgePlanes.add(plane);
-        }
-
-        for (Class<? extends PlaneDataProvider> key: builder.faceMap.keySet())
-        {
-            ArrayList list = builder.faceMap.get(key);
-
-            RavenNodeDataPlane plane = NodeObjectProviderIndex.inst().createNode(
-                    RavenNodeDataPlane.class, root);
-            plane.setPlaneData(key, list, false);
-
-            mesh.facePlanes.add(plane);
-        }
-
+        mesh.setNetworkMesh(builder.mesh, false);
+        
         displayList.registerCharacter(shapeId, mesh);
     }
 

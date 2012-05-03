@@ -22,19 +22,18 @@
 
 package com.kitfox.raven.swf.importer;
 
+import com.kitfox.raven.util.FileFilterSuffix;
 import com.kitfox.raven.wizard.RavenWizardPage;
 import java.awt.Component;
 import java.io.File;
-import java.util.Properties;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
-import javax.swing.filechooser.FileFilter;
 
 /**
  *
  * @author kitfox
  */
-public class ImportSWFPanel extends JPanel
+public class SWFImporterPanel extends JPanel
         implements RavenWizardPage
 {
 //    public static final String WIZ_ID = "import";
@@ -44,16 +43,14 @@ public class ImportSWFPanel extends JPanel
     public static final String PREF_FILE = "file";
     
     FileChooser fileChooser = new FileChooser();
-    Properties preferences;
+    final SWFImporterContext ctx;
 
     boolean updating;
 
     /** Creates new form ImportSWFPanel */
-    public ImportSWFPanel(Properties preferences)
+    public SWFImporterPanel(SWFImporterContext ctx)
     {
-//        super(WIZ_DESC);
-
-        this.preferences = preferences;
+        this.ctx = ctx;
         initComponents();
 
         updateFromProperties();
@@ -63,9 +60,18 @@ public class ImportSWFPanel extends JPanel
     {
         updating = true;
 
-        text_file.setText(preferences.getProperty(PREF_FILE, ""));
-        check_importBgColor.setSelected(Boolean.parseBoolean(
-                preferences.getProperty(PREF_IMPORT_BG_COL, "false")));
+        text_file.setText(ctx.getFile());
+        check_importBgColor.setSelected(ctx.isUseBackground());
+
+        File file = new File(ctx.getFile());
+        if (file.exists())
+        {
+            if (!file.isDirectory())
+            {
+                file = file.getParentFile();
+            }
+            fileChooser.setCurrentDirectory(file);
+        }
 
         updating = false;
     }
@@ -89,9 +95,9 @@ public class ImportSWFPanel extends JPanel
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
 
-        buttonGroup_colors = new javax.swing.ButtonGroup();
         jLabel1 = new javax.swing.JLabel();
         text_file = new javax.swing.JTextField();
         bn_chooseFile = new javax.swing.JButton();
@@ -100,22 +106,28 @@ public class ImportSWFPanel extends JPanel
         jLabel1.setText("Location");
 
         text_file.setName("location"); // NOI18N
-        text_file.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        text_file.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 text_fileActionPerformed(evt);
             }
         });
 
         bn_chooseFile.setText("...");
-        bn_chooseFile.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        bn_chooseFile.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 bn_chooseFileActionPerformed(evt);
             }
         });
 
         check_importBgColor.setText("Import background color");
-        check_importBgColor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        check_importBgColor.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 check_importBgColorActionPerformed(evt);
             }
         });
@@ -158,7 +170,9 @@ public class ImportSWFPanel extends JPanel
         }
 
         File file = fileChooser.getSelectedFile();
-        text_file.setText(file.getAbsolutePath());
+        String name = file.getAbsolutePath();
+        text_file.setText(name);
+        ctx.setFile(name);
     }//GEN-LAST:event_bn_chooseFileActionPerformed
 
     private void check_importBgColorActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_check_importBgColorActionPerformed
@@ -168,7 +182,7 @@ public class ImportSWFPanel extends JPanel
             return;
         }
 
-        preferences.setProperty(PREF_IMPORT_BG_COL, "" + check_importBgColor.isSelected());
+        ctx.setUseBackground(check_importBgColor.isSelected());
     }//GEN-LAST:event_check_importBgColorActionPerformed
 
     private void text_fileActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_text_fileActionPerformed
@@ -178,37 +192,27 @@ public class ImportSWFPanel extends JPanel
             return;
         }
 
-        preferences.setProperty(PREF_FILE, text_file.getText());
+        ctx.setFile(text_file.getText());
     }//GEN-LAST:event_text_fileActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bn_chooseFile;
-    private javax.swing.ButtonGroup buttonGroup_colors;
     private javax.swing.JCheckBox check_importBgColor;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JTextField text_file;
     // End of variables declaration//GEN-END:variables
 
 
+
     class FileChooser extends JFileChooser
     {
         public FileChooser()
         {
-            FileFilter filter = new FileFilter()
-            {
-                @Override
-                public boolean accept(File f) {
-                    return f.isDirectory() || f.getName().endsWith(".swf");
-                }
-
-                @Override
-                public String getDescription() {
-                    return "Shockwave Flash (*.swf)";
-                }
-            };
+            FileFilterSuffix filter = new FileFilterSuffix(
+                    "Shockwave Flash", "swf");
+            
             setFileFilter(filter);
-//            setCurrentDirectory(new File("work"));
         }
     }
 }

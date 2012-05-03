@@ -16,22 +16,24 @@
 
 package com.kitfox.raven.swf.importer;
 
+import com.kitfox.coyote.math.CyColor4f;
+import com.kitfox.coyote.math.CyGradientStops;
+import com.kitfox.coyote.math.CyGradientStops.Cycle;
+import com.kitfox.coyote.math.CyGradientStops.Style;
 import com.kitfox.coyote.math.CyMatrix4d;
-import com.kitfox.game.control.color.ColorStyle;
-import com.kitfox.game.control.color.MultipleGradientStops;
-import com.kitfox.game.control.color.MultipleGradientStops.Cycle;
-import com.kitfox.game.control.color.MultipleGradientStops.Style;
-import com.kitfox.game.control.color.MultipleGradientStyle;
-import com.kitfox.game.control.color.PaintLayoutLinear;
-import com.kitfox.game.control.color.PaintLayoutNone;
-import com.kitfox.game.control.color.PaintLayoutRadial;
-import com.kitfox.raven.editor.paint.RavenPaintColor;
-import com.kitfox.raven.editor.paint.RavenPaintGradient;
-import com.kitfox.raven.editor.stroke.RavenStrokeBasic;
-import com.kitfox.raven.editor.stroke.RavenStrokeInline;
+import com.kitfox.coyote.shape.CyStroke;
+import com.kitfox.coyote.shape.CyStrokeCap;
+import com.kitfox.coyote.shape.CyStrokeJoin;
+import com.kitfox.raven.paint.RavenPaintLayout;
+import com.kitfox.raven.paint.RavenStroke;
+import com.kitfox.raven.paint.common.RavenPaintColor;
+import com.kitfox.raven.paint.common.RavenPaintGradient;
+import com.kitfox.raven.shape.network.NetworkDataEdge;
+import com.kitfox.raven.shape.network.keys.NetworkDataTypePaint;
+import com.kitfox.raven.shape.network.keys.NetworkDataTypePaintLayout;
+import com.kitfox.raven.shape.network.keys.NetworkDataTypeStroke;
 import com.kitfox.swf.tags.shapes.FillStyle;
 import com.kitfox.swf.tags.shapes.Gradient;
-import com.kitfox.swf.tags.shapes.GradientFocal;
 import com.kitfox.swf.tags.shapes.LineStyle;
 import com.kitfox.swf.tags.shapes.LineStyle2;
 import com.kitfox.swf.tags.shapes.ShapeWithStyle.ShapeVisitor;
@@ -48,14 +50,37 @@ abstract public class MeshBuilderBase
     PaintEntry paintLeft;
     PaintEntry paintRight;
     PaintEntry paintLine;
-    RavenStrokeInline strokeLine;
+    RavenStroke strokeLine;
 
     int px;
     int py;
     
+    protected NetworkDataEdge createEdgeData()
+    {
+        NetworkDataEdge data = new NetworkDataEdge();
+        data.putEdge(NetworkDataTypePaint.class, 
+                paintLine == null ? null : paintLine.getPaint());
+        data.putEdge(NetworkDataTypePaintLayout.class, 
+                paintLine == null ? null : paintLine.getLayout());
+        data.putEdge(NetworkDataTypeStroke.class, 
+                strokeLine);
+        
+        data.putLeft(NetworkDataTypePaint.class, 
+                paintLeft == null ? null : paintLeft.getPaint());
+        data.putLeft(NetworkDataTypePaintLayout.class, 
+                paintLeft == null ? null : paintLeft.getLayout());
+        
+        data.putRight(NetworkDataTypePaint.class, 
+                paintRight == null ? null : paintRight.getPaint());
+        data.putRight(NetworkDataTypePaintLayout.class, 
+                paintRight == null ? null : paintRight.getLayout());
+        
+        return data;
+    }
+    
     private PaintEntry parsePaint(Color color)
     {
-        return new PaintEntry(new RavenPaintColor(color), PaintLayoutNone.LAYOUT);
+        return new PaintEntry(new RavenPaintColor(color), null);
     }
 
     private CyMatrix4d swfPaintToRaven(AffineTransform swfPaintToStage)
@@ -83,36 +108,34 @@ abstract public class MeshBuilderBase
         {
             case SOLID:
                 return new PaintEntry(new RavenPaintColor(style.getColor()),
-                        PaintLayoutNone.LAYOUT);
+                        null);
             case GRAD_LINEAR:
             {
-                PaintLayoutLinear layout = new PaintLayoutLinear()
+                RavenPaintLayout layout = new RavenPaintLayout()
                         .transform(swfPaintToRaven(style.getGradMtx()
                             .asAffineTransform()));
                 RavenPaintGradient grad = new RavenPaintGradient(
-                        new MultipleGradientStyle(
-                        parseGradientStops(style.getGrad(), Style.LINEAR)));
+                        parseGradientStops(style.getGrad(), Style.LINEAR));
                 return new PaintEntry(grad, layout);
             }
             case GRAD_RADIAL:
             {
-                PaintLayoutRadial layout =
-                        new PaintLayoutRadial(.5f, .5f, 5f, 0, 0, 90, .5f, .5f)
+                RavenPaintLayout layout =
+                        new RavenPaintLayout(.5f, .5f, 5f, 0, 0, 90)
                         .transform(swfPaintToRaven(style.getGradMtx()
                             .asAffineTransform()));
-                RavenPaintGradient grad = new RavenPaintGradient(new MultipleGradientStyle(
-                        parseGradientStops(style.getGrad(), Style.RADIAL)));
+                RavenPaintGradient grad = new RavenPaintGradient(
+                        parseGradientStops(style.getGrad(), Style.RADIAL));
                 return new PaintEntry(grad, layout);
             }
             case GRAD_RADIAL_FOCAL:
             {
-                float focalPt = ((GradientFocal)style.getGrad()).getFocalPoint().asFloat();
-                PaintLayoutRadial layout =
-                        new PaintLayoutRadial(.5f, .5f, 5f, 0, 0, 90, (focalPt + 1) / 2, .5f)
+                RavenPaintLayout layout =
+                        new RavenPaintLayout(.5f, .5f, 5f, 0, 0, 90)
                         .transform(swfPaintToRaven(style.getGradMtx()
                             .asAffineTransform()));
-                RavenPaintGradient grad = new RavenPaintGradient(new MultipleGradientStyle(
-                        parseGradientStops(style.getGrad(), Style.RADIAL)));
+                RavenPaintGradient grad = new RavenPaintGradient(
+                        parseGradientStops(style.getGrad(), Style.RADIAL));
                 return new PaintEntry(grad, layout);
             }
 //            case BITMAP_CLIPPED:
@@ -122,7 +145,7 @@ abstract public class MeshBuilderBase
         }
     }
 
-    private MultipleGradientStops parseGradientStops(Gradient grad, Style style)
+    private CyGradientStops parseGradientStops(Gradient grad, Style style)
     {
         Cycle cycle;
         switch (grad.getCycleMethodAwt())
@@ -140,26 +163,27 @@ abstract public class MeshBuilderBase
         }
 
         Color[] cols = grad.getColors();
-        ColorStyle[] colStyles = new ColorStyle[cols.length];
+        CyColor4f[] colStyles = new CyColor4f[cols.length];
         for (int i = 0; i < cols.length; ++i)
         {
-            colStyles[i] = new ColorStyle(cols[i]);
+            colStyles[i] = new CyColor4f(cols[i]);
         }
-        return new MultipleGradientStops(
-                grad.getFractions(), colStyles, cycle, style,
-                grad.getColorSpace());
+        return new CyGradientStops(
+                grad.getFractions(), colStyles, cycle, style);
     }
 
     @Override
     public void setFillStyleLeft(FillStyle fillStyle)
     {
-        paintLeft = parsePaint(fillStyle);
+//        paintLeft = parsePaint(fillStyle);
+        paintRight = parsePaint(fillStyle);
     }
 
     @Override
     public void setFillStyleRight(FillStyle fillStyle)
     {
-        paintRight = parsePaint(fillStyle);
+//        paintRight = parsePaint(fillStyle);
+        paintLeft = parsePaint(fillStyle);
     }
 
     @Override
@@ -185,42 +209,43 @@ abstract public class MeshBuilderBase
                 paintLine = parsePaint(style.getColor());
             }
 
-            RavenStrokeBasic.Cap cap;
+            CyStrokeCap cap;
             switch (style.getCapStart())
             {
                 case FLAT:
-                    cap = RavenStrokeBasic.Cap.BUTT;
+                    cap = CyStrokeCap.BUTT;
                     break;
                 default:
                 case ROUND:
-                    cap = RavenStrokeBasic.Cap.ROUND;
+                    cap = CyStrokeCap.ROUND;
                     break;
                 case SQUARE:
-                    cap = RavenStrokeBasic.Cap.SQUARE;
+                    cap = CyStrokeCap.SQUARE;
                     break;
             }
 
-            RavenStrokeBasic.Join join;
+            CyStrokeJoin join;
             switch (style.getJoin())
             {
                 case BEVEL:
-                    join = RavenStrokeBasic.Join.SQUARE;
+                    join = CyStrokeJoin.MITER;
                     break;
                 default:
                 case ROUND:
-                    join = RavenStrokeBasic.Join.ROUND;
+                    join = CyStrokeJoin.ROUND;
                     break;
                 case MITER:
-                    join = RavenStrokeBasic.Join.BEVEL;
+                    join = CyStrokeJoin.BEVEL;
                     break;
             }
 
-            RavenStrokeBasic stroke = new RavenStrokeBasic(
-                    style.getWidth(),
+            CyStroke cyStroke = new CyStroke(
+                    style.getWidth() / 20f,
                     cap,
                     join,
                     style.getMiterLimit(),
-                    null, 0);
+                    (float[])null, 0);
+            RavenStroke stroke = new RavenStroke(cyStroke);
 
             strokeLine = stroke;
 //            builder.strokeLine(getStrokeIndex(stroke));
@@ -228,11 +253,11 @@ abstract public class MeshBuilderBase
         }
 
         paintLine = parsePaint(lineStyle.getColor());
-        strokeLine = new RavenStrokeBasic(
+        strokeLine = new RavenStroke(new CyStroke(
                 lineStyle.getWidth() / 20f,
-                RavenStrokeBasic.Cap.ROUND,
-                RavenStrokeBasic.Join.ROUND,
-                10, null, 0);
+                CyStrokeCap.ROUND,
+                CyStrokeJoin.ROUND,
+                10, (float[])null, 0));
     }
 
 }

@@ -55,6 +55,11 @@ public class NetworkDataTypePaint extends NetworkDataType<RavenPaint>
     @Override
     public RavenPaint fromText(String text)
     {
+        if (text == null || "".equals(text))
+        {
+            return null;
+        }
+        
         RavenPaintProvider prov = 
                 RavenPaintIndex.inst().getProviderSupporting(text);
         return prov.fromText(text);

@@ -20,7 +20,6 @@ import com.kitfox.raven.editor.node.importer.ImporterProvider;
 import com.kitfox.raven.util.service.ServiceInst;
 import com.kitfox.raven.util.tree.NodeDocument;
 import com.kitfox.raven.wizard.RavenWizardPageIterator;
-import com.kitfox.raven.wizard.RavenWizardPageIteratorSimple;
 import java.util.Properties;
 
 /**
@@ -40,7 +39,7 @@ public class SWFImporter extends ImporterProvider
     @Override
     public RavenWizardPageIterator createWizard(NodeDocument doc)
     {
-        return new Wizard();
+        return SWFImporterWizard.create(doc, preferences);
     }
 
     @Override
@@ -53,24 +52,6 @@ public class SWFImporter extends ImporterProvider
     public Properties savePreferences()
     {
         return preferences;
-    }
-
-    //---------------------------------
-    class Wizard extends RavenWizardPageIteratorSimple
-    {
-
-        public Wizard()
-        {
-            super(new ImportSWFPanel(preferences));
-        }
-
-        @Override
-        public Object finish()
-        {
-            return null;
-//            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
     }
     
 }

@@ -33,7 +33,7 @@ public class BitmapImporter extends ImporterProvider
 
     public BitmapImporter()
     {
-        super("Bitmap to Vector");
+        super("Bitmap as Vectors");
     }
 
     @Override

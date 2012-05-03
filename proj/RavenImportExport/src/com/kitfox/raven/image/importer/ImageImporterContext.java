@@ -18,7 +18,6 @@ package com.kitfox.raven.image.importer;
 
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.shape.CyPath2d;
-import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.coyote.shape.CyRectangle2i;
 import com.kitfox.coyote.shape.CyStroke;
 import com.kitfox.coyote.shape.outliner.image.ImageEdge;
@@ -59,7 +58,7 @@ public class ImageImporterContext
     public static final String PROP_SEQ_FILE = "seqFile";
     private String seqFile;
     
-    public static final String PROP_SMOOTHING = "smoothing";
+    public static final String PROP_USE_BACKGROUND = "smoothing";
     private float smoothing;
     
     private NodeDocument doc;
@@ -71,13 +70,13 @@ public class ImageImporterContext
         this.pref = new PropertiesData(preferences);
         
         seqFile = pref.getString(PROP_SEQ_FILE, "");
-        smoothing = pref.getFloat(PROP_SMOOTHING, 4);
+        smoothing = pref.getFloat(PROP_USE_BACKGROUND, 4);
     }
     
     public void savePreferences()
     {
         pref.setString(PROP_SEQ_FILE, seqFile);
-        pref.setFloat(PROP_SMOOTHING, smoothing);
+        pref.setFloat(PROP_USE_BACKGROUND, smoothing);
     }
 
     private void errMessage(String message)

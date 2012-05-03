@@ -16,32 +16,17 @@
 
 package com.kitfox.raven.swf.importer;
 
-import com.kitfox.game.control.color.PaintLayoutNone;
-import com.kitfox.raven.editor.paint.RavenPaintNone;
-import com.kitfox.raven.editor.paint.RavenPaintProxy;
-import com.kitfox.raven.editor.paintLayout.PaintLayoutProxy;
-import com.kitfox.raven.editor.stroke.RavenStrokeInline;
-import com.kitfox.raven.editor.stroke.RavenStrokeNone;
-import com.kitfox.raven.editor.stroke.RavenStrokeProxy;
-import com.kitfox.raven.shape.bezier.BezierCurveLine;
-import com.kitfox.raven.shape.bezier.BezierCurveQuadratic;
-import com.kitfox.raven.shape.bezier.BezierEdge;
-import com.kitfox.raven.shape.bezier.BezierFace;
-import com.kitfox.raven.shape.bezier.BezierMesh;
-import com.kitfox.raven.shape.bezier.BezierNetwork.NetworkUpdateCallback;
-import com.kitfox.raven.shape.bezier.BezierVertex;
-import com.kitfox.raven.shape.bezier.VertexSmooth;
-import java.util.ArrayList;
+import com.kitfox.coyote.shape.bezier.BezierLine2i;
+import com.kitfox.coyote.shape.bezier.BezierQuad2i;
+import com.kitfox.raven.shape.network.NetworkMesh;
 
 /**
  *
  * @author kitfox
  */
 public class MeshBuilder extends MeshBuilderBase
-        implements NetworkUpdateCallback
 {
-    private BezierMesh mesh = new BezierMesh(10000);
-    ArrayList<PaintRecord> paintRecords = new ArrayList<PaintRecord>();
+    NetworkMesh mesh = new NetworkMesh();
 
     @Override
     public void moveTo(int x, int y)
@@ -61,8 +46,9 @@ public class MeshBuilder extends MeshBuilderBase
         x = px + x * 5;
         y = py + y * 5;
 
-        BezierCurveLine curve = new BezierCurveLine(px, py, x, y);
-        mesh.addCurve(curve, this);
+        mesh.addEdge(new BezierLine2i(px, py, x, y), 
+                createEdgeData());
+
         px = x;
         py = y;
     }
@@ -76,122 +62,16 @@ public class MeshBuilder extends MeshBuilderBase
         x = px + x * 5;
         y = py + y * 5;
 
-        BezierCurveQuadratic curve =
-                new BezierCurveQuadratic(px, py, kx, ky, x, y);
-        mesh.addCurve(curve, this);
+        mesh.addEdge(new BezierQuad2i(px, py, kx, ky, x, y), 
+                createEdgeData());
+        
         px = x;
         py = y;
     }
 
     @Override
-    public void addedEdge(double tOffset, double tSpan, BezierEdge edge)
-    {
-        PaintRecord rec =
-                new PaintRecord(paintLeft, paintRight, paintLine, strokeLine, edge);
-        paintRecords.add(rec);
-    }
-
-    @Override
     public void finishedVisitingShape()
     {
-        for (PaintRecord rec: paintRecords)
-        {
-            rec.edge.setData(RavenPaintProxy.PlaneData.class,
-                    rec.getPaintLineProxy());
-            rec.edge.setData(PaintLayoutProxy.PlaneData.class,
-                    rec.getLayoutLineProxy());
-            rec.edge.setData(RavenStrokeProxy.PlaneData.class,
-                    rec.getStrokeLineProxy());
-
-            BezierFace faceLeft = rec.edge.getFaceLeft();
-            BezierFace faceRight = rec.edge.getFaceRight();
-
-            faceLeft.setData(RavenPaintProxy.PlaneData.class,
-                    rec.getPaintLeftProxy());
-            faceLeft.setData(PaintLayoutProxy.PlaneData.class,
-                    rec.getLayoutLeftProxy());
-
-            faceRight.setData(RavenPaintProxy.PlaneData.class,
-                    rec.getPaintRightProxy());
-            faceRight.setData(PaintLayoutProxy.PlaneData.class,
-                    rec.getLayoutRightProxy());
-        }
-
-
-        for (BezierVertex vtx: mesh.getVertices())
-        {
-            vtx.setData(VertexSmooth.PlaneData.class, VertexSmooth.CUSP);
-        }
-    }
-
-    /**
-     * @return the mesh
-     */
-    public BezierMesh getMesh()
-    {
-        return mesh;
-    }
-
-    //--------------------------------------
-    public class PaintRecord
-    {
-        PaintEntry paintLeft;
-        PaintEntry paintRight;
-        PaintEntry paintLine;
-        RavenStrokeInline strokeLine;
-        BezierEdge edge;
-
-        public PaintRecord(PaintEntry paintLeft, PaintEntry paintRight, PaintEntry paintLine, RavenStrokeInline strokeLine, BezierEdge edge)
-        {
-            this.paintLeft = paintLeft;
-            this.paintRight = paintRight;
-            this.paintLine = paintLine;
-            this.strokeLine = strokeLine;
-            this.edge = edge;
-        }
-
-        public RavenPaintProxy getPaintLeftProxy()
-        {
-            return paintLeft == null ? new RavenPaintProxy(RavenPaintNone.PAINT)
-                    : new RavenPaintProxy(paintLeft.getPaint());
-        }
-
-        public RavenPaintProxy getPaintRightProxy()
-        {
-            return paintRight == null ? new RavenPaintProxy(RavenPaintNone.PAINT)
-                    : new RavenPaintProxy(paintRight.getPaint());
-        }
-
-        public RavenPaintProxy getPaintLineProxy()
-        {
-            return paintLine == null ? new RavenPaintProxy(RavenPaintNone.PAINT)
-                    : new RavenPaintProxy(paintLine.getPaint());
-        }
-
-        public PaintLayoutProxy getLayoutLeftProxy()
-        {
-            return paintLeft == null ? new PaintLayoutProxy(PaintLayoutNone.LAYOUT)
-                    : new PaintLayoutProxy(paintLeft.getLayout());
-        }
-
-        public PaintLayoutProxy getLayoutRightProxy()
-        {
-            return paintRight == null ? new PaintLayoutProxy(PaintLayoutNone.LAYOUT)
-                    : new PaintLayoutProxy(paintRight.getLayout());
-        }
-
-        public PaintLayoutProxy getLayoutLineProxy()
-        {
-            return paintLine == null ? new PaintLayoutProxy(PaintLayoutNone.LAYOUT)
-                    : new PaintLayoutProxy(paintLine.getLayout());
-        }
-
-        public RavenStrokeProxy getStrokeLineProxy()
-        {
-            return strokeLine == null ? new RavenStrokeProxy(RavenStrokeNone.STROKE)
-                    : new RavenStrokeProxy(strokeLine);
-        }
-
     }
 
 }

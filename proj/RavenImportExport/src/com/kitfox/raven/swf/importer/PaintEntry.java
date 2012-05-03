@@ -16,8 +16,8 @@
 
 package com.kitfox.raven.swf.importer;
 
-import com.kitfox.game.control.color.PaintLayout;
-import com.kitfox.raven.editor.paint.RavenPaintInline;
+import com.kitfox.raven.paint.RavenPaint;
+import com.kitfox.raven.paint.RavenPaintLayout;
 
 /**
  *
@@ -25,10 +25,10 @@ import com.kitfox.raven.editor.paint.RavenPaintInline;
  */
 public class PaintEntry
 {
-    private final RavenPaintInline paint;
-    private final PaintLayout layout;
+    private final RavenPaint paint;
+    private final RavenPaintLayout layout;
 
-    public PaintEntry(RavenPaintInline paint, PaintLayout layout)
+    public PaintEntry(RavenPaint paint, RavenPaintLayout layout)
     {
         this.paint = paint;
         this.layout = layout;
@@ -37,7 +37,7 @@ public class PaintEntry
     /**
      * @return the paint
      */
-    public RavenPaintInline getPaint()
+    public RavenPaint getPaint()
     {
         return paint;
     }
@@ -45,7 +45,7 @@ public class PaintEntry
     /**
      * @return the layout
      */
-    public PaintLayout getLayout()
+    public RavenPaintLayout getLayout()
     {
         return layout;
     }

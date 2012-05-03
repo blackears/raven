@@ -16,7 +16,6 @@
 
 package com.kitfox.raven.image.importer;
 
-import com.kitfox.raven.bitmap.importer.*;
 import com.kitfox.raven.editor.node.importer.ImporterProvider;
 import com.kitfox.raven.util.service.ServiceInst;
 import com.kitfox.raven.util.tree.NodeDocument;
@@ -34,7 +33,7 @@ public class ImageImporter extends ImporterProvider
 
     public ImageImporter()
     {
-        super("Image to Vector");
+        super("Image as Vectors");
     }
 
     @Override
