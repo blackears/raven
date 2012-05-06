@@ -36,8 +36,8 @@ import com.kitfox.raven.editor.node.scene.RenderContext;
 import com.kitfox.raven.editor.node.scene.RenderDevice;
 import com.kitfox.raven.editor.view.displayCy.CyRenderService;
 import com.kitfox.raven.util.tree.ChildWrapperEvent;
-import com.kitfox.raven.util.tree.NodeDocumentListener;
-import com.kitfox.raven.util.tree.NodeDocumentWeakListener;
+import com.kitfox.raven.util.tree.NodeSymbolListener;
+import com.kitfox.raven.util.tree.NodeSymbolWeakListener;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.beans.PropertyChangeEvent;
@@ -54,12 +54,12 @@ import javax.swing.ListCellRenderer;
  */
 public class CameraDisplayPanel
         extends JPanel
-        implements RavenEditorListener, NodeDocumentListener,
+        implements RavenEditorListener, NodeSymbolListener,
         CyRendererListener
 {
     final RavenEditor editor;
     RavenEditorWeakListener listenerEditor;
-    NodeDocumentWeakListener listenerDoc;
+    NodeSymbolWeakListener listenerDoc;
 
     CoyotePanel renderPanel = new CoyotePanel();
     
@@ -99,8 +99,8 @@ public class CameraDisplayPanel
 
         if (doc != null)
         {
-            listenerDoc = new NodeDocumentWeakListener(this, doc.getCurDocument());
-            doc.getCurDocument().addNodeDocumentListener(listenerDoc);
+            listenerDoc = new NodeSymbolWeakListener(this, doc.getCurSymbol());
+            doc.getCurSymbol().addNodeSymbolListener(listenerDoc);
         }
 
         renderDevice = null;
@@ -126,7 +126,7 @@ public class CameraDisplayPanel
         combo_display.removeAllItems();
         
         CyRenderService serv = doc == null ? null 
-                : doc.getCurDocument().getNodeService(CyRenderService.class, false);
+                : doc.getCurSymbol().getNodeService(CyRenderService.class, false);
         if (serv != null)
         {
             RavenNodeCompositionLibrary lib =
@@ -175,17 +175,17 @@ public class CameraDisplayPanel
     }
 
     @Override
-    public void documentNameChanged(PropertyChangeEvent evt)
+    public void symbolNameChanged(PropertyChangeEvent evt)
     {
     }
 
     @Override
-    public void documentPropertyChanged(PropertyChangeEvent evt)
+    public void symbolPropertyChanged(PropertyChangeEvent evt)
     {
     }
 
     @Override
-    public void documentNodeChildAdded(ChildWrapperEvent evt)
+    public void symbolNodeChildAdded(ChildWrapperEvent evt)
     {
         if (evt.getNode() instanceof RenderDevice)
         {
@@ -194,7 +194,7 @@ public class CameraDisplayPanel
     }
 
     @Override
-    public void documentNodeChildRemoved(ChildWrapperEvent evt)
+    public void symbolNodeChildRemoved(ChildWrapperEvent evt)
     {
         if (evt.getNode() instanceof RenderDevice)
         {

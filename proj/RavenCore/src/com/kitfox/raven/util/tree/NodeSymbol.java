@@ -36,12 +36,12 @@ import java.util.regex.Pattern;
  *
  * @author kitfox
  */
-abstract public class NodeDocument extends NodeObject
+abstract public class NodeSymbol extends NodeObject
 {
     int nextUid;
 
     public static final String CHILD_TRACKLIBRARY = "trackLibrary";
-    public final ChildWrapperSingle<NodeDocument, TrackLibrary>
+    public final ChildWrapperSingle<NodeSymbol, TrackLibrary>
             childTrackLibrary =
             new ChildWrapperSingle(this,
             CHILD_TRACKLIBRARY, TrackLibrary.class);
@@ -55,7 +55,7 @@ abstract public class NodeDocument extends NodeObject
 //    private Window swingRoot;
     private final Selection<NodeObject> selection = new Selection<NodeObject>();
 
-    ArrayList<NodeDocumentListener> docListeners = new ArrayList<NodeDocumentListener>();
+    ArrayList<NodeSymbolListener> docListeners = new ArrayList<NodeSymbolListener>();
 
     //Index for rapidly looking up nodes by uid
     HashMap<Integer, NodeObject> nodeIndex =
@@ -65,35 +65,36 @@ abstract public class NodeDocument extends NodeObject
     private final DocumentCode documentCode = new DocumentCode();
 
     private final PluginsManager pluginsManager = new PluginsManager();
-    private Environment env;
+//    private Environment env;
+    NodeDocument2 document;
 
-    public static final String PROP_DOCUMENTNAME = "documentName";
-    String documentName;
+    public static final String PROP_SYMBOLNAME = "symbolName";
+    String symbolName;
     
-    protected NodeDocument()
+    protected NodeSymbol()
     {
         super(0);
     }
 
-    public String getDocumentName()
+    public String getSymbolName()
     {
-        return documentName;
+        return symbolName;
     }
     
-    public void setDocumentName(String name)
+    public void setSymbolName(String name)
     {
-        if (name != null && name.equals(documentName))
+        if (name != null && name.equals(symbolName))
         {
             return;
         }
 
-        RenameSymbolAction action = new RenameSymbolAction(documentName, name);
+        RenameSymbolAction action = new RenameSymbolAction(symbolName, name);
         doAction(action);
     }
     
     public History getHistory()
     {
-        return env == null ? null : env.getHistory();
+        return document == null ? null : document.getHistory();
     }
     
     /**
@@ -109,65 +110,65 @@ abstract public class NodeDocument extends NodeObject
         return nodeIndex.get(uid);
     }
 
-    public void addNodeDocumentListener(NodeDocumentListener l)
+    public void addNodeSymbolListener(NodeSymbolListener l)
     {
         docListeners.add(l);
     }
 
-    public void removeNodeDocumentListener(NodeDocumentListener l)
+    public void removeNodeSymbolListener(NodeSymbolListener l)
     {
         docListeners.remove(l);
     }
 
-    protected void fireDocumentNameChanged(PropertyChangeEvent evt)
+    protected void fireSymbolNameChanged(PropertyChangeEvent evt)
     {
         for (int i = 0; i < docListeners.size(); ++i)
         {
-            docListeners.get(i).documentNameChanged(evt);
+            docListeners.get(i).symbolNameChanged(evt);
         }
     }
 
-    protected void fireDocumentPropertyChanged(PropertyChangeEvent evt)
+    protected void fireSymbolPropertyChanged(PropertyChangeEvent evt)
     {
         for (int i = 0; i < docListeners.size(); ++i)
         {
-            docListeners.get(i).documentPropertyChanged(evt);
+            docListeners.get(i).symbolPropertyChanged(evt);
         }
     }
 
-    protected void fireDocumentNodeChildAdded(ChildWrapperEvent evt)
+    protected void fireSymbolNodeChildAdded(ChildWrapperEvent evt)
     {
         for (int i = 0; i < docListeners.size(); ++i)
         {
-            docListeners.get(i).documentNodeChildAdded(evt);
+            docListeners.get(i).symbolNodeChildAdded(evt);
         }
     }
 
-    protected void fireDocumentNodeChildRemoved(ChildWrapperEvent evt)
+    protected void fireSymbolNodeChildRemoved(ChildWrapperEvent evt)
     {
         for (int i = 0; i < docListeners.size(); ++i)
         {
-            docListeners.get(i).documentNodeChildRemoved(evt);
+            docListeners.get(i).symbolNodeChildRemoved(evt);
         }
     }
 
-    protected void notifyDocumentPropertyChanged(PropertyChangeEvent evt)
+    protected void notifySymbolPropertyChanged(PropertyChangeEvent evt)
     {
-        fireDocumentPropertyChanged(evt);
+        fireSymbolPropertyChanged(evt);
     }
 
-    void notifyDocumentNodeChildAdded(ChildWrapperEvent evt)
+    void notifySymbolNodeChildAdded(ChildWrapperEvent evt)
     {
         nodeIndex.clear();
         buildUidIndex(nodeIndex);
-        fireDocumentNodeChildAdded(evt);
+        fireSymbolNodeChildAdded(evt);
     }
 
-    void notifyDocumentNodeChildRemoved(ChildWrapperEvent evt)
+    void notifySymbolNodeChildRemoved(ChildWrapperEvent evt)
     {
         nodeIndex.clear();
         buildUidIndex(nodeIndex);
-        fireDocumentNodeChildRemoved(evt);
+        fireSymbolNodeChildRemoved(evt);
     }
 
     /**
@@ -183,13 +184,13 @@ abstract public class NodeDocument extends NodeObject
 
         if (type != null)
         {
-            documentName = type.getDocumentName();
+            symbolName = type.getDocumentName();
             documentCode.load(type.getCode());
             pluginsManager.load(type.getPlugins());
         }
         else
         {
-            documentName = "symbol";
+            symbolName = "symbol";
         }
     }
 
@@ -210,7 +211,7 @@ abstract public class NodeDocument extends NodeObject
     }
 
     @Override
-    public NodeDocument getDocument()
+    public NodeSymbol getSymbol()
     {
         return this;
     }
@@ -218,7 +219,7 @@ abstract public class NodeDocument extends NodeObject
     @Override
     protected void setParent(ChildWrapper parent)
     {
-        throw new UnsupportedOperationException("Document is a root");
+        throw new UnsupportedOperationException("Cannot set parent of root element");
     }
 
     @Override
@@ -228,7 +229,7 @@ abstract public class NodeDocument extends NodeObject
         export(type);
 
         type.setNextUid(nextUid);
-        type.setDocumentName(documentName);
+        type.setDocumentName(symbolName);
         type.setCode(documentCode.export());
         type.setPlugins(pluginsManager.export());
 
@@ -372,17 +373,17 @@ abstract public class NodeDocument extends NodeObject
     /**
      * @return the env
      */
-    public Environment getEnv()
+    public NodeDocument2 getDocument()
     {
-        return env;
+        return document;
     }
 
     /**
-     * @param env the env to set
+     * @param document the env to set
      */
-    public void setEnv(Environment env)
+    public void setDocument(NodeDocument2 document)
     {
-        this.env = env;
+        this.document = document;
     }
 
     //---------------------------------
@@ -402,18 +403,18 @@ abstract public class NodeDocument extends NodeObject
         public void redo(History history)
         {
             PropertyChangeEvent evt = 
-                    new PropertyChangeEvent(this, PROP_DOCUMENTNAME, oldName, newName);
-            documentName = newName;
-            fireDocumentNameChanged(evt);
+                    new PropertyChangeEvent(this, PROP_SYMBOLNAME, oldName, newName);
+            symbolName = newName;
+            fireSymbolNameChanged(evt);
         }
 
         @Override
         public void undo(History history)
         {
             PropertyChangeEvent evt = 
-                    new PropertyChangeEvent(this, PROP_DOCUMENTNAME, newName, oldName);
-            documentName = oldName;
-            fireDocumentNameChanged(evt);
+                    new PropertyChangeEvent(this, PROP_SYMBOLNAME, newName, oldName);
+            symbolName = oldName;
+            fireSymbolNameChanged(evt);
         }
 
         @Override
@@ -431,6 +432,7 @@ abstract public class NodeDocument extends NodeObject
         public Properties getMetaProperties(String key);
         public void setMetaProperties(String key, Properties props);
         public History getHistory();
+        //public RavenDocument getDocument();
     }
 
     public static class NodeFilter implements NodeVisitor

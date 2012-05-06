@@ -70,7 +70,7 @@ public class ToolPaintFlood extends ToolDisplay
             return;
         }
 
-        RavenNodeRoot root = (RavenNodeRoot)provider.getDocument();
+        RavenNodeRoot root = (RavenNodeRoot)provider.getSymbol();
 
         //Check for subcomponent that needs filling
         ServiceMaterial floodProv = pickObj.getNodeService(ServiceMaterial.class, false);

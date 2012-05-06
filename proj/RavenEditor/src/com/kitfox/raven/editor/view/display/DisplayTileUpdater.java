@@ -19,9 +19,9 @@ package com.kitfox.raven.editor.view.display;
 import com.kitfox.raven.editor.node.renderer.RavenRenderer;
 import com.kitfox.raven.editor.node.tools.common.ServiceRenderer2D;
 import com.kitfox.raven.util.tree.ChildWrapperEvent;
-import com.kitfox.raven.util.tree.NodeDocument;
-import com.kitfox.raven.util.tree.NodeDocumentListener;
-import com.kitfox.raven.util.tree.NodeDocumentWeakListener;
+import com.kitfox.raven.util.tree.NodeSymbol;
+import com.kitfox.raven.util.tree.NodeSymbolListener;
+import com.kitfox.raven.util.tree.NodeSymbolWeakListener;
 import java.awt.AlphaComposite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -43,7 +43,7 @@ import java.util.EventObject;
  * @author kitfox
  */
 @Deprecated
-public class DisplayTileUpdater implements NodeDocumentListener
+public class DisplayTileUpdater implements NodeSymbolListener
 {
     public static final int NUM_THREADS = 1;
     public static final int TILE_SIZE = 256;
@@ -54,9 +54,9 @@ public class DisplayTileUpdater implements NodeDocumentListener
     
     final GraphicsConfiguration gc;
     private Rectangle deviceBounds;
-    private NodeDocument scene;
+    private NodeSymbol scene;
 //    private RavenNodeRoot scene;
-    NodeDocumentWeakListener listenerScene;
+    NodeSymbolWeakListener listenerScene;
     UpdateThread thread;
 
 //    TileCache<TileState> tileCache;
@@ -138,7 +138,7 @@ public class DisplayTileUpdater implements NodeDocumentListener
     /**
      * @return the scene
      */
-    public NodeDocument getScene()
+    public NodeSymbol getScene()
     {
         return scene;
     }
@@ -146,7 +146,7 @@ public class DisplayTileUpdater implements NodeDocumentListener
     /**
      * @param scene the scene to set
      */
-    public synchronized void setScene(NodeDocument scene)
+    public synchronized void setScene(NodeSymbol scene)
     {
         if (listenerScene != null)
         {
@@ -158,32 +158,32 @@ public class DisplayTileUpdater implements NodeDocumentListener
 
         if (this.scene != null)
         {
-            listenerScene = new NodeDocumentWeakListener(this, scene);
-            scene.addNodeDocumentListener(listenerScene);
+            listenerScene = new NodeSymbolWeakListener(this, scene);
+            scene.addNodeSymbolListener(listenerScene);
         }
 
         reallocTiles();
     }
 
     @Override
-    public void documentNameChanged(PropertyChangeEvent evt)
+    public void symbolNameChanged(PropertyChangeEvent evt)
     {
     }
 
     @Override
-    public void documentPropertyChanged(PropertyChangeEvent evt)
-    {
-        setDirty();
-    }
-
-    @Override
-    public void documentNodeChildAdded(ChildWrapperEvent evt)
+    public void symbolPropertyChanged(PropertyChangeEvent evt)
     {
         setDirty();
     }
 
     @Override
-    public void documentNodeChildRemoved(ChildWrapperEvent evt)
+    public void symbolNodeChildAdded(ChildWrapperEvent evt)
+    {
+        setDirty();
+    }
+
+    @Override
+    public void symbolNodeChildRemoved(ChildWrapperEvent evt)
     {
         setDirty();
     }
@@ -343,7 +343,7 @@ public class DisplayTileUpdater implements NodeDocumentListener
                 {
                     //build tile
                     target.clearBackBuffer();
-                    NodeDocument root = getScene();
+                    NodeSymbol root = getScene();
                     if (root != null)
                     {
                         tileBounds.x = target.xpos;

@@ -16,7 +16,7 @@
 
 package com.kitfox.raven.image.importer;
 
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.wizard.RavenWizardPageIteratorSimple;
 import java.util.Properties;
 
@@ -37,7 +37,7 @@ public class ImageImporterWizard extends RavenWizardPageIteratorSimple
         this.panel = panel;
     }
 
-    public static ImageImporterWizard create(NodeDocument doc, Properties preferences)
+    public static ImageImporterWizard create(NodeSymbol doc, Properties preferences)
     {
         ImageImporterContext ctx = new ImageImporterContext(doc, preferences);
         

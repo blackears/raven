@@ -24,7 +24,7 @@ import com.kitfox.raven.util.service.ServiceInst;
 import com.kitfox.raven.util.text.Justify;
 import com.kitfox.raven.util.text.TextFormatter2.LineSetToken;
 import com.kitfox.raven.util.text.TextFormatterFont;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.PropertyWrapper;
 import com.kitfox.raven.util.tree.PropertyWrapperAdapter;
 import com.kitfox.raven.util.tree.PropertyWrapperFloat;
@@ -108,7 +108,7 @@ public class RavenNodeTextArea extends RavenNodeShape
     @Override
     public CyShape createShapeLocal(FrameKey time)
     {
-        NodeDocument doc = getDocument();
+        NodeSymbol doc = getSymbol();
         if (shape == null)
         {
             Path2D.Double path = new Path2D.Double();

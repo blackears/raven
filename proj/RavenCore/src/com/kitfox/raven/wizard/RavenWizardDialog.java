@@ -22,7 +22,7 @@
 
 package com.kitfox.raven.wizard;
 
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import java.awt.BorderLayout;
 import java.awt.Window;
 import javax.swing.event.ChangeEvent;
@@ -34,13 +34,13 @@ import javax.swing.event.ChangeEvent;
 public class RavenWizardDialog extends javax.swing.JDialog
         implements RavenWizardPageListener
 {
-    RavenWizardPageIterator<NodeDocument> pageIt;
+    RavenWizardPageIterator<NodeSymbol> pageIt;
     RavenWizardPage curPage;
 
-    private NodeDocument nodeDocument;
+    private NodeSymbol nodeDocument;
 
     /** Creates new form RavenWizardDialog */
-    public RavenWizardDialog(Window parent, RavenWizardPageIterator<NodeDocument> pageIt)
+    public RavenWizardDialog(Window parent, RavenWizardPageIterator<NodeSymbol> pageIt)
     {
         super(parent, "", DEFAULT_MODALITY_TYPE);
         initComponents();
@@ -186,7 +186,7 @@ public class RavenWizardDialog extends javax.swing.JDialog
     /**
      * @return the nodeDocument
      */
-    public NodeDocument getNodeDocument()
+    public NodeSymbol getNodeDocument()
     {
         return nodeDocument;
     }

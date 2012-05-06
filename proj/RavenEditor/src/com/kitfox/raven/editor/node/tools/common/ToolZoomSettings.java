@@ -24,7 +24,7 @@ package com.kitfox.raven.editor.node.tools.common;
 
 import com.kitfox.raven.editor.RavenDocument;
 import com.kitfox.raven.editor.RavenEditor;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import java.awt.geom.AffineTransform;
 
 /**
@@ -85,7 +85,7 @@ public class ToolZoomSettings extends javax.swing.JPanel
             return;
         }
 
-        NodeDocument root = doc.getCurDocument();
+        NodeSymbol root = doc.getCurSymbol();
         ServiceDeviceCamera service = root.getNodeService(ServiceDeviceCamera.class, false);
         service.setWorldToDeviceTransform(new AffineTransform());
 

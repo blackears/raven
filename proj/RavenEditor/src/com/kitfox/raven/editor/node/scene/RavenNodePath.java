@@ -26,7 +26,7 @@ import com.kitfox.raven.shape.path.PathCurve;
 import com.kitfox.raven.util.planeData.PlaneDataProvider;
 import com.kitfox.raven.util.service.ServiceInst;
 import com.kitfox.raven.util.tree.ChildWrapperList;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
 import com.kitfox.raven.util.tree.NodeObjectProviderIndex;
 import com.kitfox.raven.util.tree.PropertyWrapper;
@@ -92,7 +92,7 @@ public class RavenNodePath extends RavenNodeShape
     @Override
     public CyShape createShapeLocal(FrameKey time)
     {
-        NodeDocument doc = getDocument();
+        NodeSymbol doc = getSymbol();
         PathCurve curve = path.getData(time.getTrackUid(), time.getTrackUid()).getValue(doc);
 
 //        if (pathCache == null)
@@ -175,7 +175,7 @@ public class RavenNodePath extends RavenNodeShape
         BezierPath bezPath = (BezierPath)network;
         PathCurve curve = new PathCurve(bezPath.asPath());
 
-        History hist = getDocument().getHistory();
+        History hist = getSymbol().getHistory();
 
         if (history)
         {
@@ -188,7 +188,7 @@ public class RavenNodePath extends RavenNodeShape
         for (Class<? extends PlaneDataProvider> key : network.getDataKeysVertex())
         {
             RavenNodeDataPlane plane = NodeObjectProviderIndex.inst().createNode(
-                    RavenNodeDataPlane.class, getDocument());
+                    RavenNodeDataPlane.class, getSymbol());
             vertexPlanes.add(plane);
             plane.dataValues.addPropertyWrapperListener(clearCache);
 
@@ -200,7 +200,7 @@ public class RavenNodePath extends RavenNodeShape
         for (Class<? extends PlaneDataProvider> key : network.getDataKeysEdge())
         {
             RavenNodeDataPlane plane = NodeObjectProviderIndex.inst().createNode(
-                    RavenNodeDataPlane.class, getDocument());
+                    RavenNodeDataPlane.class, getSymbol());
             edgePlanes.add(plane);
             plane.dataValues.addPropertyWrapperListener(clearCache);
 
@@ -212,7 +212,7 @@ public class RavenNodePath extends RavenNodeShape
         for (Class<? extends PlaneDataProvider> key : network.getDataKeysFace())
         {
             RavenNodeDataPlane plane = NodeObjectProviderIndex.inst().createNode(
-                    RavenNodeDataPlane.class, getDocument());
+                    RavenNodeDataPlane.class, getSymbol());
             facePlanes.add(plane);
             plane.dataValues.addPropertyWrapperListener(clearCache);
 

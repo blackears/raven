@@ -20,7 +20,7 @@ import com.kitfox.raven.editor.node.tools.ToolProvider;
 import com.kitfox.raven.editor.node.tools.ToolUser;
 import com.kitfox.raven.util.Selection;
 import com.kitfox.raven.util.service.ServiceInst;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.PropertyDataInline;
 import com.kitfox.raven.util.tree.PropertyProvider;
 import com.kitfox.raven.util.tree.PropertyProviderIndex;
@@ -93,7 +93,7 @@ public class ToolPropertyCurveEditor extends ToolDisplay
             return null;
         }
 
-        NodeDocument doc = provider.getDocument();
+        NodeSymbol doc = provider.getDocument();
         AffineTransform w2d = provider.getWorldToDeviceTransform(null);
         ArrayList<TrackCurveComponentKey> pickList = new ArrayList<TrackCurveComponentKey>();
 
@@ -138,7 +138,7 @@ public class ToolPropertyCurveEditor extends ToolDisplay
             return null;
         }
 
-        NodeDocument doc = provider.getDocument();
+        NodeSymbol doc = provider.getDocument();
 
         ArrayList<PropertyWrapper> wrappers = provider.getEditableProperties();
 
@@ -189,7 +189,7 @@ public class ToolPropertyCurveEditor extends ToolDisplay
             return null;
         }
 
-        NodeDocument doc = provider.getDocument();
+        NodeSymbol doc = provider.getDocument();
 
         ArrayList<PropertyWrapper> wrappers = provider.getEditableProperties();
 
@@ -351,7 +351,7 @@ public class ToolPropertyCurveEditor extends ToolDisplay
 
         startEvt = endEvt = evt;
 
-        NodeDocument doc = provider.getDocument();
+        NodeSymbol doc = provider.getDocument();
         AffineTransform w2d = provider.getWorldToDeviceTransform(null);
         Track track = provider.getTrack();
 
@@ -525,7 +525,7 @@ public class ToolPropertyCurveEditor extends ToolDisplay
         }
 
         Track track = provider.getTrack();
-        NodeDocument doc = provider.getDocument();
+        NodeSymbol doc = provider.getDocument();
 
         switch (evt.getKeyCode())
         {
@@ -730,7 +730,7 @@ public class ToolPropertyCurveEditor extends ToolDisplay
         boolean knotIn;
         boolean knotOut;
 
-        public ManipKey(NodeDocument doc, AffineTransform w2d, Track track, 
+        public ManipKey(NodeSymbol doc, AffineTransform w2d, Track track, 
                 TrackCurveComponentKey comp,
                 boolean selected, boolean knotIn, boolean knotOut)
         {
@@ -891,12 +891,12 @@ public class ToolPropertyCurveEditor extends ToolDisplay
         double value;
         TrackKey key;
 
-        NodeDocument doc;
+        NodeSymbol doc;
         AffineTransform w2d;
         Track track;
         PropertyWrapper wrapper;
 
-        public PointInfo(int frame, NodeDocument doc,
+        public PointInfo(int frame, NodeSymbol doc,
                 AffineTransform w2d, Track track, PropertyWrapper wrapper)
         {
             this.frame = frame;

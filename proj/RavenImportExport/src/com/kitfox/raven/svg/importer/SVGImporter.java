@@ -18,7 +18,7 @@ package com.kitfox.raven.svg.importer;
 
 import com.kitfox.raven.editor.node.importer.ImporterProvider;
 import com.kitfox.raven.util.service.ServiceInst;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.wizard.RavenWizardPageIterator;
 import com.kitfox.raven.wizard.RavenWizardPageIteratorSimple;
 import java.util.Properties;
@@ -38,7 +38,7 @@ public class SVGImporter extends ImporterProvider
     }
 
     @Override
-    public RavenWizardPageIterator createWizard(NodeDocument doc)
+    public RavenWizardPageIterator createWizard(NodeSymbol doc)
     {
         return new Wizard();
     }

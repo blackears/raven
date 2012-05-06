@@ -16,20 +16,18 @@
 
 package com.kitfox.raven.editor.view.symbol;
 
-import com.kitfox.raven.editor.NewDocumentWizard;
+import com.kitfox.raven.editor.NewSymbolWizard;
 import com.kitfox.raven.editor.RavenDocument;
 import com.kitfox.raven.editor.RavenDocumentEvent;
-import com.kitfox.raven.editor.RavenDocumentListener;
-import com.kitfox.raven.editor.RavenDocumentWeakListener;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.RavenEditorListener;
 import com.kitfox.raven.editor.RavenEditorWeakListener;
 import com.kitfox.raven.util.RavenSwingUtil;
-import com.kitfox.raven.util.tree.NodeDocument;
-import com.kitfox.raven.util.undo.History;
-import com.kitfox.raven.util.undo.HistoryAction;
+import com.kitfox.raven.util.tree.NodeDocument2Event;
+import com.kitfox.raven.util.tree.NodeDocument2Listener;
+import com.kitfox.raven.util.tree.NodeDocument2WeakListener;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.wizard.RavenWizardDialog;
-import java.awt.Color;
 import java.awt.Component;
 import java.util.EventObject;
 import javax.swing.JLabel;
@@ -37,20 +35,18 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
-import javax.swing.UIDefaults;
-import javax.swing.UIManager;
 
 /**
  *
  * @author kitfox
  */
 public class SymbolPanel extends javax.swing.JPanel
-        implements RavenEditorListener, RavenDocumentListener
+        implements RavenEditorListener, NodeDocument2Listener
 {
     final RavenEditor editor;
     RavenEditorWeakListener listenerEditor;
 //    HistoryWeakListener listenerHistory;
-    RavenDocumentWeakListener listenerRavenDoc;
+    NodeDocument2WeakListener listenerRavenDoc;
 
     boolean updating;
 
@@ -84,8 +80,8 @@ public class SymbolPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            listenerRavenDoc = new RavenDocumentWeakListener(this, doc);
-            doc.addRavenDocumentListener(listenerRavenDoc);
+            listenerRavenDoc = new NodeDocument2WeakListener(this, doc);
+            doc.addNodeDocumentListener(listenerRavenDoc);
         }
         
         updateDisplay();
@@ -116,8 +112,8 @@ public class SymbolPanel extends javax.swing.JPanel
         }
         else
         {
-            list_symbols.setListData(doc.getDocuments().toArray());
-            list_symbols.setSelectedValue(doc.getCurDocument(), false);
+            list_symbols.setListData(doc.getSymbols().toArray());
+            list_symbols.setSelectedValue(doc.getCurSymbol(), false);
         }
 
         updating = false;
@@ -134,25 +130,25 @@ public class SymbolPanel extends javax.swing.JPanel
         updateDocument();
     }
 
-    @Override
-    public void documentSourceChanged(EventObject evt)
-    {
-    }
+//    @Override
+//    public void documentSourceChanged(EventObject evt)
+//    {
+//    }
     
     @Override
-    public void documentAdded(RavenDocumentEvent evt)
-    {
-        updateDisplay();
-    }
-    
-    @Override
-    public void documentRemoved(RavenDocumentEvent evt)
+    public void symbolAdded(NodeDocument2Event evt)
     {
         updateDisplay();
     }
     
     @Override
-    public void currentDocumentChanged(RavenDocumentEvent evt)
+    public void symbolRemoved(NodeDocument2Event evt)
+    {
+        updateDisplay();
+    }
+    
+    @Override
+    public void currentSymbolChanged(NodeDocument2Event evt)
     {
         if (updating)
         {
@@ -222,9 +218,9 @@ public class SymbolPanel extends javax.swing.JPanel
             return;
         }
         
-        NodeDocument sym = (NodeDocument)list_symbols.getSelectedValue();
+        NodeSymbol sym = (NodeSymbol)list_symbols.getSelectedValue();
         RavenDocument doc = editor.getDocument();
-        doc.setCurrentDocument(sym);
+        doc.setCurrentSymbol(sym);
     }//GEN-LAST:event_list_symbolsValueChanged
 
     private void bn_createActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bn_createActionPerformed
@@ -243,28 +239,28 @@ public class SymbolPanel extends javax.swing.JPanel
 //            return;
 //        }
 
-        NewDocumentWizard wiz = new NewDocumentWizard(editor);
+        NewSymbolWizard wiz = new NewSymbolWizard(editor);
 
         RavenWizardDialog dlg = new RavenWizardDialog(
                 editor.getViewManager().getSwingRoot(), wiz);
         RavenSwingUtil.centerWindow(dlg);
         dlg.setVisible(true);
 
-        NodeDocument sym = dlg.getNodeDocument();
+        NodeSymbol sym = dlg.getNodeDocument();
 
         if (sym == null)
         {
             return;
         }
         
-        String name = sym.getDocumentName();
-        String newName = doc.getUnusedDocumentName(name);
+        String name = sym.getSymbolName();
+        String newName = doc.getUnusedSymbolName(name);
         if (!newName.equals(name))
         {
-            sym.setDocumentName(newName);
+            sym.setSymbolName(newName);
         }
 
-        doc.addDocument(sym);
+        doc.addSymbol(sym);
         
     }//GEN-LAST:event_bn_createActionPerformed
 
@@ -276,8 +272,8 @@ public class SymbolPanel extends javax.swing.JPanel
             return;
         }
         
-        NodeDocument doc = (NodeDocument)val;
-        String name = doc.getDocumentName();
+        NodeSymbol doc = (NodeSymbol)val;
+        String name = doc.getSymbolName();
         String newName = JOptionPane.showInputDialog(
                 this, "Rename symbol", name == null ? "" : name);
         
@@ -286,7 +282,7 @@ public class SymbolPanel extends javax.swing.JPanel
             return;
         }
         
-        doc.setDocumentName(newName);
+        doc.setSymbolName(newName);
         repaint();
     }//GEN-LAST:event_bn_renameActionPerformed
 
@@ -305,9 +301,9 @@ public class SymbolPanel extends javax.swing.JPanel
         }
         
 //System.err.println("Deleting");        
-        NodeDocument sym = (NodeDocument)val;
+        NodeSymbol sym = (NodeSymbol)val;
 //        int idx = doc.indexOfDocument(sym);
-        doc.removeDocument(sym);
+        doc.removeSymbol(sym);
 
     }//GEN-LAST:event_bn_deleteActionPerformed
 
@@ -348,8 +344,8 @@ public class SymbolPanel extends javax.swing.JPanel
                 setForeground(list.getForeground());
             }
             
-            NodeDocument doc = (NodeDocument)value;
-            String name = doc.getDocumentName();
+            NodeSymbol doc = (NodeSymbol)value;
+            String name = doc.getSymbolName();
             setText(name == null ? "*" : name);
             return this;
         }

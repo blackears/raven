@@ -18,7 +18,7 @@ package com.kitfox.raven.editor.paint;
 
 import com.kitfox.game.control.color.UnderlayPaint;
 import com.kitfox.raven.util.service.ServiceInst;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.PropertyCustomEditor;
 import com.kitfox.raven.util.tree.PropertyData;
@@ -97,7 +97,7 @@ public class RavenPaintEditor extends PropertyWrapperEditor<RavenPaint>
         if (data instanceof PropertyDataReference)
         {
             int uid = ((PropertyDataReference)data).getUid();
-            NodeDocument doc = getWrapper().getNode().getDocument();
+            NodeSymbol doc = getWrapper().getNode().getSymbol();
             NodeObject node = doc.getNode(uid);
             return node.getName();
         }
@@ -118,7 +118,7 @@ public class RavenPaintEditor extends PropertyWrapperEditor<RavenPaint>
         if (data instanceof PropertyDataReference)
         {
             int uid = ((PropertyDataReference)data).getUid();
-            NodeDocument doc = getWrapper().getNode().getDocument();
+            NodeSymbol doc = getWrapper().getNode().getSymbol();
             NodeObject node = doc.getNode(uid);
             return node.getName();
         }
@@ -138,7 +138,7 @@ public class RavenPaintEditor extends PropertyWrapperEditor<RavenPaint>
 
         //Check for node with this name
         FindNode find = new FindNode(text);
-        NodeDocument doc = getWrapper().getNode().getDocument();
+        NodeSymbol doc = getWrapper().getNode().getSymbol();
         doc.visit(find);
 
         NodeObject node = find.getBestNode();

@@ -45,9 +45,9 @@ import com.kitfox.raven.editor.node.tools.common.ServiceEditor;
 import com.kitfox.raven.editor.node.tools.common.ServicePen;
 import com.kitfox.raven.editor.paint.RavenPaintColor;
 import com.kitfox.raven.util.tree.ChildWrapperEvent;
-import com.kitfox.raven.util.tree.NodeDocument;
-import com.kitfox.raven.util.tree.NodeDocumentListener;
-import com.kitfox.raven.util.tree.NodeDocumentWeakListener;
+import com.kitfox.raven.util.tree.NodeSymbol;
+import com.kitfox.raven.util.tree.NodeSymbolListener;
+import com.kitfox.raven.util.tree.NodeSymbolWeakListener;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -68,14 +68,14 @@ import jpen.PenManager;
  */
 @Deprecated
 public class DisplayPanel extends javax.swing.JPanel
-        implements RavenEditorListener, NodeDocumentListener,
+        implements RavenEditorListener, NodeSymbolListener,
         DisplayTilesListener, ToolUser, ToolPaletteListener,
         ServiceDevice, ServiceDeviceCamera, ToolListener, ServicePen,
         ServiceEditor
 {
     final RavenEditor editor;
     RavenEditorWeakListener listenerEditor;
-    NodeDocumentWeakListener listenerDoc;
+    NodeSymbolWeakListener listenerDoc;
     ToolPaletteWeakListener listenerTool;
     
     Tool tool;
@@ -122,14 +122,14 @@ public class DisplayPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (displayTiles != null && doc != null)
         {
-            NodeDocument root = doc.getCurDocument();
+            NodeSymbol root = doc.getCurSymbol();
             displayTiles.setScene(root);
         }
 
         if (doc != null)
         {
-            listenerDoc = new NodeDocumentWeakListener(this, doc.getCurDocument());
-            doc.getCurDocument().addNodeDocumentListener(listenerDoc);
+            listenerDoc = new NodeSymbolWeakListener(this, doc.getCurSymbol());
+            doc.getCurSymbol().addNodeSymbolListener(listenerDoc);
         }
 
         repaint();
@@ -181,7 +181,7 @@ public class DisplayPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            return doc.getCurDocument().getNodeService(serviceClass, false);
+            return doc.getCurSymbol().getNodeService(serviceClass, false);
         }
 
         return null;
@@ -199,7 +199,7 @@ public class DisplayPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            doc.getCurDocument().getNodeServices(serviceClass, appendList, false);
+            doc.getCurSymbol().getNodeServices(serviceClass, appendList, false);
         }
     }
 
@@ -215,24 +215,24 @@ public class DisplayPanel extends javax.swing.JPanel
     }
 
     @Override
-    public void documentNameChanged(PropertyChangeEvent evt)
+    public void symbolNameChanged(PropertyChangeEvent evt)
     {
     }
 
     @Override
-    public void documentPropertyChanged(PropertyChangeEvent evt)
-    {
-        repaint();
-    }
-
-    @Override
-    public void documentNodeChildAdded(ChildWrapperEvent evt)
+    public void symbolPropertyChanged(PropertyChangeEvent evt)
     {
         repaint();
     }
 
     @Override
-    public void documentNodeChildRemoved(ChildWrapperEvent evt)
+    public void symbolNodeChildAdded(ChildWrapperEvent evt)
+    {
+        repaint();
+    }
+
+    @Override
+    public void symbolNodeChildRemoved(ChildWrapperEvent evt)
     {
         repaint();
     }
@@ -257,7 +257,7 @@ public class DisplayPanel extends javax.swing.JPanel
             return;
         }
 
-        NodeDocument root = doc.getCurDocument();
+        NodeSymbol root = doc.getCurSymbol();
         ServiceBackground service = root.getNodeService(ServiceBackground.class, false);
         RavenPaintColor bg = RavenPaintColor.TRANSPARENT;
 //        RavenPaintColor bg = service == null
@@ -304,7 +304,7 @@ public class DisplayPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeDocument root = doc.getCurDocument();
+            NodeSymbol root = doc.getCurSymbol();
             ServiceDeviceCamera service = root.getNodeService(ServiceDeviceCamera.class, false);
             return service.getWorldToDeviceTransform(xform);
         }
@@ -320,7 +320,7 @@ public class DisplayPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeDocument root = doc.getCurDocument();
+            NodeSymbol root = doc.getCurSymbol();
             ServiceDeviceCamera service = root.getNodeService(ServiceDeviceCamera.class, false);
             service.setWorldToDeviceTransform(xform);
         }

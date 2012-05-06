@@ -16,6 +16,8 @@
 
 package com.kitfox.raven.swf.importer;
 
+import com.kitfox.raven.swf.importer.timeline.CharacterDictionary;
+import com.kitfox.raven.swf.importer.timeline.CharacterShape;
 import com.kitfox.raven.editor.node.scene.RavenNodeGroup;
 import com.kitfox.raven.editor.node.scene.RavenNodeMesh2;
 import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
@@ -49,6 +51,7 @@ public class ImportSWFBuilder
 {
     final RavenNodeRoot root;
     int meshCount;
+    CharacterDictionary dictionary;
     DisplayList displayList;
 
     private boolean importBackgroundColor;
@@ -58,6 +61,7 @@ public class ImportSWFBuilder
     Track track;
 
 
+    @Deprecated
     public ImportSWFBuilder(RavenNodeRoot root)
     {
         this.root = root;
@@ -151,25 +155,34 @@ public class ImportSWFBuilder
                 case DefineShape.TAG_ID:
                 {
                     DefineShape shape = (DefineShape)tag;
-                    importShape(shape.getShapeId(), ((DefineShape)tag).getShapes());
+                    dictionary.addCharacter(new CharacterShape(
+                            shape.getShapeId(), ((DefineShape)tag).getShapes()));
+                    
+//                    importShape(shape.getShapeId(), ((DefineShape)tag).getShapes());
                     break;
                 }
                 case DefineShape2.TAG_ID:
                 {
                     DefineShape2 shape = (DefineShape2)tag;
-                    importShape(shape.getShapeId(), ((DefineShape2)tag).getShapes());
+                    dictionary.addCharacter(new CharacterShape(
+                            shape.getShapeId(), ((DefineShape)tag).getShapes()));
+//                    importShape(shape.getShapeId(), ((DefineShape2)tag).getShapes());
                     break;
                 }
                 case DefineShape3.TAG_ID:
                 {
                     DefineShape3 shape = (DefineShape3)tag;
-                    importShape(shape.getShapeId(), ((DefineShape3)tag).getShapes());
+                    dictionary.addCharacter(new CharacterShape(
+                            shape.getShapeId(), ((DefineShape)tag).getShapes()));
+//                    importShape(shape.getShapeId(), ((DefineShape3)tag).getShapes());
                     break;
                 }
                 case DefineShape4.TAG_ID:
                 {
                     DefineShape4 shape = (DefineShape4)tag;
-                    importShape(shape.getShapeId(), ((DefineShape4)tag).getShapes());
+                    dictionary.addCharacter(new CharacterShape(
+                            shape.getShapeId(), ((DefineShape)tag).getShapes()));
+//                    importShape(shape.getShapeId(), ((DefineShape4)tag).getShapes());
                     break;
                 }
             }

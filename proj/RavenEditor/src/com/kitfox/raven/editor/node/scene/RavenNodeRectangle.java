@@ -23,7 +23,7 @@ import com.kitfox.coyote.shape.CyRectangleRound2d;
 import com.kitfox.coyote.shape.CyShape;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
 import com.kitfox.raven.util.service.ServiceInst;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.PropertyWrapperFloat;
 
 /**
@@ -74,7 +74,7 @@ public class RavenNodeRectangle extends RavenNodeInscribedShape
     @Override
     public CyShape createShapeLocal(FrameKey time)
     {
-        NodeDocument doc = getDocument();
+        NodeSymbol doc = getSymbol();
         float crx = rx.getData(time.getTrackUid(), time.getTrackUid()).getValue(doc);
         float cry = ry.getData(time.getTrackUid(), time.getTrackUid()).getValue(doc);
         float cx = x.getData(time.getTrackUid(), time.getTrackUid()).getValue(doc);

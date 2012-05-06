@@ -65,7 +65,7 @@ public class PropertyControlMonitor extends MouseAdapter
             return;
         }
         
-        RavenNodeRoot root = (RavenNodeRoot)doc.getCurDocument();
+        RavenNodeRoot root = (RavenNodeRoot)doc.getCurSymbol();
         if (root == null)
         {
             return;

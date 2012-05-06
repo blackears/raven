@@ -75,7 +75,7 @@ public class RavenNodeComposition extends RavenNode
     {
         CyDrawStack rend = context.getDrawStack();
         
-        RavenNodeRoot root = (RavenNodeRoot)getDocument();
+        RavenNodeRoot root = (RavenNodeRoot)getSymbol();
         
         RavenPaintColor col = root.getBackgroundColor();
         CyRendererUtil2D.clear(rend, col.r, col.g, col.b, col.a);

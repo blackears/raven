@@ -131,7 +131,7 @@ abstract public class ChildWrapper<NodeType extends NodeObject,
 
     protected void doAction(HistoryAction action)
     {
-        NodeDocument doc = node.getDocument();
+        NodeSymbol doc = node.getSymbol();
         History hist = doc == null ? null : doc.getHistory();
         if (hist == null)
         {
@@ -143,7 +143,7 @@ abstract public class ChildWrapper<NodeType extends NodeObject,
 
     protected void beginTransaction(String name)
     {
-        NodeDocument doc = node.getDocument();
+        NodeSymbol doc = node.getSymbol();
         History hist = doc == null ? null : doc.getHistory();
         if (hist == null)
         {
@@ -154,7 +154,7 @@ abstract public class ChildWrapper<NodeType extends NodeObject,
 
     protected void commitTransaction()
     {
-        NodeDocument doc = node.getDocument();
+        NodeSymbol doc = node.getSymbol();
         History hist = doc == null ? null : doc.getHistory();
         if (hist == null)
         {
@@ -201,12 +201,12 @@ abstract public class ChildWrapper<NodeType extends NodeObject,
         }
     }
 
-    protected void broadcastDocumentChanged(NodeDocument doc)
+    protected void broadcastSymbolChanged(NodeSymbol doc)
     {
         for (int i = 0; i < size(); ++i)
         {
             ChildType child = get(i);
-            child.broadcastDocumentChanged(doc);
+            child.broadcastSymbolChanged(doc);
         }
     }
 

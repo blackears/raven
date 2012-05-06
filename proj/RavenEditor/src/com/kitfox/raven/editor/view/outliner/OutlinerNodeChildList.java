@@ -20,7 +20,7 @@ import com.kitfox.raven.util.tree.ChildWrapperEvent;
 import com.kitfox.raven.util.tree.ChildWrapperList;
 import com.kitfox.raven.util.tree.ChildWrapperListener;
 import com.kitfox.raven.util.tree.ChildWrapperWeakListener;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.NodeObjectProviderIndex;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
@@ -177,11 +177,11 @@ public class OutlinerNodeChildList extends OutlinerNode
         @Override
         public void actionPerformed(ActionEvent evt)
         {
-            NodeObject node = prov.createNode(wrapper.getNode().getDocument());
+            NodeObject node = prov.createNode(wrapper.getNode().getSymbol());
 
             String name = prov.getNodeType().getSimpleName();
             name = name.substring(0, 1).toLowerCase() + name.substring(1);
-            name = wrapper.getNode().getDocument().createUniqueName(name);
+            name = wrapper.getNode().getSymbol().createUniqueName(name);
 
 //            node.name.setValue(name, false);
             node.setName(name);
@@ -208,7 +208,7 @@ public class OutlinerNodeChildList extends OutlinerNode
     @Override
     public boolean paste(int index, RavenTransferableType xferLayers)
     {
-        NodeDocument doc = wrapper.getNode().getDocument();
+        NodeSymbol doc = wrapper.getNode().getSymbol();
 
         History hist = doc.getHistory();
         hist.beginTransaction("Paste");

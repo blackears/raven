@@ -22,7 +22,7 @@ import com.kitfox.cache.CacheInteger;
 import com.kitfox.cache.CacheList;
 import com.kitfox.cache.parser.CacheParser;
 import com.kitfox.cache.parser.ParseException;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObject;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -122,7 +122,7 @@ public class RavenPaintList
         return list;
     }
 
-    public RavenPaint lookupPaint(Integer index, NodeDocument doc)
+    public RavenPaint lookupPaint(Integer index, NodeSymbol doc)
     {
         if (index == null || index.intValue() == 0)
         {
@@ -167,7 +167,7 @@ public class RavenPaintList
     {
         abstract public CacheIdentifier toCache();
 
-        abstract protected RavenPaint getPaint(NodeDocument doc);
+        abstract protected RavenPaint getPaint(NodeSymbol doc);
     }
 
     public static class PaintEntryInline extends PaintEntry
@@ -186,7 +186,7 @@ public class RavenPaintList
         }
 
         @Override
-        protected RavenPaint getPaint(NodeDocument doc)
+        protected RavenPaint getPaint(NodeSymbol doc)
         {
             return paint;
         }
@@ -234,7 +234,7 @@ public class RavenPaintList
         }
 
         @Override
-        protected RavenPaint getPaint(NodeDocument doc)
+        protected RavenPaint getPaint(NodeSymbol doc)
         {
             NodeObject node = doc.getNode(uid);
             return (RavenPaint)node;

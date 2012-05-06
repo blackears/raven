@@ -22,7 +22,7 @@ import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.coyote.shape.CyShape;
 import com.kitfox.raven.editor.node.tools.common.ServiceTransformable;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.undo.History;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,7 +108,7 @@ public class SelectionManipulatorGroup extends SelectionManipulator
         toolWorld.transformPoint(groupPivot, groupPivot);
 
         RootState firstRoot = rootStates.get(0);
-        NodeDocument doc = firstRoot.getRoot().getNodeObject().getDocument();
+        NodeSymbol doc = firstRoot.getRoot().getNodeObject().getSymbol();
         History hist = doc.getHistory();
         if (history)
         {

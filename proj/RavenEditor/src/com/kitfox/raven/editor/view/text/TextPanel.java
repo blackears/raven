@@ -36,7 +36,7 @@ import com.kitfox.raven.util.SelectionListener;
 import com.kitfox.raven.util.SelectionSubEvent;
 import com.kitfox.raven.util.SelectionWeakListener;
 import com.kitfox.raven.util.text.TextPropertiesPanel;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.SelectionRecord;
 import java.awt.BorderLayout;
@@ -112,7 +112,7 @@ public class TextPanel extends javax.swing.JPanel
             return;
         }
 
-        NodeDocument root = doc.getCurDocument();
+        NodeSymbol root = doc.getCurSymbol();
         Selection<NodeObject> sel = root.getSelection();
         selListener = new SelectionWeakListener(this, sel);
         sel.addSelectionListener(selListener);
@@ -137,7 +137,7 @@ public class TextPanel extends javax.swing.JPanel
             return;
         }
 
-        NodeDocument root = doc.getCurDocument();
+        NodeSymbol root = doc.getCurSymbol();
         Selection<NodeObject> sel = root.getSelection();
 
         textRecords.clear();
@@ -233,17 +233,17 @@ public class TextPanel extends javax.swing.JPanel
     }
 
     @Override
-    public void documentAdded(RavenDocumentEvent evt)
+    public void symbolAdded(RavenDocumentEvent evt)
     {
     }
 
     @Override
-    public void documentRemoved(RavenDocumentEvent evt)
+    public void symbolRemoved(RavenDocumentEvent evt)
     {
     }
 
     @Override
-    public void currentDocumentChanged(RavenDocumentEvent evt)
+    public void currentSymbolChanged(RavenDocumentEvent evt)
     {
         updateSymbol();
     }

@@ -22,7 +22,7 @@ import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.raven.editor.node.tools.common.ServiceTransformable;
 import com.kitfox.raven.util.tree.EventWrapper;
 import com.kitfox.raven.util.tree.FrameKey;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.PropertyWrapperAdapter;
 import com.kitfox.raven.util.tree.PropertyWrapperFloat;
@@ -266,7 +266,7 @@ abstract public class RavenNodeXformable extends RavenNodeRenderable
         double tx = m03 - px + px * m00 + py * m01;
         double ty = m13 - py + px * m10 + py * m11;
 
-        NodeDocument doc = getDocument();
+        NodeSymbol doc = getSymbol();
         if (history && doc != null)
         {
             doc.getHistory().beginTransaction("Set transform");
@@ -294,7 +294,7 @@ abstract public class RavenNodeXformable extends RavenNodeRenderable
 
     public void centerPivot(boolean history)
     {
-        NodeDocument doc = getDocument();
+        NodeSymbol doc = getSymbol();
         if (history && doc != null)
         {
             doc.getHistory().beginTransaction("Center pivot");

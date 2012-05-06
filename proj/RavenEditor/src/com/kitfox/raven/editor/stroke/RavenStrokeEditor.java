@@ -17,7 +17,7 @@
 package com.kitfox.raven.editor.stroke;
 
 import com.kitfox.raven.util.service.ServiceInst;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.PropertyCustomEditor;
 import com.kitfox.raven.util.tree.PropertyData;
@@ -93,7 +93,7 @@ public class RavenStrokeEditor extends PropertyWrapperEditor<RavenStroke>
         if (data instanceof PropertyDataReference)
         {
             int uid = ((PropertyDataReference)data).getUid();
-            NodeDocument doc = getWrapper().getNode().getDocument();
+            NodeSymbol doc = getWrapper().getNode().getSymbol();
             NodeObject node = doc.getNode(uid);
             return node.getName();
         }
@@ -113,7 +113,7 @@ public class RavenStrokeEditor extends PropertyWrapperEditor<RavenStroke>
 
         //Check for node with this name
         FindNode find = new FindNode(text);
-        NodeDocument doc = getWrapper().getNode().getDocument();
+        NodeSymbol doc = getWrapper().getNode().getSymbol();
         doc.visit(find);
 
         NodeObject node = find.getBestNode();

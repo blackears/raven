@@ -34,7 +34,7 @@ public class PropertyDataInline<T> extends PropertyData<T>
     }
 
     @Override
-    public T getValue(NodeDocument document)
+    public T getValue(NodeSymbol document)
     {
         return value;
     }

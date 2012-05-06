@@ -33,7 +33,7 @@ import com.kitfox.raven.util.SelectionSubEvent;
 import com.kitfox.raven.util.SelectionWeakListener;
 import com.kitfox.raven.util.tree.DocumentCode;
 import com.kitfox.raven.util.tree.EventWrapper;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.SelectionRecord;
 import java.awt.BorderLayout;
@@ -107,7 +107,7 @@ public class CodePanel extends javax.swing.JPanel
             textArea_annotations.setText("");
             return;
         }
-        NodeDocument root = doc.getCurDocument();
+        NodeSymbol root = doc.getCurSymbol();
         Selection<NodeObject> sel = root.getSelection();
         listenerSelection = new SelectionWeakListener(this, sel);
         sel.addSelectionListener(listenerSelection);
@@ -128,7 +128,7 @@ public class CodePanel extends javax.swing.JPanel
         {
             return;
         }
-        NodeDocument root = doc.getCurDocument();
+        NodeSymbol root = doc.getCurSymbol();
         Selection<NodeObject> sel = root.getSelection();
 
         NodeObject top = sel.getTopSelected();
@@ -373,7 +373,7 @@ public class CodePanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeDocument root = doc.getCurDocument();
+            NodeSymbol root = doc.getCurSymbol();
             root.getDocumentCode().getImplementsClasses()
                     .setSource(textArea_implements.getText());
         }
@@ -385,7 +385,7 @@ public class CodePanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeDocument root = doc.getCurDocument();
+            NodeSymbol root = doc.getCurSymbol();
             root.getDocumentCode().getAnnotations()
                     .setSource(textArea_annotations.getText());
         }
@@ -397,7 +397,7 @@ public class CodePanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeDocument root = doc.getCurDocument();
+            NodeSymbol root = doc.getCurSymbol();
             root.getDocumentCode().getExtendsClass()
                     .setSource(text_extends.getText());
         }

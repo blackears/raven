@@ -46,7 +46,7 @@ import com.kitfox.raven.util.SelectionEvent;
 import com.kitfox.raven.util.SelectionListener;
 import com.kitfox.raven.util.SelectionSubEvent;
 import com.kitfox.raven.util.SelectionWeakListener;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.PropertyProvider;
 import com.kitfox.raven.util.tree.PropertyProviderIndex;
@@ -236,7 +236,7 @@ public class TrackPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeDocument root = doc.getCurDocument();
+            NodeSymbol root = doc.getCurSymbol();
 
             TrackLibrary trackLib = root.getTrackLibrary();
             curFrameWatch = new CurFrameWatcher(trackLib.curFrame);
@@ -273,7 +273,7 @@ public class TrackPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeDocument root = doc.getCurDocument();
+            NodeSymbol root = doc.getCurSymbol();
 
             TrackLibrary trackLib = root.getTrackLibrary();
             Track track = trackLib.curTrack.getValue();
@@ -290,7 +290,7 @@ public class TrackPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeDocument root = doc.getCurDocument();
+            NodeSymbol root = doc.getCurSymbol();
 
             TrackLibrary trackLib = root.getTrackLibrary();
             int frame = trackLib.curFrame.getValue();
@@ -306,7 +306,7 @@ public class TrackPanel extends javax.swing.JPanel
             updatingPropList = true;
             Object[] oldSelection = list_curves.getSelectedValues();
 
-            NodeDocument root = doc.getCurDocument();
+            NodeSymbol root = doc.getCurSymbol();
 //            Track track = root.getTrackLibrary().curTrack.getValue();
 
             Selection<NodeObject> sel = root.getSelection();
@@ -528,17 +528,17 @@ public class TrackPanel extends javax.swing.JPanel
     }
 
     @Override
-    public void documentAdded(RavenDocumentEvent evt)
+    public void symbolAdded(RavenDocumentEvent evt)
     {
     }
 
     @Override
-    public void documentRemoved(RavenDocumentEvent evt)
+    public void symbolRemoved(RavenDocumentEvent evt)
     {
     }
 
     @Override
-    public void currentDocumentChanged(RavenDocumentEvent evt)
+    public void currentSymbolChanged(RavenDocumentEvent evt)
     {
         updateSymbol();
     }
@@ -607,7 +607,7 @@ public class TrackPanel extends javax.swing.JPanel
             TrackType tt = xferCurves.getTrack();
             TrackCurve tc = wrap.createTrackCurve(tt);
 
-            int trackUid = wrap.getNode().getDocument().getTrackLibrary().getCurTrackUid();
+            int trackUid = wrap.getNode().getSymbol().getTrackLibrary().getCurTrackUid();
             wrap.setTrackCurve(trackUid, tc);
             
             return true;
@@ -632,7 +632,7 @@ public class TrackPanel extends javax.swing.JPanel
                 return null;
             }
 
-            int trackUid = wrap.getNode().getDocument().getTrackLibrary().getCurTrackUid();
+            int trackUid = wrap.getNode().getSymbol().getTrackLibrary().getCurTrackUid();
 //            TrackCurve tc = wrap.getTrackCurve(trackUid);
             xferCurves.setTrack(wrap.exportTrack(trackUid));
 //            Object[] values = curveList.getSelectedValues();

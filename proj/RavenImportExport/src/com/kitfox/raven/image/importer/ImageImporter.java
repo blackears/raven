@@ -18,7 +18,7 @@ package com.kitfox.raven.image.importer;
 
 import com.kitfox.raven.editor.node.importer.ImporterProvider;
 import com.kitfox.raven.util.service.ServiceInst;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.wizard.RavenWizardPageIterator;
 import java.util.Properties;
 
@@ -37,7 +37,7 @@ public class ImageImporter extends ImporterProvider
     }
 
     @Override
-    public RavenWizardPageIterator createWizard(NodeDocument doc)
+    public RavenWizardPageIterator createWizard(NodeSymbol doc)
     {
         return ImageImporterWizard.create(doc, preferences);
     }

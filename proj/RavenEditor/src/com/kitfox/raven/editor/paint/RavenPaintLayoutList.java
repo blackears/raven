@@ -25,7 +25,7 @@ import com.kitfox.cache.parser.CacheParser;
 import com.kitfox.cache.parser.ParseException;
 import com.kitfox.game.control.color.PaintLayout;
 import com.kitfox.game.control.color.PaintLayoutSerializer;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObject;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -128,7 +128,7 @@ public class RavenPaintLayoutList
         return list;
     }
 
-    public PaintLayout lookupPaint(Integer index, NodeDocument doc)
+    public PaintLayout lookupPaint(Integer index, NodeSymbol doc)
     {
         if (index == null || index.intValue() == 0)
         {
@@ -173,7 +173,7 @@ public class RavenPaintLayoutList
     {
         abstract public CacheIdentifier toCache();
 
-        abstract protected PaintLayout getPaint(NodeDocument doc);
+        abstract protected PaintLayout getPaint(NodeSymbol doc);
     }
 
     public static class PaintLayoutEntryInline extends PaintLayoutEntry
@@ -192,7 +192,7 @@ public class RavenPaintLayoutList
         }
 
         @Override
-        protected PaintLayout getPaint(NodeDocument doc)
+        protected PaintLayout getPaint(NodeSymbol doc)
         {
             return layout;
         }
@@ -240,7 +240,7 @@ public class RavenPaintLayoutList
         }
 
         @Override
-        protected PaintLayout getPaint(NodeDocument doc)
+        protected PaintLayout getPaint(NodeSymbol doc)
         {
             NodeObject node = doc.getNode(uid);
             return (PaintLayout)node;

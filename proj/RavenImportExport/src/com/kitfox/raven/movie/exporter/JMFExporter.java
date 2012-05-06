@@ -216,7 +216,7 @@ format = VIDEO_QT;
 
     private void error(String message)
     {
-        JOptionPane.showMessageDialog(ctx.getDoc().getEnv().getSwingRoot(),
+        JOptionPane.showMessageDialog(ctx.getDoc().getDocument().getEnv().getSwingRoot(),
                 message,
                 "Error", JOptionPane.ERROR_MESSAGE);
     }

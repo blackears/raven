@@ -100,8 +100,8 @@ public class PropertiesPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            selectionListener = new SelectionWeakListener(this, doc.getCurDocument().getSelection());
-            doc.getCurDocument().getSelection().addSelectionListener(selectionListener);
+            selectionListener = new SelectionWeakListener(this, doc.getCurSymbol().getSelection());
+            doc.getCurSymbol().getSelection().addSelectionListener(selectionListener);
         }
 
         SwingUtilities.invokeLater(
@@ -125,7 +125,7 @@ public class PropertiesPanel extends javax.swing.JPanel
         }
         else
         {
-            NodeObject top = doc.getCurDocument().getSelection().getTopSelected();
+            NodeObject top = doc.getCurSymbol().getSelection().getTopSelected();
             if (top == null)
             {
                 model = null;
@@ -168,17 +168,17 @@ public class PropertiesPanel extends javax.swing.JPanel
     }
 
     @Override
-    public void documentAdded(RavenDocumentEvent evt)
+    public void symbolAdded(RavenDocumentEvent evt)
     {
     }
 
     @Override
-    public void documentRemoved(RavenDocumentEvent evt)
+    public void symbolRemoved(RavenDocumentEvent evt)
     {
     }
 
     @Override
-    public void currentDocumentChanged(RavenDocumentEvent evt)
+    public void currentSymbolChanged(RavenDocumentEvent evt)
     {
         updateSymbol();
     }

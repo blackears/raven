@@ -25,8 +25,8 @@ import javax.swing.ImageIcon;
  *
  * @author kitfox
  */
-abstract public class NodeDocumentProvider<T extends NodeDocument>
-        implements Comparable<NodeDocumentProvider>
+abstract public class NodeSymbolProvider<T extends NodeSymbol>
+        implements Comparable<NodeSymbolProvider>
 {
     private final Class<T> nodeType;
     private final String name;
@@ -35,17 +35,17 @@ abstract public class NodeDocumentProvider<T extends NodeDocument>
     private static ImageIcon DEFAULT_ICON
             = new ImageIcon(NodeObjectProvider.class.getResource("/icons/node/stack.png"));
 
-    public NodeDocumentProvider(Class<T> nodeType, String name)
+    public NodeSymbolProvider(Class<T> nodeType, String name)
     {
         this(nodeType, name, DEFAULT_ICON);
     }
 
-    public NodeDocumentProvider(Class<T> nodeType, String name, String iconPath)
+    public NodeSymbolProvider(Class<T> nodeType, String name, String iconPath)
     {
         this(nodeType, name, loadIcon(iconPath));
     }
 
-    public NodeDocumentProvider(Class<T> nodeType, String name, ImageIcon icon)
+    public NodeSymbolProvider(Class<T> nodeType, String name, ImageIcon icon)
     {
         this.nodeType = nodeType;
         this.name = name;
@@ -74,10 +74,10 @@ abstract public class NodeDocumentProvider<T extends NodeDocument>
 
     abstract public RavenWizardPageIterator<T> createDocumentWizard();
 
-    abstract public NodeDocument loadDocument(NodeSymbolType docTree);
+    abstract public NodeSymbol loadDocument(NodeSymbolType docTree);
 
     @Override
-    public int compareTo(NodeDocumentProvider obj)
+    public int compareTo(NodeSymbolProvider obj)
     {
         return name.compareTo(obj.getName());
     }

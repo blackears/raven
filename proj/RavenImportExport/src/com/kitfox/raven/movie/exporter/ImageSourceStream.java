@@ -18,7 +18,7 @@ package com.kitfox.raven.movie.exporter;
 
 import com.kitfox.raven.editor.node.scene.RavenNodeComposition;
 import com.kitfox.raven.util.tree.FrameKey;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -59,7 +59,7 @@ public class ImageSourceStream
         this.ctx = ctx;
 
         RavenNodeComposition comp = ctx.getComposition();
-        NodeDocument doc = comp.getDocument();
+        NodeSymbol doc = comp.getSymbol();
         width = comp.getWidth();
         height = comp.getHeight();
         

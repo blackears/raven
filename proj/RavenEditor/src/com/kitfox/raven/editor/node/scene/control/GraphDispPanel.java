@@ -168,7 +168,7 @@ public class GraphDispPanel extends javax.swing.JPanel
             return null;
         }
 
-        return (RavenNodeRoot)doc.getCurDocument();
+        return (RavenNodeRoot)doc.getCurSymbol();
     }
 
     /**

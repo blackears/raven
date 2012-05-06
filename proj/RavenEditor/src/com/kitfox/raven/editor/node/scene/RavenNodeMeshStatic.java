@@ -39,7 +39,7 @@ import com.kitfox.raven.util.planeData.PlaneDataProvider;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
 import com.kitfox.raven.util.service.ServiceInst;
 import com.kitfox.raven.util.tree.ChildWrapperList;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.PropertyWrapper;
 import java.awt.Shape;
 import java.awt.Stroke;
@@ -112,7 +112,7 @@ public class RavenNodeMeshStatic extends RavenNodeXformable
         //Build edges
         PathCurve pathCurve = path.getValue();
         Path2D.Double pathShape = pathCurve.asPath2D();
-        NodeDocument doc = getDocument();
+        NodeSymbol doc = getSymbol();
 
         ArrayList<RavenPaintProxy> paintList = edgePlaneMap.get(RavenPaintProxy.PlaneData.class);
         ArrayList<PaintLayoutProxy> layoutList = edgePlaneMap.get(PaintLayoutProxy.PlaneData.class);
@@ -260,7 +260,7 @@ public class RavenNodeMeshStatic extends RavenNodeXformable
         }
         ArrayList<RavenPaintProxy> paintList = facePlaneMap.get(RavenPaintProxy.PlaneData.class);
         ArrayList<PaintLayoutProxy> layoutList = facePlaneMap.get(PaintLayoutProxy.PlaneData.class);
-        NodeDocument doc = getDocument();
+        NodeSymbol doc = getSymbol();
 
         //Pull half edges into faces
         faceContours = new ArrayList<RenderableComponent>();

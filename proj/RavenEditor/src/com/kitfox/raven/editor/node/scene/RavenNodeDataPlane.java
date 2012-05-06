@@ -25,7 +25,7 @@ import com.kitfox.raven.util.planeData.PlaneDataProvider;
 import com.kitfox.raven.util.planeData.PlaneDataProviderIndex;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
 import com.kitfox.raven.util.service.ServiceInst;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.PropertyWrapper;
 import com.kitfox.raven.util.tree.PropertyWrapperString;
 import java.util.ArrayList;
@@ -114,7 +114,7 @@ public class RavenNodeDataPlane extends RavenNode
             Class<T> type,
             List<R> data, boolean history)
     {
-        NodeDocument doc = getDocument();
+        NodeSymbol doc = getSymbol();
         if (history && doc != null)
         {
             doc.getHistory().beginTransaction("Set plane data");

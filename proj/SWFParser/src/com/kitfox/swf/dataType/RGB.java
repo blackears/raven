@@ -61,6 +61,9 @@ public class RGB
         return new Color(r, g, b);
     }
 
-
+    public int asArgb()
+    {
+        return 0xff000000 | (r << 16) | (g << 8) | b;
+    }
 
 }

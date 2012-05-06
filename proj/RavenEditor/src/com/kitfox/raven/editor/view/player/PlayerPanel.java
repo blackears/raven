@@ -30,7 +30,7 @@ import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.RavenEditorListener;
 import com.kitfox.raven.editor.RavenEditorWeakListener;
 import com.kitfox.raven.util.tree.ChildWrapperEvent;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.NodeObjectListener;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
@@ -51,8 +51,6 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
-import javax.swing.UIDefaults;
-import javax.swing.UIManager;
 
 /**
  *
@@ -156,7 +154,7 @@ public class PlayerPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeDocument root = doc.getCurDocument();
+            NodeSymbol root = doc.getCurSymbol();
             TrackLibrary trackLib = root.getTrackLibrary();
             trackLibManager = new TrackLibManager(trackLib);
 
@@ -199,7 +197,7 @@ public class PlayerPanel extends javax.swing.JPanel
         }
 
 
-        TrackLibrary trackLib = doc.getCurDocument().getTrackLibrary();
+        TrackLibrary trackLib = doc.getCurSymbol().getTrackLibrary();
         text_curFrame.setText("" + trackLib.curFrame.getValue());
         text_fps.setText("" + trackLib.fps.getValue());
         check_loop.setSelected(trackLib.loop.getValue());
@@ -246,7 +244,7 @@ public class PlayerPanel extends javax.swing.JPanel
             return;
         }
 
-        NodeDocument doc = trackLibManager.trackLib.getDocument();
+        NodeSymbol doc = trackLibManager.trackLib.getSymbol();
         doc.getHistory().beginTransaction("New track");
         NodeObjectProvider<Track> prov =
                 NodeObjectProviderIndex.inst().getProvider(Track.class);
@@ -426,7 +424,7 @@ public class PlayerPanel extends javax.swing.JPanel
         int frameStart = track.frameStart.getValue();
         int curFrame = lib.curFrame.getValue();
 
-        NodeDocument doc = lib.getDocument();
+        NodeSymbol doc = lib.getSymbol();
         int newFrame = Math.max(frameStart,
                 doc.getPrevKeyFrame(curFrame, track.getUid()));
 
@@ -445,7 +443,7 @@ public class PlayerPanel extends javax.swing.JPanel
         int frameEnd = track.frameEnd.getValue();
         int curFrame = lib.curFrame.getValue();
 
-        NodeDocument doc = lib.getDocument();
+        NodeSymbol doc = lib.getSymbol();
         int newFrame = Math.min(frameEnd,
                 doc.getNextKeyFrame(curFrame, track.getUid()));
 
@@ -1062,17 +1060,17 @@ public class PlayerPanel extends javax.swing.JPanel
     }
 
     @Override
-    public void documentAdded(RavenDocumentEvent evt)
+    public void symbolAdded(RavenDocumentEvent evt)
     {
     }
 
     @Override
-    public void documentRemoved(RavenDocumentEvent evt)
+    public void symbolRemoved(RavenDocumentEvent evt)
     {
     }
 
     @Override
-    public void currentDocumentChanged(RavenDocumentEvent evt)
+    public void currentSymbolChanged(RavenDocumentEvent evt)
     {
         updateSymbol();
     }

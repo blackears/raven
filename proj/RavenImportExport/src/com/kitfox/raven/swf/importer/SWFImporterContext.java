@@ -1,12 +1,24 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2011 Mark McKay
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package com.kitfox.raven.swf.importer;
 
-import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.RavenDocument;
 import com.kitfox.raven.util.PropertiesData;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.swf.SWFDocument;
 import com.kitfox.swf.SWFException;
 import com.kitfox.swf.SWFParser;
@@ -29,10 +41,10 @@ public class SWFImporterContext
     public static final String PROP_USE_BACKGROUND = "useBackground";
     private boolean useBackground;
     
-    private final NodeDocument doc;
+    private final NodeSymbol doc;
     private PropertiesData pref;
     
-    public SWFImporterContext(NodeDocument doc, Properties preferences)
+    public SWFImporterContext(NodeSymbol doc, Properties preferences)
     {
         this.doc = doc;
         this.pref = new PropertiesData(preferences);
@@ -49,7 +61,7 @@ public class SWFImporterContext
 
     private void errMessage(String message)
     {
-        JOptionPane.showMessageDialog(doc.getEnv().getSwingRoot(),
+        JOptionPane.showMessageDialog(doc.getDocument().getEnv().getSwingRoot(),
                 message, 
                 "Error", 
                 JOptionPane.ERROR_MESSAGE);
@@ -80,10 +92,13 @@ public class SWFImporterContext
             return;
         }
         
-        ImportSWFBuilder builder = 
-                new ImportSWFBuilder((RavenNodeRoot)doc);
-        
+//        Environment env = doc.getDocument().getEnv();
+        ImportSWFBuilder2 builder = 
+                new ImportSWFBuilder2((RavenDocument)doc.getDocument());
         builder.importDoc(swfDoc);
+        
+//        SWFTimelineBuilder builder = SWFTimelineBuilder.importDoc(swfDoc);
+        
     }
 
     /**

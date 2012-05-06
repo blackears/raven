@@ -36,7 +36,7 @@ import com.kitfox.raven.shape.network.keys.NetworkDataTypePaintLayout;
 import com.kitfox.raven.shape.network.keys.NetworkDataTypeStroke;
 import com.kitfox.raven.util.PropertiesData;
 import com.kitfox.raven.util.Selection;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.NodeObjectProviderIndex;
 import java.awt.image.BufferedImage;
@@ -61,10 +61,10 @@ public class ImageImporterContext
     public static final String PROP_USE_BACKGROUND = "smoothing";
     private float smoothing;
     
-    private NodeDocument doc;
+    private NodeSymbol doc;
     private PropertiesData pref;
     
-    public ImageImporterContext(NodeDocument doc, Properties preferences)
+    public ImageImporterContext(NodeSymbol doc, Properties preferences)
     {
         this.doc = doc;
         this.pref = new PropertiesData(preferences);
@@ -81,7 +81,7 @@ public class ImageImporterContext
 
     private void errMessage(String message)
     {
-        JOptionPane.showMessageDialog(doc.getEnv().getSwingRoot(),
+        JOptionPane.showMessageDialog(doc.getDocument().getEnv().getSwingRoot(),
                 message, 
                 "Error", 
                 JOptionPane.ERROR_MESSAGE);
@@ -185,7 +185,7 @@ public class ImageImporterContext
     /**
      * @return the doc
      */
-    public NodeDocument getDoc()
+    public NodeSymbol getDoc()
     {
         return doc;
     }
@@ -193,7 +193,7 @@ public class ImageImporterContext
     /**
      * @param doc the doc to set
      */
-    public void setDoc(NodeDocument doc)
+    public void setDoc(NodeSymbol doc)
     {
         this.doc = doc;
     }

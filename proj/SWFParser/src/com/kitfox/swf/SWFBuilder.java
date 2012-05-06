@@ -20,9 +20,6 @@ import com.kitfox.swf.dataType.SWFDataReader;
 import com.kitfox.swf.tags.SWFTagLoader;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.ServiceLoader;
 
 /**
  *
@@ -34,20 +31,20 @@ public class SWFBuilder implements SWFParseVisitor
     private SWFDocument doc;
     final PrintStream out;
 
-    HashMap<Integer, SWFTagLoader> loaderMap = new HashMap<Integer, SWFTagLoader>();
+//    HashMap<Integer, SWFTagLoader> loaderMap = new HashMap<Integer, SWFTagLoader>();
 
     public SWFBuilder(boolean verbose, PrintStream out)
     {
         this.verbose = verbose;
         this.out = out;
 
-        ServiceLoader<SWFTagLoader> tagLoaders = ServiceLoader.load(SWFTagLoader.class);
-        for (Iterator<SWFTagLoader> it = tagLoaders.iterator(); it.hasNext();)
-        {
-            SWFTagLoader loader = it.next();
-            int id = loader.getTagId();
-            loaderMap.put(id, loader);
-        }
+//        ServiceLoader<SWFTagLoader> tagLoaders = ServiceLoader.load(SWFTagLoader.class);
+//        for (Iterator<SWFTagLoader> it = tagLoaders.iterator(); it.hasNext();)
+//        {
+//            SWFTagLoader loader = it.next();
+//            int id = loader.getTagId();
+//            loaderMap.put(id, loader);
+//        }
     }
 
     public void setHeader(SWFHeader header)
@@ -62,8 +59,7 @@ public class SWFBuilder implements SWFParseVisitor
 
     public void readTag(SWFDataReader in, int tagId, int length) throws IOException
     {
-
-        SWFTagLoader loader = loaderMap.get(tagId);
+        SWFTagLoader loader = SWFTagIndex.inst().getLoader(tagId);
         if (loader != null)
         {
             out.println("Reading tag #" + tagId + "\tlen: " + length + "\t(" + loader.getClass().getName() + ")");

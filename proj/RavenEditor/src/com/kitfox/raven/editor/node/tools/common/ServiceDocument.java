@@ -23,7 +23,7 @@ import com.kitfox.raven.editor.node.scene.snap.Snapping;
 import com.kitfox.raven.util.Intersection;
 import com.kitfox.raven.editor.node.tools.ToolService;
 import com.kitfox.raven.util.Selection;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObject;
 import java.util.ArrayList;
 
@@ -33,7 +33,7 @@ import java.util.ArrayList;
  */
 public interface ServiceDocument extends ToolService
 {
-    public NodeDocument getDocument();
+    public NodeSymbol getSymbol();
 
     /**
      * Pick objects in selection region.

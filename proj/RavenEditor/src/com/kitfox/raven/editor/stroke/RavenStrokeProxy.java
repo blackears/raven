@@ -22,7 +22,7 @@ import com.kitfox.cache.CacheList;
 import com.kitfox.raven.editor.node.scene.RavenNodeStroke;
 import com.kitfox.raven.util.planeData.PlaneDataProvider;
 import com.kitfox.raven.util.service.ServiceInst;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 
 /**
  *
@@ -63,7 +63,7 @@ public class RavenStrokeProxy
         return new RavenStrokeProxy((RavenStrokeInline)value);
     }
 
-    public RavenStroke getStroke(NodeDocument doc)
+    public RavenStroke getStroke(NodeSymbol doc)
     {
         if (inlineStroke != null)
         {
@@ -73,7 +73,7 @@ public class RavenStrokeProxy
         return (RavenStroke)doc.getNode(refUid);
     }
 
-    public RavenStrokeInline getStrokeInline(NodeDocument doc)
+    public RavenStrokeInline getStrokeInline(NodeSymbol doc)
     {
         if (inlineStroke != null)
         {

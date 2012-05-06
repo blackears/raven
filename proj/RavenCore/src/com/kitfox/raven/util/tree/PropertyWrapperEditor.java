@@ -138,10 +138,10 @@ abstract public class PropertyWrapperEditor<PropType>
         return wrapper.getNode();
     }
 
-    public NodeDocument getDocument()
+    public NodeSymbol getDocument()
     {
         NodeObject node = getNode();
-        return node == null ? null : node.getDocument();
+        return node == null ? null : node.getSymbol();
     }
 
     public PropType getValueFlat()
@@ -188,7 +188,7 @@ abstract public class PropertyWrapperEditor<PropType>
 
     protected void setKey(TrackKey.Interp interp)
     {
-        NodeDocument doc = wrapper.getNode().getDocument();
+        NodeSymbol doc = wrapper.getNode().getSymbol();
         TrackLibrary trackLib = doc.getTrackLibrary();
         Track track = trackLib.getCurTrack();
         if (track == null)
@@ -202,7 +202,7 @@ abstract public class PropertyWrapperEditor<PropType>
 
     protected void removeKey()
     {
-        NodeDocument doc = wrapper.getNode().getDocument();
+        NodeSymbol doc = wrapper.getNode().getSymbol();
         TrackLibrary trackLib = doc.getTrackLibrary();
         Track track = trackLib.getCurTrack();
         if (track == null)

@@ -16,36 +16,43 @@
 
 package com.kitfox.raven.util.tree;
 
-import com.kitfox.raven.util.ServiceIndex;
+import java.util.EventObject;
 
 /**
  *
  * @author kitfox
  */
-public final class NodeDocumentProviderIndex extends ServiceIndex<NodeDocumentProvider>
+public class NodeDocument2Event extends EventObject
 {
-    private static NodeDocumentProviderIndex instance = new NodeDocumentProviderIndex();
-
-    private NodeDocumentProviderIndex()
+    private final NodeSymbol symbol;
+    private final NodeSymbol oldSymbol;
+    
+    public NodeDocument2Event(NodeDocument2 src, NodeSymbol document,
+            NodeSymbol oldDocument)
     {
-        super(NodeDocumentProvider.class);
+        super(src);
+        this.symbol = document;
+        this.oldSymbol = oldDocument;
+    }
+    
+    public NodeDocument2Event(NodeDocument2 src, NodeSymbol document)
+    {
+        this(src, document, null);
     }
 
-    public static NodeDocumentProviderIndex inst()
+    /**
+     * @return the document
+     */
+    public NodeSymbol getSymbol()
     {
-        return instance;
+        return symbol;
     }
 
-    public NodeDocumentProvider getProvider(String clazz)
+    /**
+     * @return the document
+     */
+    public NodeSymbol getOldSymbol()
     {
-        for (int i = 0; i < serviceList.size(); ++i)
-        {
-            NodeDocumentProvider prov = serviceList.get(i);
-            if (prov.getNodeType().getCanonicalName().equals(clazz))
-            {
-                return prov;
-            }
-        }
-        return null;
-    }
+        return oldSymbol;
+    }    
 }

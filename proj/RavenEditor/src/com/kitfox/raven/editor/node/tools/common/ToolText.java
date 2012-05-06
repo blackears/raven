@@ -24,7 +24,7 @@ import com.kitfox.raven.editor.node.tools.ToolProvider;
 import com.kitfox.raven.editor.node.tools.ToolUser;
 import com.kitfox.raven.editor.node.tools.common.text.TextManipulator;
 import com.kitfox.raven.util.service.ServiceInst;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.NodeVisitor;
 import java.awt.Component;
@@ -77,7 +77,7 @@ public class ToolText extends ToolDisplay
             return;
         }
 
-        NodeDocument doc = provider.getDocument();
+        NodeSymbol doc = provider.getSymbol();
         if (doc == null)
         {
             return;

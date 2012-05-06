@@ -23,67 +23,67 @@ import java.lang.ref.WeakReference;
  *
  * @author kitfox
  */
-public class NodeDocumentWeakListener implements NodeDocumentListener
+public class NodeSymbolWeakListener implements NodeSymbolListener
 {
-    final WeakReference<NodeDocumentListener> ref;
-    final NodeDocument src;
+    final WeakReference<NodeSymbolListener> ref;
+    final NodeSymbol src;
 
-    public NodeDocumentWeakListener(NodeDocumentListener listener, NodeDocument src)
+    public NodeSymbolWeakListener(NodeSymbolListener listener, NodeSymbol src)
     {
-        this.ref = new WeakReference<NodeDocumentListener>(listener);
+        this.ref = new WeakReference<NodeSymbolListener>(listener);
         this.src = src;
     }
 
     public void remove()
     {
-        src.removeNodeDocumentListener(this);
+        src.removeNodeSymbolListener(this);
     }
 
     @Override
-    public void documentPropertyChanged(PropertyChangeEvent evt)
+    public void symbolPropertyChanged(PropertyChangeEvent evt)
     {
-        NodeDocumentListener l = ref.get();
+        NodeSymbolListener l = ref.get();
         if (l == null)
         {
             remove();
             return;
         }
-        l.documentPropertyChanged(evt);
+        l.symbolPropertyChanged(evt);
     }
 
     @Override
-    public void documentNameChanged(PropertyChangeEvent evt)
+    public void symbolNameChanged(PropertyChangeEvent evt)
     {
-        NodeDocumentListener l = ref.get();
+        NodeSymbolListener l = ref.get();
         if (l == null)
         {
             remove();
             return;
         }
-        l.documentNameChanged(evt);
+        l.symbolNameChanged(evt);
     }
 
     @Override
-    public void documentNodeChildAdded(ChildWrapperEvent evt)
+    public void symbolNodeChildAdded(ChildWrapperEvent evt)
     {
-        NodeDocumentListener l = ref.get();
+        NodeSymbolListener l = ref.get();
         if (l == null)
         {
             remove();
             return;
         }
-        l.documentNodeChildAdded(evt);
+        l.symbolNodeChildAdded(evt);
     }
 
     @Override
-    public void documentNodeChildRemoved(ChildWrapperEvent evt)
+    public void symbolNodeChildRemoved(ChildWrapperEvent evt)
     {
-        NodeDocumentListener l = ref.get();
+        NodeSymbolListener l = ref.get();
         if (l == null)
         {
             remove();
             return;
         }
-        l.documentNodeChildRemoved(evt);
+        l.symbolNodeChildRemoved(evt);
     }
 }

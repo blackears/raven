@@ -16,8 +16,6 @@
 
 package com.kitfox.raven.editor;
 
-import com.kitfox.raven.editor.RavenDocument;
-import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.util.tree.Track;
 import com.kitfox.raven.util.tree.TrackLibrary;
 import java.util.logging.Level;
@@ -70,7 +68,7 @@ public class PlayerThread extends Thread
                 continue;
             }
 
-            TrackLibrary lib = doc.getCurDocument().getTrackLibrary();
+            TrackLibrary lib = doc.getCurSymbol().getTrackLibrary();
             Track track = lib.getCurTrack();
             if (track == null)
             {

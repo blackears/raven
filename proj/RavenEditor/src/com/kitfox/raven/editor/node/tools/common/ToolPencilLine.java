@@ -217,7 +217,7 @@ public class ToolPencilLine extends ToolDisplay
             if (path != null)
             {
                 ServiceDocument provider = user.getToolService(ServiceDocument.class);
-                RavenNodeRoot doc = (RavenNodeRoot)provider.getDocument();
+                RavenNodeRoot doc = (RavenNodeRoot)provider.getSymbol();
                 RavenNodeSceneGraph sceneGraph = doc.getSceneGraph();
 
                 ServiceDeviceCamera provDevCam = user.getToolService(ServiceDeviceCamera.class);

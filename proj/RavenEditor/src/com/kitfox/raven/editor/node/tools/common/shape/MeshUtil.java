@@ -100,7 +100,7 @@ public class MeshUtil
         NetworkHandleSelection subSel = 
                 sel.getSubselection(node, NetworkHandleSelection.class);
      
-        RavenNodeRoot root = (RavenNodeRoot)node.getDocument();
+        RavenNodeRoot root = (RavenNodeRoot)node.getSymbol();
 //        RavenNodeRoot root = getDocument();
         CyMatrix4d w2d = stack.getViewXform();
         CyMatrix4d d2p = stack.getProjXform();

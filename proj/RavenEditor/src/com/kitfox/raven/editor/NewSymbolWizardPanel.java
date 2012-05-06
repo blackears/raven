@@ -22,8 +22,8 @@
 
 package com.kitfox.raven.editor;
 
-import com.kitfox.raven.util.tree.NodeDocumentProvider;
-import com.kitfox.raven.util.tree.NodeDocumentProviderIndex;
+import com.kitfox.raven.util.tree.NodeSymbolProvider;
+import com.kitfox.raven.util.tree.NodeSymbolProviderIndex;
 import com.kitfox.raven.wizard.RavenWizardPage;
 import java.awt.Component;
 import java.util.ArrayList;
@@ -39,22 +39,22 @@ import javax.swing.UIManager;
  *
  * @author kitfox
  */
-public class NewDocumentWizardPanel extends JPanel
+public class NewSymbolWizardPanel extends JPanel
         implements RavenWizardPage
 {
     public static final String WIZ_DESC = "Choose document";
 
-    final NewDocumentWizard wizard;
+    final NewSymbolWizard wizard;
 
     /** Creates new form NewDocumentWizardPanel */
-    public NewDocumentWizardPanel(NewDocumentWizard wizard)
+    public NewSymbolWizardPanel(NewSymbolWizard wizard)
     {        
         initComponents();
         this.wizard = wizard;
 
         list_providers.setCellRenderer(new ProviderRenderer());
 
-        ArrayList<NodeDocumentProvider> list = NodeDocumentProviderIndex.inst().getServices();
+        ArrayList<NodeSymbolProvider> list = NodeSymbolProviderIndex.inst().getServices();
         Collections.sort(list);
         list_providers.setListData(list.toArray());
         
@@ -83,14 +83,17 @@ public class NewDocumentWizardPanel extends JPanel
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         list_providers = new javax.swing.JList();
         jLabel1 = new javax.swing.JLabel();
 
-        list_providers.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+        list_providers.addListSelectionListener(new javax.swing.event.ListSelectionListener()
+        {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt)
+            {
                 list_providersValueChanged(evt);
             }
         });
@@ -122,7 +125,7 @@ public class NewDocumentWizardPanel extends JPanel
 
     private void list_providersValueChanged(javax.swing.event.ListSelectionEvent evt)//GEN-FIRST:event_list_providersValueChanged
     {//GEN-HEADEREND:event_list_providersValueChanged
-        NodeDocumentProvider prov = (NodeDocumentProvider)list_providers.getSelectedValue();
+        NodeSymbolProvider prov = (NodeSymbolProvider)list_providers.getSelectedValue();
         wizard.setProvider(prov);
 
     }//GEN-LAST:event_list_providersValueChanged
@@ -147,7 +150,7 @@ public class NewDocumentWizardPanel extends JPanel
                 return this;
             }
 
-            NodeDocumentProvider provider = (NodeDocumentProvider)value;
+            NodeSymbolProvider provider = (NodeSymbolProvider)value;
             setOpaque(true);
             if (isSelected)
             {

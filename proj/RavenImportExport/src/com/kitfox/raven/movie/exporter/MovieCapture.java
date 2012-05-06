@@ -62,7 +62,7 @@ public class MovieCapture
         
         if (!fact.canCreateGLPbuffer(null))
         {
-            JOptionPane.showMessageDialog(comp.getDocument().getEnv().getSwingRoot(),
+            JOptionPane.showMessageDialog(comp.getSymbol().getDocument().getEnv().getSwingRoot(),
                 "Cannot create pbuffer to accellerate offscreen rendering", 
                 "Error", JOptionPane.ERROR_MESSAGE);
             return;

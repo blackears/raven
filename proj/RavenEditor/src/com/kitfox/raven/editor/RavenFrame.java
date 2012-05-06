@@ -174,19 +174,19 @@ public class RavenFrame extends javax.swing.JFrame
     }
 
     @Override
-    public void documentAdded(RavenDocumentEvent evt)
+    public void symbolAdded(RavenDocumentEvent evt)
     {
         
     }
 
     @Override
-    public void documentRemoved(RavenDocumentEvent evt)
+    public void symbolRemoved(RavenDocumentEvent evt)
     {
         
     }
 
     @Override
-    public void currentDocumentChanged(RavenDocumentEvent evt)
+    public void currentSymbolChanged(RavenDocumentEvent evt)
     {
         
     }

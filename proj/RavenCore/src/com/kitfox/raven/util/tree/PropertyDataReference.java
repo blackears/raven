@@ -31,7 +31,7 @@ public class PropertyDataReference<T> extends PropertyData<T>
     }
 
     @Override
-    public T getValue(NodeDocument document)
+    public T getValue(NodeSymbol document)
     {
         return (T)document.getNode(uid);
     }
@@ -66,7 +66,7 @@ public class PropertyDataReference<T> extends PropertyData<T>
         return "ref: " + uid;
     }
 
-    public NodeObject getNode(NodeDocument doc)
+    public NodeObject getNode(NodeSymbol doc)
     {
         return doc.getNode(uid);
     }

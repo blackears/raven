@@ -148,7 +148,7 @@ public class RavenNodeCamera extends RavenNodeXformable
     {
         CyDrawStack rend = context.getDrawStack();
         
-        RavenNodeRoot root = (RavenNodeRoot)getDocument();
+        RavenNodeRoot root = (RavenNodeRoot)getSymbol();
         
         RavenPaintColor col = root.getBackgroundColor();
         CyRendererUtil2D.clear(rend, col.r, col.g, col.b, col.a);
@@ -165,7 +165,7 @@ public class RavenNodeCamera extends RavenNodeXformable
     public void renderView(RenderContext context)
     {
         CyDrawStack rend = context.getDrawStack();
-        RavenNodeRoot root = (RavenNodeRoot)getDocument();
+        RavenNodeRoot root = (RavenNodeRoot)getSymbol();
         
         //Calc projection matrix
         double cw = getWidth();

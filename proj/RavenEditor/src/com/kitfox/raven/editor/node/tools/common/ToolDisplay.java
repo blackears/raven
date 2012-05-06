@@ -129,7 +129,7 @@ abstract public class ToolDisplay extends ToolDraggable
         }
         
 //        Snapping snap = provDoc.getSnapping();
-        RavenNodeRoot root = (RavenNodeRoot)provDoc.getDocument();
+        RavenNodeRoot root = (RavenNodeRoot)provDoc.getSymbol();
         if (root.isSnapGrid())
         {
             //int major = snap.getGridSpacingMajor();
@@ -250,7 +250,7 @@ abstract public class ToolDisplay extends ToolDraggable
             return null;
         }
         
-        return (RavenNodeRoot)provider.getDocument();
+        return (RavenNodeRoot)provider.getSymbol();
     }
 
     /**

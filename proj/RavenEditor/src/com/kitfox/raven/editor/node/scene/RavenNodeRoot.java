@@ -17,7 +17,6 @@
 package com.kitfox.raven.editor.node.scene;
 
 import com.kitfox.raven.util.tree.FrameKey;
-import com.kitfox.coyote.drawRecord.CyDrawRecordViewport;
 import com.kitfox.coyote.material.color.CyMaterialColorDrawRecord;
 import com.kitfox.coyote.material.color.CyMaterialColorDrawRecordFactory;
 import com.kitfox.coyote.math.CyColor4f;
@@ -50,14 +49,12 @@ import java.awt.Font;
 import java.awt.geom.AffineTransform;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 /**
  *
  * @author kitfox
  */
-public class RavenNodeRoot extends NodeDocument
+public class RavenNodeRoot extends NodeSymbol
         implements ServiceDeviceCamera, ServiceDocument,
         ServiceText, ServiceColors2D, ServiceBackground,
         CyRenderService
@@ -815,8 +812,8 @@ public class RavenNodeRoot extends NodeDocument
         }
     }
 
-    @ServiceInst(service=NodeDocumentProvider.class)
-    public static class DocProvider extends NodeDocumentProvider<RavenNodeRoot>
+    @ServiceInst(service=NodeSymbolProvider.class)
+    public static class DocProvider extends NodeSymbolProvider<RavenNodeRoot>
     {
         public DocProvider()
         {
@@ -824,7 +821,7 @@ public class RavenNodeRoot extends NodeDocument
         }
 
         @Override
-        public NodeDocument loadDocument(NodeSymbolType docTree)
+        public NodeSymbol loadDocument(NodeSymbolType docTree)
         {
             return create(docTree);
         }

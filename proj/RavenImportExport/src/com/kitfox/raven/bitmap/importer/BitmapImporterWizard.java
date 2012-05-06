@@ -16,7 +16,7 @@
 
 package com.kitfox.raven.bitmap.importer;
 
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.wizard.RavenWizardPageIteratorSimple;
 import java.util.Properties;
 
@@ -37,7 +37,7 @@ public class BitmapImporterWizard extends RavenWizardPageIteratorSimple
         this.panel = panel;
     }
 
-    public static BitmapImporterWizard create(NodeDocument doc, Properties preferences)
+    public static BitmapImporterWizard create(NodeSymbol doc, Properties preferences)
     {
         BitmapImporterContext ctx = new BitmapImporterContext(doc, preferences);
         

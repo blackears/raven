@@ -19,7 +19,7 @@ package com.kitfox.raven.editor.paint;
 import com.kitfox.game.control.color.ColorStyle;
 import com.kitfox.game.control.color.UnderlayPaint;
 import com.kitfox.raven.util.service.ServiceInst;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.PropertyCustomEditor;
 import com.kitfox.raven.util.tree.PropertyData;
 import com.kitfox.raven.util.tree.PropertyProvider;
@@ -145,7 +145,7 @@ public class RavenPaintColorEditor extends PropertyWrapperEditor<RavenPaintColor
         }
 
         @Override
-        public RavenPaintColor interpolate(NodeDocument doc, TrackKey<RavenPaintColor> k0, TrackKey<RavenPaintColor> k1, int frame, int k0Frame, int k1Frame)
+        public RavenPaintColor interpolate(NodeSymbol doc, TrackKey<RavenPaintColor> k0, TrackKey<RavenPaintColor> k1, int frame, int k0Frame, int k1Frame)
         {
             RavenPaintColor rc0 = k0.getData().getValue(doc);
             RavenPaintColor rc1 = k1.getData().getValue(doc);

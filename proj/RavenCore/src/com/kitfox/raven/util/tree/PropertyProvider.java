@@ -133,7 +133,7 @@ abstract public class PropertyProvider<T>
      * @param k1Frame Frame where k1 is positioned
      * @return
      */
-    public T interpolate(NodeDocument doc,
+    public T interpolate(NodeSymbol doc,
             TrackKey<T> k0, TrackKey<T> k1,
             int frame, int k0Frame, int k1Frame)
     {
@@ -154,7 +154,7 @@ abstract public class PropertyProvider<T>
      * @param offsetSize Number of spans to offset by
      * @return
      */
-    public T interpolateWithOffset(NodeDocument doc,
+    public T interpolateWithOffset(NodeSymbol doc,
             TrackKey<T> k0, TrackKey<T> k1,
             int frame, int k0Frame, int k1Frame,
             TrackKey<T> firstKey, TrackKey<T> lastKey, int offsetSize)

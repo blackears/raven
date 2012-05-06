@@ -377,7 +377,7 @@ public class ToolPen extends ToolDisplay
         }
 
         ServiceDocument provider = user.getToolService(ServiceDocument.class);
-        RavenNodeRoot doc = (RavenNodeRoot)provider.getDocument();
+        RavenNodeRoot doc = (RavenNodeRoot)provider.getSymbol();
         RavenNodeSceneGraph sceneGraph = doc.getSceneGraph();
 
         //Find node to add new stroke to

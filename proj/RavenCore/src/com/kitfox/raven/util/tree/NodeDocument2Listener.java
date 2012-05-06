@@ -16,16 +16,14 @@
 
 package com.kitfox.raven.util.tree;
 
-import java.beans.PropertyChangeEvent;
-
 /**
  *
  * @author kitfox
  */
-public interface NodeDocumentListener
+public interface NodeDocument2Listener
 {
-    public void documentNameChanged(PropertyChangeEvent evt);
-    public void documentPropertyChanged(PropertyChangeEvent evt);
-    public void documentNodeChildAdded(ChildWrapperEvent evt);
-    public void documentNodeChildRemoved(ChildWrapperEvent evt);
+    public void symbolAdded(NodeDocument2Event evt);
+    public void symbolRemoved(NodeDocument2Event evt);
+    public void currentSymbolChanged(NodeDocument2Event evt);
+    
 }

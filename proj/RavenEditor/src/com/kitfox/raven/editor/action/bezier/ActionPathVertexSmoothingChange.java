@@ -52,7 +52,7 @@ abstract public class ActionPathVertexSmoothingChange extends AbstractAction
         {
             return;
         }
-        Selection<NodeObject> sel = doc.getCurDocument().getSelection();
+        Selection<NodeObject> sel = doc.getCurSymbol().getSelection();
         for (NodeObject nodeObj: sel.getSelection())
         {
             ServiceBezierNetwork provBez =

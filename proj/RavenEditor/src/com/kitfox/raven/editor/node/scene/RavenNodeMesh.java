@@ -39,7 +39,7 @@ import com.kitfox.raven.util.planeData.PlaneDataProvider;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
 import com.kitfox.raven.util.service.ServiceInst;
 import com.kitfox.raven.util.tree.ChildWrapperList;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObjectProviderIndex;
 import com.kitfox.raven.util.tree.PropertyWrapper;
 import com.kitfox.raven.util.tree.PropertyWrapperAdapter;
@@ -271,7 +271,7 @@ public class RavenNodeMesh extends RavenNodeXformable
 
     private ArrayList<RenderableComponent> getEdgeContours()
     {
-        NodeDocument doc = getDocument();
+        NodeSymbol doc = getSymbol();
 
         if (edgeContours == null)
         {
@@ -305,7 +305,7 @@ public class RavenNodeMesh extends RavenNodeXformable
 
     private ArrayList<RenderableComponent> getFaceContours()
     {
-        NodeDocument doc = getDocument();
+        NodeSymbol doc = getSymbol();
 
         if (faceContours == null)
         {
@@ -402,11 +402,11 @@ public class RavenNodeMesh extends RavenNodeXformable
     @Override
     public void updateFromBezierNetwork(BezierNetwork network, boolean history)
     {
-        NodeDocument doc = getDocument();
+        NodeSymbol doc = getSymbol();
         updateFromBezierNetwork(doc, network, history);
     }
 
-    private void setPlaneData(NodeDocument doc,
+    private void setPlaneData(NodeSymbol doc,
             ChildWrapperList<RavenNodeMesh, RavenNodeDataPlane> planeGroup,
             HashMap<Class<? extends PlaneDataProvider>, ArrayList> data,
             boolean history)
@@ -426,7 +426,7 @@ public class RavenNodeMesh extends RavenNodeXformable
         }
     }
 
-    public void updateFromBezierNetwork(NodeDocument doc, BezierNetwork network, boolean history)
+    public void updateFromBezierNetwork(NodeSymbol doc, BezierNetwork network, boolean history)
     {
         History hist = doc == null ? null : doc.getHistory();
         if (history)

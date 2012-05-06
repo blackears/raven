@@ -16,7 +16,7 @@
 
 package com.kitfox.raven.editor.node.importer;
 
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.wizard.RavenWizardPageIterator;
 import java.util.Properties;
 
@@ -33,7 +33,7 @@ abstract public class ImporterProvider
         this.name = name;
     }
 
-    abstract public RavenWizardPageIterator createWizard(NodeDocument doc);
+    abstract public RavenWizardPageIterator createWizard(NodeSymbol doc);
 
     /**
      * @return the name

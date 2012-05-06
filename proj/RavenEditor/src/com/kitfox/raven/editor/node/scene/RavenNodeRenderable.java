@@ -311,7 +311,7 @@ abstract public class RavenNodeRenderable extends RavenNode
             result = new AffineTransform();
         }
 
-        RavenNodeRoot doc = (RavenNodeRoot)getDocument();
+        RavenNodeRoot doc = (RavenNodeRoot)getSymbol();
         if (doc == null)
         {
             return getLocalToWorldTransform(result);

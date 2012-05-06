@@ -27,7 +27,7 @@ public class TrackLibrary extends NodeObject
 {
 
     public static final String CHILD_TRACKS = "tracks";
-    public final ChildWrapperList<NodeDocument, Track>
+    public final ChildWrapperList<NodeSymbol, Track>
             tracks =
             new ChildWrapperList(this,
             CHILD_TRACKS, Track.class);
@@ -72,7 +72,7 @@ public class TrackLibrary extends NodeObject
         }
 
         FrameSynch synch = new FrameSynch(getCurFrame(), track.getUid());
-        getDocument().visit(synch);
+        getSymbol().visit(synch);
     }
 
     public int getCurFrame()
@@ -110,7 +110,7 @@ public class TrackLibrary extends NodeObject
         PropertyData<Track> data = curTrack.getData();
         if (data instanceof PropertyDataReference)
         {
-            NodeDocument doc = getDocument();
+            NodeSymbol doc = getSymbol();
             if (doc == null)
             {
                 return null;

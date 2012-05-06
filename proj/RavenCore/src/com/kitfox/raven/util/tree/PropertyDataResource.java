@@ -37,9 +37,9 @@ public class PropertyDataResource<T> extends PropertyData<T>
     }
 
     @Override
-    public T getValue(NodeDocument doc)
+    public T getValue(NodeSymbol sym)
     {
-        if (doc == null)
+        if (sym == null)
         {
             return null;
         }
@@ -52,7 +52,7 @@ public class PropertyDataResource<T> extends PropertyData<T>
         }
 
         //Resolve against document root, if known
-        File src = doc.getEnv().getDocumentSource();
+        File src = sym.getDocument().getEnv().getDocumentSource();
         if (src != null)
         {
             File parent = src.getParentFile();

@@ -29,7 +29,7 @@ public interface RavenDocumentListener
      */
     public void documentSourceChanged(EventObject evt);
     
-    public void documentAdded(RavenDocumentEvent evt);
-    public void documentRemoved(RavenDocumentEvent evt);
-    public void currentDocumentChanged(RavenDocumentEvent evt);
+    public void symbolAdded(RavenDocumentEvent evt);
+    public void symbolRemoved(RavenDocumentEvent evt);
+    public void currentSymbolChanged(RavenDocumentEvent evt);
 }

@@ -22,7 +22,7 @@
 
 package com.kitfox.raven.util.tree.property;
 
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.NodeVisitor;
 import com.kitfox.raven.util.tree.PropertyCustomEditor;
@@ -71,7 +71,7 @@ public class NodeObjectCustomEditor extends javax.swing.JPanel
         updating = true;
 
         FindNodes find = new FindNodes();
-        NodeDocument doc = editor.getWrapper().getNode().getDocument();
+        NodeSymbol doc = editor.getWrapper().getNode().getSymbol();
         doc.visit(find);
 
         nodeObjectPanel.setNodes(find.getList());

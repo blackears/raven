@@ -37,7 +37,8 @@ public class DefineShape4 extends SWFTag
     private boolean usesScalingStrokes;
     private ShapeWithStyle shapes;
 
-    public DefineShape4(int shapeId, RECT shapeBounds, RECT edgeBounds, boolean usesFillWindingRule, boolean usesNonScalingStrokes, boolean usesScalingStrokes, ShapeWithStyle shapes) {
+    public DefineShape4(int shapeId, RECT shapeBounds, RECT edgeBounds, boolean usesFillWindingRule, boolean usesNonScalingStrokes, boolean usesScalingStrokes, ShapeWithStyle shapes)
+    {
         this.shapeId = shapeId;
         this.shapeBounds = shapeBounds;
         this.edgeBounds = edgeBounds;

@@ -17,7 +17,7 @@
 package com.kitfox.raven.util.tree.property;
 
 import com.kitfox.raven.util.service.ServiceInst;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.PropertyCustomEditor;
 import com.kitfox.raven.util.tree.PropertyDataInline;
 import com.kitfox.raven.util.tree.PropertyProvider;
@@ -263,7 +263,7 @@ public class IntegerEditor extends PropertyWrapperEditor<Integer>
         }
 
         @Override
-        public Integer interpolate(NodeDocument doc,
+        public Integer interpolate(NodeSymbol doc,
                 TrackKey<Integer> k0, TrackKey<Integer> k1,
                 int frame, int k0Frame, int k1Frame)
         {
@@ -277,7 +277,7 @@ public class IntegerEditor extends PropertyWrapperEditor<Integer>
         }
 
         @Override
-        public Integer interpolateWithOffset(NodeDocument doc,
+        public Integer interpolateWithOffset(NodeSymbol doc,
                 TrackKey<Integer> k0, TrackKey<Integer> k1,
                 int frame, int k0Frame, int k1Frame,
                 TrackKey<Integer> firstKey, TrackKey<Integer> lastKey, int offsetSize)

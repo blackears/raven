@@ -73,12 +73,12 @@ abstract public class NodeObjectProvider<T extends NodeObject>
 
     abstract public T createNode(int uid);
 
-    final public T createNode(NodeDocument doc)
+    final public T createNode(NodeSymbol doc)
     {
         return createNode(doc, null);
     }
 
-    public T createNode(NodeDocument doc, NodeObjectType nodeType)
+    public T createNode(NodeSymbol doc, NodeObjectType nodeType)
     {
         int uid;
         if (nodeType == null)

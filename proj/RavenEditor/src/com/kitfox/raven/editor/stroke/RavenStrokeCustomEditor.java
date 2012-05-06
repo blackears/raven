@@ -22,7 +22,7 @@
 
 package com.kitfox.raven.editor.stroke;
 
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.NodeVisitor;
 import com.kitfox.raven.util.tree.PropertyData;
@@ -82,7 +82,7 @@ public class RavenStrokeCustomEditor extends javax.swing.JPanel
                 NodeObjectPanel.PROP_NODE, this);
 
         //Setup reference nodes
-        NodeDocument doc = ed.getDocument();
+        NodeSymbol doc = ed.getDocument();
         FindNodes find = new FindNodes();
         doc.visit(find);
         nodeObjectPanel.setNodes(find.getList());
@@ -143,7 +143,7 @@ public class RavenStrokeCustomEditor extends javax.swing.JPanel
         {
             combo_type.setSelectedItem(StrokeState.REF);
 
-            NodeDocument doc = ed.getDocument();
+            NodeSymbol doc = ed.getDocument();
             int uid = ((PropertyDataReference)data).getUid();
             nodeObjectPanel.setNode(doc.getNode(uid));
         }

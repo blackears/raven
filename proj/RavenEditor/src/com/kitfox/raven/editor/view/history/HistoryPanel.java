@@ -136,7 +136,7 @@ public class HistoryPanel extends javax.swing.JPanel
         }
 
         int idx = list_history.getSelectedIndex();
-        History hist = doc.getCurDocument().getHistory();
+        History hist = doc.getCurSymbol().getHistory();
         hist.moveCursorTo(idx + 1);
     }
 

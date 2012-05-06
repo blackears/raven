@@ -16,7 +16,7 @@
 
 package com.kitfox.raven.editor.view.outliner;
 
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObject;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
@@ -36,10 +36,10 @@ public class OutlinerTreeModel implements TreeModel
     ArrayList<TreeModelListener> treeListeners = new ArrayList<TreeModelListener>();
     ArrayList<OutlinerTreeModelListener> outlinerListeners = new ArrayList<OutlinerTreeModelListener>();
 
-    private final NodeDocument document;
+    private final NodeSymbol document;
     final OutlinerNode root;
 
-    public OutlinerTreeModel(NodeDocument rootNode)
+    public OutlinerTreeModel(NodeSymbol rootNode)
     {
         this.document = rootNode;
         this.root = new OutlinerNodeNodeFixed(this, null, rootNode);
@@ -149,7 +149,7 @@ public class OutlinerTreeModel implements TreeModel
     /**
      * @return the document
      */
-    public NodeDocument getDocument() {
+    public NodeSymbol getDocument() {
         return document;
     }
 

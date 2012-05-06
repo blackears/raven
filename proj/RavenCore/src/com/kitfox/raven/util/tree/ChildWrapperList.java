@@ -77,7 +77,7 @@ public class ChildWrapperList<NodeType extends NodeObject, ChildType
             throw new IllegalArgumentException("Index out of bounds");
         }
 
-        History hist = node.getDocument().getHistory();
+        History hist = node.getSymbol().getHistory();
         hist.beginTransaction("Set child: " + child.toString());
         remove(index);
         add(index, child);

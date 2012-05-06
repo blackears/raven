@@ -17,7 +17,7 @@
 package com.kitfox.raven.util.tree.property;
 
 import com.kitfox.raven.util.service.ServiceInst;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.PropertyCustomEditor;
 import com.kitfox.raven.util.tree.PropertyData;
@@ -66,7 +66,7 @@ public class NodeObjectEditor extends PropertyWrapperEditor<NodeObject>
         }
 
         int uid = ((PropertyDataReference)data).getUid();
-        NodeDocument doc = getWrapper().getNode().getDocument();
+        NodeSymbol doc = getWrapper().getNode().getSymbol();
         NodeObject refNode = doc.getNode(uid);
 
         return refNode == null ? "" : refNode.getName();
@@ -76,7 +76,7 @@ public class NodeObjectEditor extends PropertyWrapperEditor<NodeObject>
     public void setAsText(String text) throws IllegalArgumentException
     {
         FindNode findNode = new FindNode(text);
-        NodeDocument doc = getWrapper().getNode().getDocument();
+        NodeSymbol doc = getWrapper().getNode().getSymbol();
         doc.visit(findNode);
 
         NodeObject refNode = findNode.getBestNode();

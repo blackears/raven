@@ -30,3 +30,5 @@ com.kitfox.swf.tags.shapes.DefineShape$Reader
 com.kitfox.swf.tags.shapes.DefineShape2$Reader
 com.kitfox.swf.tags.shapes.DefineShape3$Reader
 com.kitfox.swf.tags.shapes.DefineShape4$Reader
+#
+com.kitfox.swf.tags.sprite.DefineSprite$Reader

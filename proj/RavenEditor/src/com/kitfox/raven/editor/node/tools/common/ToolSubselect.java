@@ -114,7 +114,7 @@ public class ToolSubselect extends ToolSubselectBase
             return;
         }
 
-        History hist = provider.getDocument().getHistory();
+        History hist = provider.getSymbol().getHistory();
         hist.beginTransaction("Deleting vertices");
 
         Selection<NodeObject> sel = provider.getSelection();
@@ -749,7 +749,7 @@ public class ToolSubselect extends ToolSubselectBase
             ServiceDocument provider = user.getToolService(ServiceDocument.class);
             if (provider != null)
             {
-                provider.getDocument().getHistory().beginTransaction("Move mesh point groups");
+                provider.getSymbol().getHistory().beginTransaction("Move mesh point groups");
             }
             
             for (ManipSubVertices group: groups)
@@ -759,7 +759,7 @@ public class ToolSubselect extends ToolSubselectBase
 
             if (provider != null)
             {
-                provider.getDocument().getHistory().commitTransaction();
+                provider.getSymbol().getHistory().commitTransaction();
             }
         }
     }

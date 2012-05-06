@@ -19,7 +19,7 @@ package com.kitfox.raven.movie.exporter;
 import com.kitfox.raven.editor.node.scene.RavenNodeComposition;
 import com.kitfox.raven.util.tree.FrameKey;
 import com.kitfox.raven.util.PropertiesData;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -78,10 +78,10 @@ public class MovieExporterContext
     private static final String PROP_SEQ_FORMAT = "seqFormat";
     private String seqFormat;
     
-    private NodeDocument doc;
+    private NodeSymbol doc;
     private PropertiesData pref;
     
-    public MovieExporterContext(NodeDocument doc, Properties preferences)
+    public MovieExporterContext(NodeSymbol doc, Properties preferences)
     {
         this.doc = doc;
         this.pref = new PropertiesData(preferences);
@@ -151,7 +151,7 @@ public class MovieExporterContext
         final File fileDir = new File(framesDir);
         if (!fileDir.isDirectory() || !fileDir.canWrite())
         {
-            JOptionPane.showMessageDialog(doc.getEnv().getSwingRoot(),
+            JOptionPane.showMessageDialog(doc.getDocument().getEnv().getSwingRoot(),
                 "Cannot write to " + fileDir, 
                 "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -241,7 +241,7 @@ public class MovieExporterContext
     /**
      * @return the doc
      */
-    public NodeDocument getDoc()
+    public NodeSymbol getDoc()
     {
         return doc;
     }
@@ -249,7 +249,7 @@ public class MovieExporterContext
     /**
      * @param doc the doc to set
      */
-    public void setDoc(NodeDocument doc)
+    public void setDoc(NodeSymbol doc)
     {
         this.doc = doc;
     }

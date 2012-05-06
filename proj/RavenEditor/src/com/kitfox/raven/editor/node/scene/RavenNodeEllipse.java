@@ -21,7 +21,7 @@ import com.kitfox.coyote.shape.CyEllipse2d;
 import com.kitfox.coyote.shape.CyShape;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
 import com.kitfox.raven.util.service.ServiceInst;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 
 /**
  *
@@ -43,7 +43,7 @@ public class RavenNodeEllipse extends RavenNodeInscribedShape
     @Override
     public CyShape createShapeLocal(FrameKey time)
     {
-        NodeDocument doc = getDocument();
+        NodeSymbol doc = getSymbol();
         float cx = x.getData(time.getTrackUid(), time.getTrackUid()).getValue(doc);
         float cy = y.getData(time.getTrackUid(), time.getTrackUid()).getValue(doc);
         double cWidth = width.getData(time.getTrackUid(), time.getTrackUid()).getValue(doc);

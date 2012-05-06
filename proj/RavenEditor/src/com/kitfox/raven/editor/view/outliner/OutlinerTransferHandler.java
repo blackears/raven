@@ -18,7 +18,7 @@ package com.kitfox.raven.editor.view.outliner;
 
 import com.kitfox.raven.util.tree.ChildWrapper;
 import com.kitfox.raven.util.tree.ChildWrapperList;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.NodeObjectTransferable;
 import com.kitfox.raven.util.undo.History;
@@ -214,7 +214,7 @@ public class OutlinerTransferHandler extends TransferHandler
         }
 
 
-        NodeDocument doc = model.getDocument();
+        NodeSymbol doc = model.getDocument();
         if (action == TransferHandler.MOVE)
         {
             History hist = doc.getHistory();

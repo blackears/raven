@@ -22,7 +22,7 @@
 
 package com.kitfox.raven.editor.view.properties;
 
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.PropertyWrapper;
 import com.kitfox.raven.util.tree.TrackLibrary;
 import java.awt.BorderLayout;
@@ -120,7 +120,7 @@ public class PropertyCellRenderer extends javax.swing.JPanel implements TableCel
         //Find track status
         Color bgColor = COLOR_OPEN;
         PropertyWrapper prop = line.getProp();
-        NodeDocument doc = prop.getNode().getDocument();
+        NodeSymbol doc = prop.getNode().getSymbol();
         if (doc != null)
         {
             TrackLibrary trackLib = doc.getTrackLibrary();

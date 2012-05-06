@@ -16,7 +16,7 @@
 
 package com.kitfox.raven.editor;
 
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import java.util.EventObject;
 
 /**
@@ -25,18 +25,18 @@ import java.util.EventObject;
  */
 public class RavenDocumentEvent extends EventObject
 {
-    private final NodeDocument document;
-    private final NodeDocument oldDocument;
+    private final NodeSymbol symbol;
+    private final NodeSymbol oldSymbol;
     
-    public RavenDocumentEvent(RavenDocument src, NodeDocument document,
-            NodeDocument oldDocument)
+    public RavenDocumentEvent(RavenDocument src, NodeSymbol document,
+            NodeSymbol oldDocument)
     {
         super(src);
-        this.document = document;
-        this.oldDocument = oldDocument;
+        this.symbol = document;
+        this.oldSymbol = oldDocument;
     }
     
-    public RavenDocumentEvent(RavenDocument src, NodeDocument document)
+    public RavenDocumentEvent(RavenDocument src, NodeSymbol document)
     {
         this(src, document, null);
     }
@@ -44,16 +44,16 @@ public class RavenDocumentEvent extends EventObject
     /**
      * @return the document
      */
-    public NodeDocument getDocument()
+    public NodeSymbol getSymbol()
     {
-        return document;
+        return symbol;
     }
 
     /**
      * @return the document
      */
-    public NodeDocument getOldDocument()
+    public NodeSymbol getOldSymbol()
     {
-        return oldDocument;
+        return oldSymbol;
     }
 }

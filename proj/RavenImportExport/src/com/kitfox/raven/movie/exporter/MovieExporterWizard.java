@@ -16,7 +16,7 @@
 
 package com.kitfox.raven.movie.exporter;
 
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.wizard.RavenWizardPageIteratorSimple;
 import java.util.Properties;
 
@@ -37,7 +37,7 @@ public class MovieExporterWizard extends RavenWizardPageIteratorSimple
         this.panel = panel;
     }
 
-    public static MovieExporterWizard create(NodeDocument doc, Properties preferences)
+    public static MovieExporterWizard create(NodeSymbol doc, Properties preferences)
     {
         MovieExporterContext ctx = new MovieExporterContext(doc, preferences);
         

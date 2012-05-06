@@ -78,7 +78,7 @@ public class TrackCurve<T>
         maxFrame = Integer.MIN_VALUE;
     }
 
-    public T evaluate(int frame, NodeDocument doc)
+    public T evaluate(int frame, NodeSymbol doc)
     {
         if (keyMap.isEmpty())
         {
@@ -308,7 +308,7 @@ public class TrackCurve<T>
         return maxFrame;
     }
 
-    public Path2D.Double getCurvePath(NodeDocument doc)
+    public Path2D.Double getCurvePath(NodeSymbol doc)
     {
         Path2D.Double path = new Path2D.Double();
         T prev = null;
@@ -371,7 +371,7 @@ public class TrackCurve<T>
         return keyMap.isEmpty();
     }
 
-    public double getNumericValue(int frame, NodeDocument doc)
+    public double getNumericValue(int frame, NodeSymbol doc)
     {
         T value = evaluate(frame, doc);
         return prov.asDouble(value);

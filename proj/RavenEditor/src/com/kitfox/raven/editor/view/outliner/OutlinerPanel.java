@@ -111,7 +111,7 @@ public class OutlinerPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            Selection sel = doc.getCurDocument().getSelection();
+            Selection sel = doc.getCurSymbol().getSelection();
             listenerSelection = new SelectionWeakListener(this, sel);
             sel.addSelectionListener(listenerSelection);
         }
@@ -139,7 +139,7 @@ public class OutlinerPanel extends javax.swing.JPanel
         }
         else
         {
-            model = new OutlinerTreeModel(doc.getCurDocument());
+            model = new OutlinerTreeModel(doc.getCurSymbol());
             model.addOutlinerTreeModelListener(this);
             tree_outline.setModel(model);
         }
@@ -192,7 +192,7 @@ public class OutlinerPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            Selection<NodeObject> sel = doc.getCurDocument().getSelection();
+            Selection<NodeObject> sel = doc.getCurSymbol().getSelection();
             ArrayList<NodeObject> recList = sel.getSelection();
 
             TreePath[] paths = new TreePath[recList.size()];
@@ -223,7 +223,7 @@ public class OutlinerPanel extends javax.swing.JPanel
                 return;
             }
 
-            Selection<NodeObject> sel = doc.getCurDocument().getSelection();
+            Selection<NodeObject> sel = doc.getCurSymbol().getSelection();
             ArrayList<NodeObject> recList = new ArrayList<NodeObject>();
 
             TreePath[] paths = tree_outline.getSelectionPaths();
@@ -347,17 +347,17 @@ public class OutlinerPanel extends javax.swing.JPanel
     }
 
     @Override
-    public void documentAdded(RavenDocumentEvent evt)
+    public void symbolAdded(RavenDocumentEvent evt)
     {
     }
 
     @Override
-    public void documentRemoved(RavenDocumentEvent evt)
+    public void symbolRemoved(RavenDocumentEvent evt)
     {
     }
 
     @Override
-    public void currentDocumentChanged(RavenDocumentEvent evt)
+    public void currentSymbolChanged(RavenDocumentEvent evt)
     {
         updateSymbol();
     }

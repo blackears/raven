@@ -24,7 +24,7 @@ package com.kitfox.raven.editor.paint;
 
 import com.kitfox.game.control.color.ColorStyleEditorPanel;
 import com.kitfox.game.control.color.GradientStyleEditorPanel;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.PropertyData;
 import com.kitfox.raven.util.tree.PropertyDataInline;
@@ -92,9 +92,9 @@ public class RavenPaintCustomEditor extends javax.swing.JPanel
                 NodeObjectPanel.PROP_NODE, this);
 
         //Setup reference nodes
-        NodeDocument doc = ed.getDocument();
-        NodeDocument.NodeFilter find =
-                new NodeDocument.NodeFilter(RavenPaint.class);
+        NodeSymbol doc = ed.getDocument();
+        NodeSymbol.NodeFilter find =
+                new NodeSymbol.NodeFilter(RavenPaint.class);
         doc.visit(find);
         nodeObjectPanel.setNodes(find.getList());
 
@@ -160,7 +160,7 @@ public class RavenPaintCustomEditor extends javax.swing.JPanel
         {
             combo_type.setSelectedItem(PaintState.REF);
 
-            NodeDocument doc = ed.getDocument();
+            NodeSymbol doc = ed.getDocument();
             int uid = ((PropertyDataReference)data).getUid();
             nodeObjectPanel.setNode(doc.getNode(uid));
         }

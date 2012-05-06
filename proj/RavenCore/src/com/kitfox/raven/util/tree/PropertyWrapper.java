@@ -339,7 +339,7 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
 
     protected void doAction(HistoryAction action)
     {
-        NodeDocument doc = node.getDocument();
+        NodeSymbol doc = node.getSymbol();
         History hist = doc == null ? null : doc.getHistory();
         if (hist == null)
         {
@@ -526,7 +526,7 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
 //    //throw new RuntimeException();
 //}
         
-        return data == null ? getValue() : data.getValue(node.getDocument());
+        return data == null ? getValue() : data.getValue(node.getSymbol());
     }
 
     public PropType getValue(int trackUid, int frame)
@@ -565,7 +565,7 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
             }
             else if (curve.isInterpolatedAt(frame))
             {
-                PropType curveValue = curve.evaluate(frame, getNode().getDocument());
+                PropType curveValue = curve.evaluate(frame, getNode().getSymbol());
                 cache = new ValueCache(key, new PropertyDataInline(curveValue));
                 valueCache.put(key, cache);
                 return cache;
@@ -603,7 +603,7 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         propType.setName(name);
         propType.setDirect(export(directValue));
 
-        NodeDocument doc = node.getDocument();
+        NodeSymbol doc = node.getSymbol();
         for (Integer trackUid: trackMap.keySet())
         {
             NodeObject trackNode = doc.getNode(trackUid);
@@ -668,7 +668,7 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         {
             type.setStyle(PropertyStyleType.INLINE);
 
-            PropType value = ((PropertyDataInline<PropType>)data).getValue(node.getDocument());
+            PropType value = ((PropertyDataInline<PropType>)data).getValue(node.getSymbol());
             if (value == null)
             {
                 type.setValue("");

@@ -79,7 +79,7 @@ public final class NodeObjectProviderIndex extends ServiceIndex<NodeObjectProvid
 
     }
 
-    public <T extends NodeObject> T createNode(Class<T> cls, NodeDocument doc)
+    public <T extends NodeObject> T createNode(Class<T> cls, NodeSymbol doc)
     {
         return getProvider(cls).createNode(doc);
     }

@@ -22,7 +22,7 @@ import com.kitfox.cache.CacheInteger;
 import com.kitfox.cache.CacheList;
 import com.kitfox.cache.parser.CacheParser;
 import com.kitfox.cache.parser.ParseException;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObject;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -122,7 +122,7 @@ public class RavenStrokeList
         return list;
     }
 
-    public RavenStroke lookupStroke(Integer index, NodeDocument doc)
+    public RavenStroke lookupStroke(Integer index, NodeSymbol doc)
     {
         if (index == null || index.intValue() == 0)
         {
@@ -167,7 +167,7 @@ public class RavenStrokeList
     {
         abstract public CacheIdentifier toCache();
 
-        abstract protected RavenStroke getStroke(NodeDocument doc);
+        abstract protected RavenStroke getStroke(NodeSymbol doc);
     }
 
     public static class StrokeEntryInline extends StrokeEntry
@@ -186,7 +186,7 @@ public class RavenStrokeList
         }
 
         @Override
-        protected RavenStroke getStroke(NodeDocument doc)
+        protected RavenStroke getStroke(NodeSymbol doc)
         {
             return stroke;
         }
@@ -233,7 +233,7 @@ public class RavenStrokeList
         }
 
         @Override
-        protected RavenStroke getStroke(NodeDocument doc)
+        protected RavenStroke getStroke(NodeSymbol doc)
         {
             NodeObject node = doc.getNode(uid);
             return (RavenStroke)node;

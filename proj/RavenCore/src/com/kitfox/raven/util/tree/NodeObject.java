@@ -52,7 +52,7 @@ public class NodeObject
 
     private final int uid;
 
-    private NodeDocument document;
+    private NodeSymbol symbol;
 
     protected String name;
     public static final String PROP_NAME = "name";
@@ -122,30 +122,30 @@ public class NodeObject
     protected void notifyNodePropertyChanged(PropertyChangeEvent evt)
     {
         fireNodePropertyChanged(evt);
-        NodeDocument doc = getDocument();
+        NodeSymbol doc = getSymbol();
         if (doc != null)
         {
-            doc.notifyDocumentPropertyChanged(evt);
+            doc.notifySymbolPropertyChanged(evt);
         }
     }
 
     protected void notifyNodeAdded(ChildWrapperEvent evt)
     {
         fireNodeChildAdded(evt);
-        NodeDocument doc = getDocument();
+        NodeSymbol doc = getSymbol();
         if (doc != null)
         {
-            doc.notifyDocumentNodeChildAdded(evt);
+            doc.notifySymbolNodeChildAdded(evt);
         }
     }
 
     protected void notifyNodeRemoved(ChildWrapperEvent evt)
     {
         fireNodeChildRemoved(evt);
-        NodeDocument doc = getDocument();
+        NodeSymbol doc = getSymbol();
         if (doc != null)
         {
-            doc.notifyDocumentNodeChildRemoved(evt);
+            doc.notifySymbolNodeChildRemoved(evt);
         }
     }
 
@@ -350,22 +350,22 @@ public class NodeObject
     {
         ChildWrapper oldParent = this.parent;
         this.parent = parent;
-        broadcastDocumentChanged(parent == null ? null : parent.node.getDocument());
+        broadcastSymbolChanged(parent == null ? null : parent.node.getSymbol());
         propertyChangeSupport.firePropertyChange(PROP_PARENT, oldParent, parent);
     }
 
-    public NodeDocument getDocument()
+    public NodeSymbol getSymbol()
     {
         //return parent == null ? null : parent.getNode().getDocument();
-        return document;
+        return symbol;
     }
 
-    protected void broadcastDocumentChanged(NodeDocument doc)
+    protected void broadcastSymbolChanged(NodeSymbol doc)
     {
-        this.document = doc;
+        this.symbol = doc;
         for (int i = 0; i < getNumChildWrappers(); ++i)
         {
-            getChildWrapper(i).broadcastDocumentChanged(doc);
+            getChildWrapper(i).broadcastSymbolChanged(doc);
         }
     }
 
@@ -592,7 +592,7 @@ public class NodeObject
         }
     }
 
-    protected void load(NodeDocument doc, NodeObjectType type)
+    protected void load(NodeSymbol doc, NodeObjectType type)
     {
         if (type == null)
         {
@@ -663,7 +663,7 @@ public class NodeObject
 
     protected void doAction(HistoryAction action)
     {
-        NodeDocument doc = getDocument();
+        NodeSymbol doc = getSymbol();
         History hist = doc == null ? null : doc.getHistory();
         if (hist == null)
         {

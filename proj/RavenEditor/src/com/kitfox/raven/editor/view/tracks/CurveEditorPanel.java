@@ -36,7 +36,7 @@ import com.kitfox.raven.util.Selection;
 import com.kitfox.raven.util.SelectionEvent;
 import com.kitfox.raven.util.SelectionListener;
 import com.kitfox.raven.util.SelectionSubEvent;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.PropertyWrapper;
 import com.kitfox.raven.util.tree.Track;
 import com.kitfox.raven.util.tree.TrackCurve;
@@ -196,7 +196,7 @@ public class CurveEditorPanel extends JPanel
 
         for (PropertyWrapper wrap: propertyWrappers)
         {
-            NodeDocument doc = wrap.getNode().getDocument();
+            NodeSymbol doc = wrap.getNode().getSymbol();
 
             TrackCurve curve = wrap.getTrackCurve(track.getUid());
             if (curve == null)
@@ -381,7 +381,7 @@ public class CurveEditorPanel extends JPanel
                 }
 
 //                Curve curve = drawCurves[i];
-                NodeDocument doc = wrap.getNode().getDocument();
+                NodeSymbol doc = wrap.getNode().getSymbol();
                 Path2D path = curve.getCurvePath(doc);
 //                Shape pathDev = path.createTransformedShape(coordToDeviceXform);
                 Shape pathDev = coordToDeviceXform.createTransformedShape(path);
@@ -400,7 +400,7 @@ public class CurveEditorPanel extends JPanel
                 }
 
 //                Curve curve = drawCurves[i];
-                NodeDocument doc = wrap.getNode().getDocument();
+                NodeSymbol doc = wrap.getNode().getSymbol();
                 for (Integer curFrame: (ArrayList<Integer>)curve.getFrames())
                 {
                     double val = curve.getNumericValue(curFrame, doc);
@@ -568,7 +568,7 @@ public class CurveEditorPanel extends JPanel
         Point2D.Double pt = new Point2D.Double();
         for (PropertyWrapper wrap: propertyWrappers)
         {
-            NodeDocument doc = wrap.getNode().getDocument();
+            NodeSymbol doc = wrap.getNode().getSymbol();
             TrackCurve curve = wrap.getTrackCurve(track.getUid());
             for (Integer curFrame: (ArrayList<Integer>)curve.getFrames())
             {
@@ -637,10 +637,10 @@ public class CurveEditorPanel extends JPanel
     }
 
     @Override
-    public NodeDocument getDocument()
+    public NodeSymbol getDocument()
     {
         RavenDocument doc = editor.getDocument();
-        return doc == null ? null : doc.getCurDocument();
+        return doc == null ? null : doc.getCurSymbol();
     }
 
     @Override
@@ -842,7 +842,7 @@ public class CurveEditorPanel extends JPanel
                         int prevFrame = curve.getPrevKeyFrame(comp.getFrame());
                         if (prevFrame != Integer.MIN_VALUE)
                         {
-                            NodeDocument doc = wrap.getNode().getDocument();
+                            NodeSymbol doc = wrap.getNode().getSymbol();
                             tanInX = curFrame - prevFrame;
                             tanInY = curve.getNumericValue(curFrame, doc)
                                     - curve.getNumericValue(prevFrame, doc);
@@ -852,7 +852,7 @@ public class CurveEditorPanel extends JPanel
 
                         if (nextFrame != Integer.MAX_VALUE)
                         {
-                            NodeDocument doc = wrap.getNode().getDocument();
+                            NodeSymbol doc = wrap.getNode().getSymbol();
                             tanOutX = nextFrame - curFrame;
                             tanOutY = curve.getNumericValue(nextFrame, doc)
                                     - curve.getNumericValue(curFrame, doc);

@@ -25,7 +25,6 @@ import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.renderer.CyDrawStack;
 import com.kitfox.coyote.renderer.CyRendererListener;
 import com.kitfox.coyote.renderer.jogl.CoyotePanel;
-import com.kitfox.coyote.renderer.jogl.CyGLWrapperJOGL;
 import com.kitfox.raven.editor.RavenDocument;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.RavenEditorListener;
@@ -45,9 +44,9 @@ import com.kitfox.raven.editor.node.tools.common.ServiceDeviceCamera;
 import com.kitfox.raven.editor.node.tools.common.ServiceEditor;
 import com.kitfox.raven.editor.node.tools.common.ServicePen;
 import com.kitfox.raven.util.tree.ChildWrapperEvent;
-import com.kitfox.raven.util.tree.NodeDocument;
-import com.kitfox.raven.util.tree.NodeDocumentListener;
-import com.kitfox.raven.util.tree.NodeDocumentWeakListener;
+import com.kitfox.raven.util.tree.NodeSymbol;
+import com.kitfox.raven.util.tree.NodeSymbolListener;
+import com.kitfox.raven.util.tree.NodeSymbolWeakListener;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -66,7 +65,7 @@ import jpen.PenManager;
  * @author kitfox
  */
 public class DisplayCyPanel extends CoyotePanel
-        implements RavenEditorListener, NodeDocumentListener,
+        implements RavenEditorListener, NodeSymbolListener,
         ToolUser, ToolPaletteListener,
         ServiceDevice, ServiceDeviceCamera, ToolListener, ServicePen,
         ServiceEditor,
@@ -74,7 +73,7 @@ public class DisplayCyPanel extends CoyotePanel
 {
     final RavenEditor editor;
     RavenEditorWeakListener listenerEditor;
-    NodeDocumentWeakListener listenerDoc;
+    NodeSymbolWeakListener listenerDoc;
     ToolPaletteWeakListener listenerTool;
 
     Tool tool;
@@ -112,8 +111,8 @@ public class DisplayCyPanel extends CoyotePanel
 
         if (doc != null)
         {
-            listenerDoc = new NodeDocumentWeakListener(this, doc.getCurDocument());
-            doc.getCurDocument().addNodeDocumentListener(listenerDoc);
+            listenerDoc = new NodeSymbolWeakListener(this, doc.getCurSymbol());
+            doc.getCurSymbol().addNodeSymbolListener(listenerDoc);
         }
 
         repaint();
@@ -165,7 +164,7 @@ public class DisplayCyPanel extends CoyotePanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            return doc.getCurDocument().getNodeService(serviceClass, false);
+            return doc.getCurSymbol().getNodeService(serviceClass, false);
         }
 
         return null;
@@ -183,7 +182,7 @@ public class DisplayCyPanel extends CoyotePanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            doc.getCurDocument().getNodeServices(serviceClass, appendList, false);
+            doc.getCurSymbol().getNodeServices(serviceClass, appendList, false);
         }
     }
 
@@ -199,22 +198,22 @@ public class DisplayCyPanel extends CoyotePanel
     }
 
     @Override
-    public void documentNameChanged(PropertyChangeEvent evt)
+    public void symbolNameChanged(PropertyChangeEvent evt)
     {
     }
 
     @Override
-    public void documentPropertyChanged(PropertyChangeEvent evt)
+    public void symbolPropertyChanged(PropertyChangeEvent evt)
     {
     }
 
     @Override
-    public void documentNodeChildAdded(ChildWrapperEvent evt)
+    public void symbolNodeChildAdded(ChildWrapperEvent evt)
     {
     }
 
     @Override
-    public void documentNodeChildRemoved(ChildWrapperEvent evt)
+    public void symbolNodeChildRemoved(ChildWrapperEvent evt)
     {
     }
 
@@ -241,7 +240,7 @@ public class DisplayCyPanel extends CoyotePanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeDocument root = doc.getCurDocument();
+            NodeSymbol root = doc.getCurSymbol();
             ServiceDeviceCamera service = root.getNodeService(ServiceDeviceCamera.class, false);
             return service.getWorldToDeviceTransform(xform);
         }
@@ -257,7 +256,7 @@ public class DisplayCyPanel extends CoyotePanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeDocument root = doc.getCurDocument();
+            NodeSymbol root = doc.getCurSymbol();
             ServiceDeviceCamera service = root.getNodeService(ServiceDeviceCamera.class, false);
             service.setWorldToDeviceTransform(xform);
         }
@@ -274,7 +273,7 @@ public class DisplayCyPanel extends CoyotePanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeDocument root = doc.getCurDocument();
+            NodeSymbol root = doc.getCurSymbol();
             ServiceDeviceCamera service = root.getNodeService(ServiceDeviceCamera.class, false);
             return service.getWorldToDeviceTransform(xform);
         }
@@ -289,7 +288,7 @@ public class DisplayCyPanel extends CoyotePanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeDocument root = doc.getCurDocument();
+            NodeSymbol root = doc.getCurSymbol();
             ServiceDeviceCamera service = root.getNodeService(ServiceDeviceCamera.class, false);
             service.setWorldToDeviceTransform(xform);
         }
@@ -329,7 +328,7 @@ public class DisplayCyPanel extends CoyotePanel
 //        FrameKey.DIRECT;
         RenderContext ctx = new RenderContext(rend, FrameKey.DIRECT, true);
 
-        CyRenderService serv = doc.getCurDocument().getNodeService(CyRenderService.class, false);
+        CyRenderService serv = doc.getCurSymbol().getNodeService(CyRenderService.class, false);
         if (serv != null)
         {
             serv.renderEditor(ctx);

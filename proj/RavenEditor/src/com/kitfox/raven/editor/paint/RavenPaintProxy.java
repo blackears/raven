@@ -22,7 +22,7 @@ import com.kitfox.cache.CacheList;
 import com.kitfox.raven.editor.node.scene.RavenNodePaint;
 import com.kitfox.raven.util.planeData.PlaneDataProvider;
 import com.kitfox.raven.util.service.ServiceInst;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 
 /**
  *
@@ -62,7 +62,7 @@ public class RavenPaintProxy
         return new RavenPaintProxy((RavenPaintInline)value);
     }
 
-    public RavenPaint getPaint(NodeDocument doc)
+    public RavenPaint getPaint(NodeSymbol doc)
     {
         if (inlinePaint != null)
         {
@@ -72,7 +72,7 @@ public class RavenPaintProxy
         return (RavenPaint)doc.getNode(refUid);
     }
 
-    public RavenPaintInline getPaintInline(NodeDocument doc)
+    public RavenPaintInline getPaintInline(NodeSymbol doc)
     {
         if (inlinePaint != null)
         {

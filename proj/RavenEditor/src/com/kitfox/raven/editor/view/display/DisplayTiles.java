@@ -19,8 +19,8 @@ package com.kitfox.raven.editor.view.display;
 import com.kitfox.raven.editor.node.renderer.RavenRenderer;
 import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
 import com.kitfox.raven.util.tree.ChildWrapperEvent;
-import com.kitfox.raven.util.tree.NodeDocumentListener;
-import com.kitfox.raven.util.tree.NodeDocumentWeakListener;
+import com.kitfox.raven.util.tree.NodeSymbolListener;
+import com.kitfox.raven.util.tree.NodeSymbolWeakListener;
 import java.awt.GraphicsConfiguration;
 import java.awt.Rectangle;
 import java.awt.Transparency;
@@ -39,14 +39,14 @@ import java.util.HashMap;
  * @author kitfox
  */
 @Deprecated
-public class DisplayTiles implements NodeDocumentListener
+public class DisplayTiles implements NodeSymbolListener
 {
     public static final int TILE_SIZE = 256;
 
     final GraphicsConfiguration gc;
     private Rectangle deviceBounds;
     private RavenNodeRoot scene;
-    NodeDocumentWeakListener listenerScene;
+    NodeSymbolWeakListener listenerScene;
 
     HashMap<WeakReference<Tile>, BufferedImage> tilePool
             = new HashMap<WeakReference<Tile>, BufferedImage>();
@@ -194,8 +194,8 @@ public class DisplayTiles implements NodeDocumentListener
 
         if (this.scene != null)
         {
-            listenerScene = new NodeDocumentWeakListener(this, scene);
-            scene.addNodeDocumentListener(listenerScene);
+            listenerScene = new NodeSymbolWeakListener(this, scene);
+            scene.addNodeSymbolListener(listenerScene);
         }
 
         reallocTiles();
@@ -207,24 +207,24 @@ public class DisplayTiles implements NodeDocumentListener
     }
 
     @Override
-    public void documentNameChanged(PropertyChangeEvent evt)
+    public void symbolNameChanged(PropertyChangeEvent evt)
     {
     }
 
     @Override
-    public void documentPropertyChanged(PropertyChangeEvent evt)
-    {
-        setAllTilesDirty();
-    }
-
-    @Override
-    public void documentNodeChildAdded(ChildWrapperEvent evt)
+    public void symbolPropertyChanged(PropertyChangeEvent evt)
     {
         setAllTilesDirty();
     }
 
     @Override
-    public void documentNodeChildRemoved(ChildWrapperEvent evt)
+    public void symbolNodeChildAdded(ChildWrapperEvent evt)
+    {
+        setAllTilesDirty();
+    }
+
+    @Override
+    public void symbolNodeChildRemoved(ChildWrapperEvent evt)
     {
         setAllTilesDirty();
     }

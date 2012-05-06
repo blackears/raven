@@ -18,7 +18,7 @@ package com.kitfox.raven.editor.node.tools.common;
 
 import com.kitfox.raven.editor.node.tools.ToolService;
 import com.kitfox.raven.util.Selection;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.PropertyWrapper;
 import com.kitfox.raven.util.tree.Track;
 import com.kitfox.raven.util.tree.TrackCurveComponent;
@@ -39,7 +39,7 @@ public interface ServiceControlPointEditor extends ToolService
 
     public Track getTrack();
 
-    public NodeDocument getDocument();
+    public NodeSymbol getDocument();
 
     public ArrayList<PropertyWrapper> getEditableProperties();
 

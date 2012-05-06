@@ -52,7 +52,7 @@ public class RavenDocumentWeakListener implements RavenDocumentListener
     }
 
     @Override
-    public void documentAdded(RavenDocumentEvent evt)
+    public void symbolAdded(RavenDocumentEvent evt)
     {
         RavenDocumentListener l = ref.get();
         if (l == null)
@@ -60,11 +60,11 @@ public class RavenDocumentWeakListener implements RavenDocumentListener
             remove();
             return;
         }
-        l.documentAdded(evt);
+        l.symbolAdded(evt);
     }
 
     @Override
-    public void documentRemoved(RavenDocumentEvent evt)
+    public void symbolRemoved(RavenDocumentEvent evt)
     {
         RavenDocumentListener l = ref.get();
         if (l == null)
@@ -72,11 +72,11 @@ public class RavenDocumentWeakListener implements RavenDocumentListener
             remove();
             return;
         }
-        l.documentRemoved(evt);
+        l.symbolRemoved(evt);
     }
 
     @Override
-    public void currentDocumentChanged(RavenDocumentEvent evt)
+    public void currentSymbolChanged(RavenDocumentEvent evt)
     {
         RavenDocumentListener l = ref.get();
         if (l == null)
@@ -84,7 +84,7 @@ public class RavenDocumentWeakListener implements RavenDocumentListener
             remove();
             return;
         }
-        l.currentDocumentChanged(evt);
+        l.currentSymbolChanged(evt);
     }
     
 }

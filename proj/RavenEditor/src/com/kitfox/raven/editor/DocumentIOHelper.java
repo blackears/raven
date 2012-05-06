@@ -18,7 +18,7 @@ package com.kitfox.raven.editor;
 
 import com.kitfox.raven.util.RavenSwingUtil;
 import com.kitfox.raven.util.FileFilterSuffix;
-import com.kitfox.raven.util.tree.NodeDocument;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.wizard.RavenWizardDialog;
 import java.io.File;
 import java.io.IOException;
@@ -49,13 +49,13 @@ public class DocumentIOHelper
 
     public void newFile()
     {
-        NewDocumentWizard wiz = new NewDocumentWizard(viewManager.getEditor());
+        NewSymbolWizard wiz = new NewSymbolWizard(viewManager.getEditor());
 
         RavenWizardDialog dlg = new RavenWizardDialog(viewManager.getSwingRoot(), wiz);
         RavenSwingUtil.centerWindow(dlg);
         dlg.setVisible(true);
 
-        NodeDocument root = dlg.getNodeDocument();
+        NodeSymbol root = dlg.getNodeDocument();
 
         if (root == null)
         {
