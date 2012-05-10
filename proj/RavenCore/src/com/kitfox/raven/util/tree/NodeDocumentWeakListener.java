@@ -22,15 +22,15 @@ import java.lang.ref.WeakReference;
  *
  * @author kitfox
  */
-public class NodeDocument2WeakListener implements NodeDocument2Listener
+public class NodeDocumentWeakListener implements NodeDocumentListener
 {
-    final WeakReference<NodeDocument2Listener> ref;
-    final NodeDocument2 src;
+    final WeakReference<NodeDocumentListener> ref;
+    final NodeDocument src;
 
-    public NodeDocument2WeakListener(NodeDocument2Listener listener, 
-            NodeDocument2 src)
+    public NodeDocumentWeakListener(NodeDocumentListener listener, 
+            NodeDocument src)
     {
-        this.ref = new WeakReference<NodeDocument2Listener>(listener);
+        this.ref = new WeakReference<NodeDocumentListener>(listener);
         this.src = src;
     }
 
@@ -40,9 +40,9 @@ public class NodeDocument2WeakListener implements NodeDocument2Listener
     }
 
     @Override
-    public void symbolAdded(NodeDocument2Event evt)
+    public void symbolAdded(NodeDocumentEvent evt)
     {
-        NodeDocument2Listener l = ref.get();
+        NodeDocumentListener l = ref.get();
         if (l == null)
         {
             remove();
@@ -52,9 +52,9 @@ public class NodeDocument2WeakListener implements NodeDocument2Listener
     }
 
     @Override
-    public void symbolRemoved(NodeDocument2Event evt)
+    public void symbolRemoved(NodeDocumentEvent evt)
     {
-        NodeDocument2Listener l = ref.get();
+        NodeDocumentListener l = ref.get();
         if (l == null)
         {
             remove();
@@ -64,9 +64,9 @@ public class NodeDocument2WeakListener implements NodeDocument2Listener
     }
 
     @Override
-    public void currentSymbolChanged(NodeDocument2Event evt)
+    public void currentSymbolChanged(NodeDocumentEvent evt)
     {
-        NodeDocument2Listener l = ref.get();
+        NodeDocumentListener l = ref.get();
         if (l == null)
         {
             remove();

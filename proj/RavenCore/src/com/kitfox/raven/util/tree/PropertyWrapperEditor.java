@@ -188,8 +188,8 @@ abstract public class PropertyWrapperEditor<PropType>
 
     protected void setKey(TrackKey.Interp interp)
     {
-        NodeSymbol doc = wrapper.getNode().getSymbol();
-        TrackLibrary trackLib = doc.getTrackLibrary();
+        NodeSymbol sym = wrapper.getNode().getSymbol();
+        TrackLibrary trackLib = sym.getRoot().getTrackLibrary();
         Track track = trackLib.getCurTrack();
         if (track == null)
         {
@@ -202,8 +202,8 @@ abstract public class PropertyWrapperEditor<PropType>
 
     protected void removeKey()
     {
-        NodeSymbol doc = wrapper.getNode().getSymbol();
-        TrackLibrary trackLib = doc.getTrackLibrary();
+        NodeSymbol sym = wrapper.getNode().getSymbol();
+        TrackLibrary trackLib = sym.getRoot().getTrackLibrary();
         Track track = trackLib.getCurTrack();
         if (track == null)
         {

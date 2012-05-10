@@ -20,7 +20,7 @@ import com.kitfox.raven.editor.RavenDocument;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.RavenEditorListener;
 import com.kitfox.raven.editor.RavenEditorWeakListener;
-import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 import com.kitfox.raven.editor.node.tools.common.ServiceColors2D;
 import com.kitfox.raven.editor.view.properties.PropertyCustomEditorPanel;
 import com.kitfox.raven.paint.RavenPaint;
@@ -102,8 +102,9 @@ public class ColorPanel extends javax.swing.JPanel
             return;
         }
 
-        NodeSymbol root = doc.getCurSymbol();
-        ServiceColors2D service = root.getNodeService(ServiceColors2D.class, false);
+        NodeSymbol sym = doc.getCurSymbol();
+        ServiceColors2D service = 
+                sym.getRoot().getNodeService(ServiceColors2D.class, false);
 
         if (service != null)
         {
@@ -136,11 +137,11 @@ public class ColorPanel extends javax.swing.JPanel
             return;
         }
 
-        NodeSymbol root = doc.getCurSymbol();
-        ServiceColors2D service = root.getNodeService(ServiceColors2D.class, false);
+        NodeSymbol sym = doc.getCurSymbol();
+        ServiceColors2D service = sym.getRoot().getNodeService(ServiceColors2D.class, false);
 
         PropertyData<RavenStroke> data = service.getStrokeStyleProp().getData();
-        previewStrokeStyle.setStroke(data.getValue(root));
+        previewStrokeStyle.setStroke(data.getValue(sym));
     }
 
     private void updateStrokePaint()
@@ -151,11 +152,11 @@ public class ColorPanel extends javax.swing.JPanel
             return;
         }
 
-        NodeSymbol root = doc.getCurSymbol();
-        ServiceColors2D service = root.getNodeService(ServiceColors2D.class, false);
+        NodeSymbol sym = doc.getCurSymbol();
+        ServiceColors2D service = sym.getRoot().getNodeService(ServiceColors2D.class, false);
 
         PropertyData<RavenPaint> data = service.getStrokePaintProp().getData();
-        previewStrokePaint.setPaint(data.getValue(root));
+        previewStrokePaint.setPaint(data.getValue(sym));
     }
 
     private void updateFillPaint()
@@ -166,11 +167,11 @@ public class ColorPanel extends javax.swing.JPanel
             return;
         }
 
-        NodeSymbol root = doc.getCurSymbol();
-        ServiceColors2D service = root.getNodeService(ServiceColors2D.class, false);
+        NodeSymbol sym = doc.getCurSymbol();
+        ServiceColors2D service = sym.getRoot().getNodeService(ServiceColors2D.class, false);
 
         PropertyData<RavenPaint> data = service.getFillPaintProp().getData();
-        previewFillPaint.setPaint(data.getValue(root));
+        previewFillPaint.setPaint(data.getValue(sym));
     }
 
     /**
@@ -262,8 +263,8 @@ public class ColorPanel extends javax.swing.JPanel
                 return;
             }
             
-            NodeSymbol root = doc.getCurSymbol();
-            ServiceColors2D service = root.getNodeService(ServiceColors2D.class, false);
+            NodeSymbol sym = doc.getCurSymbol();
+            ServiceColors2D service = sym.getRoot().getNodeService(ServiceColors2D.class, false);
             PropertyWrapper wrapper = service.getStrokeStyleProp();
             
             RavenStrokeEditor editor = new RavenStrokeEditor(wrapper);
@@ -282,8 +283,8 @@ public class ColorPanel extends javax.swing.JPanel
                 return;
             }
             
-            NodeSymbol root = doc.getCurSymbol();
-            ServiceColors2D service = root.getNodeService(ServiceColors2D.class, false);
+            NodeSymbol sym = doc.getCurSymbol();
+            ServiceColors2D service = sym.getRoot().getNodeService(ServiceColors2D.class, false);
             PropertyWrapper wrapper = service.getStrokePaintProp();
             
             RavenPaintEditor editor = new RavenPaintEditor(wrapper);
@@ -302,8 +303,8 @@ public class ColorPanel extends javax.swing.JPanel
                 return;
             }
             
-            NodeSymbol root = doc.getCurSymbol();
-            ServiceColors2D service = root.getNodeService(ServiceColors2D.class, false);
+            NodeSymbol sym = doc.getCurSymbol();
+            ServiceColors2D service = sym.getRoot().getNodeService(ServiceColors2D.class, false);
             PropertyWrapper wrapper = service.getFillPaintProp();
             
             RavenPaintEditor editor = new RavenPaintEditor(wrapper);
@@ -314,10 +315,10 @@ public class ColorPanel extends javax.swing.JPanel
     
     class StrokeStyleMonitor extends PropertyWrapperAdapter
     {
-        final PropertyWrapper<RavenNodeRoot, RavenStroke> source;
+        final PropertyWrapper<RavenSymbolRoot, RavenStroke> source;
         PropertyWrapperWeakListener listener;
 
-        public StrokeStyleMonitor(PropertyWrapper<RavenNodeRoot, RavenStroke> source)
+        public StrokeStyleMonitor(PropertyWrapper<RavenSymbolRoot, RavenStroke> source)
         {
             this.source = source;
             listener = new PropertyWrapperWeakListener(this, source);
@@ -339,10 +340,10 @@ public class ColorPanel extends javax.swing.JPanel
 
     class StrokePaintMonitor extends PropertyWrapperAdapter
     {
-        final PropertyWrapper<RavenNodeRoot, RavenPaint> source;
+        final PropertyWrapper<RavenSymbolRoot, RavenPaint> source;
         PropertyWrapperWeakListener listener;
 
-        public StrokePaintMonitor(PropertyWrapper<RavenNodeRoot, RavenPaint> source)
+        public StrokePaintMonitor(PropertyWrapper<RavenSymbolRoot, RavenPaint> source)
         {
             this.source = source;
             listener = new PropertyWrapperWeakListener(this, source);
@@ -364,10 +365,10 @@ public class ColorPanel extends javax.swing.JPanel
 
     class FillPaintMonitor extends PropertyWrapperAdapter
     {
-        final PropertyWrapper<RavenNodeRoot, RavenPaint> source;
+        final PropertyWrapper<RavenSymbolRoot, RavenPaint> source;
         PropertyWrapperWeakListener listener;
 
-        public FillPaintMonitor(PropertyWrapper<RavenNodeRoot, RavenPaint> source)
+        public FillPaintMonitor(PropertyWrapper<RavenSymbolRoot, RavenPaint> source)
         {
             this.source = source;
             listener = new PropertyWrapperWeakListener(this, source);

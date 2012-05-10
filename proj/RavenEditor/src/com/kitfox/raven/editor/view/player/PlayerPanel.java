@@ -155,7 +155,7 @@ public class PlayerPanel extends javax.swing.JPanel
         if (doc != null)
         {
             NodeSymbol root = doc.getCurSymbol();
-            TrackLibrary trackLib = root.getTrackLibrary();
+            TrackLibrary trackLib = root.getRoot().getTrackLibrary();
             trackLibManager = new TrackLibManager(trackLib);
 
             listenerTrackLibFrame = new PropertyWrapperWeakListener(this, trackLib.curFrame);
@@ -197,7 +197,7 @@ public class PlayerPanel extends javax.swing.JPanel
         }
 
 
-        TrackLibrary trackLib = doc.getCurSymbol().getTrackLibrary();
+        TrackLibrary trackLib = doc.getCurSymbol().getRoot().getTrackLibrary();
         text_curFrame.setText("" + trackLib.curFrame.getValue());
         text_fps.setText("" + trackLib.fps.getValue());
         check_loop.setSelected(trackLib.loop.getValue());
@@ -424,9 +424,9 @@ public class PlayerPanel extends javax.swing.JPanel
         int frameStart = track.frameStart.getValue();
         int curFrame = lib.curFrame.getValue();
 
-        NodeSymbol doc = lib.getSymbol();
+        NodeSymbol sym = lib.getSymbol();
         int newFrame = Math.max(frameStart,
-                doc.getPrevKeyFrame(curFrame, track.getUid()));
+                sym.getRoot().getPrevKeyFrame(curFrame, track.getUid()));
 
         lib.curFrame.setValue(newFrame, false);
     }
@@ -443,9 +443,9 @@ public class PlayerPanel extends javax.swing.JPanel
         int frameEnd = track.frameEnd.getValue();
         int curFrame = lib.curFrame.getValue();
 
-        NodeSymbol doc = lib.getSymbol();
+        NodeSymbol sym = lib.getSymbol();
         int newFrame = Math.min(frameEnd,
-                doc.getNextKeyFrame(curFrame, track.getUid()));
+                sym.getRoot().getNextKeyFrame(curFrame, track.getUid()));
 
         lib.curFrame.setValue(newFrame, false);
     }

@@ -78,12 +78,12 @@ public class MovieExporterContext
     private static final String PROP_SEQ_FORMAT = "seqFormat";
     private String seqFormat;
     
-    private NodeSymbol doc;
+    private NodeSymbol sym;
     private PropertiesData pref;
     
     public MovieExporterContext(NodeSymbol doc, Properties preferences)
     {
-        this.doc = doc;
+        this.sym = doc;
         this.pref = new PropertiesData(preferences);
         
         format = pref.getEnum(PROP_FORMAT, MovieExporterFormat.FRAMES);
@@ -151,7 +151,7 @@ public class MovieExporterContext
         final File fileDir = new File(framesDir);
         if (!fileDir.isDirectory() || !fileDir.canWrite())
         {
-            JOptionPane.showMessageDialog(doc.getDocument().getEnv().getSwingRoot(),
+            JOptionPane.showMessageDialog(sym.getDocument().getEnv().getSwingRoot(),
                 "Cannot write to " + fileDir, 
                 "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -159,8 +159,8 @@ public class MovieExporterContext
 
         MovieCapture capture = new MovieCapture(composition);
         
-        int trackFrame = doc.getTrackLibrary().getCurFrame();
-        int trackUid = doc.getTrackLibrary().getCurTrackUid();
+        int trackFrame = sym.getRoot().getTrackLibrary().getCurFrame();
+        int trackUid = sym.getRoot().getTrackLibrary().getCurTrackUid();
         
         int fBegin = frameCur ? trackFrame : frameStart;
         int fEnd = frameCur ? trackFrame : frameEnd;
@@ -241,9 +241,9 @@ public class MovieExporterContext
     /**
      * @return the doc
      */
-    public NodeSymbol getDoc()
+    public NodeSymbol getSymbol()
     {
-        return doc;
+        return sym;
     }
 
     /**
@@ -251,7 +251,7 @@ public class MovieExporterContext
      */
     public void setDoc(NodeSymbol doc)
     {
-        this.doc = doc;
+        this.sym = doc;
     }
 
     /**

@@ -42,7 +42,7 @@ public class OutlinerTreeModel implements TreeModel
     public OutlinerTreeModel(NodeSymbol rootNode)
     {
         this.document = rootNode;
-        this.root = new OutlinerNodeNodeFixed(this, null, rootNode);
+        this.root = new OutlinerNodeNodeFixed(this, null, rootNode.getRoot());
     }
 
     public void addOutlinerTreeModelListener(OutlinerTreeModelListener l)

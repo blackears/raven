@@ -17,9 +17,8 @@
 package com.kitfox.raven.swf.importer;
 
 import com.kitfox.raven.editor.RavenDocument;
-import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.node.scene.RavenNodeMesh2;
-import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenSymbol;
 import com.kitfox.raven.swf.importer.timeline.CharacterDictionary;
 import com.kitfox.raven.swf.importer.timeline.CharacterShape;
 import com.kitfox.raven.swf.importer.timeline.CharacterSprite;
@@ -30,6 +29,8 @@ import com.kitfox.raven.swf.importer.timeline.SWFTimelineBuilder;
 import com.kitfox.raven.swf.importer.timeline.SWFTimelineTrack;
 import com.kitfox.raven.swf.importer.timeline.SWFTrackEvent;
 import com.kitfox.raven.util.tree.NodeObjectProviderIndex;
+import com.kitfox.raven.util.tree.NodeSymbolProvider;
+import com.kitfox.raven.util.tree.NodeSymbolProviderIndex;
 import com.kitfox.raven.util.tree.PropertyDataInline;
 import com.kitfox.raven.util.tree.PropertyDataReference;
 import com.kitfox.raven.util.tree.Track;
@@ -48,8 +49,8 @@ import java.util.HashMap;
 public class ImportSWFBuilder2
 {
     RavenDocument doc;
-    HashMap<Integer, RavenNodeRoot> symbolMap = 
-            new HashMap<Integer, RavenNodeRoot>();
+    HashMap<Integer, RavenSymbol> symbolMap = 
+            new HashMap<Integer, RavenSymbol>();
 
     SWFTimelineBuilder builder;
     
@@ -76,33 +77,35 @@ public class ImportSWFBuilder2
         }
         
         //Build root timeline
-        RavenNodeRoot sym = (RavenNodeRoot)doc.getCurSymbol();
-        importTimeline((RavenNodeRoot)sym.getSymbol(), builder.getTimeline());
+        RavenSymbol sym = (RavenSymbol)doc.getCurSymbol();
+        importTimeline(sym, builder.getTimeline());
 
         hist.commitTransaction();
         
 //        RavenEditor.inst().getPlayer().getPlayState()
-        TrackLibrary trackLib = doc.getCurSymbol().getTrackLibrary();
+        TrackLibrary trackLib = doc.getCurSymbol().getRoot().getTrackLibrary();
         trackLib.synchDocumentToFrame();
     }
 
     private void importSprite(CharacterSprite sprite)
     {
-        RavenNodeRoot sym = RavenNodeRoot.create(null);
-
+        NodeSymbolProvider<RavenSymbol> prov = 
+                NodeSymbolProviderIndex.inst().getProvider(RavenSymbol.class);
+        RavenSymbol sym = prov.create(doc);
+        
         String newName = doc.getUnusedSymbolName("swfSymbol");
-        sym.setSymbolName(newName);
+        sym.setName(newName);
         doc.addSymbol(sym);
 
         symbolMap.put(sprite.getId(), sym);
-        importTimeline((RavenNodeRoot)sym.getSymbol(), sprite.getTimeline());
+        importTimeline(sym, sprite.getTimeline());
     }
 
-    private void importTimeline(RavenNodeRoot root, SWFTimeline timeline)
+    private void importTimeline(RavenSymbol sym, SWFTimeline timeline)
     {
-        TrackLibrary trackLib = root.getTrackLibrary();
-        Track track = NodeObjectProviderIndex.inst().createNode(Track.class, root);
-        String name = root.createUniqueName("swfTrack");
+        TrackLibrary trackLib = sym.getRoot().getTrackLibrary();
+        Track track = NodeObjectProviderIndex.inst().createNode(Track.class, sym);
+        String name = sym.createUniqueName("swfTrack");
         track.setName(name);
         trackLib.tracks.add(track);
         
@@ -112,7 +115,7 @@ public class ImportSWFBuilder2
         {
             if (containsShapes(timeTrack))
             {
-                addShapeTrack(root, track, timeTrack);
+                addShapeTrack(sym, track, timeTrack);
             }
             if (containsSprites(timeTrack))
             {
@@ -161,11 +164,11 @@ public class ImportSWFBuilder2
         return false;
     }
 
-    private void addShapeTrack(RavenNodeRoot root, Track track, SWFTimelineTrack timeTrack)
+    private void addShapeTrack(RavenSymbol sym, Track track, SWFTimelineTrack timeTrack)
     {
         RavenNodeMesh2 mesh = NodeObjectProviderIndex.inst().createNode(
-                RavenNodeMesh2.class, root);
-        mesh.setName(root.createUniqueName("mesh"));
+                RavenNodeMesh2.class, sym);
+        mesh.setName(sym.createUniqueName("mesh"));
         
         CharacterDictionary dict = builder.getDictionary();
         CharacterShape prevShape = null;
@@ -233,7 +236,7 @@ public class ImportSWFBuilder2
             }
         }
         
-        root.getSceneGraph().add(mesh);
+        sym.getRoot().getSceneGraph().add(mesh);
 //        return mesh;
     }
     

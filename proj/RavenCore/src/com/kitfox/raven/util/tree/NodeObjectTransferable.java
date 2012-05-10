@@ -18,7 +18,7 @@ package com.kitfox.raven.util.tree;
 
 import com.kitfox.raven.util.JAXBUtil;
 import com.kitfox.xml.schema.ravendocumentschema.ObjectFactory;
-import com.kitfox.xml.schema.ravendocumentschema.RavenTransferableType;
+import com.kitfox.xml.schema.ravendocumentschema.NodeTransferableType;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -36,7 +36,7 @@ public class NodeObjectTransferable implements Transferable
     private String textDefs;
 
     public static final DataFlavor FLAVOR =
-            new DataFlavor(RavenTransferableType.class, null);
+            new DataFlavor(NodeTransferableType.class, null);
 
     public NodeObjectTransferable()
     {
@@ -47,36 +47,17 @@ public class NodeObjectTransferable implements Transferable
         textDefs = text;
     }
 
-    public NodeObjectTransferable(RavenTransferableType xfer)
+    public NodeObjectTransferable(NodeTransferableType xfer)
     {
-        String text = null;
+        ObjectFactory fact = new ObjectFactory();
 
-//        try {
-            //Output
-//            JAXBContext context = JAXBContext.newInstance(
-//                    RavenTransferableType.class.getPackage().getName(),
-//                    RavenTransferableType.class.getClassLoader());
-//
-//            Marshaller marshaller = context.createMarshaller();
-//            marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-//            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        JAXBElement<NodeTransferableType> value = 
+                fact.createNodeTransferable(xfer);
 
-            ObjectFactory fact = new ObjectFactory();
+        StringWriter sw = new StringWriter();
+        JAXBUtil.saveJAXB(value, sw);
 
-            JAXBElement<RavenTransferableType> value = fact.createRavenTransferable(xfer);
-
-            StringWriter sw = new StringWriter();
-            JAXBUtil.saveJAXB(value, sw);
-//            marshaller.marshal(value, sw);
-
-            text = sw.toString();
-
-
-//        } catch (JAXBException ex) {
-//            Logger.getLogger(NodeObjectTransferable.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-
-        textDefs = text;
+        textDefs = sw.toString();
     }
 
     @Override
@@ -111,23 +92,7 @@ public class NodeObjectTransferable implements Transferable
         if (FLAVOR.equals(flavor))
         {
             StringReader reader = new StringReader(textDefs);
-            return JAXBUtil.loadJAXB(RavenTransferableType.class, reader);
-            
-//            try {
-//                JAXBContext context = JAXBContext.newInstance(
-//                        RavenTransferableType.class.getPackage().getName(),
-//                        RavenTransferableType.class.getClassLoader());
-//                StringReader reader = new StringReader(textDefs);
-//                StreamSource source = new StreamSource(reader);
-//                Unmarshaller unmarshaller = context.createUnmarshaller();
-//
-//                JAXBElement<RavenTransferableType> ele = unmarshaller.unmarshal(
-//                        source, RavenTransferableType.class);
-//
-//                return ele.getValue();
-//            } catch (JAXBException ex) {
-//                Logger.getLogger(NodeObjectTransferable.class.getName()).log(Level.SEVERE, null, ex);
-//            }
+            return JAXBUtil.loadJAXB(NodeTransferableType.class, reader);
         }
         
         return null;

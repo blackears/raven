@@ -19,7 +19,7 @@ package com.kitfox.raven.editor.node.tools.common.shape.layout;
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.renderer.CyDrawStack;
 import com.kitfox.coyote.shape.CyRectangle2d;
-import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 import com.kitfox.raven.editor.node.scene.RenderContext;
 import com.kitfox.raven.editor.node.tools.common.shape.pen.ServiceBezierMesh;
 import com.kitfox.raven.editor.node.tools.common.shape.MeshUtil;
@@ -178,7 +178,7 @@ public class ToolPaintLayoutMesh extends ToolPaintLayoutDelegate
     @Override
     protected void click(MouseEvent evt)
     {
-        RavenNodeRoot root = getDocument();
+        RavenSymbolRoot root = getDocument();
         if (root == null)
         {
             return;

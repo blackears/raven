@@ -19,7 +19,7 @@ package com.kitfox.raven.editor.node.tools.common.shape;
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.raven.editor.RavenEditor;
-import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 import com.kitfox.raven.editor.node.scene.RavenNodeXformable;
 import com.kitfox.raven.editor.node.tools.ToolProvider;
 import com.kitfox.raven.editor.node.tools.ToolUser;
@@ -83,7 +83,7 @@ public class ToolPaintFlood extends ToolDisplay
         CyMatrix4d l2d = getWorldToDevice(null);
         l2d.mul(l2w);
         
-        RavenNodeRoot doc = getDocument();
+        RavenSymbolRoot doc = getDocument();
 //        GraphLayout graphLayout = doc.getGraphLayout();
         float pickRad = doc == null ? 1 : doc.getGraphRadiusPick();
         
@@ -200,7 +200,7 @@ public class ToolPaintFlood extends ToolDisplay
         }
         
         //Flood
-        RavenNodeRoot doc = getDocument();
+        RavenSymbolRoot doc = getDocument();
 //        History hist = doc.getHistory();
         
         if (toolProvider.isStrokePaint() && toolProvider.isStrokeShape())
@@ -257,7 +257,7 @@ public class ToolPaintFlood extends ToolDisplay
         }
         
         //Flood
-        RavenNodeRoot doc = getDocument();
+        RavenSymbolRoot doc = getDocument();
         if (toolProvider.isFacePaint())
         {
             RavenPaint paint = doc.getFillPaint();

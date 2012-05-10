@@ -36,7 +36,7 @@ import com.kitfox.coyote.shape.bezier.mesh.BezierMeshVertex2i;
 import com.kitfox.coyote.shape.bezier.mesh.CutLoop;
 import com.kitfox.coyote.shape.bezier.mesh.CutSegHalf;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
-import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 import com.kitfox.raven.editor.node.scene.RenderContext;
 import com.kitfox.raven.editor.node.tools.common.shape.MeshUtil;
 import com.kitfox.raven.paint.RavenPaint;
@@ -114,7 +114,7 @@ public class ToolPenMesh extends ToolPenDelegate
     {
         NetworkMeshHandles handles = getMeshHandles();
         NetworkMesh mesh = handles.getMesh();
-        RavenNodeRoot root = getDocument();
+        RavenSymbolRoot root = getDocument();
         //GraphLayout layout = getGraphLayout();
         
         CyVector2d pickPt = xformDev2MeshPoint(
@@ -231,7 +231,7 @@ public class ToolPenMesh extends ToolPenDelegate
             }
         }
         
-        RavenNodeRoot root = (RavenNodeRoot)getDocument();
+        RavenSymbolRoot root = (RavenSymbolRoot)getDocument();
         RavenPaint strokePaint = root.getStrokePaint();
         RavenStroke stroke = root.getStrokeShape();
 //        RavenPaintLayout layout = new RavenPaintLayout(bounds);
@@ -509,7 +509,7 @@ public class ToolPenMesh extends ToolPenDelegate
         stack.pushFrame(null);
 
 //        GraphLayout graphLayout = getGraphLayout();
-        RavenNodeRoot root = getDocument();
+        RavenSymbolRoot root = getDocument();
         
         //Draw curves and handles
         {

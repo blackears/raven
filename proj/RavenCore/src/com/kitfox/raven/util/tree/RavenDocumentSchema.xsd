@@ -4,20 +4,21 @@
     targetNamespace="http://xml.kitfox.com/schema/RavenDocumentSchema"
     xmlns:tns="http://xml.kitfox.com/schema/RavenDocumentSchema"
     elementFormDefault="qualified">
-    <xsd:complexType name="RavenDocumentType">
+    <xsd:complexType name="NodeDocumentType">
         <xsd:sequence>
+            <xsd:element name="plugins" type="tns:PluginsType"></xsd:element>
             <xsd:element name="symbols" type="tns:NodeSymbolType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
             <xsd:element name="propertySetGroups" type="tns:MetaPropertySetGroupType" minOccurs="1" maxOccurs="1"></xsd:element>
         </xsd:sequence>
         <xsd:attribute name="version" type="xsd:string"/>
-        <xsd:attribute name="curSymbol" type="xsd:string"/>
+        <xsd:attribute name="curSymbol" type="xsd:int"/>
+        <xsd:attribute name="nextSymbolUid" type="xsd:int"/>
     </xsd:complexType>
-    <xsd:element name="RavenDocument" type="tns:RavenDocumentType"></xsd:element>
+    <xsd:element name="NodeDocument" type="tns:NodeDocumentType"></xsd:element>
     <xsd:complexType name="NodeObjectType">
         <xsd:sequence>
             <xsd:element name="property" type="tns:PropertyType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
             <xsd:element name="child" type="tns:ChildrenType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
-            <xsd:element name="event" type="tns:EventType" maxOccurs="unbounded" minOccurs="0"></xsd:element>
         </xsd:sequence>
         <xsd:attribute name="class" type="xsd:string"/>
         <xsd:attribute name="uid" type="xsd:int"/>
@@ -44,24 +45,21 @@
         </xsd:restriction>
     </xsd:simpleType>
     <xsd:complexType name="NodeSymbolType">
-        <xsd:complexContent>
-            <xsd:extension xmlns:tns="http://xml.kitfox.com/schema/RavenDocumentSchema" base="tns:NodeObjectType">
-                <xsd:sequence>
-                    <xsd:element name="plugins" type="tns:PluginsType"></xsd:element>
-                    <xsd:element name="code" type="tns:DocumentCodeType"></xsd:element>
-                </xsd:sequence>
-                <xsd:attribute name="nextUid" type="xsd:int"/>
-                <xsd:attribute name="documentName" type="xsd:string"/>
-            </xsd:extension>
-        </xsd:complexContent>
+        <xsd:sequence>
+            <xsd:element name="root" type="tns:NodeObjectType"></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="nextUid" type="xsd:int"/>
+        <xsd:attribute name="name" type="xsd:string"/>
+        <xsd:attribute name="symbolUid" type="xsd:int"/>
+        <xsd:attribute name="class" type="xsd:string"/>
     </xsd:complexType>
-    <xsd:complexType name="RavenTransferableType">
+    <xsd:complexType name="NodeTransferableType">
         <xsd:sequence>
             <xsd:element name="nodes" type="tns:NodeObjectType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
         </xsd:sequence>
         <xsd:attribute name="source" type="xsd:anyURI"></xsd:attribute>
     </xsd:complexType>
-    <xsd:element name="RavenTransferable" type="tns:RavenTransferableType"></xsd:element>
+    <xsd:element name="NodeTransferable" type="tns:NodeTransferableType"></xsd:element>
     <xsd:complexType name="PropertyDataType">
         <xsd:simpleContent>
             <xsd:extension base="xsd:string">
@@ -107,18 +105,6 @@
             <xsd:enumeration value="repeat_offset"/>
         </xsd:restriction>
     </xsd:simpleType>
-    <xsd:complexType name="SourceCodeType">
-        <xsd:sequence>
-            <xsd:element name="source" type="xsd:string" default=""></xsd:element>
-        </xsd:sequence>
-        <xsd:attribute name="lang" type="xsd:string"/>
-    </xsd:complexType>
-    <xsd:complexType name="EventType">
-        <xsd:sequence>
-            <xsd:element name="source" type="tns:SourceCodeType"></xsd:element>
-        </xsd:sequence>
-        <xsd:attribute name="name" type="xsd:string"/>
-    </xsd:complexType>
     <xsd:complexType name="PluginPropertiesType">
         <xsd:sequence>
             <xsd:element name="property" type="tns:PluginPropertyEntry" minOccurs="0" maxOccurs="unbounded"></xsd:element>
@@ -135,15 +121,6 @@
     <xsd:complexType name="PluginsType">
         <xsd:sequence>
             <xsd:element name="properties" type="tns:PluginPropertiesType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:complexType name="DocumentCodeType">
-        <xsd:sequence>
-            <xsd:element name="source" type="tns:SourceCodeType"></xsd:element>
-            <xsd:element name="imports" type="tns:SourceCodeType"></xsd:element>
-            <xsd:element name="implements" type="tns:SourceCodeType"></xsd:element>
-            <xsd:element name="extends" type="tns:SourceCodeType"></xsd:element>
-            <xsd:element name="annotations" type="tns:SourceCodeType"></xsd:element>
         </xsd:sequence>
     </xsd:complexType>
     <xsd:complexType name="TrackTransferableType">

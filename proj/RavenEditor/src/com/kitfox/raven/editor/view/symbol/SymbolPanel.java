@@ -18,14 +18,13 @@ package com.kitfox.raven.editor.view.symbol;
 
 import com.kitfox.raven.editor.NewSymbolWizard;
 import com.kitfox.raven.editor.RavenDocument;
-import com.kitfox.raven.editor.RavenDocumentEvent;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.RavenEditorListener;
 import com.kitfox.raven.editor.RavenEditorWeakListener;
 import com.kitfox.raven.util.RavenSwingUtil;
-import com.kitfox.raven.util.tree.NodeDocument2Event;
-import com.kitfox.raven.util.tree.NodeDocument2Listener;
-import com.kitfox.raven.util.tree.NodeDocument2WeakListener;
+import com.kitfox.raven.util.tree.NodeDocumentEvent;
+import com.kitfox.raven.util.tree.NodeDocumentListener;
+import com.kitfox.raven.util.tree.NodeDocumentWeakListener;
 import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.wizard.RavenWizardDialog;
 import java.awt.Component;
@@ -41,12 +40,12 @@ import javax.swing.SwingUtilities;
  * @author kitfox
  */
 public class SymbolPanel extends javax.swing.JPanel
-        implements RavenEditorListener, NodeDocument2Listener
+        implements RavenEditorListener, NodeDocumentListener
 {
     final RavenEditor editor;
     RavenEditorWeakListener listenerEditor;
 //    HistoryWeakListener listenerHistory;
-    NodeDocument2WeakListener listenerRavenDoc;
+    NodeDocumentWeakListener listenerRavenDoc;
 
     boolean updating;
 
@@ -80,7 +79,7 @@ public class SymbolPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            listenerRavenDoc = new NodeDocument2WeakListener(this, doc);
+            listenerRavenDoc = new NodeDocumentWeakListener(this, doc);
             doc.addNodeDocumentListener(listenerRavenDoc);
         }
         
@@ -136,19 +135,19 @@ public class SymbolPanel extends javax.swing.JPanel
 //    }
     
     @Override
-    public void symbolAdded(NodeDocument2Event evt)
+    public void symbolAdded(NodeDocumentEvent evt)
     {
         updateDisplay();
     }
     
     @Override
-    public void symbolRemoved(NodeDocument2Event evt)
+    public void symbolRemoved(NodeDocumentEvent evt)
     {
         updateDisplay();
     }
     
     @Override
-    public void currentSymbolChanged(NodeDocument2Event evt)
+    public void currentSymbolChanged(NodeDocumentEvent evt)
     {
         if (updating)
         {
@@ -225,11 +224,11 @@ public class SymbolPanel extends javax.swing.JPanel
 
     private void bn_createActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bn_createActionPerformed
     {//GEN-HEADEREND:event_bn_createActionPerformed
-        RavenDocument doc = editor.getDocument();
-        if (doc == null)
-        {
-            return;
-        }
+//        RavenDocument doc = editor.getDocument();
+//        if (doc == null)
+//        {
+//            return;
+//        }
 
 //        String newName = doc.getUnusedDocumentName("symbol");
 //                JOptionPane.showInputDialog(
@@ -239,25 +238,26 @@ public class SymbolPanel extends javax.swing.JPanel
 //            return;
 //        }
 
-        NewSymbolWizard wiz = new NewSymbolWizard(editor);
+        RavenDocument doc = new RavenDocument(editor);
+        NewSymbolWizard wiz = new NewSymbolWizard(doc);
 
         RavenWizardDialog dlg = new RavenWizardDialog(
                 editor.getViewManager().getSwingRoot(), wiz);
         RavenSwingUtil.centerWindow(dlg);
         dlg.setVisible(true);
 
-        NodeSymbol sym = dlg.getNodeDocument();
+        NodeSymbol sym = dlg.getNodeSymbol();
 
         if (sym == null)
         {
             return;
         }
         
-        String name = sym.getSymbolName();
+        String name = sym.getName();
         String newName = doc.getUnusedSymbolName(name);
         if (!newName.equals(name))
         {
-            sym.setSymbolName(newName);
+            sym.setName(newName);
         }
 
         doc.addSymbol(sym);
@@ -273,7 +273,7 @@ public class SymbolPanel extends javax.swing.JPanel
         }
         
         NodeSymbol doc = (NodeSymbol)val;
-        String name = doc.getSymbolName();
+        String name = doc.getName();
         String newName = JOptionPane.showInputDialog(
                 this, "Rename symbol", name == null ? "" : name);
         
@@ -282,7 +282,7 @@ public class SymbolPanel extends javax.swing.JPanel
             return;
         }
         
-        doc.setSymbolName(newName);
+        doc.setName(newName);
         repaint();
     }//GEN-LAST:event_bn_renameActionPerformed
 
@@ -345,7 +345,7 @@ public class SymbolPanel extends javax.swing.JPanel
             }
             
             NodeSymbol doc = (NodeSymbol)value;
-            String name = doc.getSymbolName();
+            String name = doc.getName();
             setText(name == null ? "*" : name);
             return this;
         }

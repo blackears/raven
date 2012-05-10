@@ -36,7 +36,7 @@ public class RavenNodeComposition extends RavenNode
         implements RenderDevice
 {
     public static final String PROP_BACKGROUND = "background";
-    public final PropertyWrapper<RavenNodeRoot, RavenPaintColor> background =
+    public final PropertyWrapper<RavenNodeComposition, RavenPaintColor> background =
             new PropertyWrapper(
             this, PROP_BACKGROUND, RavenPaintColor.class,
             new RavenPaintColor(CyColor4f.WHITE));
@@ -75,7 +75,7 @@ public class RavenNodeComposition extends RavenNode
     {
         CyDrawStack rend = context.getDrawStack();
         
-        RavenNodeRoot root = (RavenNodeRoot)getSymbol();
+        RavenSymbolRoot root = ((RavenSymbol)getSymbol()).getRoot();
         
         RavenPaintColor col = root.getBackgroundColor();
         CyRendererUtil2D.clear(rend, col.r, col.g, col.b, col.a);

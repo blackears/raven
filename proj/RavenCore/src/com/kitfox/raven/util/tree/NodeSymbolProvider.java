@@ -72,9 +72,13 @@ abstract public class NodeSymbolProvider<T extends NodeSymbol>
         return icon;
     }
 
-    abstract public RavenWizardPageIterator<T> createDocumentWizard();
+    abstract public RavenWizardPageIterator<T> createDocumentWizard(
+            NodeDocument doc);
 
-    abstract public NodeSymbol loadDocument(NodeSymbolType docTree);
+    abstract public T loadDocument(NodeDocument doc,
+            NodeSymbolType docTree);
+
+    abstract public T create(NodeDocument doc);
 
     @Override
     public int compareTo(NodeSymbolProvider obj)

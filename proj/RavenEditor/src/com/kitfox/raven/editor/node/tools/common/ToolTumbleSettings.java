@@ -85,8 +85,8 @@ public class ToolTumbleSettings extends javax.swing.JPanel
             return;
         }
 
-        NodeSymbol root = doc.getCurSymbol();
-        ServiceDeviceCamera service = root.getNodeService(ServiceDeviceCamera.class, false);
+        NodeSymbol sym = doc.getCurSymbol();
+        ServiceDeviceCamera service = sym.getRoot().getNodeService(ServiceDeviceCamera.class, false);
         service.setWorldToDeviceTransform(new AffineTransform());
 
     }//GEN-LAST:event_bn_resetActionPerformed

@@ -16,19 +16,22 @@
 
 package com.kitfox.raven.editor.node.scene.wizard;
 
-import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenSymbol;
+import com.kitfox.raven.util.tree.NodeDocument;
 import com.kitfox.raven.wizard.RavenWizardPageIteratorSimple;
 
 /**
  *
  * @author kitfox
  */
-public class RavenNodeRootWizard extends RavenWizardPageIteratorSimple<RavenNodeRoot>
+public class RavenNodeRootWizard extends RavenWizardPageIteratorSimple<RavenSymbol>
 {
+    final NodeDocument doc;
 
-    public RavenNodeRootWizard()
+    public RavenNodeRootWizard(NodeDocument doc)
     {
         super(new RavenNodeRootWizardPanel());
+        this.doc = doc;
     }
 
     @Override
@@ -38,9 +41,9 @@ public class RavenNodeRootWizard extends RavenWizardPageIteratorSimple<RavenNode
     }
 
     @Override
-    public RavenNodeRoot finish()
+    public RavenSymbol finish()
     {
-        return RavenNodeRoot.create(null);
+        return RavenSymbol.create(doc);
     }
 
 }

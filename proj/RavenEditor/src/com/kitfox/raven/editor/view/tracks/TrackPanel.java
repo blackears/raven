@@ -236,13 +236,13 @@ public class TrackPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeSymbol root = doc.getCurSymbol();
+            NodeSymbol sym = doc.getCurSymbol();
 
-            TrackLibrary trackLib = root.getTrackLibrary();
+            TrackLibrary trackLib = sym.getRoot().getTrackLibrary();
             curFrameWatch = new CurFrameWatcher(trackLib.curFrame);
             curTrackWatch = new CurTrackWatcher(trackLib.curTrack);
 
-            Selection<NodeObject> sel = root.getSelection();
+            Selection<NodeObject> sel = sym.getSelection();
             selectionWatch = new SelectionWatcher(sel);
         }
 
@@ -273,9 +273,9 @@ public class TrackPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeSymbol root = doc.getCurSymbol();
+            NodeSymbol sym = doc.getCurSymbol();
 
-            TrackLibrary trackLib = root.getTrackLibrary();
+            TrackLibrary trackLib = sym.getRoot().getTrackLibrary();
             Track track = trackLib.curTrack.getValue();
             curvePanel.setTrack(track);
         }
@@ -290,9 +290,9 @@ public class TrackPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeSymbol root = doc.getCurSymbol();
+            NodeSymbol sym = doc.getCurSymbol();
 
-            TrackLibrary trackLib = root.getTrackLibrary();
+            TrackLibrary trackLib = sym.getRoot().getTrackLibrary();
             int frame = trackLib.curFrame.getValue();
             curvePanel.setFrame(frame);
         }
@@ -607,7 +607,7 @@ public class TrackPanel extends javax.swing.JPanel
             TrackType tt = xferCurves.getTrack();
             TrackCurve tc = wrap.createTrackCurve(tt);
 
-            int trackUid = wrap.getNode().getSymbol().getTrackLibrary().getCurTrackUid();
+            int trackUid = wrap.getNode().getSymbol().getRoot().getTrackLibrary().getCurTrackUid();
             wrap.setTrackCurve(trackUid, tc);
             
             return true;
@@ -632,7 +632,7 @@ public class TrackPanel extends javax.swing.JPanel
                 return null;
             }
 
-            int trackUid = wrap.getNode().getSymbol().getTrackLibrary().getCurTrackUid();
+            int trackUid = wrap.getNode().getSymbol().getRoot().getTrackLibrary().getCurTrackUid();
 //            TrackCurve tc = wrap.getTrackCurve(trackUid);
             xferCurves.setTrack(wrap.exportTrack(trackUid));
 //            Object[] values = curveList.getSelectedValues();

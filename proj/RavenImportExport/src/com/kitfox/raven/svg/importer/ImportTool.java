@@ -16,18 +16,9 @@
 
 package com.kitfox.raven.svg.importer;
 
-import com.kitfox.rabbit.parser.RabbitDocument;
-import com.kitfox.rabbit.parser.RabbitUniverseDom;
-import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 import com.kitfox.raven.util.tree.NodeSymbol;
-import com.kitfox.raven.util.undo.History;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -40,16 +31,16 @@ public class ImportTool
     public static final String PREF_IMPORT_BG_COL = "importBackgroundColor";
     public static final String PREF_FILE = "file";
 
-    final NodeSymbol doc;
-    final RavenNodeRoot root;
+    final NodeSymbol sym;
+    final RavenSymbolRoot root;
 
     Properties preferences;
 
-    public ImportTool(Properties preferences, NodeSymbol doc)
+    public ImportTool(Properties preferences, NodeSymbol sym)
     {
-        this.doc = doc;
+        this.sym = sym;
         this.preferences = preferences;
-        this.root = (RavenNodeRoot)doc;
+        this.root = (RavenSymbolRoot)sym.getRoot();
 
     }
 

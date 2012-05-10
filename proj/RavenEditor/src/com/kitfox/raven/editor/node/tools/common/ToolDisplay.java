@@ -27,7 +27,7 @@ import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.action.ActionManager;
 import com.kitfox.raven.editor.node.scene.RavenNodeGroup;
-import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 import com.kitfox.raven.editor.node.scene.RavenNodeXformable;
 import com.kitfox.raven.editor.node.tools.ToolDraggable;
 import com.kitfox.raven.editor.node.tools.ToolUser;
@@ -129,7 +129,7 @@ abstract public class ToolDisplay extends ToolDraggable
         }
         
 //        Snapping snap = provDoc.getSnapping();
-        RavenNodeRoot root = (RavenNodeRoot)provDoc.getSymbol();
+        RavenSymbolRoot root = (RavenSymbolRoot)provDoc.getSymbol().getRoot();
         if (root.isSnapGrid())
         {
             //int major = snap.getGridSpacingMajor();
@@ -242,7 +242,7 @@ abstract public class ToolDisplay extends ToolDraggable
         return provider.getSelection();
     }
 
-    protected RavenNodeRoot getDocument()
+    protected RavenSymbolRoot getDocument()
     {
         ServiceDocument provider = user.getToolService(ServiceDocument.class);
         if (provider == null)
@@ -250,7 +250,7 @@ abstract public class ToolDisplay extends ToolDraggable
             return null;
         }
         
-        return (RavenNodeRoot)provider.getSymbol();
+        return (RavenSymbolRoot)provider.getSymbol().getRoot();
     }
 
     /**
@@ -263,7 +263,7 @@ abstract public class ToolDisplay extends ToolDraggable
     protected ArrayList<RavenNodeXformable> getNodes(boolean onlyVisible)
     {
         ArrayList<RavenNodeXformable> list = new ArrayList<RavenNodeXformable>();
-        RavenNodeRoot root = getDocument();
+        RavenSymbolRoot root = getDocument();
 
         ArrayList<RavenNodeXformable> children = root.getSceneGraphChildren();
         for (int i = children.size() - 1; i >= 0; --i)

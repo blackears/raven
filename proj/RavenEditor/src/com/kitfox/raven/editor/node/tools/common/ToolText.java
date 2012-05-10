@@ -18,8 +18,8 @@ package com.kitfox.raven.editor.node.tools.common;
 
 import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.raven.editor.RavenEditor;
-import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
 import com.kitfox.raven.editor.node.scene.RavenNodeText;
+import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 import com.kitfox.raven.editor.node.tools.ToolProvider;
 import com.kitfox.raven.editor.node.tools.ToolUser;
 import com.kitfox.raven.editor.node.tools.common.text.TextManipulator;
@@ -77,11 +77,12 @@ public class ToolText extends ToolDisplay
             return;
         }
 
-        NodeSymbol doc = provider.getSymbol();
-        if (doc == null)
+        NodeSymbol sym = provider.getSymbol();
+        if (sym == null)
         {
             return;
         }
+        RavenSymbolRoot root = (RavenSymbolRoot)sym.getRoot();
 
         int x = evt.getX();
         int y = evt.getY();
@@ -105,16 +106,16 @@ public class ToolText extends ToolDisplay
         }
 
         TextNodePicker picker = new TextNodePicker(x, y);
-        doc.visit(picker);
+        root.visit(picker);
 
         if (picker.picked == null)
         {
             //Start new node
-            manip = new TextManipulator(x, y, (RavenNodeRoot)doc);
+            manip = new TextManipulator(x, y, root);
         }
         else
         {
-            manip = new TextManipulator(picker.picked, x, y, (RavenNodeRoot)doc);
+            manip = new TextManipulator(picker.picked, x, y, root);
             manip.moveCursorToPointDevice(x, y);
         }
         

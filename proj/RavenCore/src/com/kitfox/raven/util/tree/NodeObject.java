@@ -20,7 +20,6 @@ import com.kitfox.raven.util.resource.game.ResourceGameLoaderAWT;
 import com.kitfox.raven.util.undo.History;
 import com.kitfox.raven.util.undo.HistoryAction;
 import com.kitfox.xml.schema.ravendocumentschema.ChildrenType;
-import com.kitfox.xml.schema.ravendocumentschema.EventType;
 import com.kitfox.xml.schema.ravendocumentschema.NodeObjectType;
 import com.kitfox.xml.schema.ravendocumentschema.PropertyType;
 import java.beans.PropertyChangeEvent;
@@ -52,7 +51,7 @@ public class NodeObject
 
     private final int uid;
 
-    private NodeSymbol symbol;
+//    private NodeSymbol symbol;
 
     protected String name;
     public static final String PROP_NAME = "name";
@@ -295,10 +294,10 @@ public class NodeObject
             }
         }
 
-        for (EventWrapper wrap: eventWrappers)
-        {
-            type.getEvent().add(wrap.export());
-        }
+//        for (EventWrapper wrap: eventWrappers)
+//        {
+//            type.getEvent().add(wrap.export());
+//        }
 
         return type;
     }
@@ -356,13 +355,19 @@ public class NodeObject
 
     public NodeSymbol getSymbol()
     {
-        //return parent == null ? null : parent.getNode().getDocument();
-        return symbol;
+        return parent == null ? null : parent.getNode().getSymbol();
+//        return symbol;
+    }
+
+    public NodeRoot getRoot()
+    {
+        return parent == null ? null : parent.getNode().getRoot();
+//        return symbol;
     }
 
     protected void broadcastSymbolChanged(NodeSymbol doc)
     {
-        this.symbol = doc;
+//        this.symbol = doc;
         for (int i = 0; i < getNumChildWrappers(); ++i)
         {
             getChildWrapper(i).broadcastSymbolChanged(doc);
@@ -654,11 +659,11 @@ public class NodeObject
             }
         }
 
-        for (EventType eventType: type.getEvent())
-        {
-            EventWrapper wrap = getEventWrapper(eventType.getName());
-            wrap.load(eventType);
-        }
+//        for (EventType eventType: type.getEvent())
+//        {
+//            EventWrapper wrap = getEventWrapper(eventType.getName());
+//            wrap.load(eventType);
+//        }
     }
 
     protected void doAction(HistoryAction action)

@@ -24,7 +24,7 @@ import com.kitfox.coyote.shape.CyStroke;
 import com.kitfox.coyote.shape.outliner.bitmap.BitmapOutliner;
 import com.kitfox.raven.editor.node.scene.RavenNodeGroup;
 import com.kitfox.raven.editor.node.scene.RavenNodeMesh2;
-import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 import com.kitfox.raven.paint.RavenPaint;
 import com.kitfox.raven.paint.RavenPaintLayout;
 import com.kitfox.raven.paint.RavenStroke;
@@ -69,12 +69,12 @@ public class BitmapImporterContext
     public static final String PROP_SMOOTHING = "smoothing";
     private float smoothing;
     
-    private NodeSymbol doc;
+    private NodeSymbol sym;
     private PropertiesData pref;
     
     public BitmapImporterContext(NodeSymbol doc, Properties preferences)
     {
-        this.doc = doc;
+        this.sym = doc;
         this.pref = new PropertiesData(preferences);
         
         seqFile = pref.getString(PROP_SEQ_FILE, "");
@@ -95,7 +95,7 @@ public class BitmapImporterContext
 
     private void errMessage(String message)
     {
-        JOptionPane.showMessageDialog(doc.getDocument().getEnv().getSwingRoot(),
+        JOptionPane.showMessageDialog(sym.getDocument().getEnv().getSwingRoot(),
                 message, 
                 "Error", 
                 JOptionPane.ERROR_MESSAGE);
@@ -156,11 +156,11 @@ public class BitmapImporterContext
         NetworkMesh network = NetworkMesh.create(meshPath, data);
         
         RavenNodeMesh2 mesh = NodeObjectProviderIndex.inst().createNode(
-                RavenNodeMesh2.class, doc);
+                RavenNodeMesh2.class, sym);
         mesh.setNetworkMesh(network, false);
         
         //Add to tree
-        Selection<NodeObject> sel = doc.getSelection();
+        Selection<NodeObject> sel = sym.getSelection();
         RavenNodeGroup parGrp = sel.getTopSelected(RavenNodeGroup.class);
         
         if (parGrp != null)
@@ -169,7 +169,7 @@ public class BitmapImporterContext
         }
         else
         {
-            RavenNodeRoot root = (RavenNodeRoot)doc;
+            RavenSymbolRoot root = (RavenSymbolRoot)sym.getRoot();
             root.getSceneGraph().children.add(mesh);
         }
     }
@@ -181,7 +181,7 @@ public class BitmapImporterContext
      */
     public NodeSymbol getDoc()
     {
-        return doc;
+        return sym;
     }
 
     /**
@@ -189,7 +189,7 @@ public class BitmapImporterContext
      */
     public void setDoc(NodeSymbol doc)
     {
-        this.doc = doc;
+        this.sym = doc;
     }
 
     /**

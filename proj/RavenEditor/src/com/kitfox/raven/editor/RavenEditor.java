@@ -170,7 +170,10 @@ public class RavenEditor
                 for (FileType ft: rft.getFile())
                 {
                     File file = new File(ft.getValue());
-                    recentFiles.add(file);
+                    if (file.canRead())
+                    {
+                        recentFiles.add(file);
+                    }
                 }
             }
             fireRecentFilesChanged();
@@ -256,7 +259,7 @@ public class RavenEditor
 
     public void open(File file)
     {
-        RavenDocument openProject = new RavenDocument(this, file);
+        RavenDocument openProject = RavenDocument.create(this, file);
         setDocument(openProject);
 
         setMostRecentFile(file);

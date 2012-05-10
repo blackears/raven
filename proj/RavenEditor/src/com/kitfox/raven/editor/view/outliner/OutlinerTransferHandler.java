@@ -23,7 +23,7 @@ import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.NodeObjectTransferable;
 import com.kitfox.raven.util.undo.History;
 import com.kitfox.xml.schema.ravendocumentschema.NodeObjectType;
-import com.kitfox.xml.schema.ravendocumentschema.RavenTransferableType;
+import com.kitfox.xml.schema.ravendocumentschema.NodeTransferableType;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -116,13 +116,13 @@ public class OutlinerTransferHandler extends TransferHandler
         }
 
         //Get transferable payload
-        RavenTransferableType xferLayers = null;
+        NodeTransferableType xferLayers = null;
 
         try {
             if (info.isDataFlavorSupported(NodeObjectTransferable.FLAVOR))
             {
                 Transferable xfer = info.getTransferable();
-                xferLayers = (RavenTransferableType)xfer.getTransferData(NodeObjectTransferable.FLAVOR);
+                xferLayers = (NodeTransferableType)xfer.getTransferData(NodeObjectTransferable.FLAVOR);
             }
             else if (info.isDataFlavorSupported(DataFlavor.stringFlavor))
             {
@@ -130,7 +130,7 @@ public class OutlinerTransferHandler extends TransferHandler
                         (String)info.getTransferable()
                         .getTransferData(DataFlavor.stringFlavor));
 
-                xferLayers = (RavenTransferableType)xfer.getTransferData(NodeObjectTransferable.FLAVOR);
+                xferLayers = (NodeTransferableType)xfer.getTransferData(NodeObjectTransferable.FLAVOR);
             }
             else
             {
@@ -162,7 +162,7 @@ public class OutlinerTransferHandler extends TransferHandler
     {
         JTree tree = (JTree)c;
 
-        RavenTransferableType xferLayers = new RavenTransferableType();
+        NodeTransferableType xferLayers = new NodeTransferableType();
 
         TreePath[] paths = tree.getSelectionPaths();
         NEXT_PATH:
@@ -203,9 +203,9 @@ public class OutlinerTransferHandler extends TransferHandler
     public void exportDone(JComponent c, Transferable t, int action)
     {
         NodeObjectTransferable xfer = (NodeObjectTransferable)t;
-        RavenTransferableType xferLayers = null;
+        NodeTransferableType xferLayers = null;
         try {
-            xferLayers = (RavenTransferableType) xfer.getTransferData(NodeObjectTransferable.FLAVOR);
+            xferLayers = (NodeTransferableType) xfer.getTransferData(NodeObjectTransferable.FLAVOR);
 
         } catch (UnsupportedFlavorException ex) {
             Logger.getLogger(OutlinerTransferHandler.class.getName()).log(Level.SEVERE, null, ex);

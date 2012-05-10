@@ -48,4 +48,18 @@ public final class NodeSymbolProviderIndex extends ServiceIndex<NodeSymbolProvid
         }
         return null;
     }
+
+    public <T extends NodeSymbol> NodeSymbolProvider<T>
+            getProvider(Class<T> clazz)
+    {
+        for (int i = 0; i < serviceList.size(); ++i)
+        {
+            NodeSymbolProvider prov = serviceList.get(i);
+            if (prov.getNodeType().equals(clazz))
+            {
+                return prov;
+            }
+        }
+        return null;
+    }
 }

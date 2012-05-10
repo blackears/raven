@@ -76,8 +76,8 @@ public class NodeObjectEditor extends PropertyWrapperEditor<NodeObject>
     public void setAsText(String text) throws IllegalArgumentException
     {
         FindNode findNode = new FindNode(text);
-        NodeSymbol doc = getWrapper().getNode().getSymbol();
-        doc.visit(findNode);
+        NodeSymbol sym = getWrapper().getNode().getSymbol();
+        sym.getRoot().visit(findNode);
 
         NodeObject refNode = findNode.getBestNode();
 

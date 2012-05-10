@@ -17,7 +17,7 @@
 package com.kitfox.raven.editor.node.tools.common.text;
 
 import com.kitfox.raven.editor.node.scene.RavenNodeGroup;
-import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 import com.kitfox.raven.editor.node.scene.RavenNodeSceneGraph;
 import com.kitfox.raven.editor.node.scene.RavenNodeText;
 import com.kitfox.raven.paint.RavenPaint;
@@ -51,7 +51,7 @@ import java.util.logging.Logger;
  */
 public class TextManipulator
 {
-    RavenNodeRoot root;
+    RavenSymbolRoot root;
 
     AffineTransform textLocalToDevice;
     AffineTransform textLocalToWorld;
@@ -75,12 +75,12 @@ public class TextManipulator
     HashMap<Integer, GlyphToken> cursorMap = new HashMap<Integer, GlyphToken>();
 
 
-    public TextManipulator(int x, int y, RavenNodeRoot root)
+    public TextManipulator(int x, int y, RavenSymbolRoot root)
     {
         this(null, x, y, root);
     }
 
-    public TextManipulator(RavenNodeText sourceNode, int x, int y, RavenNodeRoot root)
+    public TextManipulator(RavenNodeText sourceNode, int x, int y, RavenSymbolRoot root)
     {
         this.root = root;
         this.sourceNode = sourceNode;
@@ -101,7 +101,7 @@ public class TextManipulator
             {
                 parent = top;
                 while (!(parent instanceof RavenNodeGroup
-                        || parent instanceof RavenNodeRoot))
+                        || parent instanceof RavenSymbolRoot))
                 {
                     parent = parent.getParent().getNode();
                 }
@@ -113,7 +113,7 @@ public class TextManipulator
 
             
             AffineTransform textParentToWorld;
-            if (parent instanceof RavenNodeRoot)
+            if (parent instanceof RavenSymbolRoot)
             {
                 textParentToWorld = new AffineTransform();
             }
@@ -263,7 +263,8 @@ public class TextManipulator
         if (sourceNode == null)
         {
             RavenNodeText node =
-                    NodeObjectProviderIndex.inst().createNode(RavenNodeText.class, root);
+                    NodeObjectProviderIndex.inst().createNode(
+                    RavenNodeText.class, root.getSymbol());
 
             node.setText(textDoc.toString());
             node.setTextFont(textFont);

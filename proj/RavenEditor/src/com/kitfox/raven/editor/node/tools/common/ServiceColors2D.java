@@ -17,7 +17,7 @@
 package com.kitfox.raven.editor.node.tools.common;
 
 import com.kitfox.raven.editor.node.scene.RavenNodePaintLibrary;
-import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 import com.kitfox.raven.editor.node.scene.RavenNodeStrokeLibrary;
 import com.kitfox.raven.editor.node.tools.ToolService;
 import com.kitfox.raven.paint.RavenPaint;
@@ -31,11 +31,11 @@ import com.kitfox.raven.util.tree.PropertyWrapper;
 public interface ServiceColors2D extends ToolService
 {
 
-    public PropertyWrapper<RavenNodeRoot, RavenStroke> getStrokeStyleProp();
+    public PropertyWrapper<RavenSymbolRoot, RavenStroke> getStrokeStyleProp();
 
-    public PropertyWrapper<RavenNodeRoot, RavenPaint> getStrokePaintProp();
+    public PropertyWrapper<RavenSymbolRoot, RavenPaint> getStrokePaintProp();
 
-    public PropertyWrapper<RavenNodeRoot, RavenPaint> getFillPaintProp();
+    public PropertyWrapper<RavenSymbolRoot, RavenPaint> getFillPaintProp();
 
     public RavenNodePaintLibrary getPaintLibrary();
 

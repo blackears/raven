@@ -28,7 +28,6 @@ import com.kitfox.coyote.renderer.CyVertexBuffer;
 import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.coyote.shape.ShapeLinesProvider;
-import com.kitfox.raven.editor.node.scene.wizard.RavenNodeRootWizard;
 import com.kitfox.raven.editor.node.tools.common.ServiceBackground;
 import com.kitfox.raven.editor.node.tools.common.ServiceColors2D;
 import com.kitfox.raven.util.Intersection;
@@ -39,228 +38,212 @@ import com.kitfox.raven.editor.view.displayCy.CyRenderService;
 import com.kitfox.raven.paint.RavenPaint;
 import com.kitfox.raven.paint.RavenStroke;
 import com.kitfox.raven.paint.common.RavenPaintColor;
+import com.kitfox.raven.util.Selection;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
 import com.kitfox.raven.util.service.ServiceInst;
 import com.kitfox.raven.util.text.Justify;
-import com.kitfox.raven.util.tree.*;
-import com.kitfox.raven.wizard.RavenWizardPageIterator;
-import com.kitfox.xml.schema.ravendocumentschema.NodeSymbolType;
+import com.kitfox.raven.util.tree.ChildWrapperSingle;
+import com.kitfox.raven.util.tree.NodeObject;
+import com.kitfox.raven.util.tree.NodeRoot;
+import com.kitfox.raven.util.tree.NodeSymbol;
+import com.kitfox.raven.util.tree.PropertyWrapper;
+import com.kitfox.raven.util.tree.PropertyWrapperBoolean;
+import com.kitfox.raven.util.tree.PropertyWrapperFloat;
 import java.awt.Font;
 import java.awt.geom.AffineTransform;
-import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 
 /**
  *
  * @author kitfox
  */
-public class RavenNodeRoot extends NodeSymbol
+public class RavenSymbolRoot extends NodeRoot
         implements ServiceDeviceCamera, ServiceDocument,
         ServiceText, ServiceColors2D, ServiceBackground,
         CyRenderService
 {
     public static final String PROP_BACKGROUND = "background";
-    public final PropertyWrapper<RavenNodeRoot, RavenPaintColor> background =
+    public final PropertyWrapper<RavenSymbolRoot, RavenPaintColor> background =
             new PropertyWrapper(
             this, PROP_BACKGROUND, RavenPaintColor.class,
             new RavenPaintColor(CyColor4f.WHITE));
 
     public static final String PROP_ANTIALIASED = "antialiased";
-    public final PropertyWrapperBoolean<RavenNodeRoot> antialiased =
+    public final PropertyWrapperBoolean<RavenSymbolRoot> antialiased =
             new PropertyWrapperBoolean(this, PROP_ANTIALIASED, false);
 
     public static final String PROP_FILLPAINT = "fillPaint";
-    public final PropertyWrapper<RavenNodeRoot, RavenPaint> fillPaint =
+    public final PropertyWrapper<RavenSymbolRoot, RavenPaint> fillPaint =
             new PropertyWrapper(
             this, PROP_FILLPAINT, PropertyWrapper.FLAGS_NOANIM, 
             RavenPaint.class, new RavenPaintColor(CyColor4f.BLACK));
 
     public static final String PROP_STROKEPAINT = "strokePaint";
-    public final PropertyWrapper<RavenNodeRoot, RavenPaint> strokePaint =
+    public final PropertyWrapper<RavenSymbolRoot, RavenPaint> strokePaint =
             new PropertyWrapper(
             this, PROP_STROKEPAINT, PropertyWrapper.FLAGS_NOANIM, 
             RavenPaint.class, new RavenPaintColor(CyColor4f.BLACK));
 
     public static final String PROP_STROKESTYLE = "strokeStyle";
-    public final PropertyWrapper<RavenNodeRoot, RavenStroke> strokeShape =
+    public final PropertyWrapper<RavenSymbolRoot, RavenStroke> strokeShape =
             new PropertyWrapper(
             this, PROP_STROKESTYLE, PropertyWrapper.FLAGS_NOANIM, 
             RavenStroke.class, new RavenStroke());
 
     public static final String PROP_FONT = "font";
-    public final PropertyWrapper<RavenNodeRoot, Font> font =
+    public final PropertyWrapper<RavenSymbolRoot, Font> font =
             new PropertyWrapper(
             this, PROP_FONT, PropertyWrapper.FLAGS_NOANIM, 
             Font.class, new Font(Font.SERIF, Font.PLAIN, 12));
 
     public static final String PROP_JUSTIFY = "justify";
-    public final PropertyWrapper<RavenNodeRoot, Justify> justify =
+    public final PropertyWrapper<RavenSymbolRoot, Justify> justify =
             new PropertyWrapper(
             this, PROP_JUSTIFY, PropertyWrapper.FLAGS_NOANIM, 
             Justify.class, Justify.LEFT);
 
     //Navigation
     public static final String PROP_PANX = "panX";
-    public final PropertyWrapperFloat<RavenNodeRoot> panX =
+    public final PropertyWrapperFloat<RavenSymbolRoot> panX =
             new PropertyWrapperFloat(this, PROP_PANX,
             PropertyWrapper.FLAGS_NOANIM, 0);
 
     public static final String PROP_PANY = "panY";
-    public final PropertyWrapperFloat<RavenNodeRoot> panY =
+    public final PropertyWrapperFloat<RavenSymbolRoot> panY =
             new PropertyWrapperFloat(this, PROP_PANY,
             PropertyWrapper.FLAGS_NOANIM, 0);
 
     public static final String PROP_ROTATE = "rotate";
-    public final PropertyWrapperFloat<RavenNodeRoot> rotate =
+    public final PropertyWrapperFloat<RavenSymbolRoot> rotate =
             new PropertyWrapperFloat(this, PROP_ROTATE,
             PropertyWrapper.FLAGS_NOANIM, 0);
 
     public static final String PROP_ZOOM = "zoom";
-    public final PropertyWrapperFloat<RavenNodeRoot> zoom =
+    public final PropertyWrapperFloat<RavenSymbolRoot> zoom =
             new PropertyWrapperFloat(this, PROP_ZOOM,
             PropertyWrapper.FLAGS_NOANIM, 1);
 
     //Snapping
     public static final String PROP_SNAP_VERTEX = "snapVertex";
-    public final PropertyWrapperBoolean<RavenNodeRoot> snapVertex =
+    public final PropertyWrapperBoolean<RavenSymbolRoot> snapVertex =
             new PropertyWrapperBoolean(this, PROP_SNAP_VERTEX, 
             PropertyWrapper.FLAGS_NOANIM, true);
 
     public static final String PROP_SNAP_GRID = "snapGrid";
-    public final PropertyWrapperBoolean<RavenNodeRoot> snapGrid =
+    public final PropertyWrapperBoolean<RavenSymbolRoot> snapGrid =
             new PropertyWrapperBoolean(this, PROP_SNAP_GRID, 
             PropertyWrapper.FLAGS_NOANIM, false);
 
     //Grid
     public static final String PROP_GRID_SHOW = "gridShow";
-    public final PropertyWrapperBoolean<RavenNodeRoot> gridShow =
+    public final PropertyWrapperBoolean<RavenSymbolRoot> gridShow =
             new PropertyWrapperBoolean(this, PROP_GRID_SHOW, 
             PropertyWrapper.FLAGS_NOANIM, false);
 
     public static final String PROP_GRID_SPACING_MAJ = "gridSpacingMajor";
-    public final PropertyWrapperFloat<RavenNodeRoot> gridSpacingMaj =
+    public final PropertyWrapperFloat<RavenSymbolRoot> gridSpacingMaj =
             new PropertyWrapperFloat(this, PROP_GRID_SPACING_MAJ, 
             PropertyWrapper.FLAGS_NOANIM, 128);
 
     public static final String PROP_GRID_SPACING_MIN = "gridSpacingMinor";
-    public final PropertyWrapperFloat<RavenNodeRoot> gridSpacingMin =
+    public final PropertyWrapperFloat<RavenSymbolRoot> gridSpacingMin =
             new PropertyWrapperFloat(this, PROP_GRID_SPACING_MIN, 
             PropertyWrapper.FLAGS_NOANIM, 16);
 
     public static final String PROP_GRID_SPACING_OFFX = "gridSpacingOffX";
-    public final PropertyWrapperFloat<RavenNodeRoot> gridSpacingOffX =
+    public final PropertyWrapperFloat<RavenSymbolRoot> gridSpacingOffX =
             new PropertyWrapperFloat(this, PROP_GRID_SPACING_OFFX, 
             PropertyWrapper.FLAGS_NOANIM, 0);
 
     public static final String PROP_GRID_SPACING_OFFY = "gridSpacingOffY";
-    public final PropertyWrapperFloat<RavenNodeRoot> gridSpacingOffY =
+    public final PropertyWrapperFloat<RavenSymbolRoot> gridSpacingOffY =
             new PropertyWrapperFloat(this, PROP_GRID_SPACING_OFFY, 
             PropertyWrapper.FLAGS_NOANIM, 0);
 
     public static final String PROP_GRID_COLOR = "gridColor";
-    public final PropertyWrapper<RavenNodeRoot, RavenPaintColor> gridColor =
+    public final PropertyWrapper<RavenSymbolRoot, RavenPaintColor> gridColor =
             new PropertyWrapper(this, PROP_GRID_COLOR, 
             PropertyWrapper.FLAGS_NOANIM, 
             RavenPaintColor.class, RavenPaintColor.LIGHT_GREY);
     
     //Graph
     public static final String PROP_GRAPH_RADIUS_PICK = "graphRadiusPick";
-    public final PropertyWrapperFloat<RavenNodeRoot> graphRadiusPick =
+    public final PropertyWrapperFloat<RavenSymbolRoot> graphRadiusPick =
             new PropertyWrapperFloat(this, PROP_GRAPH_RADIUS_PICK, 
             PropertyWrapper.FLAGS_NOANIM, 3);
 
     public static final String PROP_GRAPH_RADIUS_DISPLAY = "graphRadiusDisplay";
-    public final PropertyWrapperFloat<RavenNodeRoot> graphRadiusDisplay =
+    public final PropertyWrapperFloat<RavenSymbolRoot> graphRadiusDisplay =
             new PropertyWrapperFloat(this, PROP_GRAPH_RADIUS_DISPLAY, 
             PropertyWrapper.FLAGS_NOANIM, 2);
 
     public static final String PROP_GRAPH_COLOR_EDGE = "graphColorEdge";
-    public final PropertyWrapper<RavenNodeRoot, RavenPaintColor> graphColorEdge =
+    public final PropertyWrapper<RavenSymbolRoot, RavenPaintColor> graphColorEdge =
             new PropertyWrapper(this, PROP_GRAPH_COLOR_EDGE, 
             PropertyWrapper.FLAGS_NOANIM, 
             RavenPaintColor.class, RavenPaintColor.BLUE);
 
     public static final String PROP_GRAPH_COLOR_EDGE_SELECT = "graphColorEdgeSelect";
-    public final PropertyWrapper<RavenNodeRoot, RavenPaintColor> graphColorEdgeSelect =
+    public final PropertyWrapper<RavenSymbolRoot, RavenPaintColor> graphColorEdgeSelect =
             new PropertyWrapper(this, PROP_GRAPH_COLOR_EDGE_SELECT, 
             PropertyWrapper.FLAGS_NOANIM, 
             RavenPaintColor.class, RavenPaintColor.RED);
 
     public static final String PROP_GRAPH_COLOR_VERT = "graphColorVert";
-    public final PropertyWrapper<RavenNodeRoot, RavenPaintColor> graphColorVert =
+    public final PropertyWrapper<RavenSymbolRoot, RavenPaintColor> graphColorVert =
             new PropertyWrapper(this, PROP_GRAPH_COLOR_VERT, 
             PropertyWrapper.FLAGS_NOANIM, 
             RavenPaintColor.class, RavenPaintColor.WHITE);
 
     public static final String PROP_GRAPH_COLOR_VERT_SELECT = "graphColorVertSelect";
-    public final PropertyWrapper<RavenNodeRoot, RavenPaintColor> graphColorVertSelect =
+    public final PropertyWrapper<RavenSymbolRoot, RavenPaintColor> graphColorVertSelect =
             new PropertyWrapper(this, PROP_GRAPH_COLOR_VERT_SELECT, 
             PropertyWrapper.FLAGS_NOANIM, 
             RavenPaintColor.class, RavenPaintColor.GREEN);
-    
-    
-    
-//    public static final String PROP_SNAPPING = "snapping";
-//    public final PropertyWrapper<RavenNodeRoot, Snapping> snapping =
-//            new PropertyWrapper(this, PROP_SNAPPING, Snapping.class, new Snapping());
-//
-//    public static final String PROP_GRAPHDISPLAY = "graphDisplay";
-//    public final PropertyWrapper<RavenNodeRoot, GraphLayout> graphDisplay =
-//            new PropertyWrapper(this, PROP_GRAPHDISPLAY, GraphLayout.class, new GraphLayout());
-
-//    public static final String PROP_CAMERA = "camera";
-//    public final PropertyWrapper<RavenNodeRoot, RavenNodeCamera> camera =
-//            new PropertyWrapper(
-//            this, PROP_CAMERA, RavenNodeCamera.class);
-
 
     public static final String CHILD_PAINTLIBRARY = "paintLibrary";
-    public final ChildWrapperSingle<RavenNodeRoot, RavenNodePaintLibrary> paintLibrary =
+    public final ChildWrapperSingle<RavenSymbolRoot, RavenNodePaintLibrary> paintLibrary =
             new ChildWrapperSingle(
             this, CHILD_PAINTLIBRARY, RavenNodePaintLibrary.class);
 
     public static final String CHILD_STROKELIBRARY = "strokeLibrary";
-    public final ChildWrapperSingle<RavenNodeRoot, RavenNodeStrokeLibrary> strokeLibrary =
+    public final ChildWrapperSingle<RavenSymbolRoot, RavenNodeStrokeLibrary> strokeLibrary =
             new ChildWrapperSingle(
             this, CHILD_STROKELIBRARY, RavenNodeStrokeLibrary.class);
 
-//    public static final String CHILD_SCENEGRAPH = "sceneGraph";
-//    public final ChildWrapperList<RavenNodeRoot, RavenNodeXformable> sceneGraph =
-//            new ChildWrapperList(
-//            this, CHILD_SCENEGRAPH, RavenNodeXformable.class);
-//
     public static final String CHILD_COMPOSITION_LIBRARY = "compositionLibrary";
-    public final ChildWrapperSingle<RavenNodeRoot, RavenNodeCompositionLibrary> compositionLibrary =
+    public final ChildWrapperSingle<RavenSymbolRoot, RavenNodeCompositionLibrary> compositionLibrary =
             new ChildWrapperSingle(
             this, CHILD_COMPOSITION_LIBRARY, RavenNodeCompositionLibrary.class);
-//
+
     public static final String CHILD_SCENEGRAPH = "sceneGraph";
-    public final ChildWrapperSingle<RavenNodeRoot, RavenNodeSceneGraph> sceneGraph =
+    public final ChildWrapperSingle<RavenSymbolRoot, RavenNodeSceneGraph> sceneGraph =
             new ChildWrapperSingle(
             this, CHILD_SCENEGRAPH, RavenNodeSceneGraph.class);
 
-    AffineTransform viewXform = new AffineTransform();
+//    AffineTransform viewXform = new AffineTransform();
 
-    protected RavenNodeRoot()
+    protected RavenSymbolRoot(int nodeUid)
     {
-        ViewUpdater update = new ViewUpdater();
-        panX.addPropertyWrapperListener(update);
-        panY.addPropertyWrapperListener(update);
-        rotate.addPropertyWrapperListener(update);
-        zoom.addPropertyWrapperListener(update);
-    }
-
-    public static RavenNodeRoot create(NodeSymbolType nodeDocumentType)
-    {
-        RavenNodeRoot root = new RavenNodeRoot();
-        root.load(nodeDocumentType);
-        return root;
+        super(nodeUid);
+//        ViewUpdater update = new ViewUpdater();
+//        panX.addPropertyWrapperListener(update);
+//        panY.addPropertyWrapperListener(update);
+//        rotate.addPropertyWrapperListener(update);
+//        zoom.addPropertyWrapperListener(update);
     }
 
     @Override
     public String getTooltipText()
     {
         return "root";
+    }
+
+    @Override
+    public Selection<NodeObject> getSelection()
+    {
+        NodeSymbol sym = getSymbol();
+        return sym == null ? null : sym.getSelection();
     }
 
     @Override
@@ -274,12 +257,12 @@ public class RavenNodeRoot extends NodeSymbol
 
         FrameKey frame = ctx.getFrame();
         
-//        ColorStyle col = background.getValue().getColor();
         RavenPaintColor rcol = background.getValue(frame);
-        //ColorStyle col = rcol.getColor();
         CyRendererUtil2D.clear(rend, rcol.r, rcol.g, rcol.b, rcol.a);
 
-        CyMatrix4d view = new CyMatrix4d(viewXform);
+        
+//        CyMatrix4d view = new CyMatrix4d(viewXform);
+        CyMatrix4d view = getWorldToDeviceTransform((CyMatrix4d)null);
         rend.setViewXform(view);
 
         for (int i = 0; i < sceneGraph.size(); ++i)
@@ -295,7 +278,6 @@ public class RavenNodeRoot extends NodeSymbol
             float offX = gridSpacingOffX.getValue();
             float offY = gridSpacingOffY.getValue();
             drawGrid(ctx, spaceMin, offX, offY);
-            
         }
     }
 
@@ -326,7 +308,6 @@ public class RavenNodeRoot extends NodeSymbol
         CyMatrix4d p2g = new CyMatrix4d(g2p);
         p2g.invert();
 
-//        CyRectangle2d boundsProj = new CyRectangle2d(0, 0, stack.getDeviceWidth(), stack.getDeviceHeight());
         CyRectangle2d boundsProj = new CyRectangle2d(-1, -1, 2, 2);
         CyRectangle2d boundsGrid = boundsProj.createTransformedBounds(p2g);
 
@@ -382,108 +363,9 @@ public class RavenNodeRoot extends NodeSymbol
     @Override
     public ArrayList<RavenNodeCamera> getCameras()
     {
-        ArrayList<RavenNodeCamera> cams = getNodes(RavenNodeCamera.class);
+        ArrayList<RavenNodeCamera> cams = getSymbol().getNodes(RavenNodeCamera.class);
         return cams;
     }
-    
-    
-//    @Override
-//    public void renderCamerasAll(RenderContext ctx)
-//    {
-//        CyDrawStack rend = ctx.getDrawStack();
-//        FrameKey frame = ctx.getFrame();
-//
-//        //Find cameras to draw
-//        ArrayList<RavenNodeCamera> cams = getNodes(RavenNodeCamera.class);
-//
-//        class Comp implements Comparator<RavenNodeCamera>
-//        {
-//            @Override
-//            public int compare(RavenNodeCamera o1, RavenNodeCamera o2)
-//            {
-//                return o1.getCameraOrder() - o2.getCameraOrder();
-//            }
-//        }
-//
-//        Collections.sort(cams, new Comp());
-//
-//        RavenPaintColor col = background.getValue();
-//        CyRendererUtil2D.clear(rend, col.r, col.g, col.b, col.a);
-//
-//        int devW = rend.getDeviceWidth();
-//        int devH = rend.getDeviceHeight();
-//
-//        //Draw cameras
-//        CyMatrix4d mat = new CyMatrix4d();
-////        AffineTransform l2w = new AffineTransform();
-//        for (int i = 0; i < cams.size(); ++i)
-//        {
-//            RavenNodeCamera camera = cams.get(i);
-//            if (!camera.isVisible(frame))
-//            {
-//                continue;
-//            }
-//
-//            float opacity = camera.getOpacity(frame);
-//            rend.setOpacity(opacity);
-//            if (opacity == 0)
-//            {
-//                continue;
-//            }
-//
-//            double vx = camera.getViewportX();
-//            double vy = camera.getViewportY();
-//            double vw = camera.getViewportWidth();
-//            double vh = camera.getViewportHeight();
-//
-//            rend.addDrawRecord(new CyDrawRecordViewport(
-//                    (int)(vx * devW), (int)(vy * devH),
-//                    (int)(vw * devW), (int)(vh * devH)
-//                    ));
-//
-//            double cw = camera.getWidth();
-//            double ch = camera.getHeight();
-//            mat.gluOrtho2D(-cw / 2, cw / 2, ch / 2, -ch / 2);
-//            rend.setProjXform(mat);
-//
-//            camera.getLocalToWorldTransform(mat);
-//            mat.invert();
-//            rend.setViewXform(mat);
-//
-//            //Render scene graph
-//            for (int j = 0; j < sceneGraph.size(); ++j)
-//            {
-//                sceneGraph.get(j).render(ctx);
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public int getNumCameras()
-//    {
-//        ArrayList<RavenNodeCamera> cams = getNodes(RavenNodeCamera.class);
-//        return cams.size();
-//    }
-//
-//    @Deprecated
-//    @Override
-//    public void render(RavenRenderer renderer)
-//    {
-//        RavenPaintColor color = background.getValue();
-//        Color bgCol = color == null ? Color.GRAY : color.getColor().getColor();
-//
-//        renderer.clear(bgCol);
-//        renderer.setAntialiased(antialiased.getValue());
-//
-////        renderer.mulTransform(viewXform);
-//        renderer.setWorldToViewTransform(viewXform);
-//
-//        for (int i = 0; i < sceneGraph.size(); ++i)
-//        {
-//            RavenNodeXformable child = sceneGraph.get(i);
-//            child.render(renderer);
-//        }
-//    }
 
     @Deprecated
     @Override
@@ -582,17 +464,6 @@ public class RavenNodeRoot extends NodeSymbol
     {
         RavenNodeSceneGraph sg = sceneGraph.getChild();
         return sg.pickObject(rectangle, worldToPick, intersection);
-        
-//        for (int i = 0; i < sceneGraph.size(); ++i)
-//        {
-//            RavenNodeXformable child = sceneGraph.get(i);
-//            NodeObject node = child.pickObject(rectangle, worldToPick, intersection);
-//            if (node != null)
-//            {
-//                return node;
-//            }
-//        }
-//        return null;
     }
 
     @Override
@@ -600,12 +471,6 @@ public class RavenNodeRoot extends NodeSymbol
     {
         RavenNodeSceneGraph sg = sceneGraph.getChild();
         sg.pickObjects(rectangle, worldToPick, intersection, pickList);
-        
-//        for (int i = 0; i < sceneGraph.size(); ++i)
-//        {
-//            RavenNodeXformable child = sceneGraph.get(i);
-//            child.pickObjects(rectangle, worldToPick, intersection, pickList);
-//        }
     }
 
     @Override
@@ -633,19 +498,19 @@ public class RavenNodeRoot extends NodeSymbol
     }
 
     @Override
-    public PropertyWrapper<RavenNodeRoot, RavenStroke> getStrokeStyleProp()
+    public PropertyWrapper<RavenSymbolRoot, RavenStroke> getStrokeStyleProp()
     {
         return strokeShape;
     }
 
     @Override
-    public PropertyWrapper<RavenNodeRoot, RavenPaint> getStrokePaintProp()
+    public PropertyWrapper<RavenSymbolRoot, RavenPaint> getStrokePaintProp()
     {
         return strokePaint;
     }
 
     @Override
-    public PropertyWrapper<RavenNodeRoot, RavenPaint> getFillPaintProp()
+    public PropertyWrapper<RavenSymbolRoot, RavenPaint> getFillPaintProp()
     {
         return fillPaint;
     }
@@ -669,18 +534,6 @@ public class RavenNodeRoot extends NodeSymbol
     {
         return background.getValue();
     }
-
-//    @Override
-//    public Snapping getSnapping()
-//    {
-//        return snapping.getValue();
-//    }
-//    
-//    @Override
-//    public GraphLayout getGraphLayout()
-//    {
-//        return graphDisplay.getValue();
-//    }
 
     public boolean isSnapGrid()
     {
@@ -780,56 +633,35 @@ public class RavenNodeRoot extends NodeSymbol
     
     //-----------------------------------------------
 
-    class ViewUpdater extends PropertyWrapperAdapter
-    {
-//        private AffineTransform xform = new AffineTransform();
-
-        @Override
-        public void propertyWrapperDataChanged(PropertyChangeEvent evt)
-        {
-            getWorldToDeviceTransform(viewXform);
-            
-//            getWorldToDeviceTransform(xform);
+//    class ViewUpdater extends PropertyWrapperAdapter
+//    {
+////        private AffineTransform xform = new AffineTransform();
 //
-//            viewXform.setTransform(xform.m00, xform.m10,
-//                    xform.m01, xform.m11,
-//                    xform.m02, xform.m12);
-        }
-    }
+//        @Override
+//        public void propertyWrapperDataChanged(PropertyChangeEvent evt)
+//        {
+//            getWorldToDeviceTransform(viewXform);
+//            
+////            getWorldToDeviceTransform(xform);
+////
+////            viewXform.setTransform(xform.m00, xform.m10,
+////                    xform.m01, xform.m11,
+////                    xform.m02, xform.m12);
+//        }
+//    }
 
     @ServiceInst(service=NodeObjectProvider.class)
-    public static class Provider extends NodeObjectProvider<RavenNodeRoot>
+    public static class Provider extends NodeObjectProvider<RavenSymbolRoot>
     {
         public Provider()
         {
-            super(RavenNodeRoot.class, "Root", "/icons/node/root.png");
+            super(RavenSymbolRoot.class, "Root", "/icons/node/root.png");
         }
 
         @Override
-        public RavenNodeRoot createNode(int uid)
+        public RavenSymbolRoot createNode(int uid)
         {
-            return new RavenNodeRoot();
-        }
-    }
-
-    @ServiceInst(service=NodeSymbolProvider.class)
-    public static class DocProvider extends NodeSymbolProvider<RavenNodeRoot>
-    {
-        public DocProvider()
-        {
-            super(RavenNodeRoot.class, "Raven Animation 2D", "/icons/node/root.png");
-        }
-
-        @Override
-        public NodeSymbol loadDocument(NodeSymbolType docTree)
-        {
-            return create(docTree);
-        }
-
-        @Override
-        public RavenWizardPageIterator<RavenNodeRoot> createDocumentWizard()
-        {
-            return new RavenNodeRootWizard();
+            return new RavenSymbolRoot(uid);
         }
     }
 

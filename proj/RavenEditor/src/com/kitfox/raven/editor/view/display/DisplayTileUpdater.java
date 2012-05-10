@@ -353,7 +353,7 @@ public class DisplayTileUpdater implements NodeSymbolListener
                                 gc, tileBounds, target.tileBack,
                                 startTime, curTime, curPass);
                         ServiceRenderer2D service =
-                                root.getNodeService(ServiceRenderer2D.class, false);
+                                root.getRoot().getNodeService(ServiceRenderer2D.class, false);
                         if (service != null)
                         {
                             service.render(renderer);

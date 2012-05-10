@@ -34,7 +34,7 @@ import com.kitfox.coyote.shape.bezier.builder.PiecewiseBezierSchneiderNd;
 import com.kitfox.coyote.shape.bezier.mesh.BezierMeshEdge2i;
 import com.kitfox.coyote.shape.outliner.bitmap.BitmapOutliner;
 import com.kitfox.raven.editor.node.scene.RavenNodeMesh2;
-import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 import com.kitfox.raven.editor.node.scene.RavenNodeSceneGraph;
 import com.kitfox.raven.editor.node.scene.RenderContext;
 import com.kitfox.raven.editor.node.tools.ToolUser;
@@ -443,7 +443,7 @@ public class ToolBrush extends ToolDisplay
 
         RavenNodeMesh2 meshNode = createStrokeMesh(path);
                 
-        RavenNodeRoot doc = getDocument();
+        RavenSymbolRoot doc = getDocument();
         RavenNodeSceneGraph sg = doc.getSceneGraph();
         sg.children.add(meshNode);
     }
@@ -480,7 +480,7 @@ public class ToolBrush extends ToolDisplay
         scale.invert();
         CyPath2d meshPath = path.createTransformedPath(scale);
 
-        RavenNodeRoot root = getDocument();
+        RavenSymbolRoot root = getDocument();
         
         //Create node
         NetworkDataEdge data = createMeshData(path);
@@ -488,7 +488,7 @@ public class ToolBrush extends ToolDisplay
         NetworkMesh network = NetworkMesh.create(meshPath, data);
         
         RavenNodeMesh2 mesh = NodeObjectProviderIndex.inst().createNode(
-                RavenNodeMesh2.class, root);
+                RavenNodeMesh2.class, root.getSymbol());
         mesh.setNetworkMesh(network, false);
         
         return mesh;
@@ -498,7 +498,7 @@ public class ToolBrush extends ToolDisplay
     {
         CyRectangle2d boundsLocal = path.getBounds();
 
-        RavenNodeRoot root = getDocument();
+        RavenSymbolRoot root = getDocument();
         
         RavenPaintLayout layout = new RavenPaintLayout(boundsLocal);
         RavenStroke stroke = root.getStrokeShape();

@@ -30,7 +30,7 @@ import com.kitfox.coyote.shape.ShapeLinesProvider;
 import com.kitfox.coyote.shape.bezier.BezierCurve2d;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import com.kitfox.raven.editor.RavenEditor;
-import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 import com.kitfox.raven.editor.node.scene.RenderContext;
 import com.kitfox.raven.editor.node.tools.ToolProvider;
 import com.kitfox.raven.editor.node.tools.ToolUser;
@@ -216,7 +216,7 @@ public class ToolCurveEdit extends ToolDisplay
             }
         }
         
-        RavenNodeRoot root = getDocument();
+        RavenSymbolRoot root = getDocument();
         CyMatrix4d w2d = stack.getViewXform();
         CyMatrix4d d2p = stack.getProjXform();
         

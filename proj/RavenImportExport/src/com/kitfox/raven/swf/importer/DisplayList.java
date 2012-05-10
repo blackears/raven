@@ -49,7 +49,7 @@ public class DisplayList
         this.importTool = importTool;
 
         tierGroup = NodeObjectProviderIndex.inst().createNode(
-                RavenNodeGroup.class, importTool.root);
+                RavenNodeGroup.class, importTool.root.getSymbol());
         tierGroup.setName("tiers");
 
         importTool.importGroup.children.add(tierGroup);
@@ -131,7 +131,7 @@ public class DisplayList
         {
             this.depth = depth;
             node = NodeObjectProviderIndex.inst().createNode(
-                    RavenNodeInstance.class, importTool.root);
+                    RavenNodeInstance.class, importTool.root.getSymbol());
             if (name == null || "".equals(name))
             {
                 name = "tier";

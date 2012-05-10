@@ -32,8 +32,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
-import javax.swing.UIDefaults;
-import javax.swing.UIManager;
 
 /**
  *
@@ -45,6 +43,8 @@ public class NewSymbolWizardPanel extends JPanel
     public static final String WIZ_DESC = "Choose document";
 
     final NewSymbolWizard wizard;
+    
+//    boolean updating = true;
 
     /** Creates new form NewDocumentWizardPanel */
     public NewSymbolWizardPanel(NewSymbolWizard wizard)
@@ -62,6 +62,8 @@ public class NewSymbolWizardPanel extends JPanel
         {
             list_providers.setSelectedIndex(0);
         }
+        
+//        updating = false;
     }
 
     @Override
@@ -125,6 +127,11 @@ public class NewSymbolWizardPanel extends JPanel
 
     private void list_providersValueChanged(javax.swing.event.ListSelectionEvent evt)//GEN-FIRST:event_list_providersValueChanged
     {//GEN-HEADEREND:event_list_providersValueChanged
+//        if (updating)
+//        {
+//            return;
+//        }
+        
         NodeSymbolProvider prov = (NodeSymbolProvider)list_providers.getSelectedValue();
         wizard.setProvider(prov);
 

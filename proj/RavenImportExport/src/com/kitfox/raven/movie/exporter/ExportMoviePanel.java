@@ -17,7 +17,7 @@
 package com.kitfox.raven.movie.exporter;
 
 import com.kitfox.raven.editor.node.scene.RavenNodeComposition;
-import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 import com.kitfox.raven.editor.node.scene.RenderDevice;
 import com.kitfox.raven.wizard.RavenWizardPage;
 import java.awt.BorderLayout;
@@ -66,7 +66,7 @@ public class ExportMoviePanel extends javax.swing.JPanel
         updating = true;
 
         combo_composition.removeAllItems();
-        RavenNodeRoot root = (RavenNodeRoot)ctx.getDoc();
+        RavenSymbolRoot root = (RavenSymbolRoot)ctx.getSymbol().getRoot();
         ArrayList<RavenNodeComposition> comps =
                 root.getCompositionLibrary().getCompositions();
         for (RavenNodeComposition comp: comps)

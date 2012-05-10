@@ -18,7 +18,7 @@ package com.kitfox.raven.editor.view.outliner;
 
 import com.kitfox.raven.util.tree.ChildWrapperList;
 import com.kitfox.raven.util.tree.NodeObject;
-import com.kitfox.xml.schema.ravendocumentschema.RavenTransferableType;
+import com.kitfox.xml.schema.ravendocumentschema.NodeTransferableType;
 import javax.swing.Icon;
 import javax.swing.JPopupMenu;
 import javax.swing.tree.TreePath;
@@ -75,19 +75,21 @@ abstract public class OutlinerNode
 
     abstract public OutlinerNode findNode(NodeObject node);
 
-    abstract public boolean paste(int index, RavenTransferableType xferLayers);
+    abstract public boolean paste(int index, NodeTransferableType xferLayers);
 
     /**
      * @return the parent
      */
-    public OutlinerNode getParent() {
+    public OutlinerNode getParent()
+    {
         return parent;
     }
 
     /**
      * @return the model
      */
-    public OutlinerTreeModel getModel() {
+    public OutlinerTreeModel getModel()
+    {
         return model;
     }
 }

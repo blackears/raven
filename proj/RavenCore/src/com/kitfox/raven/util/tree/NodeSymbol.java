@@ -19,6 +19,7 @@ package com.kitfox.raven.util.tree;
 import com.kitfox.raven.util.Selection;
 import com.kitfox.raven.util.undo.History;
 import com.kitfox.raven.util.undo.HistoryAction;
+import com.kitfox.xml.schema.ravendocumentschema.NodeObjectType;
 import com.kitfox.xml.schema.ravendocumentschema.NodeSymbolType;
 import java.awt.Window;
 import java.beans.PropertyChangeEvent;
@@ -36,65 +37,137 @@ import java.util.regex.Pattern;
  *
  * @author kitfox
  */
-abstract public class NodeSymbol extends NodeObject
+abstract public class NodeSymbol<RootType extends NodeRoot>
 {
+    final NodeDocument document;
+    final int symbolUid;
+    
+    public static final String PROP_NAME = "name";
+    String name = "symbol";
+    
     int nextUid;
+    
+    private RootType root;
 
-    public static final String CHILD_TRACKLIBRARY = "trackLibrary";
-    public final ChildWrapperSingle<NodeSymbol, TrackLibrary>
-            childTrackLibrary =
-            new ChildWrapperSingle(this,
-            CHILD_TRACKLIBRARY, TrackLibrary.class);
-
-//    public static final String CHILD_RESOURCELIBRARY = "resourceLibrary";
-//    public final ChildWrapperSingle<NodeDocument, ResourceLibrary>
-//            childResourceLibrary =
-//            new ChildWrapperSingle(this,
-//            CHILD_RESOURCELIBRARY, ResourceLibrary.class);
-
-//    private Window swingRoot;
     private final Selection<NodeObject> selection = new Selection<NodeObject>();
 
-    ArrayList<NodeSymbolListener> docListeners = new ArrayList<NodeSymbolListener>();
+    ArrayList<NodeSymbolListener> symbolListeners = new ArrayList<NodeSymbolListener>();
 
     //Index for rapidly looking up nodes by uid
     HashMap<Integer, NodeObject> nodeIndex =
             new HashMap<Integer, NodeObject>();
 
-    //Source code that will be added to objects generated from this document
-    private final DocumentCode documentCode = new DocumentCode();
-
-    private final PluginsManager pluginsManager = new PluginsManager();
-//    private Environment env;
-    NodeDocument2 document;
-
-    public static final String PROP_SYMBOLNAME = "symbolName";
-    String symbolName;
-    
-    protected NodeSymbol()
+    protected NodeSymbol(int symbolUid, NodeDocument document)
     {
-        super(0);
+        this.symbolUid = symbolUid;
+        this.document = document;
     }
 
-    public String getSymbolName()
+//    protected NodeSymbol(int symbolUid, NodeDocument document, NodeSymbolType type)
+//    {
+//        this.symbolUid = symbolUid;
+//        this.document = document;
+//        load(type);
+//    }
+
+    /**
+     * Should only be called by NodeSymbolProvider during initialization
+     *
+     * @param type Tree with saved state.  If null, a default document
+     * will be produced.  (In the default document, all ChildWrapperSingle
+     * will be initialzied).
+     */
+    protected void load(NodeSymbolType type)
     {
-        return symbolName;
+        //symbolUID and document should already be set
+
+        if (type != null)
+        {
+            name = type.getName();
+            nextUid = type.getNextUid();
+            
+            NodeObjectType rootType = type.getRoot();
+            NodeObjectProvider prov = 
+                    NodeObjectProviderIndex.inst().getProvider(rootType.getClazz());
+            RootType newRoot = (RootType)prov.createNode(this, rootType);
+            setRoot(newRoot);
+        }
+        else
+        {
+//            symbolName = "symbol";
+        }
+    }
+
+    public NodeSymbolType export()
+    {
+        NodeSymbolType type = new NodeSymbolType();
+        
+        type.setClazz(getClass().getName());
+        type.setSymbolUid(symbolUid);
+        type.setName(name);
+        type.setNextUid(nextUid);
+        
+        type.setRoot(root.export());
+
+        return type;
+    }
+
+    /**
+     * @return the root
+     */
+    public RootType getRoot()
+    {
+        return root;
+    }
+
+    /**
+     * The root can only be set once, preferably shortly after this
+     * NodeSymbol is constructed.
+     * 
+     * @param root 
+     */
+    protected void setRoot(RootType root)
+    {
+        if (this.root != null)
+        {
+            throw new IllegalStateException("Symbol root can only be set once");
+        }
+        
+        this.root = root;
+        root.setSymbol(this);
     }
     
-    public void setSymbolName(String name)
+    public String getName()
     {
-        if (name != null && name.equals(symbolName))
+        return name;
+    }
+    
+    public void setName(String name)
+    {
+        if (name != null && name.equals(this.name))
         {
             return;
         }
 
-        RenameSymbolAction action = new RenameSymbolAction(symbolName, name);
+        RenameSymbolAction action = new RenameSymbolAction(this.name, name);
+        
         doAction(action);
+    }
+
+    protected void doAction(HistoryAction action)
+    {
+        History hist = document.getHistory();
+        if (hist == null)
+        {
+            action.redo(null);
+            return;
+        }
+        hist.doAction(action);
     }
     
     public History getHistory()
     {
-        return document == null ? null : document.getHistory();
+        return document.getHistory();
     }
     
     /**
@@ -104,7 +177,6 @@ abstract public class NodeSymbol extends NodeObject
      * @param uid
      * @return
      */
-    @Override
     public NodeObject getNode(int uid)
     {
         return nodeIndex.get(uid);
@@ -112,43 +184,43 @@ abstract public class NodeSymbol extends NodeObject
 
     public void addNodeSymbolListener(NodeSymbolListener l)
     {
-        docListeners.add(l);
+        symbolListeners.add(l);
     }
 
     public void removeNodeSymbolListener(NodeSymbolListener l)
     {
-        docListeners.remove(l);
+        symbolListeners.remove(l);
     }
 
     protected void fireSymbolNameChanged(PropertyChangeEvent evt)
     {
-        for (int i = 0; i < docListeners.size(); ++i)
+        for (int i = 0; i < symbolListeners.size(); ++i)
         {
-            docListeners.get(i).symbolNameChanged(evt);
+            symbolListeners.get(i).symbolNameChanged(evt);
         }
     }
 
     protected void fireSymbolPropertyChanged(PropertyChangeEvent evt)
     {
-        for (int i = 0; i < docListeners.size(); ++i)
+        for (int i = 0; i < symbolListeners.size(); ++i)
         {
-            docListeners.get(i).symbolPropertyChanged(evt);
+            symbolListeners.get(i).symbolPropertyChanged(evt);
         }
     }
 
     protected void fireSymbolNodeChildAdded(ChildWrapperEvent evt)
     {
-        for (int i = 0; i < docListeners.size(); ++i)
+        for (int i = 0; i < symbolListeners.size(); ++i)
         {
-            docListeners.get(i).symbolNodeChildAdded(evt);
+            symbolListeners.get(i).symbolNodeChildAdded(evt);
         }
     }
 
     protected void fireSymbolNodeChildRemoved(ChildWrapperEvent evt)
     {
-        for (int i = 0; i < docListeners.size(); ++i)
+        for (int i = 0; i < symbolListeners.size(); ++i)
         {
-            docListeners.get(i).symbolNodeChildRemoved(evt);
+            symbolListeners.get(i).symbolNodeChildRemoved(evt);
         }
     }
 
@@ -160,40 +232,16 @@ abstract public class NodeSymbol extends NodeObject
     void notifySymbolNodeChildAdded(ChildWrapperEvent evt)
     {
         nodeIndex.clear();
-        buildUidIndex(nodeIndex);
+        root.buildUidIndex(nodeIndex);
         fireSymbolNodeChildAdded(evt);
     }
 
     void notifySymbolNodeChildRemoved(ChildWrapperEvent evt)
     {
         nodeIndex.clear();
-        buildUidIndex(nodeIndex);
+        root.buildUidIndex(nodeIndex);
         fireSymbolNodeChildRemoved(evt);
     }
-
-    /**
-     * Should only be called during initialization
-     *
-     * @param type Tree with saved state.  If null, a default document
-     * will be produced.  (In the default document, all ChildWrapperSingle
-     * will be initialzied).
-     */
-    protected void load(NodeSymbolType type)
-    {
-        super.load(this, type);
-
-        if (type != null)
-        {
-            symbolName = type.getDocumentName();
-            documentCode.load(type.getCode());
-            pluginsManager.load(type.getPlugins());
-        }
-        else
-        {
-            symbolName = "symbol";
-        }
-    }
-
 
     public int allocUid()
     {
@@ -201,7 +249,8 @@ abstract public class NodeSymbol extends NodeObject
     }
 
     /**
-     * Make sure next UID is at least minValue
+     * Forces the next uid to be allocated to be greater than or equal to
+     * minValue
      * 
      * @param minValue
      */
@@ -210,36 +259,10 @@ abstract public class NodeSymbol extends NodeObject
         nextUid = Math.max(minValue, nextUid);
     }
 
-    @Override
-    public NodeSymbol getSymbol()
-    {
-        return this;
-    }
-
-    @Override
-    protected void setParent(ChildWrapper parent)
-    {
-        throw new UnsupportedOperationException("Cannot set parent of root element");
-    }
-
-    @Override
-    public NodeSymbolType export()
-    {
-        NodeSymbolType type = new NodeSymbolType();
-        export(type);
-
-        type.setNextUid(nextUid);
-        type.setDocumentName(symbolName);
-        type.setCode(documentCode.export());
-        type.setPlugins(pluginsManager.export());
-
-        return type;
-    }
-
     public String createUniqueName(String name)
     {
         HashSet<String> set = new HashSet<String>();
-        getNames(set);
+        root.getNames(set);
 
         if (!set.contains(name))
         {
@@ -265,20 +288,6 @@ abstract public class NodeSymbol extends NodeObject
         return rootName;
     }
 
-//    /**
-//     * @return the swingRoot
-//     */
-//    public Window getSwingRoot() {
-//        return swingRoot;
-//    }
-//
-//    /**
-//     * @param swingRoot the swingRoot to set
-//     */
-//    public void setSwingRoot(Window swingRoot) {
-//        this.swingRoot = swingRoot;
-//    }
-
     /**
      * @return the selection
      */
@@ -298,7 +307,7 @@ abstract public class NodeSymbol extends NodeObject
     {
         final ArrayList<T> list = new ArrayList<T>();
 
-        visit(new NodeVisitor()
+        root.visit(new NodeVisitor()
         {
             @Override
             public void visit(NodeObject node)
@@ -314,7 +323,7 @@ abstract public class NodeSymbol extends NodeObject
 
     public Collection<Integer> getNodeUIDs(final Collection<Integer> list)
     {
-        visit(new NodeVisitor()
+        root.visit(new NodeVisitor()
         {
             @Override
             public void visit(NodeObject node) {
@@ -344,46 +353,27 @@ abstract public class NodeSymbol extends NodeObject
         history.commitTransaction();
     }
 
-    public TrackLibrary getTrackLibrary()
-    {
-        return childTrackLibrary.getChild();
-    }
-
-//    public ResourceLibrary getResourceLibrary()
-//    {
-//        return childResourceLibrary.getChild();
-//    }
-
-    /**
-     * @return the sourceCode
-     */
-    public DocumentCode getDocumentCode()
-    {
-        return documentCode;
-    }
-
-    /**
-     * @return the pluginsManager
-     */
-    public PluginsManager getPluginsManager()
-    {
-        return pluginsManager;
-    }
-
     /**
      * @return the env
      */
-    public NodeDocument2 getDocument()
+    public NodeDocument getDocument()
     {
         return document;
     }
 
-    /**
-     * @param document the env to set
-     */
-    public void setDocument(NodeDocument2 document)
+    public int getSymbolUid()
     {
-        this.document = document;
+        return symbolUid;
+    }
+
+    public void visit(NodeFilter nodes)
+    {
+        root.visit(nodes);
+    }
+
+    public <T> T getNodeService(Class<T> serviceClass, boolean recursive)
+    {
+        return (T)root.getNodeService(serviceClass, recursive);
     }
 
     //---------------------------------
@@ -403,8 +393,8 @@ abstract public class NodeSymbol extends NodeObject
         public void redo(History history)
         {
             PropertyChangeEvent evt = 
-                    new PropertyChangeEvent(this, PROP_SYMBOLNAME, oldName, newName);
-            symbolName = newName;
+                    new PropertyChangeEvent(this, PROP_NAME, oldName, newName);
+            name = newName;
             fireSymbolNameChanged(evt);
         }
 
@@ -412,8 +402,8 @@ abstract public class NodeSymbol extends NodeObject
         public void undo(History history)
         {
             PropertyChangeEvent evt = 
-                    new PropertyChangeEvent(this, PROP_SYMBOLNAME, newName, oldName);
-            symbolName = oldName;
+                    new PropertyChangeEvent(this, PROP_NAME, newName, oldName);
+            name = oldName;
             fireSymbolNameChanged(evt);
         }
 

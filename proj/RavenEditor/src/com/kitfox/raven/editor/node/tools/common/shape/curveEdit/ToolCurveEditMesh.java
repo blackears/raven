@@ -22,7 +22,7 @@ import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.renderer.CyDrawStack;
 import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.coyote.shape.bezier.mesh.BezierVertexSmooth;
-import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 import com.kitfox.raven.editor.node.scene.RenderContext;
 import com.kitfox.raven.editor.node.tools.common.shape.pen.ServiceBezierMesh;
 import com.kitfox.raven.shape.network.NetworkMesh;
@@ -286,7 +286,7 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
     @Override
     protected void click(MouseEvent evt)
     {
-        RavenNodeRoot root = getDocument();
+        RavenSymbolRoot root = getDocument();
         if (root == null)
         {
             return;
@@ -315,7 +315,7 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
     @Override
     protected void startDrag(MouseEvent evt)
     {
-        RavenNodeRoot root = getDocument();
+        RavenSymbolRoot root = getDocument();
         if (root == null)
         {
             return;

@@ -23,7 +23,7 @@ import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.node.scene.RavenNodeDataPlane;
 import com.kitfox.raven.editor.node.scene.RavenNodeGroup;
 import com.kitfox.raven.editor.node.scene.RavenNodePath;
-import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 import com.kitfox.raven.editor.node.tools.ToolProvider;
 import com.kitfox.raven.editor.node.tools.ToolUser;
 import com.kitfox.raven.shape.bezier.BezierMath;

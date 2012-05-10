@@ -181,7 +181,7 @@ public class DisplayPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            return doc.getCurSymbol().getNodeService(serviceClass, false);
+            return doc.getCurSymbol().getRoot().getNodeService(serviceClass, false);
         }
 
         return null;
@@ -199,7 +199,7 @@ public class DisplayPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            doc.getCurSymbol().getNodeServices(serviceClass, appendList, false);
+            doc.getCurSymbol().getRoot().getNodeServices(serviceClass, appendList, false);
         }
     }
 
@@ -258,7 +258,7 @@ public class DisplayPanel extends javax.swing.JPanel
         }
 
         NodeSymbol root = doc.getCurSymbol();
-        ServiceBackground service = root.getNodeService(ServiceBackground.class, false);
+        ServiceBackground service = root.getRoot().getNodeService(ServiceBackground.class, false);
         RavenPaintColor bg = RavenPaintColor.TRANSPARENT;
 //        RavenPaintColor bg = service == null
 //                ? RavenPaintColor.TRANSPARENT
@@ -305,7 +305,7 @@ public class DisplayPanel extends javax.swing.JPanel
         if (doc != null)
         {
             NodeSymbol root = doc.getCurSymbol();
-            ServiceDeviceCamera service = root.getNodeService(ServiceDeviceCamera.class, false);
+            ServiceDeviceCamera service = root.getRoot().getNodeService(ServiceDeviceCamera.class, false);
             return service.getWorldToDeviceTransform(xform);
         }
         
@@ -321,7 +321,7 @@ public class DisplayPanel extends javax.swing.JPanel
         if (doc != null)
         {
             NodeSymbol root = doc.getCurSymbol();
-            ServiceDeviceCamera service = root.getNodeService(ServiceDeviceCamera.class, false);
+            ServiceDeviceCamera service = root.getRoot().getNodeService(ServiceDeviceCamera.class, false);
             service.setWorldToDeviceTransform(xform);
         }
     }

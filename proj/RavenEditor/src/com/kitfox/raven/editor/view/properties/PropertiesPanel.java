@@ -29,6 +29,7 @@ import com.kitfox.raven.editor.RavenDocumentWeakListener;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.RavenEditorListener;
 import com.kitfox.raven.editor.RavenEditorWeakListener;
+import com.kitfox.raven.util.Selection;
 import com.kitfox.raven.util.SelectionEvent;
 import com.kitfox.raven.util.SelectionListener;
 import com.kitfox.raven.util.SelectionSubEvent;
@@ -125,7 +126,8 @@ public class PropertiesPanel extends javax.swing.JPanel
         }
         else
         {
-            NodeObject top = doc.getCurSymbol().getSelection().getTopSelected();
+            Selection<NodeObject> sel = doc.getCurSymbol().getSelection();
+            NodeObject top = sel.getTopSelected();
             if (top == null)
             {
                 model = null;

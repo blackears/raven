@@ -16,7 +16,6 @@
 
 package com.kitfox.raven.util.tree;
 
-import com.kitfox.xml.schema.ravendocumentschema.DocumentCodeType;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
@@ -124,30 +123,30 @@ public class DocumentCode
         return source;
     }
 
-    public DocumentCodeType export()
-    {
-        DocumentCodeType type = new DocumentCodeType();
-
-        type.setAnnotations(annotations.export());
-        type.setExtends(extendsClass.export());
-        type.setImplements(implementsClasses.export());
-        type.setImports(imports.export());
-        type.setSource(source.export());
-
-        return type;
-    }
-
-    public void load(DocumentCodeType sourceCode)
-    {
-        if (sourceCode != null)
-        {
-            annotations.load(sourceCode.getAnnotations());
-            extendsClass.load(sourceCode.getExtends());
-            implementsClasses.load(sourceCode.getImplements());
-            imports.load(sourceCode.getImports());
-            source.load(sourceCode.getSource());
-        }
-    }
+//    public DocumentCodeType export()
+//    {
+//        DocumentCodeType type = new DocumentCodeType();
+//
+//        type.setAnnotations(annotations.export());
+//        type.setExtends(extendsClass.export());
+//        type.setImplements(implementsClasses.export());
+//        type.setImports(imports.export());
+//        type.setSource(source.export());
+//
+//        return type;
+//    }
+//
+//    public void load(DocumentCodeType sourceCode)
+//    {
+//        if (sourceCode != null)
+//        {
+//            annotations.load(sourceCode.getAnnotations());
+//            extendsClass.load(sourceCode.getExtends());
+//            implementsClasses.load(sourceCode.getImplements());
+//            imports.load(sourceCode.getImports());
+//            source.load(sourceCode.getSource());
+//        }
+//    }
 
     public boolean isEmpty()
     {

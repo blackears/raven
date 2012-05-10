@@ -20,10 +20,10 @@ package com.kitfox.raven.util.tree;
  *
  * @author kitfox
  */
-public interface NodeDocument2Listener
+public interface NodeDocumentListener
 {
-    public void symbolAdded(NodeDocument2Event evt);
-    public void symbolRemoved(NodeDocument2Event evt);
-    public void currentSymbolChanged(NodeDocument2Event evt);
+    public void symbolAdded(NodeDocumentEvent evt);
+    public void symbolRemoved(NodeDocumentEvent evt);
+    public void currentSymbolChanged(NodeDocumentEvent evt);
     
 }

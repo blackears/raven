@@ -45,7 +45,6 @@ import java.util.EventObject;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 import javax.swing.ListCellRenderer;
 
 /**
@@ -126,7 +125,8 @@ public class CameraDisplayPanel
         combo_display.removeAllItems();
         
         CyRenderService serv = doc == null ? null 
-                : doc.getCurSymbol().getNodeService(CyRenderService.class, false);
+                : doc.getCurSymbol().getRoot()
+                .getNodeService(CyRenderService.class, false);
         if (serv != null)
         {
             RavenNodeCompositionLibrary lib =

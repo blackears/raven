@@ -24,7 +24,7 @@ package com.kitfox.raven.editor.node.tools.common;
 
 import com.kitfox.raven.editor.RavenDocument;
 import com.kitfox.raven.editor.RavenEditor;
-import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 
 /**
  *

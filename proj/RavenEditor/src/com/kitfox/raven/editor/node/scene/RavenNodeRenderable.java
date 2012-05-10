@@ -222,7 +222,8 @@ abstract public class RavenNodeRenderable extends RavenNode
     public CyRectangle2d getBoundsWorld()
     {
         CyShape path = getShapePickLocal();
-        return path.createTransformedBounds(
+        return path == null ? null 
+                : path.createTransformedBounds(
                 getLocalToWorldTransform((CyMatrix4d)null));
     }
 
@@ -231,7 +232,8 @@ abstract public class RavenNodeRenderable extends RavenNode
     public CyPath2d getShapeWorld()
     {
         CyShape path = getShapePickLocal();
-        return path.createTransformedPath(
+        return path == null ? null
+                : path.createTransformedPath(
                 getLocalToWorldTransform((CyMatrix4d)null));
     }
 
@@ -306,22 +308,23 @@ abstract public class RavenNodeRenderable extends RavenNode
     @Deprecated
     public AffineTransform getLocalToDeviceTransform(AffineTransform result)
     {
-        if (result == null)
-        {
-            result = new AffineTransform();
-        }
-
-        RavenNodeRoot doc = (RavenNodeRoot)getSymbol();
-        if (doc == null)
-        {
-            return getLocalToWorldTransform(result);
-        }
-
-        AffineTransform w2d = doc.getWorldToDeviceTransform(result);
-        AffineTransform l2w = getLocalToWorldTransform((AffineTransform)null);
-
-        w2d.concatenate(l2w);
-        return result;
+        return null;
+//        if (result == null)
+//        {
+//            result = new AffineTransform();
+//        }
+//
+//        RavenSymbolRoot doc = (RavenSymbolRoot)getSymbol();
+//        if (doc == null)
+//        {
+//            return getLocalToWorldTransform(result);
+//        }
+//
+//        AffineTransform w2d = doc.getWorldToDeviceTransform(result);
+//        AffineTransform l2w = getLocalToWorldTransform((AffineTransform)null);
+//
+//        w2d.concatenate(l2w);
+//        return result;
     }
 
 //    @Deprecated

@@ -16,9 +16,9 @@
 
 package com.kitfox.raven.editor.view.display;
 
-import com.kitfox.raven.editor.node.renderer.RavenRenderer;
-import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 import com.kitfox.raven.util.tree.ChildWrapperEvent;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeSymbolListener;
 import com.kitfox.raven.util.tree.NodeSymbolWeakListener;
 import java.awt.GraphicsConfiguration;
@@ -45,7 +45,7 @@ public class DisplayTiles implements NodeSymbolListener
 
     final GraphicsConfiguration gc;
     private Rectangle deviceBounds;
-    private RavenNodeRoot scene;
+    private RavenSymbolRoot scene;
     NodeSymbolWeakListener listenerScene;
 
     HashMap<WeakReference<Tile>, BufferedImage> tilePool
@@ -174,7 +174,7 @@ public class DisplayTiles implements NodeSymbolListener
     /**
      * @return the scene
      */
-    public RavenNodeRoot getScene()
+    public RavenSymbolRoot getScene()
     {
         return scene;
     }
@@ -182,7 +182,7 @@ public class DisplayTiles implements NodeSymbolListener
     /**
      * @param scene the scene to set
      */
-    public synchronized void setScene(RavenNodeRoot scene)
+    public synchronized void setScene(RavenSymbolRoot scene)
     {
         if (listenerScene != null)
         {
@@ -191,11 +191,12 @@ public class DisplayTiles implements NodeSymbolListener
         }
         
         this.scene = scene;
+        NodeSymbol sym = scene.getSymbol();
 
         if (this.scene != null)
         {
-            listenerScene = new NodeSymbolWeakListener(this, scene);
-            scene.addNodeSymbolListener(listenerScene);
+            listenerScene = new NodeSymbolWeakListener(this, sym);
+            sym.addNodeSymbolListener(listenerScene);
         }
 
         reallocTiles();
@@ -284,7 +285,7 @@ public class DisplayTiles implements NodeSymbolListener
                 }
 
                 dirty = false;
-                RavenNodeRoot root = getScene();
+                RavenSymbolRoot root = getScene();
                 if (root == null)
                 {
                     continue;

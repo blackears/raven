@@ -19,14 +19,12 @@ package com.kitfox.raven.editor.node.tools.common;
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.raven.editor.RavenEditor;
-import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 import com.kitfox.raven.editor.node.tools.ToolProvider;
 import com.kitfox.raven.editor.node.tools.ToolUser;
 import com.kitfox.raven.util.Intersection;
-import com.kitfox.raven.util.service.ServiceInst;
 import com.kitfox.raven.util.tree.NodeObject;
 import java.awt.Component;
-import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.util.Properties;
 
@@ -70,7 +68,7 @@ public class ToolPaintFlood extends ToolDisplay
             return;
         }
 
-        RavenNodeRoot root = (RavenNodeRoot)provider.getSymbol();
+        RavenSymbolRoot root = (RavenSymbolRoot)provider.getSymbol().getRoot();
 
         //Check for subcomponent that needs filling
         ServiceMaterial floodProv = pickObj.getNodeService(ServiceMaterial.class, false);

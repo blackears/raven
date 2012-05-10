@@ -26,7 +26,7 @@ import com.kitfox.raven.util.tree.NodeObjectProviderIndex;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
 import com.kitfox.raven.util.undo.History;
 import com.kitfox.xml.schema.ravendocumentschema.NodeObjectType;
-import com.kitfox.xml.schema.ravendocumentschema.RavenTransferableType;
+import com.kitfox.xml.schema.ravendocumentschema.NodeTransferableType;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -206,7 +206,7 @@ public class OutlinerNodeChildList extends OutlinerNode
     }
 
     @Override
-    public boolean paste(int index, RavenTransferableType xferLayers)
+    public boolean paste(int index, NodeTransferableType xferLayers)
     {
         NodeSymbol doc = wrapper.getNode().getSymbol();
 

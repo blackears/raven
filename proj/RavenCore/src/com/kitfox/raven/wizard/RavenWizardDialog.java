@@ -37,7 +37,7 @@ public class RavenWizardDialog extends javax.swing.JDialog
     RavenWizardPageIterator<NodeSymbol> pageIt;
     RavenWizardPage curPage;
 
-    private NodeSymbol nodeDocument;
+    private NodeSymbol nodeSymbol;
 
     /** Creates new form RavenWizardDialog */
     public RavenWizardDialog(Window parent, RavenWizardPageIterator<NodeSymbol> pageIt)
@@ -156,7 +156,7 @@ public class RavenWizardDialog extends javax.swing.JDialog
 
     private void bn_finishActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bn_finishActionPerformed
     {//GEN-HEADEREND:event_bn_finishActionPerformed
-        nodeDocument = pageIt.finish();
+        nodeSymbol = pageIt.finish();
         setVisible(false);
         dispose();
     }//GEN-LAST:event_bn_finishActionPerformed
@@ -186,9 +186,9 @@ public class RavenWizardDialog extends javax.swing.JDialog
     /**
      * @return the nodeDocument
      */
-    public NodeSymbol getNodeDocument()
+    public NodeSymbol getNodeSymbol()
     {
-        return nodeDocument;
+        return nodeSymbol;
     }
 
 }

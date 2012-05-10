@@ -35,7 +35,6 @@ import com.kitfox.raven.util.tree.DocumentCode;
 import com.kitfox.raven.util.tree.EventWrapper;
 import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObject;
-import com.kitfox.raven.util.tree.SelectionRecord;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.util.ArrayList;
@@ -112,7 +111,7 @@ public class CodePanel extends javax.swing.JPanel
         listenerSelection = new SelectionWeakListener(this, sel);
         sel.addSelectionListener(listenerSelection);
 
-        DocumentCode docCode = root.getDocumentCode();
+        DocumentCode docCode = doc.getDocumentCode();
         panelSourceDocument.setSourceCode(docCode.getSource());
         panelSourceImports.setSourceCode(docCode.getImports());
         text_extends.setText(docCode.getExtendsClass().getSource());
@@ -373,8 +372,8 @@ public class CodePanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeSymbol root = doc.getCurSymbol();
-            root.getDocumentCode().getImplementsClasses()
+//            NodeSymbol root = doc.getCurSymbol();
+            doc.getDocumentCode().getImplementsClasses()
                     .setSource(textArea_implements.getText());
         }
 
@@ -385,8 +384,8 @@ public class CodePanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeSymbol root = doc.getCurSymbol();
-            root.getDocumentCode().getAnnotations()
+//            NodeSymbol root = doc.getCurSymbol();
+            doc.getDocumentCode().getAnnotations()
                     .setSource(textArea_annotations.getText());
         }
 
@@ -397,8 +396,8 @@ public class CodePanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            NodeSymbol root = doc.getCurSymbol();
-            root.getDocumentCode().getExtendsClass()
+//            NodeSymbol root = doc.getCurSymbol();
+            doc.getDocumentCode().getExtendsClass()
                     .setSource(text_extends.getText());
         }
 

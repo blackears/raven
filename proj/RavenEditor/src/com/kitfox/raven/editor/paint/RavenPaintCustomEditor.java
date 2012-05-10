@@ -92,10 +92,10 @@ public class RavenPaintCustomEditor extends javax.swing.JPanel
                 NodeObjectPanel.PROP_NODE, this);
 
         //Setup reference nodes
-        NodeSymbol doc = ed.getDocument();
+        NodeSymbol sym = ed.getDocument();
         NodeSymbol.NodeFilter find =
                 new NodeSymbol.NodeFilter(RavenPaint.class);
-        doc.visit(find);
+        sym.getRoot().visit(find);
         nodeObjectPanel.setNodes(find.getList());
 
         buildFromValue();

@@ -16,7 +16,6 @@
 
 package com.kitfox.raven.util.tree;
 
-import com.kitfox.xml.schema.ravendocumentschema.EventType;
 import java.util.ArrayList;
 import java.util.EventObject;
 
@@ -75,20 +74,20 @@ public class EventWrapper<NodeType extends NodeObject,
         return event;
     }
 
-    public EventType export()
-    {
-        EventType type = new EventType();
-
-        type.setName(name);
-        type.setSource(source.export());
-
-        return type;
-    }
-
-    public void load(EventType eventType)
-    {
-        source.load(eventType.getSource());
-    }
+//    public EventType export()
+//    {
+//        EventType type = new EventType();
+//
+//        type.setName(name);
+//        type.setSource(source.export());
+//
+//        return type;
+//    }
+//
+//    public void load(EventType eventType)
+//    {
+//        source.load(eventType.getSource());
+//    }
 
     
 }

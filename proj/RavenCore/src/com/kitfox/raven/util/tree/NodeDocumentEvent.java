@@ -22,12 +22,12 @@ import java.util.EventObject;
  *
  * @author kitfox
  */
-public class NodeDocument2Event extends EventObject
+public class NodeDocumentEvent extends EventObject
 {
     private final NodeSymbol symbol;
     private final NodeSymbol oldSymbol;
     
-    public NodeDocument2Event(NodeDocument2 src, NodeSymbol document,
+    public NodeDocumentEvent(NodeDocument src, NodeSymbol document,
             NodeSymbol oldDocument)
     {
         super(src);
@@ -35,7 +35,7 @@ public class NodeDocument2Event extends EventObject
         this.oldSymbol = oldDocument;
     }
     
-    public NodeDocument2Event(NodeDocument2 src, NodeSymbol document)
+    public NodeDocumentEvent(NodeDocument src, NodeSymbol document)
     {
         this(src, document, null);
     }

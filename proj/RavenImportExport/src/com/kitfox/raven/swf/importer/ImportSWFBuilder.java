@@ -20,10 +20,11 @@ import com.kitfox.raven.swf.importer.timeline.CharacterDictionary;
 import com.kitfox.raven.swf.importer.timeline.CharacterShape;
 import com.kitfox.raven.editor.node.scene.RavenNodeGroup;
 import com.kitfox.raven.editor.node.scene.RavenNodeMesh2;
-import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 import com.kitfox.raven.editor.node.scene.RavenNodeSceneGraph;
 import com.kitfox.raven.paint.common.RavenPaintColor;
 import com.kitfox.raven.util.tree.NodeObjectProviderIndex;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.PropertyDataReference;
 import com.kitfox.raven.util.tree.Track;
 import com.kitfox.raven.util.tree.TrackLibrary;
@@ -49,7 +50,7 @@ import java.awt.Color;
  */
 public class ImportSWFBuilder
 {
-    final RavenNodeRoot root;
+    final RavenSymbolRoot root;
     int meshCount;
     CharacterDictionary dictionary;
     DisplayList displayList;
@@ -62,7 +63,7 @@ public class ImportSWFBuilder
 
 
     @Deprecated
-    public ImportSWFBuilder(RavenNodeRoot root)
+    public ImportSWFBuilder(RavenSymbolRoot root)
     {
         this.root = root;
     }
@@ -85,22 +86,24 @@ public class ImportSWFBuilder
 
     public void importDoc(SWFDocument swfDoc)
     {
+        NodeSymbol sym = root.getSymbol();
         importGroup = NodeObjectProviderIndex.inst().createNode(
-                RavenNodeGroup.class, root);
+                RavenNodeGroup.class, sym);
         importGroup.setName("swfImport");
         RavenNodeSceneGraph sg = root.getSceneGraph();
         sg.add(importGroup);
 
         characterGroup = NodeObjectProviderIndex.inst().createNode(
-                RavenNodeGroup.class, root);
+                RavenNodeGroup.class, sym);
         characterGroup.setName("characters");
         importGroup.children.add(characterGroup);
         characterGroup.visible.setValue(false);
 
         TrackLibrary trackLib = root.getTrackLibrary();
 
-        track = NodeObjectProviderIndex.inst().createNode(Track.class, root);
-        String name = root.createUniqueName("swfTrack");
+        track = NodeObjectProviderIndex.inst().createNode(
+                Track.class, sym);
+        String name = sym.createUniqueName("swfTrack");
         track.setName(name);
         trackLib.tracks.add(track);
 
@@ -195,9 +198,10 @@ public class ImportSWFBuilder
 
     private void importShape(int shapeId, ShapeWithStyle sws)
     {
+        NodeSymbol sym = root.getSymbol();
         RavenNodeMesh2 mesh = NodeObjectProviderIndex.inst().createNode(
-                RavenNodeMesh2.class, root);
-        mesh.setName(root.createUniqueName("mesh"));
+                RavenNodeMesh2.class, sym);
+        mesh.setName(sym.createUniqueName("mesh"));
         characterGroup.children.add(mesh);
 
         MeshBuilder builder = new MeshBuilder();

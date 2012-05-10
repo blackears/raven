@@ -71,8 +71,8 @@ public class NodeObjectCustomEditor extends javax.swing.JPanel
         updating = true;
 
         FindNodes find = new FindNodes();
-        NodeSymbol doc = editor.getWrapper().getNode().getSymbol();
-        doc.visit(find);
+        NodeSymbol sym = editor.getWrapper().getNode().getSymbol();
+        sym.getRoot().visit(find);
 
         nodeObjectPanel.setNodes(find.getList());
         nodeObjectPanel.setNode(editor.getValueFlat());

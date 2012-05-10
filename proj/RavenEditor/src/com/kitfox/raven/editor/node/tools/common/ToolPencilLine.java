@@ -24,15 +24,15 @@ import com.kitfox.coyote.shape.CyStrokeJoin;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.node.scene.RavenNodeGroup;
 import com.kitfox.raven.editor.node.scene.RavenNodePath;
-import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 import com.kitfox.raven.editor.node.scene.RavenNodeSceneGraph;
 import com.kitfox.raven.editor.node.tools.ToolProvider;
 import com.kitfox.raven.editor.node.tools.ToolUser;
 import com.kitfox.raven.paint.RavenStroke;
 import com.kitfox.raven.paint.common.RavenPaintColor;
 import com.kitfox.raven.shape.bezier.BezierMath;
-import com.kitfox.coyote.shape.bezier.builder.PiecewiseBezierBuilder2d;
 import com.kitfox.coyote.shape.bezier.builder.PiecewiseBezierSchneider2d;
+import com.kitfox.raven.editor.node.scene.RavenSymbol;
 import com.kitfox.raven.shape.path.PathCurve;
 import com.kitfox.raven.util.service.ServiceInst;
 import com.kitfox.raven.util.tree.NodeObject;
@@ -217,15 +217,16 @@ public class ToolPencilLine extends ToolDisplay
             if (path != null)
             {
                 ServiceDocument provider = user.getToolService(ServiceDocument.class);
-                RavenNodeRoot doc = (RavenNodeRoot)provider.getSymbol();
-                RavenNodeSceneGraph sceneGraph = doc.getSceneGraph();
+                RavenSymbol sym = (RavenSymbol)provider.getSymbol();
+                RavenSymbolRoot root = sym.getRoot();
+                RavenNodeSceneGraph sceneGraph = root.getSceneGraph();
 
                 ServiceDeviceCamera provDevCam = user.getToolService(ServiceDeviceCamera.class);
                 AffineTransform w2d = provDevCam
                         .getWorldToDeviceTransform((AffineTransform)null);
 
                 //Find node to add new stroke to
-                NodeObject topSel = doc.getSelection().getTopSelected();
+                NodeObject topSel = root.getSelection().getTopSelected();
                 RavenNodeGroup parentGroupNode = null;
                 if (topSel != null)
                 {
@@ -269,16 +270,16 @@ public class ToolPencilLine extends ToolDisplay
 
 
                 //Add node
-                if (doc != null)
+                if (root != null)
                 {
-                    doc.getHistory().beginTransaction("Add pencil stroke");
+                    root.getHistory().beginTransaction("Add pencil stroke");
                 }
 
                 NodeObjectProvider<RavenNodePath> prov = 
                         NodeObjectProviderIndex.inst().getProvider(RavenNodePath.class);
-                RavenNodePath nodePath = prov.createNode(doc);
+                RavenNodePath nodePath = prov.createNode(sym);
 
-                String name = doc.createUniqueName("Pencil");
+                String name = sym.createUniqueName("Pencil");
                 nodePath.setName(name);
 
                 PathCurve curve = new PathCurve(shape);
@@ -301,9 +302,9 @@ public class ToolPencilLine extends ToolDisplay
                     sceneGraph.add(nodePath);
                 }
 
-                if (doc != null)
+                if (root != null)
                 {
-                    doc.getHistory().commitTransaction();
+                    root.getHistory().commitTransaction();
                 }
             }
         }

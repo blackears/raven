@@ -16,6 +16,7 @@
 
 package com.kitfox.raven.editor;
 
+import com.kitfox.raven.util.tree.NodeDocument;
 import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeSymbolProvider;
 import com.kitfox.raven.wizard.RavenWizardPage;
@@ -31,16 +32,17 @@ import javax.swing.event.ChangeEvent;
 public class NewSymbolWizard extends RavenWizardPageIteratorAbstract<NodeSymbol>
         implements RavenWizardPageListener
 {
-    final RavenEditor editor;
+    final NodeDocument doc;
     NodeSymbolProvider prov;
     int pageIndex;
     RavenWizardPageIterator<NodeSymbol> subIt;
 
-    NewSymbolWizardPanel wizPanel = new NewSymbolWizardPanel(this);
+    NewSymbolWizardPanel wizPanel;
 
-    public NewSymbolWizard(RavenEditor editor)
+    public NewSymbolWizard(NodeDocument doc)
     {
-        this.editor = editor;
+        this.doc = doc;
+        this.wizPanel = new NewSymbolWizardPanel(this);
     }
 
     @Override
@@ -144,7 +146,7 @@ public class NewSymbolWizard extends RavenWizardPageIteratorAbstract<NodeSymbol>
         }
         else
         {
-            subIt = prov.createDocumentWizard();
+            subIt = prov.createDocumentWizard(doc);
             subIt.addRavenWizardPageListener(this);
         }
 

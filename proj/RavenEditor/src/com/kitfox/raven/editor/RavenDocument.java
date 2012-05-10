@@ -17,31 +17,21 @@
 package com.kitfox.raven.editor;
 
 import com.kitfox.raven.util.JAXBUtil;
-import com.kitfox.raven.util.tree.NodeDocument2;
+import com.kitfox.raven.util.tree.NodeDocument;
 import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeSymbol.Environment;
-import com.kitfox.raven.util.tree.NodeSymbolProvider;
-import com.kitfox.raven.util.tree.NodeSymbolProviderIndex;
-import com.kitfox.xml.schema.ravendocumentschema.MetaPropertyEntryType;
-import com.kitfox.xml.schema.ravendocumentschema.MetaPropertySetGroupType;
-import com.kitfox.xml.schema.ravendocumentschema.MetaPropertySetType;
-import com.kitfox.xml.schema.ravendocumentschema.NodeSymbolType;
+import com.kitfox.xml.schema.ravendocumentschema.NodeDocumentType;
 import com.kitfox.xml.schema.ravendocumentschema.ObjectFactory;
-import com.kitfox.xml.schema.ravendocumentschema.RavenDocumentType;
 import java.awt.Window;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.bind.JAXBElement;
 
 /**
  *
  * @author kitfox
  */
-public class RavenDocument extends NodeDocument2
+public class RavenDocument extends NodeDocument
         implements NodeSymbol.Environment
 {
     public static final String RAVEN_FILE_SUFFIX = "raven";
@@ -66,61 +56,75 @@ public class RavenDocument extends NodeDocument2
         this.editor = editor;
     }
 
-    public RavenDocument(RavenEditor editor, NodeSymbol root)
-    {
-        this.editor = editor;
-//        addDocument(root);
-        symbols.add(root);
-        root.setDocument(this);
-        curSymbol = root;
+//    public RavenDocument(RavenEditor editor, NodeSymbol root)
+//    {
+//        this.editor = editor;
+////        addDocument(root);
+//        symbols.add(root);
+//        root.setDocument(this);
+//        curSymbol = root;
+////        history.clear();
+//    }
+//
+//    public RavenDocument(RavenEditor editor, File file)
+//    {
+//        this(editor);
+//
+//        //Load document
+//        RavenDocumentType docTree = load(file);
+//        String curDocName = docTree.getCurSymbol();
+//        for (NodeSymbolType docType: docTree.getSymbols())
+//        {
+//            String docClass = docType.getClazz();
+//            NodeSymbolProvider prov =
+//                    NodeSymbolProviderIndex.inst().getProvider(docClass);
+//            NodeSymbol doc = prov.loadDocument(docType);
+//            doc.setDocument(this);
+//            
+//            symbols.add(doc);
+//            
+//            if (curDocName != null && curDocName.equals(doc.getSymbolName()))
+//            {
+//                curSymbol = doc;
+//            }
+//        }
+//
+//        if (curSymbol == null && !symbols.isEmpty())
+//        {
+//            curSymbol = symbols.get(0);
+//        }
+//
+//        //Load meta properties
+//        MetaPropertySetGroupType group = docTree.getPropertySetGroups();
+//        if (group != null)
+//        {
+//            for (MetaPropertySetType set: group.getPropertySet())
+//            {
+//                Properties prop = new Properties();
+//                for (MetaPropertyEntryType entry: set.getEntry())
+//                {
+//                    prop.setProperty(entry.getName(), entry.getValue());
+//                }
+//                metaProperties.put(set.getKey(), prop);
+//            }
+//        }
+//
+//        //Remove any history created during load
 //        history.clear();
-    }
-
-    public RavenDocument(RavenEditor editor, File file)
+//    }
+    
+    public static RavenDocument create(RavenEditor editor, NodeDocumentType type)
     {
-        this(editor);
-
-        //Load document
-        RavenDocumentType docTree = load(file);
-        String curDocName = docTree.getCurSymbol();
-        for (NodeSymbolType docType: docTree.getSymbols())
-        {
-            String docClass = docType.getClazz();
-            NodeSymbolProvider prov =
-                    NodeSymbolProviderIndex.inst().getProvider(docClass);
-            NodeSymbol doc = prov.loadDocument(docType);
-            doc.setDocument(this);
-            
-            symbols.add(doc);
-            
-            if (curDocName != null && curDocName.equals(doc.getSymbolName()))
-            {
-                curSymbol = doc;
-            }
-        }
-
-        if (curSymbol == null && !symbols.isEmpty())
-        {
-            curSymbol = symbols.get(0);
-        }
-
-        //Load meta properties
-        MetaPropertySetGroupType group = docTree.getPropertySetGroups();
-        if (group != null)
-        {
-            for (MetaPropertySetType set: group.getPropertySet())
-            {
-                Properties prop = new Properties();
-                for (MetaPropertyEntryType entry: set.getEntry())
-                {
-                    prop.setProperty(entry.getName(), entry.getValue());
-                }
-                metaProperties.put(set.getKey(), prop);
-            }
-        }
-
-        //Remove any history created during load
-        history.clear();
+        RavenDocument doc = new RavenDocument(editor);
+        doc.load(type);
+        return doc;
+    }
+    
+    public static RavenDocument create(RavenEditor editor, File file)
+    {
+        NodeDocumentType type = 
+                JAXBUtil.loadJAXB(NodeDocumentType.class, file);
+        return create(editor, type);
     }
     
     public void addRavenDocumentListener(RavenDocumentListener l)
@@ -150,68 +154,68 @@ public class RavenDocument extends NodeDocument2
 //        fireSourceChanged();
     }
 
-    protected RavenDocumentType asJAXB()
-    {
-        RavenDocumentType pref = new RavenDocumentType();
-
-        Properties props = new Properties();
-        try {
-            props.load(RavenDocument.class.getResourceAsStream("/info/editor.properties"));
-        } catch (IOException ex) {
-            Logger.getLogger(RavenDocument.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        pref.setVersion(props.getProperty("version"));
-
-        //Save Documents
-        for (NodeSymbol doc: symbols)
-        {
-            NodeSymbolType type = doc.export();
-            pref.getSymbols().add(type);
-        }
-        pref.setCurSymbol(curSymbol == null ? null : curSymbol.getSymbolName());
-
-        //Save meta properties
-        MetaPropertySetGroupType groups = new MetaPropertySetGroupType();
-        pref.setPropertySetGroups(groups);
-        for (String key: metaProperties.keySet())
-        {
-            Properties prop = metaProperties.get(key);
-            MetaPropertySetType set = new MetaPropertySetType();
-            groups.getPropertySet().add(set);
-            
-            for (String name: prop.stringPropertyNames())
-            {
-                String value = prop.getProperty(name);
-                MetaPropertyEntryType entry = new MetaPropertyEntryType();
-                set.getEntry().add(entry);
-                entry.setName(name);
-                entry.setValue(value);
-            }
-        }
-
-        return pref;
-    }
-
-    private RavenDocumentType load(File file)
-    {
-        setSource(file);
-
-        if (file == null)
-        {
-            return null;
-        }
-
-        return JAXBUtil.loadJAXB(RavenDocumentType.class, file);
-    }
-
+//    protected RavenDocumentType asJAXB()
+//    {
+//        RavenDocumentType pref = new RavenDocumentType();
+//
+//        Properties props = new Properties();
+//        try {
+//            props.load(RavenDocument.class.getResourceAsStream("/info/editor.properties"));
+//        } catch (IOException ex) {
+//            Logger.getLogger(RavenDocument.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        pref.setVersion(props.getProperty("version"));
+//
+//        //Save Documents
+//        for (NodeSymbol doc: symbols)
+//        {
+//            NodeSymbolType type = doc.export();
+//            pref.getSymbols().add(type);
+//        }
+//        pref.setCurSymbol(curSymbol == null ? null : curSymbol.getSymbolName());
+//
+//        //Save meta properties
+//        MetaPropertySetGroupType groups = new MetaPropertySetGroupType();
+//        pref.setPropertySetGroups(groups);
+//        for (String key: metaProperties.keySet())
+//        {
+//            Properties prop = metaProperties.get(key);
+//            MetaPropertySetType set = new MetaPropertySetType();
+//            groups.getPropertySet().add(set);
+//            
+//            for (String name: prop.stringPropertyNames())
+//            {
+//                String value = prop.getProperty(name);
+//                MetaPropertyEntryType entry = new MetaPropertyEntryType();
+//                set.getEntry().add(entry);
+//                entry.setName(name);
+//                entry.setValue(value);
+//            }
+//        }
+//
+//        return pref;
+//    }
+//
+//    private RavenDocumentType load(File file)
+//    {
+//        setSource(file);
+//
+//        if (file == null)
+//        {
+//            return null;
+//        }
+//
+//        return JAXBUtil.loadJAXB(RavenDocumentType.class, file);
+//    }
+//
 
     public void save(File file)
     {
-        RavenDocumentType pref = asJAXB();
+        NodeDocumentType pref = export();
 
-        ObjectFactory fact
-                = new ObjectFactory();
-        JAXBElement<RavenDocumentType> value = fact.createRavenDocument(pref);
+        ObjectFactory fact = new ObjectFactory();
+        JAXBElement<NodeDocumentType> value = 
+                fact.createNodeDocument(pref);
 
         JAXBUtil.saveJAXB(value, file);
     }

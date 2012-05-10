@@ -16,7 +16,6 @@
 
 package com.kitfox.raven.util.tree;
 
-import com.kitfox.xml.schema.ravendocumentschema.SourceCodeType;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
@@ -135,22 +134,22 @@ public class SourceCode
 //        propertyChangeSupport.firePropertyChange(PROP_LANGUAGE, oldLanguage, language);
 //    }
 
-    public SourceCodeType export()
-    {
-        SourceCodeType type = new SourceCodeType();
-
-        type.setSource(source);
-
-        return type;
-    }
-
-    public void load(SourceCodeType sourceCode)
-    {
-        if (sourceCode != null)
-        {
-            setSource(sourceCode.getSource());
-        }
-    }
+//    public SourceCodeType export()
+//    {
+//        SourceCodeType type = new SourceCodeType();
+//
+//        type.setSource(source);
+//
+//        return type;
+//    }
+//
+//    public void load(SourceCodeType sourceCode)
+//    {
+//        if (sourceCode != null)
+//        {
+//            setSource(sourceCode.getSource());
+//        }
+//    }
 
     public boolean isEmpty()
     {

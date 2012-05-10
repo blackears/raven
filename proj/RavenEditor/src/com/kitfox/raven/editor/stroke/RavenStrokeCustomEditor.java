@@ -82,9 +82,9 @@ public class RavenStrokeCustomEditor extends javax.swing.JPanel
                 NodeObjectPanel.PROP_NODE, this);
 
         //Setup reference nodes
-        NodeSymbol doc = ed.getDocument();
+        NodeSymbol sym = ed.getDocument();
         FindNodes find = new FindNodes();
-        doc.visit(find);
+        sym.getRoot().visit(find);
         nodeObjectPanel.setNodes(find.getList());
 
         buildFromValue();

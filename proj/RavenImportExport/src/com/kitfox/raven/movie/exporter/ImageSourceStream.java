@@ -59,18 +59,18 @@ public class ImageSourceStream
         this.ctx = ctx;
 
         RavenNodeComposition comp = ctx.getComposition();
-        NodeSymbol doc = comp.getSymbol();
+        NodeSymbol sym = comp.getSymbol();
         width = comp.getWidth();
         height = comp.getHeight();
         
         this.capture = new MovieCapture(comp);
         
-        frameRate = doc.getTrackLibrary().getFps();
-        trackUid = doc.getTrackLibrary().getCurTrackUid();
+        frameRate = sym.getRoot().getTrackLibrary().getFps();
+        trackUid = sym.getRoot().getTrackLibrary().getCurTrackUid();
         
         if (ctx.isFrameCur())
         {
-            frameCur = frameEnd = doc.getTrackLibrary().getCurFrame();
+            frameCur = frameEnd = sym.getRoot().getTrackLibrary().getCurFrame();
             frameStride = 1;
         }
         else

@@ -78,31 +78,31 @@ abstract public class NodeObjectProvider<T extends NodeObject>
         return createNode(doc, null);
     }
 
-    public T createNode(NodeSymbol doc, NodeObjectType nodeType)
+    public T createNode(NodeSymbol symbol, NodeObjectType nodeType)
     {
         int uid;
         if (nodeType == null)
         {
-            uid = doc.allocUid();
+            uid = symbol.allocUid();
         }
         else
         {
             uid = nodeType.getUid();
             //Check if node with this uid already exists in doc
-            if (doc.getNode(uid) == null)
+            if (symbol.getNode(uid) == null)
             {
                 //Make sure this UID will not be allocated to another node
-                doc.advanceNextUid(uid);
+                symbol.advanceNextUid(uid);
             }
             else
             {
                 //Collision
-                uid = doc.allocUid();
+                uid = symbol.allocUid();
             }
         }
 
         T node = createNode(uid);
-        node.load(doc, nodeType);
+        node.load(symbol, nodeType);
         return node;
     }
 

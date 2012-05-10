@@ -38,7 +38,6 @@ import com.kitfox.raven.util.SelectionWeakListener;
 import com.kitfox.raven.util.text.TextPropertiesPanel;
 import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObject;
-import com.kitfox.raven.util.tree.SelectionRecord;
 import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -137,8 +136,8 @@ public class TextPanel extends javax.swing.JPanel
             return;
         }
 
-        NodeSymbol root = doc.getCurSymbol();
-        Selection<NodeObject> sel = root.getSelection();
+        NodeSymbol sym = doc.getCurSymbol();
+        Selection<NodeObject> sel = sym.getSelection();
 
         textRecords.clear();
         for (NodeObject node: sel.getSelection())
@@ -150,10 +149,10 @@ public class TextPanel extends javax.swing.JPanel
             }
         }
 
-        if (textRecords.indexOf(root) == -1)
+        if (textRecords.indexOf(sym) == -1)
         {
             //Make sure root is always in update list
-            ServiceText service = root.getNodeService(ServiceText.class, false);
+            ServiceText service = sym.getRoot().getNodeService(ServiceText.class, false);
             textRecords.add(service);
         }
 

@@ -164,7 +164,7 @@ public class DisplayCyPanel extends CoyotePanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            return doc.getCurSymbol().getNodeService(serviceClass, false);
+            return doc.getCurSymbol().getRoot().getNodeService(serviceClass, false);
         }
 
         return null;
@@ -182,7 +182,7 @@ public class DisplayCyPanel extends CoyotePanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            doc.getCurSymbol().getNodeServices(serviceClass, appendList, false);
+            doc.getCurSymbol().getRoot().getNodeServices(serviceClass, appendList, false);
         }
     }
 
@@ -241,7 +241,7 @@ public class DisplayCyPanel extends CoyotePanel
         if (doc != null)
         {
             NodeSymbol root = doc.getCurSymbol();
-            ServiceDeviceCamera service = root.getNodeService(ServiceDeviceCamera.class, false);
+            ServiceDeviceCamera service = root.getRoot().getNodeService(ServiceDeviceCamera.class, false);
             return service.getWorldToDeviceTransform(xform);
         }
 
@@ -257,7 +257,7 @@ public class DisplayCyPanel extends CoyotePanel
         if (doc != null)
         {
             NodeSymbol root = doc.getCurSymbol();
-            ServiceDeviceCamera service = root.getNodeService(ServiceDeviceCamera.class, false);
+            ServiceDeviceCamera service = root.getRoot().getNodeService(ServiceDeviceCamera.class, false);
             service.setWorldToDeviceTransform(xform);
         }
     }
@@ -274,7 +274,7 @@ public class DisplayCyPanel extends CoyotePanel
         if (doc != null)
         {
             NodeSymbol root = doc.getCurSymbol();
-            ServiceDeviceCamera service = root.getNodeService(ServiceDeviceCamera.class, false);
+            ServiceDeviceCamera service = root.getRoot().getNodeService(ServiceDeviceCamera.class, false);
             return service.getWorldToDeviceTransform(xform);
         }
 
@@ -289,7 +289,7 @@ public class DisplayCyPanel extends CoyotePanel
         if (doc != null)
         {
             NodeSymbol root = doc.getCurSymbol();
-            ServiceDeviceCamera service = root.getNodeService(ServiceDeviceCamera.class, false);
+            ServiceDeviceCamera service = root.getRoot().getNodeService(ServiceDeviceCamera.class, false);
             service.setWorldToDeviceTransform(xform);
         }
     }
@@ -328,7 +328,7 @@ public class DisplayCyPanel extends CoyotePanel
 //        FrameKey.DIRECT;
         RenderContext ctx = new RenderContext(rend, FrameKey.DIRECT, true);
 
-        CyRenderService serv = doc.getCurSymbol().getNodeService(CyRenderService.class, false);
+        CyRenderService serv = doc.getCurSymbol().getRoot().getNodeService(CyRenderService.class, false);
         if (serv != null)
         {
             serv.renderEditor(ctx);

@@ -20,7 +20,7 @@ import com.kitfox.raven.editor.RavenDocument;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.RavenEditorListener;
 import com.kitfox.raven.editor.RavenEditorWeakListener;
-import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 import com.kitfox.raven.util.tree.PropertyWrapper;
 import com.kitfox.raven.util.tree.PropertyWrapperWeakAdapter;
 import java.awt.BorderLayout;
@@ -112,7 +112,7 @@ public class GraphDispPanel extends javax.swing.JPanel
             vertColorSelPropMonitor = null;
         }
 
-        RavenNodeRoot root = getRoot();
+        RavenSymbolRoot root = getRoot();
 
         if (root != null)
         {
@@ -134,7 +134,7 @@ public class GraphDispPanel extends javax.swing.JPanel
 
     private void updateFromDocument()
     {
-        RavenNodeRoot root = getRoot();
+        RavenSymbolRoot root = getRoot();
         if (root == null)
         {
             return;
@@ -160,7 +160,7 @@ public class GraphDispPanel extends javax.swing.JPanel
         rebuildDocument();
     }
     
-    private RavenNodeRoot getRoot()
+    private RavenSymbolRoot getRoot()
     {
         RavenDocument doc = editor.getDocument();
         if (doc == null)
@@ -168,7 +168,7 @@ public class GraphDispPanel extends javax.swing.JPanel
             return null;
         }
 
-        return (RavenNodeRoot)doc.getCurSymbol();
+        return (RavenSymbolRoot)doc.getCurSymbol().getRoot();
     }
 
     /**
@@ -274,7 +274,7 @@ public class GraphDispPanel extends javax.swing.JPanel
             return;
         }
         
-        RavenNodeRoot root = getRoot();
+        RavenSymbolRoot root = getRoot();
         if (root == null)
         {
             return;
@@ -290,7 +290,7 @@ public class GraphDispPanel extends javax.swing.JPanel
             return;
         }
 
-        RavenNodeRoot root = getRoot();
+        RavenSymbolRoot root = getRoot();
         if (root == null)
         {
             return;

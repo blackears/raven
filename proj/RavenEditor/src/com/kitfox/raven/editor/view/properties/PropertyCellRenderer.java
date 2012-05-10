@@ -120,10 +120,10 @@ public class PropertyCellRenderer extends javax.swing.JPanel implements TableCel
         //Find track status
         Color bgColor = COLOR_OPEN;
         PropertyWrapper prop = line.getProp();
-        NodeSymbol doc = prop.getNode().getSymbol();
-        if (doc != null)
+        NodeSymbol sym = prop.getNode().getSymbol();
+        if (sym != null)
         {
-            TrackLibrary trackLib = doc.getTrackLibrary();
+            TrackLibrary trackLib = sym.getRoot().getTrackLibrary();
             int frame = trackLib.getCurFrame();
             int curTrack = trackLib.getCurTrackUid();
 

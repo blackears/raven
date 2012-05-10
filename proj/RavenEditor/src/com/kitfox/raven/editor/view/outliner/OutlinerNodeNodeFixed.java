@@ -23,7 +23,7 @@ import com.kitfox.raven.util.tree.ChildWrapperSingle;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.NodeObjectListener;
 import com.kitfox.raven.util.tree.NodeObjectWeakListener;
-import com.kitfox.xml.schema.ravendocumentschema.RavenTransferableType;
+import com.kitfox.xml.schema.ravendocumentschema.NodeTransferableType;
 import java.beans.PropertyChangeEvent;
 import java.util.EventObject;
 import javax.swing.Action;
@@ -31,7 +31,7 @@ import javax.swing.Icon;
 import javax.swing.JPopupMenu;
 
 /**
- * Children list is unchangeing.  Can be of mixed data type.
+ * Children list is unchanging.  Can be of mixed data type.
  *
  * @author kitfox
  */
@@ -43,7 +43,8 @@ public class OutlinerNodeNodeFixed extends OutlinerNode
 
     final NodeObjectWeakListener nodeListener;
 
-    OutlinerNodeNodeFixed(OutlinerTreeModel model, OutlinerNode parent, NodeObject node)
+    OutlinerNodeNodeFixed(OutlinerTreeModel model, 
+            OutlinerNode parent, NodeObject node)
     {
         super(model, parent);
         this.node = node;
@@ -204,7 +205,7 @@ public class OutlinerNodeNodeFixed extends OutlinerNode
     }
 
     @Override
-    public boolean paste(int index, RavenTransferableType xferLayers)
+    public boolean paste(int index, NodeTransferableType xferLayers)
     {
         //Cannot paste onto a fixed node
         return false;

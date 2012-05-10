@@ -35,7 +35,7 @@ import java.util.ArrayList;
 public class RavenNodeSceneGraph extends RavenNodeRenderable
 {
     public static final String CHILD_SCENEGRAPH = "sceneGraph";
-    public final ChildWrapperList<RavenNodeRoot, RavenNodeXformable> children =
+    public final ChildWrapperList<RavenNodeSceneGraph, RavenNodeXformable> children =
             new ChildWrapperList(
             this, CHILD_SCENEGRAPH, RavenNodeXformable.class);
 

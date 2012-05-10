@@ -86,7 +86,7 @@ public class ToolZoomSettings extends javax.swing.JPanel
         }
 
         NodeSymbol root = doc.getCurSymbol();
-        ServiceDeviceCamera service = root.getNodeService(ServiceDeviceCamera.class, false);
+        ServiceDeviceCamera service = root.getRoot().getNodeService(ServiceDeviceCamera.class, false);
         service.setWorldToDeviceTransform(new AffineTransform());
 
     }//GEN-LAST:event_bn_resetActionPerformed

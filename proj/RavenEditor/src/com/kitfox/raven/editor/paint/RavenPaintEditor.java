@@ -138,8 +138,8 @@ public class RavenPaintEditor extends PropertyWrapperEditor<RavenPaint>
 
         //Check for node with this name
         FindNode find = new FindNode(text);
-        NodeSymbol doc = getWrapper().getNode().getSymbol();
-        doc.visit(find);
+        NodeSymbol sym = getWrapper().getNode().getSymbol();
+        sym.getRoot().visit(find);
 
         NodeObject node = find.getBestNode();
         if (node != null)

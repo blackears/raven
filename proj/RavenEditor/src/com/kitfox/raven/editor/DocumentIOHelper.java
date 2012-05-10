@@ -49,24 +49,27 @@ public class DocumentIOHelper
 
     public void newFile()
     {
-        NewSymbolWizard wiz = new NewSymbolWizard(viewManager.getEditor());
+        RavenEditor editor = viewManager.getEditor();
+        RavenDocument doc = new RavenDocument(editor);
+        
+        NewSymbolWizard wiz = new NewSymbolWizard(doc);
 
         RavenWizardDialog dlg = new RavenWizardDialog(viewManager.getSwingRoot(), wiz);
         RavenSwingUtil.centerWindow(dlg);
         dlg.setVisible(true);
 
-        NodeSymbol root = dlg.getNodeDocument();
+        NodeSymbol sym = dlg.getNodeSymbol();
 
-        if (root == null)
+        if (sym == null)
         {
             return;
         }
 
-        RavenEditor editor = viewManager.getEditor();
-        RavenDocument doc = new RavenDocument(editor, root);
-
+        doc.addSymbol(sym);
+        doc.setCurrentSymbol(sym);
+        doc.getHistory().clear();
+        
         editor.setDocument(doc);
-
     }
 
     public void openFile()
@@ -83,8 +86,8 @@ public class DocumentIOHelper
 
     public void saveFile()
     {
-        RavenDocument proj = viewManager.getEditor().getDocument();
-        if (proj == null)
+        RavenDocument doc = viewManager.getEditor().getDocument();
+        if (doc == null)
         {
             JOptionPane.showMessageDialog(viewManager.getSwingRoot(),
                     "No project is loaded",
@@ -92,14 +95,14 @@ public class DocumentIOHelper
             return;
         }
 
-        File source = proj.getSource();
+        File source = doc.getSource();
         if (source == null)
         {
             saveAsFile();
             return;
         }
 
-        proj.save(source);
+        doc.save(source);
         viewManager.getEditor().setMostRecentFile(source);
     }
 

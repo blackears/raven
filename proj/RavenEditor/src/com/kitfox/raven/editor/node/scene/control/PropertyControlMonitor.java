@@ -18,7 +18,8 @@ package com.kitfox.raven.editor.node.scene.control;
 
 import com.kitfox.raven.editor.RavenDocument;
 import com.kitfox.raven.editor.RavenEditor;
-import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenSymbol;
+import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 import com.kitfox.raven.editor.view.properties.PropertyCustomEditorPanel;
 import com.kitfox.raven.paint.common.RavenPaintColor;
 import com.kitfox.raven.paint.common.RavenPaintColorEditor;
@@ -41,7 +42,7 @@ public class PropertyControlMonitor extends MouseAdapter
 {
     final RavenEditor editor;
     Component component;
-    private PropertyWrapper<RavenNodeRoot, RavenPaintColor> wrapper;
+    private PropertyWrapper<RavenSymbolRoot, RavenPaintColor> wrapper;
 
     public PropertyControlMonitor(RavenEditor editor, Component component)
     {
@@ -65,7 +66,7 @@ public class PropertyControlMonitor extends MouseAdapter
             return;
         }
         
-        RavenNodeRoot root = (RavenNodeRoot)doc.getCurSymbol();
+        RavenSymbolRoot root = ((RavenSymbol)doc.getCurSymbol()).getRoot();
         if (root == null)
         {
             return;
@@ -108,7 +109,7 @@ public class PropertyControlMonitor extends MouseAdapter
     /**
      * @return the wrapper
      */
-    public PropertyWrapper<RavenNodeRoot, RavenPaintColor> getWrapper()
+    public PropertyWrapper<RavenSymbolRoot, RavenPaintColor> getWrapper()
     {
         return wrapper;
     }
@@ -116,7 +117,7 @@ public class PropertyControlMonitor extends MouseAdapter
     /**
      * @param wrapper the wrapper to set
      */
-    public void setWrapper(PropertyWrapper<RavenNodeRoot, RavenPaintColor> wrapper)
+    public void setWrapper(PropertyWrapper<RavenSymbolRoot, RavenPaintColor> wrapper)
     {
         this.wrapper = wrapper;
     }

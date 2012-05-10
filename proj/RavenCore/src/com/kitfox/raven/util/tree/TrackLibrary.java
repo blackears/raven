@@ -27,7 +27,7 @@ public class TrackLibrary extends NodeObject
 {
 
     public static final String CHILD_TRACKS = "tracks";
-    public final ChildWrapperList<NodeSymbol, Track>
+    public final ChildWrapperList<NodeRoot, Track>
             tracks =
             new ChildWrapperList(this,
             CHILD_TRACKS, Track.class);
@@ -72,7 +72,7 @@ public class TrackLibrary extends NodeObject
         }
 
         FrameSynch synch = new FrameSynch(getCurFrame(), track.getUid());
-        getSymbol().visit(synch);
+        getSymbol().getRoot().visit(synch);
     }
 
     public int getCurFrame()

@@ -32,7 +32,7 @@ import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.coyote.shape.ShapeLinesProvider;
 import com.kitfox.coyote.shape.bezier.BezierCurve2d;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
-import com.kitfox.raven.editor.node.scene.RavenNodeRoot;
+import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 import com.kitfox.raven.shape.network.pick.*;
 import com.kitfox.raven.shape.network.pick.NetworkMeshHandles.HandleFace;
 import com.kitfox.raven.util.Intersection;
@@ -100,7 +100,7 @@ public class MeshUtil
         NetworkHandleSelection subSel = 
                 sel.getSubselection(node, NetworkHandleSelection.class);
      
-        RavenNodeRoot root = (RavenNodeRoot)node.getSymbol();
+        RavenSymbolRoot root = (RavenSymbolRoot)node.getSymbol().getRoot();
 //        RavenNodeRoot root = getDocument();
         CyMatrix4d w2d = stack.getViewXform();
         CyMatrix4d d2p = stack.getProjXform();
