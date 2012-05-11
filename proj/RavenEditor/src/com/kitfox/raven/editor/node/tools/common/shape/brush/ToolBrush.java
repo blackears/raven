@@ -33,7 +33,7 @@ import com.kitfox.coyote.shape.bezier.builder.BezierPointNd;
 import com.kitfox.coyote.shape.bezier.builder.PiecewiseBezierSchneiderNd;
 import com.kitfox.coyote.shape.bezier.mesh.BezierMeshEdge2i;
 import com.kitfox.coyote.shape.outliner.bitmap.BitmapOutliner;
-import com.kitfox.raven.editor.node.scene.RavenNodeMesh2;
+import com.kitfox.raven.editor.node.scene.RavenNodeMesh;
 import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 import com.kitfox.raven.editor.node.scene.RavenNodeSceneGraph;
 import com.kitfox.raven.editor.node.scene.RenderContext;
@@ -435,25 +435,25 @@ public class ToolBrush extends ToolDisplay
         Selection<NodeObject> sel = getSelection();
         NodeObject topObj = sel.getTopSelected();
 
-        if (topObj instanceof RavenNodeMesh2)
+        if (topObj instanceof RavenNodeMesh)
         {
-            applyStrokeToMesh(path, (RavenNodeMesh2)topObj);
+            applyStrokeToMesh(path, (RavenNodeMesh)topObj);
             return;
         }
 
-        RavenNodeMesh2 meshNode = createStrokeMesh(path);
+        RavenNodeMesh meshNode = createStrokeMesh(path);
                 
         RavenSymbolRoot doc = getDocument();
         RavenNodeSceneGraph sg = doc.getSceneGraph();
         sg.children.add(meshNode);
     }
     
-    private void applyStrokeToMesh(CyPath2d path, RavenNodeMesh2 mesh)
+    private void applyStrokeToMesh(CyPath2d path, RavenNodeMesh mesh)
     {
         NetworkMesh curNet = mesh.getNetworkMesh();
         NetworkMesh newNet = new NetworkMesh(curNet);
         
-        CyMatrix4d scale = RavenNodeMesh2.getMeshToLocal();
+        CyMatrix4d scale = RavenNodeMesh.getMeshToLocal();
         scale.invert();
         CyPath2d meshPath = path.createTransformedPath(scale);
         
@@ -474,9 +474,9 @@ public class ToolBrush extends ToolDisplay
         mesh.setNetworkMesh(newNet,true);
     }
     
-    private RavenNodeMesh2 createStrokeMesh(CyPath2d path)
+    private RavenNodeMesh createStrokeMesh(CyPath2d path)
     {
-        CyMatrix4d scale = RavenNodeMesh2.getMeshToLocal();
+        CyMatrix4d scale = RavenNodeMesh.getMeshToLocal();
         scale.invert();
         CyPath2d meshPath = path.createTransformedPath(scale);
 
@@ -487,8 +487,8 @@ public class ToolBrush extends ToolDisplay
         
         NetworkMesh network = NetworkMesh.create(meshPath, data);
         
-        RavenNodeMesh2 mesh = NodeObjectProviderIndex.inst().createNode(
-                RavenNodeMesh2.class, root.getSymbol());
+        RavenNodeMesh mesh = NodeObjectProviderIndex.inst().createNode(
+                RavenNodeMesh.class, root.getSymbol());
         mesh.setNetworkMesh(network, false);
         
         return mesh;

@@ -23,7 +23,7 @@ import com.kitfox.coyote.shape.CyStroke;
 import com.kitfox.coyote.shape.outliner.image.ImageEdge;
 import com.kitfox.coyote.shape.outliner.image.ImageOutliner;
 import com.kitfox.raven.editor.node.scene.RavenNodeGroup;
-import com.kitfox.raven.editor.node.scene.RavenNodeMesh2;
+import com.kitfox.raven.editor.node.scene.RavenNodeMesh;
 import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 import com.kitfox.raven.paint.RavenPaint;
 import com.kitfox.raven.paint.RavenPaintLayout;
@@ -121,7 +121,7 @@ public class ImageImporterContext
     private void createMeshNode(ArrayList<ImageEdge> edges, 
             CyRectangle2i boundsLocal)
     {
-        CyMatrix4d scale = RavenNodeMesh2.getMeshToLocal();
+        CyMatrix4d scale = RavenNodeMesh.getMeshToLocal();
         scale.invert();
 
         NetworkMesh network = new NetworkMesh();
@@ -161,8 +161,8 @@ public class ImageImporterContext
         }
         
         //Create node
-        RavenNodeMesh2 mesh = NodeObjectProviderIndex.inst().createNode(
-                RavenNodeMesh2.class, sym);
+        RavenNodeMesh mesh = NodeObjectProviderIndex.inst().createNode(
+                RavenNodeMesh.class, sym);
         mesh.setNetworkMesh(network, false);
         
         //Add to tree

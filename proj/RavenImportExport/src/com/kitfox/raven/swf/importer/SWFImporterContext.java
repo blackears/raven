@@ -93,8 +93,8 @@ public class SWFImporterContext
         }
         
 //        Environment env = doc.getDocument().getEnv();
-        ImportSWFBuilder2 builder = 
-                new ImportSWFBuilder2((RavenDocument)doc.getDocument());
+        ImportSWFBuilder builder = 
+                new ImportSWFBuilder((RavenDocument)doc.getDocument());
         builder.importDoc(swfDoc);
         
 //        SWFTimelineBuilder builder = SWFTimelineBuilder.importDoc(swfDoc);

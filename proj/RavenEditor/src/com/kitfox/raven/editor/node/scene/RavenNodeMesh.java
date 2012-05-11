@@ -56,11 +56,11 @@ import java.util.HashSet;
  *
  * @author kitfox
  */
-public class RavenNodeMesh2 extends RavenNodeXformable
+public class RavenNodeMesh extends RavenNodeXformable
         implements ServiceBezierMesh, ServiceShapeManip
 {
     public static final String PROP_MESH = "mesh";
-    public final PropertyWrapper<RavenNodeMesh2, NetworkMesh> mesh =
+    public final PropertyWrapper<RavenNodeMesh, NetworkMesh> mesh =
             new PropertyWrapper(
             this, PROP_MESH, NetworkMesh.class, new NetworkMesh());
 
@@ -72,7 +72,7 @@ public class RavenNodeMesh2 extends RavenNodeXformable
         meshToLocal.scale(.01, .01, 1);
     }
     
-    protected RavenNodeMesh2(int uid)
+    protected RavenNodeMesh(int uid)
     {
         super(uid);
     }
@@ -558,17 +558,17 @@ public class RavenNodeMesh2 extends RavenNodeXformable
     }
     
     @ServiceInst(service=NodeObjectProvider.class)
-    public static class Provider extends NodeObjectProvider<RavenNodeMesh2>
+    public static class Provider extends NodeObjectProvider<RavenNodeMesh>
     {
         public Provider()
         {
-            super(RavenNodeMesh2.class, "Mesh2", "/icons/node/mesh.png");
+            super(RavenNodeMesh.class, "Mesh", "/icons/node/mesh.png");
         }
 
         @Override
-        public RavenNodeMesh2 createNode(int uid)
+        public RavenNodeMesh createNode(int uid)
         {
-            return new RavenNodeMesh2(uid);
+            return new RavenNodeMesh(uid);
         }
     }
     

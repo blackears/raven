@@ -23,7 +23,7 @@ import com.kitfox.coyote.shape.CyRectangle2i;
 import com.kitfox.coyote.shape.CyStroke;
 import com.kitfox.coyote.shape.outliner.bitmap.BitmapOutliner;
 import com.kitfox.raven.editor.node.scene.RavenNodeGroup;
-import com.kitfox.raven.editor.node.scene.RavenNodeMesh2;
+import com.kitfox.raven.editor.node.scene.RavenNodeMesh;
 import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 import com.kitfox.raven.paint.RavenPaint;
 import com.kitfox.raven.paint.RavenPaintLayout;
@@ -135,7 +135,7 @@ public class BitmapImporterContext
     {
         CyRectangle2d boundsLocal = path.getBounds();
 
-        CyMatrix4d scale = RavenNodeMesh2.getMeshToLocal();
+        CyMatrix4d scale = RavenNodeMesh.getMeshToLocal();
         scale.invert();
         CyPath2d meshPath = path.createTransformedPath(scale);
         
@@ -155,8 +155,8 @@ public class BitmapImporterContext
         
         NetworkMesh network = NetworkMesh.create(meshPath, data);
         
-        RavenNodeMesh2 mesh = NodeObjectProviderIndex.inst().createNode(
-                RavenNodeMesh2.class, sym);
+        RavenNodeMesh mesh = NodeObjectProviderIndex.inst().createNode(
+                RavenNodeMesh.class, sym);
         mesh.setNetworkMesh(network, false);
         
         //Add to tree

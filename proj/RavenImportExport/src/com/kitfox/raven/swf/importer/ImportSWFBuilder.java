@@ -17,7 +17,7 @@
 package com.kitfox.raven.swf.importer;
 
 import com.kitfox.raven.editor.RavenDocument;
-import com.kitfox.raven.editor.node.scene.RavenNodeMesh2;
+import com.kitfox.raven.editor.node.scene.RavenNodeMesh;
 import com.kitfox.raven.editor.node.scene.RavenSymbol;
 import com.kitfox.raven.swf.importer.timeline.CharacterDictionary;
 import com.kitfox.raven.swf.importer.timeline.CharacterShape;
@@ -46,7 +46,7 @@ import java.util.HashMap;
  *
  * @author kitfox
  */
-public class ImportSWFBuilder2
+public class ImportSWFBuilder
 {
     RavenDocument doc;
     HashMap<Integer, RavenSymbol> symbolMap = 
@@ -54,7 +54,7 @@ public class ImportSWFBuilder2
 
     SWFTimelineBuilder builder;
     
-    public ImportSWFBuilder2(RavenDocument doc)
+    public ImportSWFBuilder(RavenDocument doc)
     {
         this.doc = doc;
     }
@@ -166,8 +166,8 @@ public class ImportSWFBuilder2
 
     private void addShapeTrack(RavenSymbol sym, Track track, SWFTimelineTrack timeTrack)
     {
-        RavenNodeMesh2 mesh = NodeObjectProviderIndex.inst().createNode(
-                RavenNodeMesh2.class, sym);
+        RavenNodeMesh mesh = NodeObjectProviderIndex.inst().createNode(
+                RavenNodeMesh.class, sym);
         mesh.setName(sym.createUniqueName("mesh"));
         
         CharacterDictionary dict = builder.getDictionary();
