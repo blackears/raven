@@ -22,5 +22,5 @@ package com.kitfox.raven.util.tree;
  */
 abstract public class PropertyData<T>
 {
-    abstract public T getValue(NodeSymbol document);
+    abstract public T getValue(NodeSymbol symbol);
 }

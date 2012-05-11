@@ -14,9 +14,9 @@
    height="16"
    id="svg2868"
    version="1.1"
-   inkscape:version="0.47 r22583"
+   inkscape:version="0.48.2 r9819"
    sodipodi:docname="nodeIcons.svg"
-   inkscape:export-filename="C:\dev\java.net\raven\trunk\proj\RavenEditor\art\icons\node\compositionLibrary.png"
+   inkscape:export-filename="C:\dev\java.net\raven\trunk\proj\RavenEditor\art\icons\node\symbolRef.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -201,13 +201,13 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="25.466503"
-     inkscape:cx="6.447308"
+     inkscape:cx="6.0106003"
      inkscape:cy="8.8488437"
      inkscape:document-units="px"
-     inkscape:current-layer="layer26"
+     inkscape:current-layer="layer27"
      showgrid="true"
      inkscape:snap-global="true"
-     inkscape:window-width="972"
+     inkscape:window-width="1184"
      inkscape:window-height="828"
      inkscape:window-x="29"
      inkscape:window-y="52"
@@ -796,12 +796,14 @@
        style="fill:#f0cb2a;fill-opacity:1;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 2.950327,10.218781 5,0 0,3 L 14,8 7.950327,2.2187808 l 0,3 -5,0 0,5.0000002 z"
        id="path2926"
-       sodipodi:nodetypes="cccccccc" />
+       sodipodi:nodetypes="cccccccc"
+       inkscape:connector-curvature="0" />
     <path
        style="fill:none;stroke:#f6ecc9;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 3.8889354,9.6663876 0.055532,-3.4997907 4.9444677,-0.055532 0,-1.7223385 L 13,8"
        id="path3701"
-       sodipodi:nodetypes="ccccc" />
+       sodipodi:nodetypes="ccccc"
+       inkscape:connector-curvature="0" />
   </g>
   <g
      inkscape:groupmode="layer"
@@ -941,7 +943,7 @@
      inkscape:groupmode="layer"
      id="layer26"
      inkscape:label="Composition Library"
-     style="display:inline">
+     style="display:none">
     <rect
        style="fill:#a9ceda;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline"
        id="rect2982-4"
@@ -963,5 +965,29 @@
        height="9"
        x="3"
        y="6" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer27"
+     inkscape:label="Symbol Reference"
+     style="display:inline">
+    <path
+       inkscape:connector-curvature="0"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1;display:inline"
+       d="M 4.906328,2.4987776 6,0.5275064 8.239426,0.4816634 9.541417,2.4987782 8.291505,4.3783625 l -1.041593,0.045843 -0.05208,1.1002444 1.093673,1.054401 -0.05208,2.567237 -0.624956,1.1002451 2.864381,1.191931 1.093674,2.750611 1.45823,-0.550122 0.833275,0.962713 -1.197833,1.008557 -1.979026,0.04584 -1.40615,-3.117359 -2.551905,-1.146089 -0.416637,2.521395 -2.239425,0.09168 -0.104159,1.558679 -1.45823,0 L 2.458584,12.630194 4.645929,12.492666 4.958407,9.6503663 6,8 5.895841,6.8997555 4.54177,6.9455995 3.396018,8.229218 l 0,1.1919312 L 1.593984,9.4218318 1.625304,8.1833745 3.86473,5.3869198 5.857593,5.2500716 5.791673,4.1949884 4.906319,2.4987782 z"
+       id="path3731-1"
+       sodipodi:nodetypes="cccccccccccccccccccccccccccccccccccc" />
+    <path
+       style="fill:#f0cb2a;fill-opacity:1;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline"
+       d="m 7,13.481797 3.763754,0 0,2.089078 4.553894,-3.634147 L 10.763754,7.9109223 10.763754,10 7,10 7,13.481797 z"
+       id="path2926-7"
+       sodipodi:nodetypes="cccccccc"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#f6ecc9;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline"
+       d="m 7.7065377,13.097132 0.0418,-2.437111 3.7219523,-0.03867 0,-1.1993669 3.094607,2.5147439"
+       id="path3701-4"
+       sodipodi:nodetypes="ccccc"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>

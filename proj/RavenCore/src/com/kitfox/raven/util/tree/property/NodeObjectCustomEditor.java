@@ -149,7 +149,8 @@ public class NodeObjectCustomEditor extends javax.swing.JPanel
         /**
          * @return the list
          */
-        public ArrayList<NodeObject> getList() {
+        public ArrayList<NodeObject> getList()
+        {
             return list;
         }
     }

@@ -16,13 +16,11 @@
 
 package com.kitfox.raven.editor.node.scene;
 
-import com.kitfox.coyote.renderer.CyDrawStack;
 import com.kitfox.coyote.shape.CyShape;
 import com.kitfox.raven.editor.node.renderer.RavenRenderer;
 import com.kitfox.raven.util.service.ServiceInst;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
 import com.kitfox.raven.util.tree.PropertyWrapper;
-import java.awt.Shape;
 
 /**
  *
