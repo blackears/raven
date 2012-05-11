@@ -22,7 +22,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.EventObject;
@@ -60,9 +59,11 @@ public class Manipulator
     protected void fireManipulatorChanged()
     {
         EventObject evt = new EventObject(this);
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<ManipulatorListener> list =
+                new ArrayList<ManipulatorListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).selectionManipulatorChanged(evt);
+            list.get(i).selectionManipulatorChanged(evt);
         }
     }
 

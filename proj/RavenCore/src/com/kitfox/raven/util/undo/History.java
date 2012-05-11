@@ -150,9 +150,11 @@ public class History
     private void fireUndoHistoryChanged()
     {
         EventObject evt = new EventObject(this);
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<HistoryListener> list =
+                new ArrayList<HistoryListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).historyChanged(evt);
+            list.get(i).historyChanged(evt);
         }
     }
 

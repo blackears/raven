@@ -51,9 +51,11 @@ public class HelpEcho
     private void fireShowHelpTopic(URL topic)
     {
         HelpBrowseEvent evt = new HelpBrowseEvent(this, topic);
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<HelpEchoListener> list =
+                new ArrayList<HelpEchoListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).showHelpTopic(evt);
+            list.get(i).showHelpTopic(evt);
         }
     }
 

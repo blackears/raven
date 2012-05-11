@@ -84,33 +84,41 @@ public class NodeObject
     protected void fireNodeNameChanged()
     {
         EventObject evt = new EventObject(this);
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<NodeObjectListener> list =
+                new ArrayList<NodeObjectListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).nodeNameChanged(evt);
+            list.get(i).nodeNameChanged(evt);
         }
     }
 
     protected void fireNodePropertyChanged(PropertyChangeEvent evt)
     {
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<NodeObjectListener> list =
+                new ArrayList<NodeObjectListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).nodePropertyChanged(evt);
+            list.get(i).nodePropertyChanged(evt);
         }
     }
 
     protected void fireNodeChildAdded(ChildWrapperEvent evt)
     {
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<NodeObjectListener> list =
+                new ArrayList<NodeObjectListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).nodeChildAdded(evt);
+            list.get(i).nodeChildAdded(evt);
         }
     }
 
     protected void fireNodeChildRemoved(ChildWrapperEvent evt)
     {
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<NodeObjectListener> list =
+                new ArrayList<NodeObjectListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).nodeChildRemoved(evt);
+            list.get(i).nodeChildRemoved(evt);
         }
     }
 

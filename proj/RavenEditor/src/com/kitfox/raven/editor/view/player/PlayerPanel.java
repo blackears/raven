@@ -23,13 +23,13 @@
 package com.kitfox.raven.editor.view.player;
 
 import com.kitfox.raven.editor.RavenDocument;
-import com.kitfox.raven.editor.RavenDocumentEvent;
-import com.kitfox.raven.editor.RavenDocumentListener;
-import com.kitfox.raven.editor.RavenDocumentWeakListener;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.RavenEditorListener;
 import com.kitfox.raven.editor.RavenEditorWeakListener;
 import com.kitfox.raven.util.tree.ChildWrapperEvent;
+import com.kitfox.raven.util.tree.NodeDocumentEvent;
+import com.kitfox.raven.util.tree.NodeDocumentListener;
+import com.kitfox.raven.util.tree.NodeDocumentWeakListener;
 import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.NodeObjectListener;
@@ -57,14 +57,14 @@ import javax.swing.SwingUtilities;
  * @author kitfox
  */
 public class PlayerPanel extends javax.swing.JPanel
-        implements RavenEditorListener, RavenDocumentListener,
+        implements RavenEditorListener, NodeDocumentListener,
         PropertyWrapperListener
 {
     private static final long serialVersionUID = 1;
 
     final RavenEditor editor;
     RavenEditorWeakListener listenerEditor;
-    RavenDocumentWeakListener listenerRavenDoc;
+    NodeDocumentWeakListener listenerRavenDoc;
     PropertyWrapperWeakListener listenerTrackLibFrame;
     PropertyWrapperWeakListener listenerTrackLibTrack;
     PropertyWrapperWeakListener listenerTrackLibFps;
@@ -126,8 +126,8 @@ public class PlayerPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            listenerRavenDoc = new RavenDocumentWeakListener(this, doc);
-            doc.addRavenDocumentListener(listenerRavenDoc);
+            listenerRavenDoc = new NodeDocumentWeakListener(this, doc);
+            doc.addNodeDocumentListener(listenerRavenDoc);
         }
         
         
@@ -1055,22 +1055,17 @@ public class PlayerPanel extends javax.swing.JPanel
     // End of variables declaration
 
     @Override
-    public void documentSourceChanged(EventObject evt)
+    public void symbolAdded(NodeDocumentEvent evt)
     {
     }
 
     @Override
-    public void symbolAdded(RavenDocumentEvent evt)
+    public void symbolRemoved(NodeDocumentEvent evt)
     {
     }
 
     @Override
-    public void symbolRemoved(RavenDocumentEvent evt)
-    {
-    }
-
-    @Override
-    public void currentSymbolChanged(RavenDocumentEvent evt)
+    public void currentSymbolChanged(NodeDocumentEvent evt)
     {
         updateSymbol();
     }

@@ -57,9 +57,11 @@ abstract public class ChildWrapper<NodeType extends NodeObject,
     protected void fireNodeAdded(int index, NodeObject childNode)
     {
         ChildWrapperEvent evt = new ChildWrapperEvent(this, index, childNode);
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<ChildWrapperListener> list =
+                new ArrayList<ChildWrapperListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).childWrapperNodeAdded(evt);
+            list.get(i).childWrapperNodeAdded(evt);
         }
         node.notifyNodeAdded(evt);
     }
@@ -67,9 +69,11 @@ abstract public class ChildWrapper<NodeType extends NodeObject,
     protected void fireNodeRemoved(int index, NodeObject childNode)
     {
         ChildWrapperEvent evt = new ChildWrapperEvent(this, index, childNode);
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<ChildWrapperListener> list =
+                new ArrayList<ChildWrapperListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).childWrapperNodeRemoved(evt);
+            list.get(i).childWrapperNodeRemoved(evt);
         }
         node.notifyNodeRemoved(evt);
     }

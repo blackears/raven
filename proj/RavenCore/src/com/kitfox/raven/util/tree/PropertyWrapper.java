@@ -253,9 +253,11 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         }
         
         PropertyChangeEvent evt = new PropertyChangeEvent(this, name, oldValue, newValue);
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<PropertyWrapperListener> list =
+                new ArrayList<PropertyWrapperListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).propertyWrapperDataChanged(evt);
+            list.get(i).propertyWrapperDataChanged(evt);
         }
         node.notifyNodePropertyChanged(evt);
     }
@@ -264,9 +266,11 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
     {
         PropertyTrackChangeEvent evt =
                 new PropertyTrackChangeEvent(this, trackUid);
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<PropertyWrapperListener> list =
+                new ArrayList<PropertyWrapperListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).propertyWrapperTrackChanged(evt);
+            list.get(i).propertyWrapperTrackChanged(evt);
         }
     }
 
@@ -274,9 +278,11 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
     {
         PropertyTrackKeyChangeEvent evt =
                 new PropertyTrackKeyChangeEvent(this, trackUid, frame);
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<PropertyWrapperListener> list =
+                new ArrayList<PropertyWrapperListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).propertyWrapperTrackKeyChanged(evt);
+            list.get(i).propertyWrapperTrackKeyChanged(evt);
         }
     }
 

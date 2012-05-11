@@ -108,18 +108,22 @@ public class RavenViewManager
     private void fireLayoutListChanged()
     {
         EventObject evt = new EventObject(this);
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<RavenViewManagerListener> list =
+                new ArrayList<RavenViewManagerListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).layoutListChanged(evt);
+            list.get(i).layoutListChanged(evt);
         }
     }
 
     private void fireViewLayoutChanged()
     {
         EventObject evt = new EventObject(this);
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<RavenViewManagerListener> list =
+                new ArrayList<RavenViewManagerListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).viewLayoutChanged(evt);
+            list.get(i).viewLayoutChanged(evt);
         }
     }
 

@@ -58,7 +58,6 @@ public class ChildWrapperList<NodeType extends NodeObject, ChildType
 
     public void add(ChildType child)
     {
-//        add(size(), child);
         AddChildAction action = new AddChildAction(child);
         doAction(action);
     }
@@ -91,7 +90,6 @@ public class ChildWrapperList<NodeType extends NodeObject, ChildType
             throw new UnsupportedOperationException("Not a child of this node");
         }
 
-//        remove(indexOf(child));
         RemoveChildAction action = new RemoveChildAction(child);
         doAction(action);
     }
@@ -116,18 +114,6 @@ public class ChildWrapperList<NodeType extends NodeObject, ChildType
         }
         commitTransaction();
     }
-
-//    public void paste(int index, RavenTransferableType xferLayers)
-//    {
-//        NodeDocument doc = getNode().getDocument();
-//        if (doc == null)
-//        {
-//            return;
-//        }
-//
-//        //doc.reindexForPaste(xferLayers);
-//
-//    }
 
     //----------------------------------
     public class RemoveChildAction implements HistoryAction
@@ -210,39 +196,5 @@ public class ChildWrapperList<NodeType extends NodeObject, ChildType
             return "Add child: " + child.toString();
         }
     }
-
-//    public class AppendChildAction implements HistoryAction
-//    {
-//        final ChildType child;
-//
-//        public AppendChildAction(ChildType child)
-//        {
-//            this.child = child;
-//        }
-//
-//        @Override
-//        public void undo(History history)
-//        {
-//            child.setParent(null);
-//            int index = list.size() - 1;
-//            list.remove(index);
-//            fireNodeRemoved(index, child);
-//        }
-//
-//        @Override
-//        public void redo(History history)
-//        {
-//            child.setParent(ChildWrapperList.this);
-//            int index = list.size();
-//            list.add(index, child);
-//            fireNodeAdded(index, child);
-//        }
-//
-//        @Override
-//        public String getTitle()
-//        {
-//            return "Append child: " + child.toString();
-//        }
-//    }
 
 }

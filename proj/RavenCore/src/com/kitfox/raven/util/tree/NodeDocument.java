@@ -184,14 +184,15 @@ abstract public class NodeDocument
     
     public void setCurrentSymbol(NodeSymbol symbol)
     {
-//        if (curSymbol == symbol)
-//        {
-//            return;
-//        }
-//        if (!symbols.contains(symbol))
-//        {
-//            return;
-//        }
+        if (curSymbol == symbol)
+        {
+            return;
+        }
+        if (!symbolMap.containsKey(symbol.getSymbolUid()))
+        {
+            throw new IllegalArgumentException(
+                    "Current symbol must be a member of this document");
+        }
         
         SetCurrentSymbolAction action = 
                 new SetCurrentSymbolAction(curSymbol, symbol);
@@ -264,18 +265,22 @@ abstract public class NodeDocument
     private void fireSymbolAdded(NodeSymbol doc)
     {
         NodeDocumentEvent evt = new NodeDocumentEvent(this, doc);
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<NodeDocumentListener> list =
+                new ArrayList<NodeDocumentListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).symbolAdded(evt);
+            list.get(i).symbolAdded(evt);
         }
     }
 
     private void fireSymbolRemoved(NodeSymbol doc)
     {
         NodeDocumentEvent evt = new NodeDocumentEvent(this, doc);
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<NodeDocumentListener> list =
+                new ArrayList<NodeDocumentListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).symbolRemoved(evt);
+            list.get(i).symbolRemoved(evt);
         }
     }
 
@@ -283,9 +288,11 @@ abstract public class NodeDocument
     {
         NodeDocumentEvent evt = 
                 new NodeDocumentEvent(this, doc, oldDoc);
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<NodeDocumentListener> list =
+                new ArrayList<NodeDocumentListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).currentSymbolChanged(evt);
+            list.get(i).currentSymbolChanged(evt);
         }
     }
 

@@ -124,7 +124,9 @@ public class RavenDocument extends NodeDocument
     {
         NodeDocumentType type = 
                 JAXBUtil.loadJAXB(NodeDocumentType.class, file);
-        return create(editor, type);
+        RavenDocument doc = create(editor, type);
+        doc.setSource(file);
+        return doc;
     }
     
     public void addRavenDocumentListener(RavenDocumentListener l)

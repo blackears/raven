@@ -44,9 +44,11 @@ abstract public class CyTextureDataProvider
     protected void fireTextureDataChanged()
     {
         CyChangeEvent evt = new CyChangeEvent(this);
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<CyTextureDataProviderListener> list =
+                new ArrayList<CyTextureDataProviderListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).textureDataChanged(evt);
+            list.get(i).textureDataChanged(evt);
         }
     }
 }

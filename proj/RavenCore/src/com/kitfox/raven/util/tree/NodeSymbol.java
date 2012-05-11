@@ -51,7 +51,7 @@ abstract public class NodeSymbol<RootType extends NodeRoot>
 
     private final Selection<NodeObject> selection = new Selection<NodeObject>();
 
-    ArrayList<NodeSymbolListener> symbolListeners = new ArrayList<NodeSymbolListener>();
+    ArrayList<NodeSymbolListener> listeners = new ArrayList<NodeSymbolListener>();
 
     //Index for rapidly looking up nodes by uid
     HashMap<Integer, NodeObject> nodeIndex =
@@ -184,43 +184,51 @@ abstract public class NodeSymbol<RootType extends NodeRoot>
 
     public void addNodeSymbolListener(NodeSymbolListener l)
     {
-        symbolListeners.add(l);
+        listeners.add(l);
     }
 
     public void removeNodeSymbolListener(NodeSymbolListener l)
     {
-        symbolListeners.remove(l);
+        listeners.remove(l);
     }
 
     protected void fireSymbolNameChanged(PropertyChangeEvent evt)
     {
-        for (int i = 0; i < symbolListeners.size(); ++i)
+        ArrayList<NodeSymbolListener> list =
+                new ArrayList<NodeSymbolListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            symbolListeners.get(i).symbolNameChanged(evt);
+            list.get(i).symbolNameChanged(evt);
         }
     }
 
     protected void fireSymbolPropertyChanged(PropertyChangeEvent evt)
     {
-        for (int i = 0; i < symbolListeners.size(); ++i)
+        ArrayList<NodeSymbolListener> list =
+                new ArrayList<NodeSymbolListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            symbolListeners.get(i).symbolPropertyChanged(evt);
+            list.get(i).symbolPropertyChanged(evt);
         }
     }
 
     protected void fireSymbolNodeChildAdded(ChildWrapperEvent evt)
     {
-        for (int i = 0; i < symbolListeners.size(); ++i)
+        ArrayList<NodeSymbolListener> list =
+                new ArrayList<NodeSymbolListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            symbolListeners.get(i).symbolNodeChildAdded(evt);
+            list.get(i).symbolNodeChildAdded(evt);
         }
     }
 
     protected void fireSymbolNodeChildRemoved(ChildWrapperEvent evt)
     {
-        for (int i = 0; i < symbolListeners.size(); ++i)
+        ArrayList<NodeSymbolListener> list =
+                new ArrayList<NodeSymbolListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            symbolListeners.get(i).symbolNodeChildRemoved(evt);
+            list.get(i).symbolNodeChildRemoved(evt);
         }
     }
 

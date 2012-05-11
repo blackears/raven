@@ -57,9 +57,11 @@ abstract public class Tool
     protected void fireToolDisplayChanged()
     {
         EventObject evt = new EventObject(this);
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<ToolListener> list =
+                new ArrayList<ToolListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).toolDisplayChanged(evt);
+            list.get(i).toolDisplayChanged(evt);
         }
     }
 

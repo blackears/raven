@@ -56,9 +56,11 @@ public class ColorSamplerOverlayWindow extends javax.swing.JWindow
     protected void fireColorPicked(Color col)
     {
         ColorSamplerOverlayEvent evt = new ColorSamplerOverlayEvent(this, col);
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<ColorSamplerOverlayListener> list =
+                new ArrayList<ColorSamplerOverlayListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).colorPicked(evt);
+            list.get(i).colorPicked(evt);
         }
     }
     

@@ -68,9 +68,11 @@ abstract public class ViewProvider
     protected void firePreferencesLoaded()
     {
         EventObject evt = new EventObject(this);
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<ViewProviderListener> list =
+                new ArrayList<ViewProviderListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).viewProviderPreferencesChanged(evt);
+            list.get(i).viewProviderPreferencesChanged(evt);
         }
     }
 

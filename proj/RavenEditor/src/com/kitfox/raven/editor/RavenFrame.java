@@ -173,23 +173,23 @@ public class RavenFrame extends javax.swing.JFrame
         refreshTitle();
     }
 
-    @Override
-    public void symbolAdded(RavenDocumentEvent evt)
-    {
-        
-    }
-
-    @Override
-    public void symbolRemoved(RavenDocumentEvent evt)
-    {
-        
-    }
-
-    @Override
-    public void currentSymbolChanged(RavenDocumentEvent evt)
-    {
-        
-    }
+//    @Override
+//    public void symbolAdded(RavenDocumentEvent evt)
+//    {
+//        
+//    }
+//
+//    @Override
+//    public void symbolRemoved(RavenDocumentEvent evt)
+//    {
+//        
+//    }
+//
+//    @Override
+//    public void currentSymbolChanged(RavenDocumentEvent evt)
+//    {
+//        
+//    }
 
     @Override
     public void documentChanged(EventObject evt)

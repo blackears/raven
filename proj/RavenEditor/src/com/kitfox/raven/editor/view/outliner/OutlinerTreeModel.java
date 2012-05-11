@@ -106,7 +106,7 @@ public class OutlinerTreeModel implements TreeModel
     protected void fireTreeNodesChanged(TreePath path, int[] indices, Object[] children)
     {
         TreeModelEvent evt = new TreeModelEvent(this, path, indices, children);
-        for (TreeModelListener l: treeListeners)
+        for (TreeModelListener l: new ArrayList<TreeModelListener>(treeListeners))
         {
             l.treeNodesChanged(evt);
         }
@@ -115,7 +115,7 @@ public class OutlinerTreeModel implements TreeModel
     protected void fireTreeNodesInserted(TreePath path, int[] indices, Object[] children)
     {
         TreeModelEvent evt = new TreeModelEvent(this, path, indices, children);
-        for (TreeModelListener l: treeListeners)
+        for (TreeModelListener l: new ArrayList<TreeModelListener>(treeListeners))
         {
             l.treeNodesInserted(evt);
         }
@@ -124,7 +124,7 @@ public class OutlinerTreeModel implements TreeModel
     protected void fireTreeNodesRemoved(TreePath path, int[] indices, Object[] children)
     {
         TreeModelEvent evt = new TreeModelEvent(this, path, indices, children);
-        for (TreeModelListener l: treeListeners)
+        for (TreeModelListener l: new ArrayList<TreeModelListener>(treeListeners))
         {
             l.treeNodesRemoved(evt);
         }

@@ -43,9 +43,11 @@ abstract public class RavenWizardPageIteratorAbstract<T>
     protected void fireWizardPageNavigationChanged()
     {
         ChangeEvent evt = new ChangeEvent(this);
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<RavenWizardPageListener> list =
+                new ArrayList<RavenWizardPageListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).wizardPageNavigationChanged(evt);
+            list.get(i).wizardPageNavigationChanged(evt);
         }
     }
 }

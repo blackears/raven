@@ -280,18 +280,22 @@ public class RavenEditor
     private void fireRecentFilesChanged()
     {
         EventObject evt = new EventObject(this);
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<RavenEditorListener> list =
+                new ArrayList<RavenEditorListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).recentFilesChanged(evt);
+            list.get(i).recentFilesChanged(evt);
         }
     }
 
     private void fireProjectChanged()
     {
         EventObject evt = new EventObject(this);
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<RavenEditorListener> list =
+                new ArrayList<RavenEditorListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).documentChanged(evt);
+            list.get(i).documentChanged(evt);
         }
     }
 

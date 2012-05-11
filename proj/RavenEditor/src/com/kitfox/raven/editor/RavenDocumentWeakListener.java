@@ -51,40 +51,40 @@ public class RavenDocumentWeakListener implements RavenDocumentListener
         l.documentSourceChanged(evt);
     }
 
-    @Override
-    public void symbolAdded(RavenDocumentEvent evt)
-    {
-        RavenDocumentListener l = ref.get();
-        if (l == null)
-        {
-            remove();
-            return;
-        }
-        l.symbolAdded(evt);
-    }
-
-    @Override
-    public void symbolRemoved(RavenDocumentEvent evt)
-    {
-        RavenDocumentListener l = ref.get();
-        if (l == null)
-        {
-            remove();
-            return;
-        }
-        l.symbolRemoved(evt);
-    }
-
-    @Override
-    public void currentSymbolChanged(RavenDocumentEvent evt)
-    {
-        RavenDocumentListener l = ref.get();
-        if (l == null)
-        {
-            remove();
-            return;
-        }
-        l.currentSymbolChanged(evt);
-    }
+//    @Override
+//    public void symbolAdded(RavenDocumentEvent evt)
+//    {
+//        RavenDocumentListener l = ref.get();
+//        if (l == null)
+//        {
+//            remove();
+//            return;
+//        }
+//        l.symbolAdded(evt);
+//    }
+//
+//    @Override
+//    public void symbolRemoved(RavenDocumentEvent evt)
+//    {
+//        RavenDocumentListener l = ref.get();
+//        if (l == null)
+//        {
+//            remove();
+//            return;
+//        }
+//        l.symbolRemoved(evt);
+//    }
+//
+//    @Override
+//    public void currentSymbolChanged(RavenDocumentEvent evt)
+//    {
+//        RavenDocumentListener l = ref.get();
+//        if (l == null)
+//        {
+//            remove();
+//            return;
+//        }
+//        l.currentSymbolChanged(evt);
+//    }
     
 }

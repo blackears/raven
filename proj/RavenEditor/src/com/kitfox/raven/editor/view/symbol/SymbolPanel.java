@@ -26,6 +26,9 @@ import com.kitfox.raven.util.tree.NodeDocumentEvent;
 import com.kitfox.raven.util.tree.NodeDocumentListener;
 import com.kitfox.raven.util.tree.NodeDocumentWeakListener;
 import com.kitfox.raven.util.tree.NodeSymbol;
+import com.kitfox.raven.util.tree.NodeSymbolProvider;
+import com.kitfox.raven.util.tree.NodeSymbolProviderIndex;
+import com.kitfox.raven.util.undo.History;
 import com.kitfox.raven.wizard.RavenWizardDialog;
 import java.awt.Component;
 import java.util.EventObject;
@@ -224,11 +227,11 @@ public class SymbolPanel extends javax.swing.JPanel
 
     private void bn_createActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bn_createActionPerformed
     {//GEN-HEADEREND:event_bn_createActionPerformed
-//        RavenDocument doc = editor.getDocument();
-//        if (doc == null)
-//        {
-//            return;
-//        }
+        RavenDocument doc = editor.getDocument();
+        if (doc == null)
+        {
+            return;
+        }
 
 //        String newName = doc.getUnusedDocumentName("symbol");
 //                JOptionPane.showInputDialog(
@@ -238,7 +241,6 @@ public class SymbolPanel extends javax.swing.JPanel
 //            return;
 //        }
 
-        RavenDocument doc = new RavenDocument(editor);
         NewSymbolWizard wiz = new NewSymbolWizard(doc);
 
         RavenWizardDialog dlg = new RavenWizardDialog(
@@ -253,6 +255,9 @@ public class SymbolPanel extends javax.swing.JPanel
             return;
         }
         
+        History hist = doc.getHistory();
+        hist.beginTransaction("Creating new symbol");
+        
         String name = sym.getName();
         String newName = doc.getUnusedSymbolName(name);
         if (!newName.equals(name))
@@ -262,6 +267,7 @@ public class SymbolPanel extends javax.swing.JPanel
 
         doc.addSymbol(sym);
         
+        hist.commitTransaction();
     }//GEN-LAST:event_bn_createActionPerformed
 
     private void bn_renameActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bn_renameActionPerformed
@@ -344,9 +350,13 @@ public class SymbolPanel extends javax.swing.JPanel
                 setForeground(list.getForeground());
             }
             
-            NodeSymbol doc = (NodeSymbol)value;
-            String name = doc.getName();
+            NodeSymbol sym = (NodeSymbol)value;
+            String name = sym.getName();
             setText(name == null ? "*" : name);
+            
+            NodeSymbolProvider prov = 
+                    NodeSymbolProviderIndex.inst().getProvider(sym.getClass());
+            setIcon(prov == null ? null : prov.getIcon());
             return this;
         }
     }

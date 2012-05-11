@@ -23,9 +23,6 @@
 package com.kitfox.raven.editor.view.text;
 
 import com.kitfox.raven.editor.RavenDocument;
-import com.kitfox.raven.editor.RavenDocumentEvent;
-import com.kitfox.raven.editor.RavenDocumentListener;
-import com.kitfox.raven.editor.RavenDocumentWeakListener;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.RavenEditorListener;
 import com.kitfox.raven.editor.RavenEditorWeakListener;
@@ -36,6 +33,9 @@ import com.kitfox.raven.util.SelectionListener;
 import com.kitfox.raven.util.SelectionSubEvent;
 import com.kitfox.raven.util.SelectionWeakListener;
 import com.kitfox.raven.util.text.TextPropertiesPanel;
+import com.kitfox.raven.util.tree.NodeDocumentEvent;
+import com.kitfox.raven.util.tree.NodeDocumentListener;
+import com.kitfox.raven.util.tree.NodeDocumentWeakListener;
 import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObject;
 import java.awt.BorderLayout;
@@ -50,14 +50,14 @@ import javax.swing.SwingUtilities;
  * @author kitfox
  */
 public class TextPanel extends javax.swing.JPanel
-        implements RavenEditorListener, RavenDocumentListener,
+        implements RavenEditorListener, NodeDocumentListener,
         PropertyChangeListener, SelectionListener
 {
     RavenEditor editor;
     TextPropertiesPanel panel = new TextPropertiesPanel();
 
     private RavenEditorWeakListener edListener;
-    private RavenDocumentWeakListener listenerRavenDoc;
+    private NodeDocumentWeakListener listenerRavenDoc;
     private SelectionWeakListener selListener;
 
     ArrayList<ServiceText> textRecords = new ArrayList<ServiceText>();
@@ -90,8 +90,8 @@ public class TextPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            listenerRavenDoc = new RavenDocumentWeakListener(this, doc);
-            doc.addRavenDocumentListener(listenerRavenDoc);
+            listenerRavenDoc = new NodeDocumentWeakListener(this, doc);
+            doc.addNodeDocumentListener(listenerRavenDoc);
         }
         
         updateSymbol();
@@ -227,22 +227,17 @@ public class TextPanel extends javax.swing.JPanel
     }
 
     @Override
-    public void documentSourceChanged(EventObject evt)
+    public void symbolAdded(NodeDocumentEvent evt)
     {
     }
 
     @Override
-    public void symbolAdded(RavenDocumentEvent evt)
+    public void symbolRemoved(NodeDocumentEvent evt)
     {
     }
 
     @Override
-    public void symbolRemoved(RavenDocumentEvent evt)
-    {
-    }
-
-    @Override
-    public void currentSymbolChanged(RavenDocumentEvent evt)
+    public void currentSymbolChanged(NodeDocumentEvent evt)
     {
         updateSymbol();
     }

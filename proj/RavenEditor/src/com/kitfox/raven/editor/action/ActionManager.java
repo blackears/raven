@@ -80,18 +80,22 @@ public class ActionManager
     protected void fireHotkeyLayoutChanged()
     {
         EventObject evt = new EventObject(this);
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<ActionManagerListener> list =
+                new ArrayList<ActionManagerListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).hotkeyLayoutChanged(evt);
+            list.get(i).hotkeyLayoutChanged(evt);
         }
     }
 
     protected void fireHotkeyActionsChanged()
     {
         EventObject evt = new EventObject(this);
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<ActionManagerListener> list =
+                new ArrayList<ActionManagerListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).hotkeyActionsChanged(evt);
+            list.get(i).hotkeyActionsChanged(evt);
         }
     }
 

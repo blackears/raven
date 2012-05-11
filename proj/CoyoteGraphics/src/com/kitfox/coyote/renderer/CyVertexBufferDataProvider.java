@@ -99,18 +99,22 @@ abstract public class CyVertexBufferDataProvider
     protected void fireArrayDataChanged()
     {
         CyChangeEvent evt = new CyChangeEvent(this);
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<CyVertexBufferDataProviderListener> list =
+                new ArrayList<CyVertexBufferDataProviderListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).arrayDataChanged(evt);
+            list.get(i).arrayDataChanged(evt);
         }
     }
 
     protected void fireElementDataChanged()
     {
         CyChangeEvent evt = new CyChangeEvent(this);
-        for (int i = 0; i < listeners.size(); ++i)
+        ArrayList<CyVertexBufferDataProviderListener> list =
+                new ArrayList<CyVertexBufferDataProviderListener>(listeners);
+        for (int i = 0; i < list.size(); ++i)
         {
-            listeners.get(i).elementDataChanged(evt);
+            list.get(i).elementDataChanged(evt);
         }
     }
 

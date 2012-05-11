@@ -24,19 +24,19 @@ package com.kitfox.raven.editor.view.outliner;
 
 import com.kitfox.raven.editor.RavenDocument;
 import com.kitfox.raven.editor.RavenDocumentEvent;
-import com.kitfox.raven.editor.RavenDocumentListener;
-import com.kitfox.raven.editor.RavenDocumentWeakListener;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.RavenEditorListener;
 import com.kitfox.raven.editor.RavenEditorWeakListener;
 import com.kitfox.raven.util.SelectionSubEvent;
-import com.kitfox.raven.util.tree.SelectionRecord;
 import com.kitfox.raven.editor.action.ActionManager;
 import com.kitfox.raven.editor.action.ActionManagerListener;
 import com.kitfox.raven.util.Selection;
 import com.kitfox.raven.util.SelectionEvent;
 import com.kitfox.raven.util.SelectionListener;
 import com.kitfox.raven.util.SelectionWeakListener;
+import com.kitfox.raven.util.tree.NodeDocumentEvent;
+import com.kitfox.raven.util.tree.NodeDocumentListener;
+import com.kitfox.raven.util.tree.NodeDocumentWeakListener;
 import com.kitfox.raven.util.tree.NodeObject;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -50,13 +50,13 @@ import javax.swing.tree.TreePath;
  * @author kitfox
  */
 public class OutlinerPanel extends javax.swing.JPanel
-        implements RavenEditorListener, RavenDocumentListener,
+        implements RavenEditorListener, NodeDocumentListener,
         OutlinerTreeModelListener,
         ActionManagerListener, SelectionListener
 {
     final RavenEditor editor;
     private RavenEditorWeakListener listenerEditor;
-    private RavenDocumentWeakListener listenerRavenDoc;
+    private NodeDocumentWeakListener listenerRavenDoc;
     private SelectionWeakListener listenerSelection;
     private OutlinerTreeModel model;
 
@@ -93,8 +93,8 @@ public class OutlinerPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            listenerRavenDoc = new RavenDocumentWeakListener(this, doc);
-            doc.addRavenDocumentListener(listenerRavenDoc);
+            listenerRavenDoc = new NodeDocumentWeakListener(this, doc);
+            doc.addNodeDocumentListener(listenerRavenDoc);
         }
         
         updateSymbol();
@@ -342,22 +342,17 @@ public class OutlinerPanel extends javax.swing.JPanel
     }
 
     @Override
-    public void documentSourceChanged(EventObject evt)
+    public void symbolAdded(NodeDocumentEvent evt)
     {
     }
 
     @Override
-    public void symbolAdded(RavenDocumentEvent evt)
+    public void symbolRemoved(NodeDocumentEvent evt)
     {
     }
 
     @Override
-    public void symbolRemoved(RavenDocumentEvent evt)
-    {
-    }
-
-    @Override
-    public void currentSymbolChanged(RavenDocumentEvent evt)
+    public void currentSymbolChanged(NodeDocumentEvent evt)
     {
         updateSymbol();
     }

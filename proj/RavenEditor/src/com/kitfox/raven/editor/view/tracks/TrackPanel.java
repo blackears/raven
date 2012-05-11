@@ -23,9 +23,6 @@
 package com.kitfox.raven.editor.view.tracks;
 
 import com.kitfox.raven.editor.RavenDocument;
-import com.kitfox.raven.editor.RavenDocumentEvent;
-import com.kitfox.raven.editor.RavenDocumentListener;
-import com.kitfox.raven.editor.RavenDocumentWeakListener;
 import com.kitfox.raven.editor.RavenEditor;
 import com.kitfox.raven.editor.RavenEditorListener;
 import com.kitfox.raven.editor.RavenEditorWeakListener;
@@ -46,6 +43,9 @@ import com.kitfox.raven.util.SelectionEvent;
 import com.kitfox.raven.util.SelectionListener;
 import com.kitfox.raven.util.SelectionSubEvent;
 import com.kitfox.raven.util.SelectionWeakListener;
+import com.kitfox.raven.util.tree.NodeDocumentEvent;
+import com.kitfox.raven.util.tree.NodeDocumentListener;
+import com.kitfox.raven.util.tree.NodeDocumentWeakListener;
 import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.PropertyProvider;
@@ -53,7 +53,6 @@ import com.kitfox.raven.util.tree.PropertyProviderIndex;
 import com.kitfox.raven.util.tree.PropertyWrapper;
 import com.kitfox.raven.util.tree.PropertyWrapperAdapter;
 import com.kitfox.raven.util.tree.PropertyWrapperWeakListener;
-import com.kitfox.raven.util.tree.SelectionRecord;
 import com.kitfox.raven.util.tree.Track;
 import com.kitfox.raven.util.tree.TrackCurve;
 import com.kitfox.raven.util.tree.TrackLibrary;
@@ -91,7 +90,7 @@ import javax.swing.TransferHandler;
  * @author kitfox
  */
 public class TrackPanel extends javax.swing.JPanel
-        implements RavenEditorListener, RavenDocumentListener,
+        implements RavenEditorListener, NodeDocumentListener,
         ViewProviderListener, ToolPaletteListener
 {
     private static final long serialVersionUID = 1;
@@ -105,7 +104,7 @@ public class TrackPanel extends javax.swing.JPanel
 
 //    boolean updating = false;
     RavenEditorWeakListener listenerEditor;
-    private RavenDocumentWeakListener listenerRavenDoc;
+    private NodeDocumentWeakListener listenerRavenDoc;
 
     boolean updatingPropList;
 
@@ -214,8 +213,8 @@ public class TrackPanel extends javax.swing.JPanel
         RavenDocument doc = editor.getDocument();
         if (doc != null)
         {
-            listenerRavenDoc = new RavenDocumentWeakListener(this, doc);
-            doc.addRavenDocumentListener(listenerRavenDoc);
+            listenerRavenDoc = new NodeDocumentWeakListener(this, doc);
+            doc.addNodeDocumentListener(listenerRavenDoc);
         }
         
         updateSymbol();
@@ -523,22 +522,17 @@ public class TrackPanel extends javax.swing.JPanel
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void documentSourceChanged(EventObject evt)
+    public void symbolAdded(NodeDocumentEvent evt)
     {
     }
 
     @Override
-    public void symbolAdded(RavenDocumentEvent evt)
+    public void symbolRemoved(NodeDocumentEvent evt)
     {
     }
 
     @Override
-    public void symbolRemoved(RavenDocumentEvent evt)
-    {
-    }
-
-    @Override
-    public void currentSymbolChanged(RavenDocumentEvent evt)
+    public void currentSymbolChanged(NodeDocumentEvent evt)
     {
         updateSymbol();
     }
