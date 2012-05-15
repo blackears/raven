@@ -359,9 +359,13 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
         }
         else if (!pickEdge.isEmpty())
         {
+            NetworkHandleEdge refEdge = pickEdge.get(0);
+            
             pickEdge = MeshUtil.getSelEdges(pickEdge.get(0),
                     sel, node, handles);
-            dragSet = new MeshDragSetEdge(servMesh, handles, g2d, pickEdge);
+            dragSet = new MeshDragSetEdge(servMesh, handles, g2d, 
+                    evt.getX(), evt.getY(),
+                    refEdge, pickEdge);
         }
         else
         {

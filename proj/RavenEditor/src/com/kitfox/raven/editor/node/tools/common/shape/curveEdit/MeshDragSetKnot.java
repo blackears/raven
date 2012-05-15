@@ -164,7 +164,7 @@ public class MeshDragSetKnot extends MeshDragSet
 
     
     //--------------------
-    class UpdateSet
+    static class UpdateSet
     {
         HashMap<NetworkHandleEdge, EdgeUpdate> edgeMap = 
                 new HashMap<NetworkHandleEdge, EdgeUpdate>();
@@ -182,7 +182,7 @@ public class MeshDragSetKnot extends MeshDragSet
         
     }
     
-    class EdgeUpdate
+    static class EdgeUpdate
     {
         NetworkHandleEdge edge;
         private BezierCubic2i curve;

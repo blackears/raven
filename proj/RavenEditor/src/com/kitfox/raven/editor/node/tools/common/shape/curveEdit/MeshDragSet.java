@@ -47,6 +47,11 @@ abstract public class MeshDragSet
 
     abstract public void dragBy(int dx, int dy, boolean history);
     
+    protected void xformPointDev2Graph(CyVector2d delta)
+    {
+        d2g.transformPoint(delta);
+    }
+    
     protected void xformVectorDev2Graph(CyVector2d delta)
     {
         d2g.transformVector(delta);

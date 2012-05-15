@@ -218,14 +218,24 @@ public class CyVector2d
 
     public double distanceSquared(CyVector2d v)
     {
-        double dx = x - v.x;
-        double dy = y - v.y;
+        return distanceSquared(v.x, v.y);
+    }
+
+    public double distanceSquared(double x, double y)
+    {
+        double dx = this.x - x;
+        double dy = this.y - y;
         return dx * dx + dy * dy;
     }
 
+    public double distance(double x, double y)
+    {
+        return Math.sqrt(distanceSquared(x, y));
+    }
+    
     public double distance(CyVector2d v)
     {
-        return Math.sqrt(distanceSquared(v));
+        return distance(v.x, v.y);
     }
 
     public CyVector2d projectOnto(CyVector2d v)
