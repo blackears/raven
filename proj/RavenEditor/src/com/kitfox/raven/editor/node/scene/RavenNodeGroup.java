@@ -17,7 +17,6 @@
 package com.kitfox.raven.editor.node.scene;
 
 import com.kitfox.coyote.math.CyMatrix4d;
-import com.kitfox.coyote.renderer.CyDrawStack;
 import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.coyote.shape.CyShape;
@@ -27,6 +26,7 @@ import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
 import com.kitfox.raven.util.service.ServiceInst;
 import com.kitfox.raven.util.tree.ChildWrapperList;
+import com.kitfox.raven.util.tree.FrameKey;
 import java.util.ArrayList;
 
 /**
@@ -86,14 +86,14 @@ public class RavenNodeGroup extends RavenNodeXformable
     }
 
     @Override
-    public CyShape getShapePickLocal()
+    public CyShape getShapePickLocal(FrameKey key)
     {
         CyPath2d combined = new CyPath2d();
         for (int i = 0; i < children.size(); ++i)
         {
             RavenNodeXformable child = children.get(i);
 
-            CyShape childClip = child.getShapePickLocal();
+            CyShape childClip = child.getShapePickLocal(key);
             CyMatrix4d l2p = child.getLocalToParentTransform((CyMatrix4d)null);
             if (!l2p.isIdentity())
             {
@@ -105,7 +105,10 @@ public class RavenNodeGroup extends RavenNodeXformable
     }
 
     @Override
-    public RavenNodeRenderable pickObject(CyRectangle2d rectangle, CyMatrix4d parentToPick, Intersection intersection)
+    public RavenNodeRenderable pickObject(CyRectangle2d rectangle, 
+            FrameKey key,
+            CyMatrix4d parentToPick,
+            Intersection intersection)
     {
         CyMatrix4d l2p = new CyMatrix4d();
         getLocalToParentTransform(l2p);
@@ -114,7 +117,7 @@ public class RavenNodeGroup extends RavenNodeXformable
         for (int i = 0; i < children.size(); ++i)
         {
             RavenNodeXformable child = children.get(i);
-            RavenNodeRenderable res = child.pickObject(rectangle, l2p, intersection);
+            RavenNodeRenderable res = child.pickObject(rectangle, key, l2p, intersection);
             if (res != null)
             {
                 return res;
@@ -125,7 +128,11 @@ public class RavenNodeGroup extends RavenNodeXformable
     }
 
     @Override
-    public void pickObjects(CyRectangle2d rectangle, CyMatrix4d parentToPick, Intersection intersection, ArrayList<NodeObject> pickList)
+    public void pickObjects(CyRectangle2d rectangle, 
+            FrameKey key,
+            CyMatrix4d parentToPick, 
+            Intersection intersection,
+            ArrayList<NodeObject> pickList)
     {
         CyMatrix4d l2p = new CyMatrix4d();
         getLocalToParentTransform(l2p);
@@ -134,7 +141,7 @@ public class RavenNodeGroup extends RavenNodeXformable
         for (int i = 0; i < children.size(); ++i)
         {
             RavenNodeXformable child = children.get(i);
-            child.pickObjects(rectangle, l2p, intersection, pickList);
+            child.pickObjects(rectangle, key, l2p, intersection, pickList);
         }
     }
 

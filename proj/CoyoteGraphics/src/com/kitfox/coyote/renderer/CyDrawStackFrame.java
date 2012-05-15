@@ -16,7 +16,6 @@
 
 package com.kitfox.coyote.renderer;
 
-import com.kitfox.coyote.math.CyColor4f;
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.math.d3.Frustumd;
 

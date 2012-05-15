@@ -18,6 +18,7 @@ package com.kitfox.raven.editor.node.scene;
 
 import com.kitfox.raven.util.tree.FrameKey;
 import com.kitfox.coyote.shape.CyEllipse2d;
+import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.coyote.shape.CyShape;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
 import com.kitfox.raven.util.service.ServiceInst;

@@ -32,6 +32,7 @@ import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.raven.editor.node.renderer.RavenRenderer;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
 import com.kitfox.raven.util.service.ServiceInst;
+import com.kitfox.raven.util.tree.FrameKey;
 import com.kitfox.raven.util.tree.PropertyWrapper;
 import java.awt.image.BufferedImage;
 
@@ -119,9 +120,9 @@ public class RavenNodeImage extends RavenNodeXformable
     }
 
     @Override
-    public CyRectangle2d getShapePickLocal()
+    public CyRectangle2d getShapePickLocal(FrameKey key)
     {
-        BufferedImage img = image.getValue();
+        BufferedImage img = image.getValue(key);
         return img == null ? null : new CyRectangle2d(0, 0, img.getWidth(), img.getHeight());
     }
 

@@ -24,6 +24,7 @@ import com.kitfox.raven.editor.node.tools.ToolProvider;
 import com.kitfox.raven.editor.node.tools.ToolUser;
 import com.kitfox.raven.editor.node.tools.common.text.TextManipulator;
 import com.kitfox.raven.util.service.ServiceInst;
+import com.kitfox.raven.util.tree.FrameKey;
 import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.NodeVisitor;
@@ -225,7 +226,7 @@ public class ToolText extends ToolDisplay
                 Logger.getLogger(ToolText.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            CyRectangle2d bounds = textNode.getBoundsLocal();
+            CyRectangle2d bounds = textNode.getBoundsLocal(FrameKey.DIRECT);
             if (bounds.contains(ptRes.x, ptRes.y))
             {
                 picked = textNode;

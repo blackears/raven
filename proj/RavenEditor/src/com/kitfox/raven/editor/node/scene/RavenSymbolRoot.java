@@ -463,14 +463,14 @@ public class RavenSymbolRoot extends NodeRoot
     public NodeObject pickObject(CyRectangle2d rectangle, CyMatrix4d worldToPick, Intersection intersection)
     {
         RavenNodeSceneGraph sg = sceneGraph.getChild();
-        return sg.pickObject(rectangle, worldToPick, intersection);
+        return sg.pickObject(rectangle, FrameKey.DIRECT, worldToPick, intersection);
     }
 
     @Override
     public void pickObjects(CyRectangle2d rectangle, CyMatrix4d worldToPick, Intersection intersection, ArrayList<NodeObject> pickList)
     {
         RavenNodeSceneGraph sg = sceneGraph.getChild();
-        sg.pickObjects(rectangle, worldToPick, intersection, pickList);
+        sg.pickObjects(rectangle, FrameKey.DIRECT, worldToPick, intersection, pickList);
     }
 
     @Override

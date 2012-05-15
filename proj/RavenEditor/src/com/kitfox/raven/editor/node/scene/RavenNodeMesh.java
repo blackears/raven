@@ -46,6 +46,7 @@ import com.kitfox.raven.shape.network.pick.NetworkMeshHandles.HandleFace;
 import com.kitfox.raven.shape.network.pick.NetworkMeshHandles.HandleVertex;
 import com.kitfox.raven.util.Intersection;
 import com.kitfox.raven.util.service.ServiceInst;
+import com.kitfox.raven.util.tree.FrameKey;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
 import com.kitfox.raven.util.tree.PropertyWrapper;
 import java.util.ArrayList;
@@ -85,7 +86,7 @@ public class RavenNodeMesh extends RavenNodeXformable
     @Override
     protected void renderContent(RenderContext ctx)
     {
-        MeshLayout meshLayout = getFaceSet();
+        MeshLayout meshLayout = getFaceSet(ctx.getFrame());
         if (meshLayout == null)
         {
             return;
@@ -116,27 +117,27 @@ public class RavenNodeMesh extends RavenNodeXformable
 //        stack.popFrame();
     }
 
-    protected MeshLayout getFaceSet()
+    protected MeshLayout getFaceSet(FrameKey key)
     {
-        MeshLayout faceSet = mesh.getUserCacheValue(MeshLayout.class);
+        MeshLayout faceSet = mesh.getUserCacheValue(MeshLayout.class, key);
         if (faceSet == null)
         {
-            NetworkMesh curMesh = mesh.getValue();
+            NetworkMesh curMesh = mesh.getValue(key);
             if (curMesh == null)
             {
                 return null;
             }
             faceSet = new MeshLayout(curMesh);
-            mesh.setUserCacheValue(MeshLayout.class, faceSet);
+            mesh.setUserCacheValue(MeshLayout.class, key, faceSet);
         }
         return faceSet;
     }
     
     @Override
-    public CyShape getShapePickLocal()
+    public CyShape getShapePickLocal(FrameKey key)
     {
-        MeshLayout faceSet = getFaceSet();
-        return faceSet.combinedPath;
+        MeshLayout faceSet = getFaceSet(key);
+        return faceSet.outerPath;
     }
 
     @Override
@@ -347,7 +348,7 @@ public class RavenNodeMesh extends RavenNodeXformable
     {
         ArrayList<EdgeLayout> edgeLayouts = new ArrayList<EdgeLayout>();
         ArrayList<FaceLayout> paths = new ArrayList<FaceLayout>();
-        CyPath2d combinedPath;
+        CyPath2d outerPath;
 
         public MeshLayout(NetworkMesh mesh)
         {
@@ -355,6 +356,7 @@ public class RavenNodeMesh extends RavenNodeXformable
             
             ArrayList<CutLoop> faces = mesh.createFaces();
 
+            CyPath2d outPath = null;
             for (CutLoop loop: faces)
             {
                 if (loop.isCcw())
@@ -363,8 +365,13 @@ public class RavenNodeMesh extends RavenNodeXformable
                 }
                 else
                 {
-                    combinedPath = loop.createPath();
+                    outPath = loop.createPath();
                 }
+            }
+            
+            if (outPath != null)
+            {
+                outerPath = outPath.createTransformedPath(meshToLocal);
             }
         }
         

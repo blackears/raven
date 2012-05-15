@@ -812,7 +812,7 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         return displayColor;
     }
 
-    protected void invalidateCacheAtKey(int frame)
+    public void invalidateCacheAtKey(int frame)
     {
         TrackKey<PropType> key = curve.getKey(frame);
         
@@ -847,7 +847,7 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         }
     }
     
-    protected void invalidateCacheAtTrack()
+    public void invalidateCache()
     {
         valueCache.clear();
         
@@ -861,7 +861,7 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
 //        }
     }
     
-    protected void invalidateCacheAtDirect()
+    public void invalidateCacheAtDirect()
     {
         valueCache.remove(FrameKey.DIRECT);
     }
@@ -1060,14 +1060,14 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         {
             curve = curveNew;
 //            trackMap.put(trackUid, curveNew);
-            invalidateCacheAtTrack();
+            invalidateCache();
             firePropertyTrackChanged();
         }
 
         @Override
         public void undo(History history)
         {
-            invalidateCacheAtTrack();
+            invalidateCache();
             curve = curveOld;
 //            if (curveOld == null)
 //            {

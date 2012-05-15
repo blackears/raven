@@ -172,10 +172,11 @@ abstract public class RavenNodeRenderable extends RavenNode
 
 
     public RavenNodeRenderable pickObject(CyRectangle2d rectangle,
+            FrameKey key,
             CyMatrix4d parentToPick,
             Intersection intersection)
     {
-        CyShape shape = getShapePickLocal();
+        CyShape shape = getShapePickLocal(key);
         if (shape == null)
         {
             return null;
@@ -198,40 +199,51 @@ abstract public class RavenNodeRenderable extends RavenNode
     }
 
     public void pickObjects(CyRectangle2d rectangle,
+            FrameKey key,
             CyMatrix4d parentToPick,
             Intersection intersection, ArrayList<NodeObject> pickList)
     {
-        if (pickObject(rectangle, parentToPick, intersection) != null)
+        if (pickObject(rectangle, key, parentToPick, intersection) != null)
         {
             pickList.add(this);
         }
     }
 
-    public CyRectangle2d getBoundsLocal()
-    {
-        CyShape shape = getShapePickLocal();
-        return shape  == null ? null : getShapePickLocal().getBounds();
-    }
+//    public CyRectangle2d getBoundsLocal()
+//    {
+//        CyShape shape = getShapePickLocal();
+//        return shape  == null ? null : getShapePickLocal().getBounds();
+//    }
 
     public CyRectangle2d getBoundsLocal(FrameKey frame)
     {
-        CyShape shape = getShapePickLocal();
-        return shape  == null ? null : getShapePickLocal().getBounds();
+        CyShape shape = getShapePickLocal(frame);
+        return shape == null ? null : shape.getBounds();
     }
 
     public CyRectangle2d getBoundsWorld()
     {
-        CyShape path = getShapePickLocal();
+        return getBoundsWorld(FrameKey.DIRECT);
+    }
+
+    public CyRectangle2d getBoundsWorld(FrameKey key)
+    {
+        CyShape path = getShapePickLocal(key);
         return path == null ? null 
                 : path.createTransformedBounds(
                 getLocalToWorldTransform((CyMatrix4d)null));
     }
 
-    abstract public CyShape getShapePickLocal();
+    abstract public CyShape getShapePickLocal(FrameKey key);
 
-    public CyPath2d getShapeWorld()
+    public CyShape getShapeWorld()
     {
-        CyShape path = getShapePickLocal();
+        return getShapeWorld(FrameKey.DIRECT);
+    }
+
+    public CyPath2d getShapeWorld(FrameKey key)
+    {
+        CyShape path = getShapePickLocal(key);
         return path == null ? null
                 : path.createTransformedPath(
                 getLocalToWorldTransform((CyMatrix4d)null));

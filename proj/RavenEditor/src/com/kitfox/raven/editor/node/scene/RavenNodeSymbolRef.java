@@ -16,14 +16,17 @@
 
 package com.kitfox.raven.editor.node.scene;
 
+import com.kitfox.coyote.renderer.CyDrawStack;
 import com.kitfox.coyote.shape.CyShape;
 import com.kitfox.raven.editor.node.renderer.RavenRenderer;
 import com.kitfox.raven.editor.node.scene.property.NodeSymbolReference;
 import com.kitfox.raven.util.service.ServiceInst;
+import com.kitfox.raven.util.tree.FrameKey;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
 import com.kitfox.raven.util.tree.NodeRoot;
 import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.PropertyWrapper;
+import com.kitfox.raven.util.tree.PropertyWrapperInteger;
 
 /**
  *
@@ -36,6 +39,10 @@ public class RavenNodeSymbolRef extends RavenNodeXformable
             new PropertyWrapper(
             this, PROP_SYMBOL, NodeSymbolReference.class);
 
+    public static final String PROP_FRAME = "frame";
+    public final PropertyWrapperInteger<RavenNodeXformable> frame =
+            new PropertyWrapperInteger(this, PROP_FRAME, 0);
+    
     protected RavenNodeSymbolRef(int uid)
     {
         super(uid);
@@ -68,19 +75,40 @@ public class RavenNodeSymbolRef extends RavenNodeXformable
         if (ref != null)
         {
             NodeSymbol tgtSym = getSymbol().getDocument().getSymbol(ref.getUid());
+            NodeSymbol parSym = getSymbol();
+            if (tgtSym == parSym)
+            {
+                //Do not visit ourself
+                return;
+            }
+            
+            if (ctx.hasVisited(tgtSym))
+            {
+                //Do not revisit symbols
+                return;
+            }
+            
+            Integer curFrame = frame.getValue();
+            
+            RenderContext newCtx = new RenderContext(
+                    ctx, new FrameKey(curFrame));
+            newCtx.addVisitedSymbol(parSym);
+            //CyDrawStack stack = ctx.getDrawStack();
+            //stack.
+        
             NodeRoot nodeRoot = tgtSym.getRoot();
             
             if (nodeRoot instanceof RavenSymbolRoot)
             {
                 RavenSymbolRoot root = (RavenSymbolRoot)nodeRoot;
-                root.getSceneGraph().render(ctx);
+                root.getSceneGraph().render(newCtx);
             }
             //other.renderContent(ctx);
         }
     }
 
     @Override
-    public CyShape getShapePickLocal()
+    public CyShape getShapePickLocal(FrameKey key)
     {
         NodeSymbolReference ref = symbolRef.getValue();
         if (ref != null)
@@ -91,7 +119,7 @@ public class RavenNodeSymbolRef extends RavenNodeXformable
             if (nodeRoot instanceof RavenSymbolRoot)
             {
                 RavenSymbolRoot root = (RavenSymbolRoot)nodeRoot;
-                return root.getSceneGraph().getShapePickLocal();
+                return root.getSceneGraph().getShapePickLocal(key);
             }
             //other.renderContent(ctx);
         }

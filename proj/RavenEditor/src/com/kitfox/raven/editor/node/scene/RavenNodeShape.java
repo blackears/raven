@@ -34,6 +34,7 @@ import com.kitfox.raven.util.tree.PropertyTrackKeyChangeEvent;
 import com.kitfox.raven.util.tree.PropertyWrapper;
 import com.kitfox.raven.util.tree.PropertyWrapperListener;
 import java.awt.Color;
+import java.awt.geom.Rectangle2D;
 import java.beans.PropertyChangeEvent;
 
 /**
@@ -184,9 +185,21 @@ abstract public class RavenNodeShape extends RavenNodeXformable
     }
 
     @Override
-    public CyShape getShapePickLocal()
+    public CyRectangle2d getBoundsWorld()
     {
-        return createShapeLocal(FrameKey.DIRECT);
+        return getBoundsWorld(FrameKey.DIRECT);
+    }
+
+    @Override
+    public CyShape getShapeWorld()
+    {
+        return getShapeWorld(FrameKey.DIRECT);
+    }
+
+    @Override
+    public CyShape getShapePickLocal(FrameKey key)
+    {
+        return createShapeLocal(key);
     }
 
     @Override
@@ -282,7 +295,7 @@ abstract public class RavenNodeShape extends RavenNodeXformable
             CyRectangle2d pickArea,
             CyMatrix4d worldToPick, Intersection isect)
     {
-        CyShape shape = getShapePickLocal();
+        CyShape shape = getShapePickLocal(FrameKey.DIRECT);
         if (shape == null)
         {
             return;
@@ -374,7 +387,7 @@ abstract public class RavenNodeShape extends RavenNodeXformable
             return null;
         }
 
-        return getBoundsLocal();
+        return getBoundsLocal(FrameKey.DIRECT);
     }
 
     @Override
@@ -398,7 +411,7 @@ abstract public class RavenNodeShape extends RavenNodeXformable
             return null;
         }
 
-        return getBoundsLocal();
+        return getBoundsLocal(FrameKey.DIRECT);
     }
 
     @Override

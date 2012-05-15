@@ -24,6 +24,7 @@ import com.kitfox.raven.editor.node.renderer.RavenRenderer;
 import com.kitfox.raven.util.Intersection;
 import com.kitfox.raven.util.service.ServiceInst;
 import com.kitfox.raven.util.tree.ChildWrapperList;
+import com.kitfox.raven.util.tree.FrameKey;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
 import java.util.ArrayList;
@@ -54,14 +55,19 @@ public class RavenNodeSceneGraph extends RavenNodeRenderable
     }
 
     @Override
-    public CyShape getShapePickLocal()
+    public CyShape getShapePickLocal(FrameKey key)
     {
         CyPath2d combined = new CyPath2d();
         for (int i = 0; i < children.size(); ++i)
         {
             RavenNodeXformable child = children.get(i);
 
-            CyShape childClip = child.getShapePickLocal();
+            CyShape childClip = child.getShapePickLocal(key);
+            if (childClip == null)
+            {
+                continue;
+            }
+            
             CyMatrix4d l2p = child.getLocalToParentTransform((CyMatrix4d)null);
             if (!l2p.isIdentity())
             {
@@ -73,12 +79,15 @@ public class RavenNodeSceneGraph extends RavenNodeRenderable
     }
 
     @Override
-    public RavenNodeRenderable pickObject(CyRectangle2d rectangle, CyMatrix4d worldToPick, Intersection intersection)
+    public RavenNodeRenderable pickObject(CyRectangle2d rectangle, 
+            FrameKey key,
+            CyMatrix4d worldToPick, 
+            Intersection intersection)
     {
         for (int i = 0; i < children.size(); ++i)
         {
             RavenNodeXformable child = children.get(i);
-            RavenNodeRenderable node = child.pickObject(rectangle, worldToPick, intersection);
+            RavenNodeRenderable node = child.pickObject(rectangle, key, worldToPick, intersection);
             if (node != null)
             {
                 return node;
@@ -88,12 +97,16 @@ public class RavenNodeSceneGraph extends RavenNodeRenderable
     }
 
     @Override
-    public void pickObjects(CyRectangle2d rectangle, CyMatrix4d worldToPick, Intersection intersection, ArrayList<NodeObject> pickList)
+    public void pickObjects(CyRectangle2d rectangle, 
+            FrameKey key, 
+            CyMatrix4d worldToPick, 
+            Intersection intersection, 
+            ArrayList<NodeObject> pickList)
     {
         for (int i = 0; i < children.size(); ++i)
         {
             RavenNodeXformable child = children.get(i);
-            child.pickObjects(rectangle, worldToPick, intersection, pickList);
+            child.pickObjects(rectangle, key, worldToPick, intersection, pickList);
         }
     }
 

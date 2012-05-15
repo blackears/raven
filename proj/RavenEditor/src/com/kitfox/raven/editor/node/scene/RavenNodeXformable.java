@@ -300,7 +300,7 @@ abstract public class RavenNodeXformable extends RavenNodeRenderable
             doc.getHistory().beginTransaction("Center pivot");
         }
 
-        CyRectangle2d bounds = getBoundsLocal();
+        CyRectangle2d bounds = getBoundsLocal(FrameKey.DIRECT);
         pivotX.setValue((float)bounds.getCenterX(), history);
         pivotY.setValue((float)bounds.getCenterY(), history);
 

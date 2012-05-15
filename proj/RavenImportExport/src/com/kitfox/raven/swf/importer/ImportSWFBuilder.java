@@ -18,7 +18,10 @@ package com.kitfox.raven.swf.importer;
 
 import com.kitfox.raven.editor.RavenDocument;
 import com.kitfox.raven.editor.node.scene.RavenNodeMesh;
+import com.kitfox.raven.editor.node.scene.RavenNodeSymbolRef;
+import com.kitfox.raven.editor.node.scene.RavenNodeXformable;
 import com.kitfox.raven.editor.node.scene.RavenSymbol;
+import com.kitfox.raven.editor.node.scene.property.NodeSymbolReference;
 import com.kitfox.raven.swf.importer.timeline.CharacterDictionary;
 import com.kitfox.raven.swf.importer.timeline.CharacterShape;
 import com.kitfox.raven.swf.importer.timeline.CharacterSprite;
@@ -29,10 +32,10 @@ import com.kitfox.raven.swf.importer.timeline.SWFTimelineBuilder;
 import com.kitfox.raven.swf.importer.timeline.SWFTimelineTrack;
 import com.kitfox.raven.swf.importer.timeline.SWFTrackEvent;
 import com.kitfox.raven.util.tree.NodeObjectProviderIndex;
+import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeSymbolProvider;
 import com.kitfox.raven.util.tree.NodeSymbolProviderIndex;
 import com.kitfox.raven.util.tree.PropertyDataInline;
-import com.kitfox.raven.util.tree.PropertyDataReference;
 import com.kitfox.raven.util.tree.TrackLibrary;
 import com.kitfox.raven.util.undo.History;
 import com.kitfox.swf.SWFDocument;
@@ -52,6 +55,8 @@ public class ImportSWFBuilder
             new HashMap<Integer, RavenSymbol>();
 
     SWFTimelineBuilder builder;
+    
+    final double TWIPS_TO_PIX = 1 / 20f;
     
     public ImportSWFBuilder(RavenDocument doc)
     {
@@ -82,8 +87,11 @@ public class ImportSWFBuilder
         hist.commitTransaction();
         
 //        RavenEditor.inst().getPlayer().getPlayState()
-        TrackLibrary trackLib = doc.getCurSymbol().getRoot().getTrackLibrary();
-        trackLib.synchDocumentToFrame();
+        for (NodeSymbol loadSym: doc.getSymbols())
+        {
+            TrackLibrary trackLib = loadSym.getRoot().getTrackLibrary();
+            trackLib.synchSymbolToFrame();
+        }
     }
 
     private void importSprite(CharacterSprite sprite)
@@ -102,7 +110,7 @@ public class ImportSWFBuilder
 
     private void importTimeline(RavenSymbol sym, SWFTimeline timeline)
     {
-        TrackLibrary trackLib = sym.getRoot().getTrackLibrary();
+//        TrackLibrary trackLib = sym.getRoot().getTrackLibrary();
 //        Track track = NodeObjectProviderIndex.inst().createNode(Track.class, sym);
 //        String name = sym.createUniqueName("swfTrack");
 //        track.setName(name);
@@ -118,10 +126,9 @@ public class ImportSWFBuilder
             }
             if (containsSprites(timeTrack))
             {
-//                addSpriteTrack(sym, timeTrack);
+                addSpriteTrack(sym, timeTrack);
             }
         }
-
 //        trackLib.curTrack.setData(new PropertyDataReference<Track>(track.getUid()));
     }
 
@@ -163,6 +170,85 @@ public class ImportSWFBuilder
         return false;
     }
 
+    private void setMatrixKey(MATRIX m, int frame, RavenNodeXformable node)
+    {
+        double m00 = m.getM00();
+        double m10 = m.getM10();
+        double m01 = m.getM01();
+        double m11 = m.getM11();
+
+        double scaleX = Math.sqrt(m00 * m00 + m10 * m10);
+        double scaleY = Math.sqrt(m01 * m01 + m11 * m11);
+        double ang0 = Math.toDegrees(Math.atan2(m10, m00));
+        double ang1 = Math.toDegrees(Math.atan2(m11, m01));
+
+        node.transX.setKeyAt(frame, 
+                new PropertyDataInline((float)(m.getXlateX() * TWIPS_TO_PIX)));
+        node.transY.setKeyAt(frame, 
+                new PropertyDataInline((float)(m.getXlateY() * TWIPS_TO_PIX)));
+        node.scaleX.setKeyAt(frame, 
+                new PropertyDataInline((float)scaleX));
+        node.scaleY.setKeyAt(frame, 
+                new PropertyDataInline((float)scaleY));
+        node.rotation.setKeyAt(frame, 
+                new PropertyDataInline((float)ang0));
+        node.skewAngle.setKeyAt(frame, 
+                new PropertyDataInline((float)(ang1 - ang0)));
+    }
+    
+    private void addSpriteTrack(RavenSymbol sym, SWFTimelineTrack timeTrack)
+    {
+        RavenNodeSymbolRef node = NodeObjectProviderIndex.inst().createNode(
+                RavenNodeSymbolRef.class, sym);
+        node.setName(sym.createUniqueName("sprite"));
+        
+        CharacterDictionary dict = builder.getDictionary();
+        CharacterSprite prevSprite = null;
+        
+        for (Integer frame: timeTrack.getKeyFrames())
+        {
+            SWFTrackEvent event = timeTrack.getKeyFrame(frame);
+            
+            if (event instanceof SWFEventPlaceCharacter)
+            {
+                SWFEventPlaceCharacter place = (SWFEventPlaceCharacter)event;
+                SWFCharacter ch = dict.getCharacter(place.getCharacterId());
+                if (ch instanceof CharacterSprite)
+                {
+                    CharacterSprite sprite = (CharacterSprite)ch;
+                    
+                    
+                    if (prevSprite == null || prevSprite.getId() != sprite.getId())
+                    {
+                        RavenSymbol tgtSym = symbolMap.get(sprite.getId());
+                        NodeSymbolReference value = new NodeSymbolReference(tgtSym.getSymbolUid());
+                        node.symbolRef.setKeyAt(frame, 
+                                new PropertyDataInline(value));
+                    }
+                
+                    setMatrixKey(place.getMatrix(), frame, node);
+                    
+                    prevSprite = sprite;
+                }
+                else
+                {
+                    //Remove geometry
+                    node.symbolRef.setKeyAt(frame, null);
+                    prevSprite = null;
+                }
+            }
+            else
+            {
+                //Remove geometry
+                node.symbolRef.setKeyAt(frame, null);
+                prevSprite = null;
+            }
+        }
+        
+//        node.symbolRef.invalidateCache();
+        sym.getRoot().getSceneGraph().add(node);
+    }
+
     private void addShapeTrack(RavenSymbol sym, SWFTimelineTrack timeTrack)
     {
         RavenNodeMesh mesh = NodeObjectProviderIndex.inst().createNode(
@@ -194,29 +280,7 @@ public class ImportSWFBuilder
                                 new PropertyDataInline(meshBuilder.mesh));
                     }
                 
-                    MATRIX m = place.getMatrix();
-                    double m00 = m.getM00();
-                    double m10 = m.getM10();
-                    double m01 = m.getM01();
-                    double m11 = m.getM11();
-
-                    double scaleX = Math.sqrt(m00 * m00 + m10 * m10);
-                    double scaleY = Math.sqrt(m01 * m01 + m11 * m11);
-                    double ang0 = Math.toDegrees(Math.atan2(m10, m00));
-                    double ang1 = Math.toDegrees(Math.atan2(m11, m01));
-
-                    mesh.transX.setKeyAt(frame, 
-                            new PropertyDataInline((float)m.getXlateX()));
-                    mesh.transY.setKeyAt(frame, 
-                            new PropertyDataInline((float)m.getXlateY()));
-                    mesh.scaleX.setKeyAt(frame, 
-                            new PropertyDataInline((float)scaleX));
-                    mesh.scaleY.setKeyAt(frame, 
-                            new PropertyDataInline((float)scaleY));
-                    mesh.rotation.setKeyAt(frame, 
-                            new PropertyDataInline((float)ang0));
-                    mesh.skewAngle.setKeyAt(frame, 
-                            new PropertyDataInline((float)(ang1 - ang0)));
+                    setMatrixKey(place.getMatrix(), frame, mesh);
                     
                     prevShape = shape;
                 }
@@ -235,6 +299,7 @@ public class ImportSWFBuilder
             }
         }
         
+//        mesh.mesh.invalidateCache();
         sym.getRoot().getSceneGraph().add(mesh);
 //        return mesh;
     }

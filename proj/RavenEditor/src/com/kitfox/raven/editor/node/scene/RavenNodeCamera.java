@@ -193,18 +193,18 @@ public class RavenNodeCamera extends RavenNodeXformable
     }
     
 
-    protected CyRectangle2d getLocalCameraRect()
+    protected CyRectangle2d getLocalCameraRect(FrameKey key)
     {
-        double w = width.getValue();
-        double h = height.getValue();
+        double w = width.getValue(key);
+        double h = height.getValue(key);
         return new CyRectangle2d(-w / 2, -h / 2, w, h);
     }
 
     @Override
-    public CyShape getShapePickLocal()
+    public CyShape getShapePickLocal(FrameKey key)
     {
-        double w = width.getValue();
-        double h = height.getValue();
+        double w = width.getValue(key);
+        double h = height.getValue(key);
         
         double w0 = w * 1.01;
         double h0 = h * 1.01;
@@ -232,6 +232,7 @@ public class RavenNodeCamera extends RavenNodeXformable
         
         return path;
     }
+    
 
 //    @Override
 //    public Shape getPickShapeLocal()

@@ -18,6 +18,8 @@ package com.kitfox.raven.editor.node.scene;
 
 import com.kitfox.raven.util.tree.FrameKey;
 import com.kitfox.coyote.renderer.CyDrawStack;
+import com.kitfox.raven.util.tree.NodeSymbol;
+import java.util.HashSet;
 
 /**
  *
@@ -31,6 +33,8 @@ public class RenderContext
     private final FrameKey frame;
     private final boolean editor;
 
+    HashSet<NodeSymbol> visitedSymbols = new HashSet<NodeSymbol>();
+    
     public RenderContext(CyDrawStack drawStack, FrameKey frame, boolean editor)
     {
         this.drawStack = drawStack;
@@ -38,6 +42,24 @@ public class RenderContext
         this.editor = editor;
     }
 
+    public RenderContext(RenderContext parent, FrameKey frame)
+    {
+        this.drawStack = parent.drawStack;
+        this.frame = frame;
+        this.editor = parent.editor;
+        visitedSymbols.addAll(parent.visitedSymbols);
+    }
+
+    public void addVisitedSymbol(NodeSymbol symbol)
+    {
+        visitedSymbols.add(symbol);
+    }
+    
+    public boolean hasVisited(NodeSymbol symbol)
+    {
+        return visitedSymbols.contains(symbol);
+    }
+    
     /**
      * @return the drawStack
      */

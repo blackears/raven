@@ -19,6 +19,7 @@ package com.kitfox.raven.editor.node.scene;
 import com.kitfox.coyote.shape.CyShape;
 import com.kitfox.raven.editor.node.renderer.RavenRenderer;
 import com.kitfox.raven.util.service.ServiceInst;
+import com.kitfox.raven.util.tree.FrameKey;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
 import com.kitfox.raven.util.tree.PropertyWrapper;
 
@@ -81,12 +82,12 @@ public class RavenNodeInstance extends RavenNodeXformable
     }
 
     @Override
-    public CyShape getShapePickLocal()
+    public CyShape getShapePickLocal(FrameKey key)
     {
         RavenNodeXformable other = source.getValue();
         if (other != null)
         {
-            return other.getShapePickLocal();
+            return other.getShapePickLocal(key);
         }
 
         return null;

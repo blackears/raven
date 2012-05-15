@@ -73,7 +73,7 @@ public class TrackLibrary extends NodeObject
     }
 
 
-    public void synchDocumentToFrame()
+    public void synchSymbolToFrame()
     {
 //        Track track = getCurTrack();
 //        if (track == null)
@@ -185,7 +185,7 @@ public class TrackLibrary extends NodeObject
         @Override
         public void propertyWrapperDataChanged(PropertyChangeEvent evt)
         {
-            synchDocumentToFrame();
+            synchSymbolToFrame();
         }
 
         @Override

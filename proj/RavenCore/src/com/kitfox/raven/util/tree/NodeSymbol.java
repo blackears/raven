@@ -91,6 +91,8 @@ abstract public class NodeSymbol<RootType extends NodeRoot>
                     NodeObjectProviderIndex.inst().getProvider(rootType.getClazz());
             RootType newRoot = (RootType)prov.createNode(this, rootType);
             setRoot(newRoot);
+            
+            newRoot.getTrackLibrary().synchSymbolToFrame();
         }
         else
         {
