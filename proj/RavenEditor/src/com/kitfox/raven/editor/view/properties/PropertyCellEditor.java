@@ -24,6 +24,7 @@ package com.kitfox.raven.editor.view.properties;
 
 import com.kitfox.raven.util.tree.PropertyCustomEditor;
 import com.kitfox.raven.util.tree.PropertyWrapperEditor;
+import com.kitfox.raven.util.tree.PropertyWrapperEditorListener;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Window;
@@ -48,7 +49,8 @@ import javax.swing.table.TableCellEditor;
  * @author kitfox
  */
 public class PropertyCellEditor extends javax.swing.JPanel
-        implements TableCellEditor, PropertyChangeListener
+        implements TableCellEditor, PropertyChangeListener,
+        PropertyWrapperEditorListener
 {
     private static final long serialVersionUID = 1;
 
@@ -352,6 +354,7 @@ public class PropertyCellEditor extends javax.swing.JPanel
         PropertyModelLine info = (PropertyModelLine)value;
         ed = info.getEditor();
         ed.addPropertyChangeListener(this);
+        ed.addPropertyWrapperEditorListener(this);
 
         remove(text_value);
         remove(combo_value);
@@ -410,6 +413,7 @@ public class PropertyCellEditor extends javax.swing.JPanel
     {
         ed.setAsText(text_value.getText());
         ed.removePropertyChangeListener(this);
+        ed.removePropertyWrapperEditorListener(this);
         return true;
     }
 
@@ -417,6 +421,7 @@ public class PropertyCellEditor extends javax.swing.JPanel
     public void cancelCellEditing()
     {
         ed.removePropertyChangeListener(this);
+        ed.removePropertyWrapperEditorListener(this);
     }
 
     @Override
@@ -442,6 +447,18 @@ public class PropertyCellEditor extends javax.swing.JPanel
                 text_value.setText(ed.getAsText());
             }
         }
+    }
+
+    @Override
+    public void propertyWrapperEditingDone(EventObject evt)
+    {
+        fireEditingStopped();
+    }
+
+    @Override
+    public void propertyWrapperEditingCanceled(EventObject evt)
+    {
+        fireEditingCanceled();
     }
 
 }

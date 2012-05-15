@@ -16,16 +16,15 @@
 
 package com.kitfox.raven.util.tree;
 
-import java.beans.PropertyChangeEvent;
 import java.util.EventListener;
+import java.util.EventObject;
 
 /**
  *
  * @author kitfox
  */
-public interface PropertyWrapperListener extends EventListener
+public interface PropertyWrapperEditorListener extends EventListener
 {
-    public void propertyWrapperDataChanged(PropertyChangeEvent evt);
-    public void propertyWrapperTrackChanged(PropertyTrackChangeEvent evt);
-    public void propertyWrapperTrackKeyChanged(PropertyTrackKeyChangeEvent evt);
+    public void propertyWrapperEditingDone(EventObject evt);
+    public void propertyWrapperEditingCanceled(EventObject evt);
 }

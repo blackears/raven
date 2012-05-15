@@ -16,11 +16,6 @@
 
 package com.kitfox.raven.util.tree;
 
-import com.kitfox.raven.util.tree.PropertyTrackChangeEvent;
-import com.kitfox.raven.util.tree.PropertyTrackKeyChangeEvent;
-import com.kitfox.raven.util.tree.PropertyWrapper;
-import com.kitfox.raven.util.tree.PropertyWrapperListener;
-import com.kitfox.raven.util.tree.TrackCurve;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,20 +36,23 @@ public class PropertyTimeCache<ValueType>
     ArrayList<PropertyWrapper> properties = new ArrayList<PropertyWrapper>();
 
     //Cache per track
-    HashMap<Integer, TrackCache> trackCache = new HashMap<Integer, TrackCache>();
+//    HashMap<Integer, TrackCache> trackCache = new HashMap<Integer, TrackCache>();
+    TrackCache trackCache;
     ValueType directCache;
 
     public void addDependentProperty(PropertyWrapper wrap)
     {
         properties.add(wrap);
         wrap.addPropertyWrapperListener(this);
+        
+        trackCache = new TrackCache();
     }
 
-    public ValueType getValue(int trackUid, int frame)
+    public ValueType getValue(int frame)
     {
-        TrackCache track = trackCache.get(trackUid);
+//        TrackCache track = trackCache.get(trackUid);
 
-        return track == null ? null : track.getValue(frame);
+        return trackCache.getValue(frame);
     }
 
     public ValueType getDirectValue()
@@ -69,14 +67,14 @@ public class PropertyTimeCache<ValueType>
 
     public void cache(int trackUid, int frame, ValueType value)
     {
-        TrackCache track = trackCache.get(trackUid);
-        if (track == null)
-        {
-            track = new TrackCache(trackUid);
-            trackCache.put(trackUid, track);
-        }
+//        TrackCache track = trackCache.get(trackUid);
+//        if (track == null)
+//        {
+//            track = new TrackCache(trackUid);
+//            trackCache.put(trackUid, track);
+//        }
 
-        track.cache(frame, value);
+        trackCache.cache(frame, value);
     }
 
     @Override
@@ -85,44 +83,40 @@ public class PropertyTimeCache<ValueType>
         directCache = null;
         
         PropertyWrapper wrap = (PropertyWrapper)evt.getSource();
+        TrackCurve curve = wrap.getTrackCurve();
+        trackCache.clearNotKeyed(curve);
 
-        for (Iterator<TrackCache> it = trackCache.values().iterator();
-            it.hasNext();)
-        {
-            TrackCache track = it.next();
-            TrackCurve curve = wrap.getTrackCurve(track.trackUid);
-            if (curve == null)
-            {
-                //This track has no keyed information for this
-                // property.  Hence, setting direct value will alter all
-                // frames and cache for track should be cleared
-                it.remove();
-            }
-            else
-            {
-                track.clearNotKeyed(curve);
-            }
-        }
+//            if (curve == null)
+//            {
+//                //This track has no keyed information for this
+//                // property.  Hence, setting direct value will alter all
+//                // frames and cache for track should be cleared
+//                it.remove();
+//            }
+//            else
+//            {
+//                track.clearNotKeyed(curve);
+//            }
     }
 
     @Override
     public void propertyWrapperTrackChanged(PropertyTrackChangeEvent evt)
     {
-        trackCache.remove(evt.getTrackUid());
+//        trackCache.remove(evt.getTrackUid());
     }
 
     @Override
     public void propertyWrapperTrackKeyChanged(PropertyTrackKeyChangeEvent evt)
     {
         PropertyWrapper wrap = evt.getSource();
-        int trackUid = evt.getTrackUid();
-        TrackCache frameCache = trackCache.get(trackUid);
-        if (frameCache == null)
-        {
-            return;
-        }
+//        int trackUid = evt.getTrackUid();
+//        TrackCache frameCache = trackCache.get(trackUid);
+//        if (frameCache == null)
+//        {
+//            return;
+//        }
 
-        TrackCurve curve = wrap.getTrackCurve(trackUid);
+        TrackCurve curve = wrap.getTrackCurve();
 
         assert curve != null :
             "Could not find track that track change event occurred on";
@@ -141,19 +135,19 @@ public class PropertyTimeCache<ValueType>
             max = frame;
         }
 
-        frameCache.clearRange(min, max);
+        trackCache.clearRange(min, max);
     }
 
     //-------------------------------------
     class TrackCache
     {
-        final int trackUid;
+//        final int trackUid;
         //Cache per frame
         HashMap<Integer, ValueType> cache = new HashMap<Integer, ValueType>();
 
-        public TrackCache(int trackUid)
+        public TrackCache()
         {
-            this.trackUid = trackUid;
+//            this.trackUid = trackUid;
         }
 
         public ValueType getValue(int frame)

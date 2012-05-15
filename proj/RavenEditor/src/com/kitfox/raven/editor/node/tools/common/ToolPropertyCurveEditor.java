@@ -25,7 +25,6 @@ import com.kitfox.raven.util.tree.PropertyDataInline;
 import com.kitfox.raven.util.tree.PropertyProvider;
 import com.kitfox.raven.util.tree.PropertyProviderIndex;
 import com.kitfox.raven.util.tree.PropertyWrapper;
-import com.kitfox.raven.util.tree.Track;
 import com.kitfox.raven.util.tree.TrackCurve;
 import com.kitfox.raven.util.tree.TrackCurveComponent;
 import com.kitfox.raven.util.tree.TrackCurveComponentCurve;
@@ -87,11 +86,11 @@ public class ToolPropertyCurveEditor extends ToolDisplay
             return null;
         }
 
-        Track track = provider.getTrack();
-        if (track == null)
-        {
-            return null;
-        }
+//        Track track = provider.getTrack();
+//        if (track == null)
+//        {
+//            return null;
+//        }
 
         NodeSymbol doc = provider.getDocument();
         AffineTransform w2d = provider.getWorldToDeviceTransform(null);
@@ -103,7 +102,7 @@ public class ToolPropertyCurveEditor extends ToolDisplay
             int frame = keyComp.getFrame();
             PropertyWrapper wrapper = keyComp.getWrapper();
             PointInfo ptInfo = new PointInfo(
-                    frame, doc, w2d, track, wrapper);
+                    frame, doc, w2d, wrapper);
 
             if (knotsOut)
             {
@@ -132,11 +131,11 @@ public class ToolPropertyCurveEditor extends ToolDisplay
             return null;
         }
 
-        Track track = provider.getTrack();
-        if (track == null)
-        {
-            return null;
-        }
+//        Track track = provider.getTrack();
+//        if (track == null)
+//        {
+//            return null;
+//        }
 
         NodeSymbol doc = provider.getDocument();
 
@@ -146,11 +145,11 @@ public class ToolPropertyCurveEditor extends ToolDisplay
         AffineTransform w2d = provider.getWorldToDeviceTransform(null);
         for (PropertyWrapper wrapper: wrappers)
         {
-            TrackCurve trackCurve = wrapper.getTrackCurve(track.getUid());
+            TrackCurve trackCurve = wrapper.getTrackCurve();
             for (Integer frame: (ArrayList<Integer>)trackCurve.getFrames())
             {
                 PointInfo ptInfo = new PointInfo(
-                        frame, doc, w2d, track, wrapper);
+                        frame, doc, w2d, wrapper);
 
                 if (selectRect.contains(ptInfo.ptDev))
                 {
@@ -183,11 +182,11 @@ public class ToolPropertyCurveEditor extends ToolDisplay
             return null;
         }
 
-        Track track = provider.getTrack();
-        if (track == null)
-        {
-            return null;
-        }
+//        Track track = provider.getTrack();
+//        if (track == null)
+//        {
+//            return null;
+//        }
 
         NodeSymbol doc = provider.getDocument();
 
@@ -198,7 +197,7 @@ public class ToolPropertyCurveEditor extends ToolDisplay
 
         for (PropertyWrapper wrapper: wrappers)
         {
-            TrackCurve trackCurve = wrapper.getTrackCurve(track.getUid());
+            TrackCurve trackCurve = wrapper.getTrackCurve();
             Path2D.Double curve = trackCurve.getCurvePath(doc);
             Path2D.Double dcurve = (Path2D.Double)
                     w2d.createTransformedShape(curve);
@@ -353,7 +352,7 @@ public class ToolPropertyCurveEditor extends ToolDisplay
 
         NodeSymbol doc = provider.getDocument();
         AffineTransform w2d = provider.getWorldToDeviceTransform(null);
-        Track track = provider.getTrack();
+//        Track track = provider.getTrack();
 
         ArrayList<TrackCurveComponentKey> pickListKeys = pickKeys(selectRect);
         if (!pickListKeys.isEmpty())
@@ -384,7 +383,7 @@ public class ToolPropertyCurveEditor extends ToolDisplay
                             TrackCurveComponentKey.Subselect.class, sub);
                 }
 
-                newManip.add(new ManipKey(doc, w2d, track,
+                newManip.add(new ManipKey(doc, w2d, 
                         curComp, selected, sub.isKnotIn(), sub.isKnotOut()));
             }
             manip = newManip;
@@ -398,7 +397,7 @@ public class ToolPropertyCurveEditor extends ToolDisplay
             Manipulator newManip = new Manipulator(sel, ManipType.KNOT_IN);
             TrackCurveComponentKey.Subselect sub =
                     sel.getSubselection(key, TrackCurveComponentKey.Subselect.class);
-            newManip.add(new ManipKey(doc, w2d, track,
+            newManip.add(new ManipKey(doc, w2d, 
                         key, true, sub.isKnotIn(), sub.isKnotOut()));
             manip = newManip;
             return;
@@ -411,7 +410,7 @@ public class ToolPropertyCurveEditor extends ToolDisplay
             Manipulator newManip = new Manipulator(sel, ManipType.KNOT_OUT);
             TrackCurveComponentKey.Subselect sub =
                     sel.getSubselection(key, TrackCurveComponentKey.Subselect.class);
-            newManip.add(new ManipKey(doc, w2d, track,
+            newManip.add(new ManipKey(doc, w2d, 
                         key, true, sub.isKnotIn(), sub.isKnotOut()));
             manip = newManip;
             return;
@@ -524,55 +523,55 @@ public class ToolPropertyCurveEditor extends ToolDisplay
             return;
         }
 
-        Track track = provider.getTrack();
+//        Track track = provider.getTrack();
         NodeSymbol doc = provider.getDocument();
 
         switch (evt.getKeyCode())
         {
-            case KeyEvent.VK_DELETE:
-            {
-                History hist = doc.getHistory();
-                hist.beginTransaction("Delete track components");
-
-                Selection<TrackCurveComponent> sel = provider.getSelection();
-                List<TrackCurveComponentCurve> curveList = sel.getSelection(
-                        TrackCurveComponentCurve.class, null);
-                List<TrackCurveComponentKey> keyList = sel.getSelection(
-                        TrackCurveComponentKey.class, null);
-
-                {
-                    HashMap<PropertyWrapper, TrackCurve> trackCache =
-                            new HashMap<PropertyWrapper, TrackCurve>();
-                    for (TrackCurveComponentKey key: keyList)
-                    {
-                        PropertyWrapper wrap = key.getWrapper();
-                        TrackCurve curve = trackCache.get(wrap);
-                        if (curve == null)
-                        {
-                            curve = wrap.getTrackCurve(track.getUid());
-                            trackCache.put(wrap, curve);
-                        }
-                        curve.removeKey(key.getFrame());
-                    }
-
-                    for (PropertyWrapper wrap: trackCache.keySet())
-                    {
-                        TrackCurve curve = trackCache.get(wrap);
-                        wrap.setTrackCurve(track.getUid(), curve);
-                    }
-                }
-
-                for (TrackCurveComponentCurve curve: curveList)
-                {
-                    PropertyWrapper wrap = curve.getWrapper();
-                    wrap.deleteTrackCurve(track.getUid());
-                }
-
-                hist.commitTransaction();
-
-                fireToolDisplayChanged();
-                break;
-            }
+//            case KeyEvent.VK_DELETE:
+//            {
+//                History hist = doc.getHistory();
+//                hist.beginTransaction("Delete track components");
+//
+//                Selection<TrackCurveComponent> sel = provider.getSelection();
+//                List<TrackCurveComponentCurve> curveList = sel.getSelection(
+//                        TrackCurveComponentCurve.class, null);
+//                List<TrackCurveComponentKey> keyList = sel.getSelection(
+//                        TrackCurveComponentKey.class, null);
+//
+//                {
+//                    HashMap<PropertyWrapper, TrackCurve> trackCache =
+//                            new HashMap<PropertyWrapper, TrackCurve>();
+//                    for (TrackCurveComponentKey key: keyList)
+//                    {
+//                        PropertyWrapper wrap = key.getWrapper();
+//                        TrackCurve curve = trackCache.get(wrap);
+//                        if (curve == null)
+//                        {
+//                            curve = wrap.getTrackCurve();
+//                            trackCache.put(wrap, curve);
+//                        }
+//                        curve.removeKey(key.getFrame());
+//                    }
+//
+//                    for (PropertyWrapper wrap: trackCache.keySet())
+//                    {
+//                        TrackCurve curve = trackCache.get(wrap);
+//                        wrap.setTrackCurve(curve);
+//                    }
+//                }
+//
+//                for (TrackCurveComponentCurve curve: curveList)
+//                {
+//                    PropertyWrapper wrap = curve.getWrapper();
+//                    wrap.deleteTrackCurve(track.getUid());
+//                }
+//
+//                hist.commitTransaction();
+//
+//                fireToolDisplayChanged();
+//                break;
+//            }
             default:
                 super.keyPressed(evt);
         }
@@ -656,8 +655,7 @@ public class ToolPropertyCurveEditor extends ToolDisplay
             ManipPropCurve propManip = manipMap.get(wrapper);
             if (propManip == null)
             {
-                propManip = new ManipPropCurve(manip.startLayout.track,
-                        wrapper);
+                propManip = new ManipPropCurve(wrapper);
                 manipMap.put(wrapper, propManip);
             }
 
@@ -688,17 +686,17 @@ public class ToolPropertyCurveEditor extends ToolDisplay
         TrackCurve trackCurveStart;
         TrackCurve trackCurveBase;
         PropertyWrapper wrapper;
-        Track track;
+//        Track track;
 
         ArrayList<ManipKey> manipList = new ArrayList<ManipKey>();
 
-        public ManipPropCurve(Track track, PropertyWrapper wrapper)
+        public ManipPropCurve(PropertyWrapper wrapper)
         {
-            this.track = track;
+//            this.track = track;
             this.wrapper = wrapper;
 
-            trackCurveStart = wrapper.getTrackCurve(track.getUid());
-            trackCurveBase = wrapper.getTrackCurve(track.getUid());
+            trackCurveStart = wrapper.getTrackCurve();
+            trackCurveBase = wrapper.getTrackCurve();
         }
 
         public void addManip(ManipKey manip)
@@ -717,7 +715,7 @@ public class ToolPropertyCurveEditor extends ToolDisplay
                 manip.dragBy(selection, manipType, newCurve, dx, dy);
             }
 
-            wrapper.setTrackCurve(track.getUid(), newCurve, history);
+            wrapper.setTrackCurve(newCurve, history);
         }
     }
 
@@ -730,11 +728,11 @@ public class ToolPropertyCurveEditor extends ToolDisplay
         boolean knotIn;
         boolean knotOut;
 
-        public ManipKey(NodeSymbol doc, AffineTransform w2d, Track track, 
+        public ManipKey(NodeSymbol doc, AffineTransform w2d, 
                 TrackCurveComponentKey comp,
                 boolean selected, boolean knotIn, boolean knotOut)
         {
-            startLayout = new PointInfo(comp.getFrame(), doc, w2d, track, comp.getWrapper());
+            startLayout = new PointInfo(comp.getFrame(), doc, w2d, comp.getWrapper());
             this.comp = comp;
             this.selected = selected;
             this.knotIn = knotIn;
@@ -893,18 +891,18 @@ public class ToolPropertyCurveEditor extends ToolDisplay
 
         NodeSymbol doc;
         AffineTransform w2d;
-        Track track;
+//        Track track;
         PropertyWrapper wrapper;
 
         public PointInfo(int frame, NodeSymbol doc,
-                AffineTransform w2d, Track track, PropertyWrapper wrapper)
+                AffineTransform w2d, PropertyWrapper wrapper)
         {
             this.frame = frame;
             this.w2d = w2d;
-            this.track = track;
+//            this.track = track;
             this.wrapper = wrapper;
 
-            TrackCurve trackCurve = wrapper.getTrackCurve(track.getUid());
+            TrackCurve trackCurve = wrapper.getTrackCurve();
             this.value = trackCurve.getNumericValue(frame, doc);
 
             ptDev = new Point2D.Double(frame, value);

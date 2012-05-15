@@ -24,23 +24,21 @@ package com.kitfox.raven.util.tree;
  */
 public class FrameKey
 {
-    private final int trackUid;
+//    private final int trackUid;
     private final int animFrame;
+    boolean direct;
 
-    public static final FrameKey DIRECT = new FrameKey(0, 0);
+    public static final FrameKey DIRECT = new FrameKey(0, true);
 
-    public FrameKey(int trackUid, int animFrame)
+    private FrameKey(int animFrame, boolean direct)
     {
-        this.trackUid = trackUid;
         this.animFrame = animFrame;
+        this.direct = direct;
     }
 
-    /**
-     * @return the trackUid
-     */
-    public int getTrackUid()
+    public FrameKey(int animFrame)
     {
-        return trackUid;
+        this(animFrame, false);
     }
 
     /**
@@ -62,12 +60,12 @@ public class FrameKey
         {
             return false;
         }
-        final FrameKey other = (FrameKey) obj;
-        if (this.trackUid != other.trackUid)
+        final FrameKey other = (FrameKey)obj;
+        if (this.animFrame != other.animFrame)
         {
             return false;
         }
-        if (this.animFrame != other.animFrame)
+        if (this.direct != other.direct)
         {
             return false;
         }
@@ -78,15 +76,15 @@ public class FrameKey
     public int hashCode()
     {
         int hash = 5;
-        hash = 29 * hash + this.trackUid;
-        hash = 29 * hash + this.animFrame;
+        hash = 83 * hash + this.animFrame;
+        hash = 83 * hash + (this.direct ? 1 : 0);
         return hash;
     }
 
     @Override
     public String toString()
     {
-        return "(" + trackUid + ", " + animFrame + ")";
+        return direct ? "(DIRECT)" : "(" + animFrame + ")";
     }
     
     

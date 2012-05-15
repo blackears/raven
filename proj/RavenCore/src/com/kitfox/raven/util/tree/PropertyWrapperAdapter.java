@@ -17,7 +17,6 @@
 package com.kitfox.raven.util.tree;
 
 import java.beans.PropertyChangeEvent;
-import java.util.EventObject;
 
 /**
  *

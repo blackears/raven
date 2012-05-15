@@ -38,7 +38,6 @@ import com.kitfox.raven.util.SelectionListener;
 import com.kitfox.raven.util.SelectionSubEvent;
 import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.PropertyWrapper;
-import com.kitfox.raven.util.tree.Track;
 import com.kitfox.raven.util.tree.TrackCurve;
 import com.kitfox.raven.util.tree.TrackCurve.Repeat;
 import com.kitfox.raven.util.tree.TrackCurveComponent;
@@ -104,7 +103,7 @@ public class CurveEditorPanel extends JPanel
 
     ArrayList<PropertyWrapper> propertyWrappers;
     private int frame;
-    Track track;
+//    Track track;
 
     float focusMargin = .1f;
 
@@ -184,7 +183,7 @@ public class CurveEditorPanel extends JPanel
 
     public void fitToFrame()
     {
-        if (propertyWrappers == null || track == null)
+        if (propertyWrappers == null)
         {
             return;
         }
@@ -198,7 +197,7 @@ public class CurveEditorPanel extends JPanel
         {
             NodeSymbol doc = wrap.getNode().getSymbol();
 
-            TrackCurve curve = wrap.getTrackCurve(track.getUid());
+            TrackCurve curve = wrap.getTrackCurve();
             if (curve == null)
             {
                 continue;
@@ -359,7 +358,7 @@ public class CurveEditorPanel extends JPanel
         g.setColor(frameMarkerColor);
         g.drawLine((int)p0.x, (int)p0.y, (int)p1.x, (int)p1.y);
 
-        if (propertyWrappers == null || track == null)
+        if (propertyWrappers == null)
         {
             return;
         }
@@ -374,7 +373,7 @@ public class CurveEditorPanel extends JPanel
             for (int i = 0; i < propertyWrappers.size(); ++i)
             {
                 PropertyWrapper wrap = propertyWrappers.get(i);
-                TrackCurve curve = wrap.getTrackCurve(track.getUid());
+                TrackCurve curve = wrap.getTrackCurve();
                 if (curve == null)
                 {
                     continue;
@@ -393,7 +392,7 @@ public class CurveEditorPanel extends JPanel
             for (int i = 0; i < propertyWrappers.size(); ++i)
             {
                 PropertyWrapper wrap = propertyWrappers.get(i);
-                TrackCurve curve = wrap.getTrackCurve(track.getUid());
+                TrackCurve curve = wrap.getTrackCurve();
                 if (curve == null)
                 {
                     continue;
@@ -536,17 +535,17 @@ public class CurveEditorPanel extends JPanel
         repaint();
     }
 
-    @Override
-    public Track getTrack()
-    {
-        return track;
-    }
-
-    public void setTrack(Track track)
-    {
-        this.track = track;
-        repaint();
-    }
+//    @Override
+//    public Track getTrack()
+//    {
+//        return track;
+//    }
+//
+//    public void setTrack(Track track)
+//    {
+//        this.track = track;
+//        repaint();
+//    }
 
     public void setPropertyWrappers(ArrayList<PropertyWrapper> propList)
     {
@@ -557,7 +556,7 @@ public class CurveEditorPanel extends JPanel
     @Override
     public String getToolTipText(MouseEvent event)
     {
-        if (propertyWrappers == null || track == null)
+        if (propertyWrappers == null)
         {
             return null;
         }
@@ -569,7 +568,7 @@ public class CurveEditorPanel extends JPanel
         for (PropertyWrapper wrap: propertyWrappers)
         {
             NodeSymbol doc = wrap.getNode().getSymbol();
-            TrackCurve curve = wrap.getTrackCurve(track.getUid());
+            TrackCurve curve = wrap.getTrackCurve();
             for (Integer curFrame: (ArrayList<Integer>)curve.getFrames())
             {
                 double val = curve.getNumericValue(frame, doc);
@@ -675,7 +674,7 @@ public class CurveEditorPanel extends JPanel
 
         TrackCurveComponentKey compFirst = pickList.get(0);
         PropertyWrapper wrap = compFirst.getWrapper();
-        TrackCurve curve = wrap.getTrackCurve(track.getUid());
+        TrackCurve curve = wrap.getTrackCurve();
         TrackKey key = curve.getKey(compFirst.getFrame());
         TrackKey.Interp interp = key.getInterp();
 
@@ -702,7 +701,7 @@ public class CurveEditorPanel extends JPanel
 
         TrackCurveComponent compFirst = pickList.get(0);
         PropertyWrapper wrap = compFirst.getWrapper();
-        TrackCurve curve = wrap.getTrackCurve(track.getUid());
+        TrackCurve curve = wrap.getTrackCurve();
         TrackCurve.Repeat before = curve.getBefore();
         TrackCurve.Repeat after = curve.getAfter();
 
@@ -787,7 +786,7 @@ public class CurveEditorPanel extends JPanel
             for (TrackCurveComponent comp: modList)
             {
                 PropertyWrapper wrap = comp.getWrapper();
-                TrackCurve curve = wrap.getTrackCurve(track.getUid());
+                TrackCurve curve = wrap.getTrackCurve();
 
                 if (after)
                 {
@@ -798,7 +797,7 @@ public class CurveEditorPanel extends JPanel
                     curve.setBefore(repeat);
                 }
 
-                wrap.setTrackCurve(track.getUid(), curve);
+                wrap.setTrackCurve(curve);
             }
 
             repaint();
@@ -823,7 +822,7 @@ public class CurveEditorPanel extends JPanel
             for (TrackCurveComponentKey comp: modList)
             {
                 PropertyWrapper wrap = comp.getWrapper();
-                TrackCurve curve = wrap.getTrackCurve(track.getUid());
+                TrackCurve curve = wrap.getTrackCurve();
 
                 int curFrame = comp.getFrame();
 
@@ -876,7 +875,7 @@ public class CurveEditorPanel extends JPanel
                         tanInX, tanInY, tanOutX, tanOutY);
                 curve.setKey(curFrame, newKey);
 
-                wrap.setTrackCurve(track.getUid(), curve);
+                wrap.setTrackCurve(curve);
             }
 
             repaint();

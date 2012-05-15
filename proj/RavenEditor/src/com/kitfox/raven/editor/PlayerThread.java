@@ -16,7 +16,6 @@
 
 package com.kitfox.raven.editor;
 
-import com.kitfox.raven.util.tree.Track;
 import com.kitfox.raven.util.tree.TrackLibrary;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -69,16 +68,16 @@ public class PlayerThread extends Thread
             }
 
             TrackLibrary lib = doc.getCurSymbol().getRoot().getTrackLibrary();
-            Track track = lib.getCurTrack();
-            if (track == null)
-            {
-                continue;
-            }
+//            Track track = lib.getCurTrack();
+//            if (track == null)
+//            {
+//                continue;
+//            }
             float fps = lib.fps.getValue();
-            int frame = lib.getCurFrame();
+            int frame = lib.getFrameCur();
             boolean loop = lib.loop.getValue();
-            int frameFirst = track.frameStart.getValue();
-            int frameLast = track.frameEnd.getValue();
+            int frameFirst = lib.getFrameFirst();
+            int frameLast = lib.getFrameLast();
 
             long curTime = System.currentTimeMillis();
             long delta = curTime - lastEmitTime;
@@ -94,7 +93,7 @@ public class PlayerThread extends Thread
                     {
                         newFrame = loop ? frameFirst : frameLast;
                     }
-                    lib.curFrame.setValue(newFrame, false);
+                    lib.frameCur.setValue(newFrame, false);
 //                    setFrame(newFrame);
                 }
                 else
@@ -104,7 +103,7 @@ public class PlayerThread extends Thread
                     {
                         newFrame = loop ? frameLast : frameFirst;
                     }
-                    lib.curFrame.setValue(newFrame, false);
+                    lib.frameCur.setValue(newFrame, false);
 //                    setFrame(newFrame);
                 }
             }

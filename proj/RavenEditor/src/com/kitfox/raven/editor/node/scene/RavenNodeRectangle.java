@@ -17,7 +17,6 @@
 package com.kitfox.raven.editor.node.scene;
 
 import com.kitfox.raven.util.tree.FrameKey;
-import com.kitfox.coyote.shape.CyEllipse2d;
 import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.coyote.shape.CyRectangleRound2d;
 import com.kitfox.coyote.shape.CyShape;
@@ -75,12 +74,12 @@ public class RavenNodeRectangle extends RavenNodeInscribedShape
     public CyShape createShapeLocal(FrameKey time)
     {
         NodeSymbol doc = getSymbol();
-        float crx = rx.getData(time.getTrackUid(), time.getTrackUid()).getValue(doc);
-        float cry = ry.getData(time.getTrackUid(), time.getTrackUid()).getValue(doc);
-        float cx = x.getData(time.getTrackUid(), time.getTrackUid()).getValue(doc);
-        float cy = y.getData(time.getTrackUid(), time.getTrackUid()).getValue(doc);
-        float cWidth = width.getData(time.getTrackUid(), time.getTrackUid()).getValue(doc);
-        float cHeight = height.getData(time.getTrackUid(), time.getTrackUid()).getValue(doc);
+        float crx = rx.getValue(time);
+        float cry = ry.getValue(time);
+        float cx = x.getValue(time);
+        float cy = y.getValue(time);
+        float cWidth = width.getValue(time);
+        float cHeight = height.getValue(time);
 
         if (crx == 0 && cry == 0)
         {

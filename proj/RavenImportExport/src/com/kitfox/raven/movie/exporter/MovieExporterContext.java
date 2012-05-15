@@ -159,8 +159,8 @@ public class MovieExporterContext
 
         MovieCapture capture = new MovieCapture(composition);
         
-        int trackFrame = sym.getRoot().getTrackLibrary().getCurFrame();
-        int trackUid = sym.getRoot().getTrackLibrary().getCurTrackUid();
+        int trackFrame = sym.getRoot().getTrackLibrary().getFrameCur();
+//        int trackUid = sym.getRoot().getTrackLibrary().getCurTrackUid();
         
         int fBegin = frameCur ? trackFrame : frameStart;
         int fEnd = frameCur ? trackFrame : frameEnd;
@@ -176,7 +176,7 @@ public class MovieExporterContext
             File fileOut = new File(fileDir, 
                     framesPrefix + "_" + frameStrn + "." + framesImageFormat);
 
-            BufferedImage img = capture.getImage(new FrameKey(trackUid, i), true);
+            BufferedImage img = capture.getImage(new FrameKey(i), true);
 
             try
             {

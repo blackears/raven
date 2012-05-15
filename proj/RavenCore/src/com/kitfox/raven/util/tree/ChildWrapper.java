@@ -167,7 +167,7 @@ abstract public class ChildWrapper<NodeType extends NodeObject,
         hist.commitTransaction();
     }
 
-    public int getPrevKeyFrame(int curFrame, int trackUid)
+    public int getPrevKeyFrame(int curFrame)
     {
         int prevFrame = Integer.MIN_VALUE;
 
@@ -175,12 +175,12 @@ abstract public class ChildWrapper<NodeType extends NodeObject,
         {
             ChildType child = get(i);
             prevFrame = Math.max(prevFrame,
-                    child.getPrevKeyFrame(curFrame, trackUid));
+                    child.getPrevKeyFrame(curFrame));
         }
         return prevFrame;
     }
 
-    public int getNextKeyFrame(int curFrame, int trackUid)
+    public int getNextKeyFrame(int curFrame)
     {
         int nextFrame = Integer.MAX_VALUE;
 
@@ -188,7 +188,7 @@ abstract public class ChildWrapper<NodeType extends NodeObject,
         {
             ChildType child = get(i);
             nextFrame = Math.min(nextFrame,
-                    child.getNextKeyFrame(curFrame, trackUid));
+                    child.getNextKeyFrame(curFrame));
         }
         return nextFrame;
     }

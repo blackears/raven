@@ -53,7 +53,6 @@ import com.kitfox.raven.util.tree.PropertyProviderIndex;
 import com.kitfox.raven.util.tree.PropertyWrapper;
 import com.kitfox.raven.util.tree.PropertyWrapperAdapter;
 import com.kitfox.raven.util.tree.PropertyWrapperWeakListener;
-import com.kitfox.raven.util.tree.Track;
 import com.kitfox.raven.util.tree.TrackCurve;
 import com.kitfox.raven.util.tree.TrackLibrary;
 import com.kitfox.xml.schema.ravendocumentschema.TrackTransferableType;
@@ -122,7 +121,7 @@ public class TrackPanel extends javax.swing.JPanel
     static final String ACTION_DELETE = "delete";
     
     CurFrameWatcher curFrameWatch;
-    CurTrackWatcher curTrackWatch;
+//    CurTrackWatcher curTrackWatch;
     SelectionWatcher selectionWatch;
 
     /** Creates new form TrackEditorPanel */
@@ -226,8 +225,8 @@ public class TrackPanel extends javax.swing.JPanel
         {
             curFrameWatch.remove();
             curFrameWatch = null;
-            curTrackWatch.remove();
-            curTrackWatch = null;
+//            curTrackWatch.remove();
+//            curTrackWatch = null;
             selectionWatch.remove();
             selectionWatch = null;
         }
@@ -238,8 +237,8 @@ public class TrackPanel extends javax.swing.JPanel
             NodeSymbol sym = doc.getCurSymbol();
 
             TrackLibrary trackLib = sym.getRoot().getTrackLibrary();
-            curFrameWatch = new CurFrameWatcher(trackLib.curFrame);
-            curTrackWatch = new CurTrackWatcher(trackLib.curTrack);
+            curFrameWatch = new CurFrameWatcher(trackLib.frameCur);
+//            curTrackWatch = new CurTrackWatcher(trackLib.curTrack);
 
             Selection<NodeObject> sel = sym.getSelection();
             selectionWatch = new SelectionWatcher(sel);
@@ -248,14 +247,14 @@ public class TrackPanel extends javax.swing.JPanel
 //        updateWorkTrackListener();
 //        updateCurves();
         updatePropertyList();
-        updateTrack();
+//        updateTrack();
         updateTrackTime();
     }
 
-    private void curTrackChanged()
-    {
-        updateTrack();
-    }
+//    private void curTrackChanged()
+//    {
+//        updateTrack();
+//    }
 
     private void ravenSelectionChanged()
     {
@@ -267,22 +266,22 @@ public class TrackPanel extends javax.swing.JPanel
         updateTrackTime();
     }
 
-    private void updateTrack()
-    {
-        RavenDocument doc = editor.getDocument();
-        if (doc != null)
-        {
-            NodeSymbol sym = doc.getCurSymbol();
-
-            TrackLibrary trackLib = sym.getRoot().getTrackLibrary();
-            Track track = trackLib.curTrack.getValue();
-            curvePanel.setTrack(track);
-        }
-        else
-        {
-            curvePanel.setTrack(null);
-        }
-    }
+//    private void updateTrack()
+//    {
+//        RavenDocument doc = editor.getDocument();
+//        if (doc != null)
+//        {
+//            NodeSymbol sym = doc.getCurSymbol();
+//
+//            TrackLibrary trackLib = sym.getRoot().getTrackLibrary();
+//            Track track = trackLib.curTrack.getValue();
+//            curvePanel.setTrack(track);
+//        }
+//        else
+//        {
+//            curvePanel.setTrack(null);
+//        }
+//    }
 
     private void updateTrackTime()
     {
@@ -292,7 +291,7 @@ public class TrackPanel extends javax.swing.JPanel
             NodeSymbol sym = doc.getCurSymbol();
 
             TrackLibrary trackLib = sym.getRoot().getTrackLibrary();
-            int frame = trackLib.curFrame.getValue();
+            int frame = trackLib.frameCur.getValue();
             curvePanel.setFrame(frame);
         }
     }
@@ -601,8 +600,8 @@ public class TrackPanel extends javax.swing.JPanel
             TrackType tt = xferCurves.getTrack();
             TrackCurve tc = wrap.createTrackCurve(tt);
 
-            int trackUid = wrap.getNode().getSymbol().getRoot().getTrackLibrary().getCurTrackUid();
-            wrap.setTrackCurve(trackUid, tc);
+//            int trackUid = wrap.getNode().getSymbol().getRoot().getTrackLibrary().getCurTrackUid();
+            wrap.setTrackCurve(tc);
             
             return true;
         }
@@ -626,9 +625,9 @@ public class TrackPanel extends javax.swing.JPanel
                 return null;
             }
 
-            int trackUid = wrap.getNode().getSymbol().getRoot().getTrackLibrary().getCurTrackUid();
+//            int trackUid = wrap.getNode().getSymbol().getRoot().getTrackLibrary().getCurTrackUid();
 //            TrackCurve tc = wrap.getTrackCurve(trackUid);
-            xferCurves.setTrack(wrap.exportTrack(trackUid));
+            xferCurves.setTrack(wrap.exportTrack());
 //            Object[] values = curveList.getSelectedValues();
 //            for (Object value: values)
 //            {
@@ -699,28 +698,28 @@ public class TrackPanel extends javax.swing.JPanel
         }
     }
 
-    class CurTrackWatcher extends PropertyWrapperAdapter
-    {
-        PropertyWrapperWeakListener listener;
-
-        public CurTrackWatcher(PropertyWrapper wrapper)
-        {
-            listener = new PropertyWrapperWeakListener(this, wrapper);
-            wrapper.addPropertyWrapperListener(listener);
-        }
-
-        public void remove()
-        {
-            listener.remove();
-            listener = null;
-        }
-
-        @Override
-        public void propertyWrapperDataChanged(PropertyChangeEvent evt)
-        {
-            curTrackChanged();
-        }
-    }
+//    class CurTrackWatcher extends PropertyWrapperAdapter
+//    {
+//        PropertyWrapperWeakListener listener;
+//
+//        public CurTrackWatcher(PropertyWrapper wrapper)
+//        {
+//            listener = new PropertyWrapperWeakListener(this, wrapper);
+//            wrapper.addPropertyWrapperListener(listener);
+//        }
+//
+//        public void remove()
+//        {
+//            listener.remove();
+//            listener = null;
+//        }
+//
+//        @Override
+//        public void propertyWrapperDataChanged(PropertyChangeEvent evt)
+//        {
+//            curTrackChanged();
+//        }
+//    }
 
     class SelectionWatcher implements SelectionListener
     {

@@ -25,14 +25,12 @@ import java.util.EventObject;
 public class PropertyTrackKeyChangeEvent
         extends EventObject
 {
-    private final int trackUid;
     private final int frame;
 
     public PropertyTrackKeyChangeEvent(PropertyWrapper source,
-            int trackUid, int frame)
+            int frame)
     {
         super(source);
-        this.trackUid = trackUid;
         this.frame = frame;
     }
 
@@ -43,19 +41,10 @@ public class PropertyTrackKeyChangeEvent
     }
 
     /**
-     * @return the trackUid
-     */
-    public int getTrackUid()
-    {
-        return trackUid;
-    }
-
-    /**
      * @return the frame
      */
     public int getFrame()
     {
         return frame;
     }
-
 }

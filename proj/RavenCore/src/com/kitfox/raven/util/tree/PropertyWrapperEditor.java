@@ -24,6 +24,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.beans.PropertyEditor;
+import java.util.ArrayList;
 import java.util.EventObject;
 import javax.swing.AbstractAction;
 import javax.swing.JMenuItem;
@@ -37,6 +38,7 @@ abstract public class PropertyWrapperEditor<PropType>
         implements PropertyEditor, PropertyWrapperListener, MouseListener
 {
     protected PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+    ArrayList<PropertyWrapperEditorListener> listeners = new ArrayList<PropertyWrapperEditorListener>();
 
     private final PropertyWrapper<? extends NodeObject, PropType> wrapper;
     PropertyWrapperWeakListener wrapperListener;
@@ -190,27 +192,29 @@ abstract public class PropertyWrapperEditor<PropType>
     {
         NodeSymbol sym = wrapper.getNode().getSymbol();
         TrackLibrary trackLib = sym.getRoot().getTrackLibrary();
-        Track track = trackLib.getCurTrack();
-        if (track == null)
-        {
-            return;
-        }
+//        Track track = trackLib.getCurTrack();
+//        if (track == null)
+//        {
+//            return;
+//        }
 
-        wrapper.setKeyAt(track.getUid(), trackLib.getCurFrame(),
+        wrapper.setKeyAt(trackLib.getFrameCur(),
                 getValue(), interp);
+        fireEditingDone();
     }
 
     protected void removeKey()
     {
         NodeSymbol sym = wrapper.getNode().getSymbol();
         TrackLibrary trackLib = sym.getRoot().getTrackLibrary();
-        Track track = trackLib.getCurTrack();
-        if (track == null)
-        {
-            return;
-        }
+//        Track track = trackLib.getCurTrack();
+//        if (track == null)
+//        {
+//            return;
+//        }
         
-        wrapper.removeKeyAt(track.getUid(), trackLib.getCurFrame());
+        wrapper.removeKeyAt(trackLib.getFrameCur());
+        fireEditingDone();
     }
 
     @Override
@@ -234,6 +238,36 @@ abstract public class PropertyWrapperEditor<PropType>
 //                null, null);
     }
 
+    public void addPropertyWrapperEditorListener(PropertyWrapperEditorListener l)
+    {
+        listeners.add(l);
+    }
+    
+    public void removePropertyWrapperEditorListener(PropertyWrapperEditorListener l)
+    {
+        listeners.remove(l);
+    }
+    
+    protected void fireEditingDone()
+    {
+        EventObject evt = new EventObject(this);
+        for (PropertyWrapperEditorListener l: 
+                new ArrayList<PropertyWrapperEditorListener>(listeners))
+        {
+            l.propertyWrapperEditingDone(evt);
+        }
+    }
+    
+    protected void fireEditingCanceled()
+    {
+        EventObject evt = new EventObject(this);
+        for (PropertyWrapperEditorListener l: 
+                new ArrayList<PropertyWrapperEditorListener>(listeners))
+        {
+            l.propertyWrapperEditingCanceled(evt);
+        }
+    }
+    
     /**
      * Add PropertyChangeListener.
      *

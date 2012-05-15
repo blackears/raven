@@ -120,7 +120,9 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
 
     PropertyData<PropType> directValue;
 
-    //Indicates frame this property is synchronized to
+    //Set when direct value is synchronized (equal to)
+    // to a particular frame in the animation curve.  If
+    // set to DIRECT, has a unique cached value.
     FrameKey synchKey = FrameKey.DIRECT;
         
     public static final Color DEFAULT_DISPLAY_COLOR = Color.BLUE;
@@ -136,9 +138,10 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
     public static final int FLAGS_NOANIM = FLAGS_DEFAULT & (~FLAG_ANIMATABLE);
 
     //Track UID->curve data
-    HashMap<Integer, TrackCurve<PropType>> trackMap
-            = new HashMap<Integer, TrackCurve<PropType>>();
-    
+//    HashMap<Integer, TrackCurve<PropType>> trackMap
+//            = new HashMap<Integer, TrackCurve<PropType>>();
+    TrackCurve<PropType> curve;
+
     //Keep track of cached values and precomputed info
     HashMap<FrameKey, ValueCache<PropType>> valueCache
             = new HashMap<FrameKey, ValueCache<PropType>>();
@@ -218,6 +221,8 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
 //        this.directValue = this.lastUndoableValue = initialValue;
         this.directValue = initialValue;
 
+        curve = new TrackCurve<PropType>(propertyType);
+        
         node.registerPropertyWrapper(this);
     }
 
@@ -262,10 +267,10 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         node.notifyNodePropertyChanged(evt);
     }
 
-    protected void firePropertyTrackChanged(int trackUid)
+    protected void firePropertyTrackChanged()
     {
         PropertyTrackChangeEvent evt =
-                new PropertyTrackChangeEvent(this, trackUid);
+                new PropertyTrackChangeEvent(this);
         ArrayList<PropertyWrapperListener> list =
                 new ArrayList<PropertyWrapperListener>(listeners);
         for (int i = 0; i < list.size(); ++i)
@@ -274,10 +279,10 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         }
     }
 
-    protected void firePropertyTrackKeyChanged(int trackUid, int frame)
+    protected void firePropertyTrackKeyChanged(int frame)
     {
         PropertyTrackKeyChangeEvent evt =
-                new PropertyTrackKeyChangeEvent(this, trackUid, frame);
+                new PropertyTrackKeyChangeEvent(this, frame);
         ArrayList<PropertyWrapperListener> list =
                 new ArrayList<PropertyWrapperListener>(listeners);
         for (int i = 0; i < list.size(); ++i)
@@ -363,36 +368,41 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
 
     //------------------------------
 
-    public ArrayList<Integer> getTrackUids()
-    {
-        return new ArrayList<Integer>(trackMap.keySet());
-    }
+//    public ArrayList<Integer> getTrackUids()
+//    {
+//        return new ArrayList<Integer>(trackMap.keySet());
+//    }
+//
+//    public TrackCurve<PropType> getTrackCurve(int trackUid)
+//    {
+//        TrackCurve<PropType> curve = trackMap.get(trackUid);
+//        return curve == null ? null : new TrackCurve<PropType>(curve);
+//    }
 
-    public TrackCurve<PropType> getTrackCurve(int trackUid)
+    public TrackCurve<PropType> getTrackCurve()
     {
-        TrackCurve<PropType> curve = trackMap.get(trackUid);
         return curve == null ? null : new TrackCurve<PropType>(curve);
     }
 
-    public void setTrackCurve(int trackUid, TrackCurve<PropType> curve)
+    public void setTrackCurve(TrackCurve<PropType> curve)
     {
-        setTrackCurve(trackUid, curve, true);
+        setTrackCurve(curve, true);
     }
 
-    public void setTrackCurve(int trackUid, TrackCurve<PropType> curve, boolean history)
+    public void setTrackCurve(TrackCurve<PropType> curve, boolean history)
     {
         if (!isAnimatable())
         {
             return;
         }
 
-        TrackCurve<PropType> curveOld = trackMap.get(trackUid);
+        TrackCurve<PropType> curveOld = this.curve;
         if (curve.equals(curveOld))
         {
             return;
         }
 
-        SetTrackCurveAction action = new SetTrackCurveAction(trackUid, curveOld,
+        SetTrackCurveAction action = new SetTrackCurveAction(curveOld,
                 new TrackCurve<PropType>(curve));
         if (history)
         {
@@ -404,22 +414,22 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         }
     }
 
-    public void deleteTrackCurve(int trackUid)
-    {
-        if (!isAnimatable())
-        {
-            return;
-        }
-
-        TrackCurve<PropType> curveOld = trackMap.get(trackUid);
-        if (curveOld == null)
-        {
-            return;
-        }
-
-        DeleteTrackCurveAction action = new DeleteTrackCurveAction(trackUid, curveOld);
-        doAction(action);
-    }
+//    public void deleteTrackCurve(int trackUid)
+//    {
+//        if (!isAnimatable())
+//        {
+//            return;
+//        }
+//
+//        TrackCurve<PropType> curveOld = trackMap.get(trackUid);
+//        if (curveOld == null)
+//        {
+//            return;
+//        }
+//
+//        DeleteTrackCurveAction action = new DeleteTrackCurveAction(trackUid, curveOld);
+//        doAction(action);
+//    }
 
     /**
      * @return the node
@@ -429,31 +439,29 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         return node;
     }
 
-    public boolean isKeyAt(int trackUid, int frame)
+    public boolean isKeyAt(int frame)
     {
-        TrackCurve<PropType> curve = trackMap.get(trackUid);
         return curve == null ? false : curve.isKeyAt(frame);
     }
 
-    public boolean isInterpolatedAt(int trackUid, int frame)
+    public boolean isInterpolatedAt(int frame)
     {
-        TrackCurve<PropType> curve = trackMap.get(trackUid);
         return curve == null ? false : curve.isInterpolatedAt(frame);
     }
 
-    public void setKeyAt(int trackUid, int frame,
+    public void setKeyAt(int frame,
             PropertyData<PropType> data)
     {
-        setKeyAt(trackUid, frame, data, TrackKey.Interp.CONST);
+        setKeyAt(frame, data, TrackKey.Interp.CONST);
     }
 
-    public void setKeyAt(int trackUid, int frame,
+    public void setKeyAt(int frame,
             PropertyData<PropType> data, TrackKey.Interp interp)
     {
-        setKeyAt(trackUid, frame, data, interp, 1, 0, 1, 0);
+        setKeyAt(frame, data, interp, 1, 0, 1, 0);
     }
 
-    public void setKeyAt(int trackUid, int frame,
+    public void setKeyAt(int frame,
             PropertyData<PropType> data, TrackKey.Interp interp,
             double dxIn, double dyIn, double dxOut, double dyOut)
     {
@@ -462,19 +470,19 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
             return;
         }
 
-        SetTrackKeyAction action = new SetTrackKeyAction(trackUid, frame, 
+        SetTrackKeyAction action = new SetTrackKeyAction(frame, 
                 data, interp, dxIn, dyIn, dxOut, dyOut);
         doAction(action);
     }
 
-    public void removeKeyAt(int trackUid, int frame)
+    public void removeKeyAt(int frame)
     {
         if (!isAnimatable())
         {
             return;
         }
 
-        TrackCurve curve = trackMap.get(trackUid);
+//        TrackCurve curve = trackMap.get(trackUid);
         if (curve == null)
         {
             return;
@@ -484,17 +492,22 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
             return;
         }
 
-        DeleteTrackKeyAction action = new DeleteTrackKeyAction(trackUid, frame);
+        DeleteTrackKeyAction action = new DeleteTrackKeyAction(frame);
         doAction(action);
     }
 
-    public void synchToTrack(int trackUid, int frame)
+    public void synchToTrack(int frame)
     {
-        synchToTrack(new FrameKey(trackUid, frame));
+        synchToTrack(new FrameKey(frame));
     }
     
     public void synchToTrack(FrameKey key)
     {
+//if ("transX".equals(getName()))
+//{
+//    int j = 9;
+//}
+        
         FrameKey synchOld = synchKey;
         synchKey = key;
         
@@ -508,18 +521,6 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         directValue = newValue;
         
         firePropertyDataChanged(oldValue, newValue);
-        
-//        ValueCache<PropType> cache = getOrCreateValueCache(key);
-//        if (cache.key.equals(FrameKey.DIRECT))
-//        {
-//            return;
-//        }
-//        
-//        PropertyData<PropType> oldValue = directValue;
-//        ValueCache<PropType> cacheDirect = getOrCreateValueCache(FrameKey.DIRECT);
-//        cacheDirect.copyState(cache);
-//        directValue = cache.data;
-//        firePropertyDataChanged(oldValue, directValue);
     }
 
     public PropType getValue(FrameKey key)
@@ -535,19 +536,19 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         return data == null ? getValue() : data.getValue(node.getSymbol());
     }
 
-    public PropType getValue(int trackUid, int frame)
+    public PropType getValue(int frame)
     {
-        return getValue(new FrameKey(trackUid, frame));
+        return getValue(new FrameKey(frame));
     }
 
     protected ValueCache<PropType> getOrCreateValueCache(FrameKey key)
     {
-        if (FrameKey.DIRECT.equals(key))
-        {
-            //If we're synchronized to a keyed value, return information from 
-            // it instead
-            key = synchKey;
-        }
+//        if (FrameKey.DIRECT.equals(key))
+//        {
+//            //If we're synchronized to a keyed value, return information from 
+//            // it instead
+//            key = synchKey;
+//        }
         
         ValueCache<PropType> cache = valueCache.get(key);
         if (cache != null)
@@ -556,12 +557,9 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         }
         
         //Cache is empty at key.  Build it
-        int trackUid = key.getTrackUid();
-        int frame = key.getAnimFrame();
-        TrackCurve<PropType> curve = trackMap.get(trackUid);
-        
-        if (curve != null)
+        if (!FrameKey.DIRECT.equals(key))
         {
+            int frame = key.getAnimFrame();
             if (curve.isKeyAt(frame))
             {
                 TrackKey<PropType> curveKey = curve.getKey(frame);
@@ -597,9 +595,9 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         return cache.data;
     }
 
-    public PropertyData<PropType> getData(int trackUid, int frame)
+    public PropertyData<PropType> getData(int frame)
     {
-        return getData(new FrameKey(trackUid, frame));
+        return getData(new FrameKey(frame));
     }
 
     public PropertyType export()
@@ -609,30 +607,34 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         propType.setName(name);
         propType.setDirect(export(directValue));
 
-        NodeSymbol doc = node.getSymbol();
-        for (Integer trackUid: trackMap.keySet())
+//        NodeSymbol doc = node.getSymbol();
+        if (curve != null)
         {
-            NodeObject trackNode = doc.getNode(trackUid);
-            if (trackNode == null)
-            {
-                //Do not export track if its track object has been deleted
-                continue;
-            }
-
-            TrackType trackType = exportTrack(trackUid);
-            if (trackType == null)
-            {
-                continue;
-            }
-            propType.getTrack().add(trackType);
+            TrackType trackType = exportTrack();
+            propType.setTrack(trackType);
         }
+//        for (Integer trackUid: trackMap.keySet())
+//        {
+//            NodeObject trackNode = doc.getNode(trackUid);
+//            if (trackNode == null)
+//            {
+//                //Do not export track if its track object has been deleted
+//                continue;
+//            }
+//
+//            TrackType trackType = exportTrack(trackUid);
+//            if (trackType == null)
+//            {
+//                continue;
+//            }
+//            propType.getTrack().add(trackType);
+//        }
 
         return propType;
     }
 
-    public TrackType exportTrack(int trackUid)
+    public TrackType exportTrack()
     {
-        TrackCurve<PropType> curve = trackMap.get(trackUid);
         if (curve.isEmpty())
         {
             return null;
@@ -640,7 +642,6 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
 
         TrackType trackType = new TrackType();
 
-        trackType.setTrackUid(trackUid);
         trackType.setBefore(RepeatType.valueOf(curve.getBefore().name()));
         trackType.setAfter(RepeatType.valueOf(curve.getAfter().name()));
 
@@ -707,12 +708,17 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         {
             setData(load(type.getDirect()));
 
-            for (TrackType trackType: type.getTrack())
+            TrackType trackType = type.getTrack();
+            if (trackType != null)
             {
-                TrackCurve<PropType> curve = createTrackCurve(trackType);
-
-                setTrackCurve(trackType.getTrackUid(), curve);
+                curve = createTrackCurve(trackType);
             }
+//            for (TrackType trackType: type.getTrack())
+//            {
+//                TrackCurve<PropType> curve = createTrackCurve(trackType);
+//
+//                setTrackCurve(trackType.getTrackUid(), curve);
+//            }
         }
         catch (Exception ex)
         {
@@ -726,10 +732,10 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
     public TrackCurve<PropType> createTrackCurve(TrackType trackType)
     {
         //Create track
-        TrackCurve<PropType> curve =
+        TrackCurve<PropType> newCurve =
                 new TrackCurve<PropType>(propertyType);
-        curve.setBefore(TrackCurve.Repeat.valueOf(trackType.getBefore().name()));
-        curve.setAfter(TrackCurve.Repeat.valueOf(trackType.getAfter().name()));
+        newCurve.setBefore(TrackCurve.Repeat.valueOf(trackType.getBefore().name()));
+        newCurve.setAfter(TrackCurve.Repeat.valueOf(trackType.getAfter().name()));
 
         //Add keys
         for (TrackKeyType keyType: trackType.getKey())
@@ -740,10 +746,10 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
                     keyType.getTanInX(), keyType.getTanInY(),
                     keyType.getTanOutX(), keyType.getTanOutY());
 
-            curve.setKey(keyType.getFrame(), key);
+            newCurve.setKey(keyType.getFrame(), key);
         }
 
-        return curve;
+        return newCurve;
     }
 
     protected PropertyData<PropType> load(PropertyDataType type)
@@ -777,11 +783,10 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         return null;
     }
 
-    public int getPrevKeyFrame(int curFrame, int trackUid)
+    public int getPrevKeyFrame(int curFrame)
     {
         int bestFrame = Integer.MIN_VALUE;
 
-        TrackCurve<PropType> curve = trackMap.get(trackUid);
         if (curve == null)
         {
             return bestFrame;
@@ -790,11 +795,10 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         return curve.getPrevKeyFrame(curFrame);
     }
 
-    public int getNextKeyFrame(int curFrame, int trackUid)
+    public int getNextKeyFrame(int curFrame)
     {
         int bestFrame = Integer.MAX_VALUE;
 
-        TrackCurve<PropType> curve = trackMap.get(trackUid);
         if (curve == null)
         {
             return bestFrame;
@@ -808,9 +812,8 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         return displayColor;
     }
 
-    protected void invalidateCacheAtKey(int trackUid, int frame)
+    protected void invalidateCacheAtKey(int frame)
     {
-        TrackCurve<PropType> curve = trackMap.get(trackUid);
         TrackKey<PropType> key = curve.getKey(frame);
         
         int startFrame = frame;
@@ -839,21 +842,23 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         //Drop cache values
         for (int i = startFrame; i <= endFrame; ++i)
         {
-            FrameKey cacheKey = new FrameKey(trackUid, i);
+            FrameKey cacheKey = new FrameKey(i);
             valueCache.remove(cacheKey);
         }
     }
     
-    protected void invalidateCacheAtTrack(int trackUid)
+    protected void invalidateCacheAtTrack()
     {
-        for (Iterator<FrameKey> it = valueCache.keySet().iterator(); it.hasNext();)
-        {
-            FrameKey key = it.next();
-            if (key.getTrackUid() == trackUid)
-            {
-                it.remove();
-            }
-        }
+        valueCache.clear();
+        
+//        for (Iterator<FrameKey> it = valueCache.keySet().iterator(); it.hasNext();)
+//        {
+//            FrameKey key = it.next();
+//            if (key.getTrackUid() == trackUid)
+//            {
+//                it.remove();
+//            }
+//        }
     }
     
     protected void invalidateCacheAtDirect()
@@ -887,48 +892,46 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
 
     public class DeleteTrackKeyAction implements HistoryAction
     {
-        private final boolean removeCurve;
+//        private final boolean removeCurve;
         private final TrackCurve<PropType> curve;
         private final TrackKey<PropType> keyOld;
         private final int frame;
-        private final int trackUid;
 
-        public DeleteTrackKeyAction(int trackUid, int frame)
+        public DeleteTrackKeyAction(int frame)
         {
             this.frame = frame;
-            this.trackUid = trackUid;
-            this.curve = trackMap.get(trackUid);
-            this.removeCurve = curve.getNumKeys() == 1;
+            this.curve = PropertyWrapper.this.curve;
+//            this.removeCurve = curve.getNumKeys() == 1;
             this.keyOld = curve.getKey(frame);
         }
 
         @Override
         public void redo(History history)
         {
-            invalidateCacheAtKey(trackUid, frame);
+            invalidateCacheAtKey(frame);
             
             curve.removeKey(frame);
-            firePropertyTrackKeyChanged(trackUid, frame);
-            if (removeCurve)
-            {
-                trackMap.remove(trackUid);
-                firePropertyTrackChanged(trackUid);
-            }
+            firePropertyTrackKeyChanged(frame);
+//            if (removeCurve)
+//            {
+//                trackMap.remove(trackUid);
+//                firePropertyTrackChanged(trackUid);
+//            }
 //            interpCache.remove(trackUid);
         }
 
         @Override
         public void undo(History history)
         {
-            if (removeCurve)
-            {
-                trackMap.put(trackUid, curve);
-                firePropertyTrackChanged(trackUid);
-            }
+//            if (removeCurve)
+//            {
+//                trackMap.put(trackUid, curve);
+//                firePropertyTrackChanged(trackUid);
+//            }
             curve.setKey(frame, keyOld);
 //            interpCache.remove(trackUid);
-            invalidateCacheAtKey(trackUid, frame);
-            firePropertyTrackKeyChanged(trackUid, frame);
+            invalidateCacheAtKey(frame);
+            firePropertyTrackKeyChanged(frame);
         }
 
         @Override
@@ -940,26 +943,25 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
 
     public class SetTrackKeyAction implements HistoryAction
     {
-        private final boolean createCurve;
-        private final TrackCurve<PropType> curve;
+//        private final boolean createCurve;
+//        private final TrackCurve<PropType> curve;
         private final TrackKey<PropType> keyOld;
         private final TrackKey<PropType> keyNew;
         private final int frame;
-        private final int trackUid;
+//        private final int trackUid;
 
-        public SetTrackKeyAction(int trackUid, int frame,
+        public SetTrackKeyAction(int frame,
                 PropertyData<PropType> dataNew, TrackKey.Interp interp,
                 double dxIn, double dyIn, double dxOut, double dyOut)
         {
             this.frame = frame;
-            this.trackUid = trackUid;
+//            this.trackUid = trackUid;
 
-            TrackCurve mapCurve = trackMap.get(trackUid);
-            this.createCurve = mapCurve == null;
-            this.curve = createCurve 
-                    ? new TrackCurve<PropType>(propertyType)
-                    : mapCurve;
-            this.keyOld = curve == null ? null : curve.getKey(frame);
+//            TrackCurve mapCurve = trackMap.get(trackUid);
+//            this.curve = createCurve 
+//                    ? new TrackCurve<PropType>(propertyType)
+//                    : mapCurve;
+            this.keyOld = PropertyWrapper.this.curve.getKey(frame);
             this.keyNew = new TrackKey<PropType>(dataNew, interp,
                     dxIn, dyIn, dxOut, dyOut);
         }
@@ -967,40 +969,38 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         @Override
         public void redo(History history)
         {
-            if (createCurve)
-            {
-                trackMap.put(trackUid, curve);
-                firePropertyTrackChanged(trackUid);
-            }
+//            if (createCurve)
+//            {
+//                trackMap.put(trackUid, curve);
+//                firePropertyTrackChanged(trackUid);
+//            }
             curve.setKey(frame, keyNew);
 //            interpCache.remove(trackUid);
-            invalidateCacheAtKey(trackUid, frame);
-            firePropertyTrackKeyChanged(trackUid, frame);
+            invalidateCacheAtKey(frame);
+            firePropertyTrackKeyChanged(frame);
         }
 
         @Override
         public void undo(History history)
         {
-            invalidateCacheAtKey(trackUid, frame);
+            invalidateCacheAtKey(frame);
             if (keyOld == null)
             {
                 curve.removeKey(frame);
-//                interpCache.remove(trackUid);
-                firePropertyTrackKeyChanged(trackUid, frame);
+                firePropertyTrackKeyChanged(frame);
             }
             else
             {
                 curve.setKey(frame, keyOld);
-//                interpCache.remove(trackUid);
-                firePropertyTrackKeyChanged(trackUid, frame);
+                firePropertyTrackKeyChanged(frame);
             }
 
-            if (createCurve)
-            {
-                trackMap.remove(trackUid);
-//                interpCache.remove(trackUid);
-                firePropertyTrackChanged(trackUid);
-            }
+//            if (createCurve)
+//            {
+//                trackMap.remove(trackUid);
+////                interpCache.remove(trackUid);
+//                firePropertyTrackChanged(trackUid);
+//            }
         }
 
         @Override
@@ -1010,49 +1010,47 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         }
     }
 
-    public class DeleteTrackCurveAction implements HistoryAction
-    {
-        final int trackUid;
-        final TrackCurve<PropType> curveOld;
-
-        public DeleteTrackCurveAction(int trackUid, TrackCurve<PropType> curveOld)
-        {
-            this.trackUid = trackUid;
-            this.curveOld = curveOld;
-        }
-
-        @Override
-        public void redo(History history)
-        {
-            invalidateCacheAtTrack(trackUid);
-            trackMap.remove(trackUid);
-            firePropertyTrackChanged(trackUid);
-        }
-
-        @Override
-        public void undo(History history)
-        {
-            trackMap.put(trackUid, curveOld);
-            invalidateCacheAtTrack(trackUid);
-            firePropertyTrackChanged(trackUid);
-        }
-
-        @Override
-        public String getTitle()
-        {
-            return "Delete Track";
-        }
-    }
+//    public class DeleteTrackCurveAction implements HistoryAction
+//    {
+//        final int trackUid;
+//        final TrackCurve<PropType> curveOld;
+//
+//        public DeleteTrackCurveAction(int trackUid, TrackCurve<PropType> curveOld)
+//        {
+//            this.trackUid = trackUid;
+//            this.curveOld = curveOld;
+//        }
+//
+//        @Override
+//        public void redo(History history)
+//        {
+//            invalidateCacheAtTrack(trackUid);
+//            trackMap.remove(trackUid);
+//            firePropertyTrackChanged(trackUid);
+//        }
+//
+//        @Override
+//        public void undo(History history)
+//        {
+//            trackMap.put(trackUid, curveOld);
+//            invalidateCacheAtTrack(trackUid);
+//            firePropertyTrackChanged(trackUid);
+//        }
+//
+//        @Override
+//        public String getTitle()
+//        {
+//            return "Delete Track";
+//        }
+//    }
 
     public class SetTrackCurveAction implements HistoryAction
     {
-        int trackUid;
         final TrackCurve<PropType> curveOld;
         final TrackCurve<PropType> curveNew;
 
-        public SetTrackCurveAction(int trackUid, TrackCurve<PropType> curveOld, TrackCurve<PropType> curveNew)
+        public SetTrackCurveAction(TrackCurve<PropType> curveOld, TrackCurve<PropType> curveNew)
         {
-            this.trackUid = trackUid;
             this.curveOld = curveOld;
             this.curveNew = curveNew;
         }
@@ -1060,24 +1058,26 @@ public class PropertyWrapper<NodeType extends NodeObject, PropType>
         @Override
         public void redo(History history)
         {
-            trackMap.put(trackUid, curveNew);
-            invalidateCacheAtTrack(trackUid);
-            firePropertyTrackChanged(trackUid);
+            curve = curveNew;
+//            trackMap.put(trackUid, curveNew);
+            invalidateCacheAtTrack();
+            firePropertyTrackChanged();
         }
 
         @Override
         public void undo(History history)
         {
-            invalidateCacheAtTrack(trackUid);
-            if (curveOld == null)
-            {
-                trackMap.remove(trackUid);
-            }
-            else
-            {
-                trackMap.put(trackUid, curveOld);
-            }
-            firePropertyTrackChanged(trackUid);
+            invalidateCacheAtTrack();
+            curve = curveOld;
+//            if (curveOld == null)
+//            {
+//                trackMap.remove(trackUid);
+//            }
+//            else
+//            {
+//                trackMap.put(trackUid, curveOld);
+//            }
+            firePropertyTrackChanged();
         }
 
         @Override

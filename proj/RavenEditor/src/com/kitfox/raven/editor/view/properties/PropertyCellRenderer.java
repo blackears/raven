@@ -124,14 +124,14 @@ public class PropertyCellRenderer extends javax.swing.JPanel implements TableCel
         if (sym != null)
         {
             TrackLibrary trackLib = sym.getRoot().getTrackLibrary();
-            int frame = trackLib.getCurFrame();
-            int curTrack = trackLib.getCurTrackUid();
+            int frame = trackLib.getFrameCur();
+//            int curTrack = trackLib.getCurTrackUid();
 
-            if (prop.isKeyAt(curTrack, frame))
+            if (prop.isKeyAt(frame))
             {
                 bgColor = COLOR_KEY;
             }
-            else if (prop.isInterpolatedAt(curTrack, frame))
+            else if (prop.isInterpolatedAt(frame))
             {
                 bgColor = COLOR_INTERP;
             }

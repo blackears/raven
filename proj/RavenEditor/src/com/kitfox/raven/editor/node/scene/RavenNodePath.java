@@ -93,7 +93,7 @@ public class RavenNodePath extends RavenNodeShape
     public CyShape createShapeLocal(FrameKey time)
     {
         NodeSymbol doc = getSymbol();
-        PathCurve curve = path.getData(time.getTrackUid(), time.getTrackUid()).getValue(doc);
+        PathCurve curve = path.getValue(time);
 
 //        if (pathCache == null)
 //        {

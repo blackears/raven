@@ -20,7 +20,6 @@ import com.kitfox.raven.editor.node.tools.ToolService;
 import com.kitfox.raven.util.Selection;
 import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.PropertyWrapper;
-import com.kitfox.raven.util.tree.Track;
 import com.kitfox.raven.util.tree.TrackCurveComponent;
 import com.kitfox.raven.util.tree.TrackCurveComponentCurve;
 import com.kitfox.raven.util.tree.TrackCurveComponentKey;
@@ -37,7 +36,7 @@ public interface ServiceControlPointEditor extends ToolService
     public Selection<TrackCurveComponent> getSelection();
     public AffineTransform getWorldToDeviceTransform(AffineTransform value);
 
-    public Track getTrack();
+//    public Track getTrack();
 
     public NodeSymbol getDocument();
 

@@ -498,7 +498,7 @@ public class NodeObject
         }
     }
 
-    public int getPrevKeyFrame(int curFrame, int trackUid)
+    public int getPrevKeyFrame(int curFrame)
     {
         int prevFrame = Integer.MIN_VALUE;
 
@@ -506,20 +506,20 @@ public class NodeObject
         {
             PropertyWrapper wrap = propertyWrappers.get(i);
             prevFrame = Math.max(prevFrame,
-                    wrap.getPrevKeyFrame(curFrame, trackUid));
+                    wrap.getPrevKeyFrame(curFrame));
         }
 
         for (int i = 0; i < childWrappers.size(); ++i)
         {
             ChildWrapper wrap = childWrappers.get(i);
             prevFrame = Math.max(prevFrame,
-                    wrap.getPrevKeyFrame(curFrame, trackUid));
+                    wrap.getPrevKeyFrame(curFrame));
         }
 
         return prevFrame;
     }
 
-    public int getNextKeyFrame(int curFrame, int trackUid)
+    public int getNextKeyFrame(int curFrame)
     {
         int nextFrame = Integer.MAX_VALUE;
 
@@ -527,14 +527,14 @@ public class NodeObject
         {
             PropertyWrapper wrap = propertyWrappers.get(i);
             nextFrame = Math.min(nextFrame,
-                    wrap.getNextKeyFrame(curFrame, trackUid));
+                    wrap.getNextKeyFrame(curFrame));
         }
 
         for (int i = 0; i < childWrappers.size(); ++i)
         {
             ChildWrapper wrap = childWrappers.get(i);
             nextFrame = Math.min(nextFrame,
-                    wrap.getNextKeyFrame(curFrame, trackUid));
+                    wrap.getNextKeyFrame(curFrame));
         }
 
         return nextFrame;

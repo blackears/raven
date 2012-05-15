@@ -25,27 +25,15 @@ import java.util.EventObject;
 public class PropertyTrackChangeEvent
         extends EventObject
 {
-    private final int trackUid;
-
-    public PropertyTrackChangeEvent(PropertyWrapper source,
-            int trackUid)
+    public PropertyTrackChangeEvent(PropertyWrapper source)
     {
         super(source);
-        this.trackUid = trackUid;
     }
 
     @Override
     public PropertyWrapper getSource()
     {
         return (PropertyWrapper)super.getSource();
-    }
-
-    /**
-     * @return the trackUid
-     */
-    public int getTrackUid()
-    {
-        return trackUid;
     }
 
 }

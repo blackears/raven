@@ -33,7 +33,6 @@ import com.kitfox.raven.util.tree.NodeSymbolProvider;
 import com.kitfox.raven.util.tree.NodeSymbolProviderIndex;
 import com.kitfox.raven.util.tree.PropertyDataInline;
 import com.kitfox.raven.util.tree.PropertyDataReference;
-import com.kitfox.raven.util.tree.Track;
 import com.kitfox.raven.util.tree.TrackLibrary;
 import com.kitfox.raven.util.undo.History;
 import com.kitfox.swf.SWFDocument;
@@ -104,10 +103,10 @@ public class ImportSWFBuilder
     private void importTimeline(RavenSymbol sym, SWFTimeline timeline)
     {
         TrackLibrary trackLib = sym.getRoot().getTrackLibrary();
-        Track track = NodeObjectProviderIndex.inst().createNode(Track.class, sym);
-        String name = sym.createUniqueName("swfTrack");
-        track.setName(name);
-        trackLib.tracks.add(track);
+//        Track track = NodeObjectProviderIndex.inst().createNode(Track.class, sym);
+//        String name = sym.createUniqueName("swfTrack");
+//        track.setName(name);
+//        trackLib.tracks.add(track);
         
         ArrayList<SWFTimelineTrack> tracks = timeline.getTracks();
         Collections.sort(tracks);
@@ -115,15 +114,15 @@ public class ImportSWFBuilder
         {
             if (containsShapes(timeTrack))
             {
-                addShapeTrack(sym, track, timeTrack);
+                addShapeTrack(sym, timeTrack);
             }
             if (containsSprites(timeTrack))
             {
-//                addSpriteTrack(root, track, timeTrack);
+//                addSpriteTrack(sym, timeTrack);
             }
         }
 
-        trackLib.curTrack.setData(new PropertyDataReference<Track>(track.getUid()));
+//        trackLib.curTrack.setData(new PropertyDataReference<Track>(track.getUid()));
     }
 
     public boolean containsShapes(SWFTimelineTrack timeTrack)
@@ -164,7 +163,7 @@ public class ImportSWFBuilder
         return false;
     }
 
-    private void addShapeTrack(RavenSymbol sym, Track track, SWFTimelineTrack timeTrack)
+    private void addShapeTrack(RavenSymbol sym, SWFTimelineTrack timeTrack)
     {
         RavenNodeMesh mesh = NodeObjectProviderIndex.inst().createNode(
                 RavenNodeMesh.class, sym);
@@ -172,7 +171,7 @@ public class ImportSWFBuilder
         
         CharacterDictionary dict = builder.getDictionary();
         CharacterShape prevShape = null;
-        int trackUid = track.getUid();
+//        int trackUid = track.getUid();
 
         for (Integer frame: timeTrack.getKeyFrames())
         {
@@ -191,7 +190,7 @@ public class ImportSWFBuilder
                         MeshBuilder meshBuilder = new MeshBuilder();
                         shape.getSws().buildShapes(meshBuilder);
 
-                        mesh.mesh.setKeyAt(trackUid, frame, 
+                        mesh.mesh.setKeyAt(frame, 
                                 new PropertyDataInline(meshBuilder.mesh));
                     }
                 
@@ -206,17 +205,17 @@ public class ImportSWFBuilder
                     double ang0 = Math.toDegrees(Math.atan2(m10, m00));
                     double ang1 = Math.toDegrees(Math.atan2(m11, m01));
 
-                    mesh.transX.setKeyAt(trackUid, frame, 
+                    mesh.transX.setKeyAt(frame, 
                             new PropertyDataInline((float)m.getXlateX()));
-                    mesh.transY.setKeyAt(trackUid, frame, 
+                    mesh.transY.setKeyAt(frame, 
                             new PropertyDataInline((float)m.getXlateY()));
-                    mesh.scaleX.setKeyAt(trackUid, frame, 
+                    mesh.scaleX.setKeyAt(frame, 
                             new PropertyDataInline((float)scaleX));
-                    mesh.scaleY.setKeyAt(trackUid, frame, 
+                    mesh.scaleY.setKeyAt(frame, 
                             new PropertyDataInline((float)scaleY));
-                    mesh.rotation.setKeyAt(trackUid, frame, 
+                    mesh.rotation.setKeyAt(frame, 
                             new PropertyDataInline((float)ang0));
-                    mesh.skewAngle.setKeyAt(trackUid, frame, 
+                    mesh.skewAngle.setKeyAt(frame, 
                             new PropertyDataInline((float)(ang1 - ang0)));
                     
                     prevShape = shape;
@@ -224,14 +223,14 @@ public class ImportSWFBuilder
                 else
                 {
                     //Remove geometry
-                    mesh.mesh.setKeyAt(trackUid, frame, null);
+                    mesh.mesh.setKeyAt(frame, null);
                     prevShape = null;
                 }
             }
             else
             {
                 //Remove geometry
-                mesh.mesh.setKeyAt(trackUid, frame, null);
+                mesh.mesh.setKeyAt(frame, null);
                 prevShape = null;
             }
         }

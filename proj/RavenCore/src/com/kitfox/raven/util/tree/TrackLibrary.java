@@ -26,26 +26,36 @@ import java.beans.PropertyChangeEvent;
 public class TrackLibrary extends NodeObject
 {
 
-    public static final String CHILD_TRACKS = "tracks";
-    public final ChildWrapperList<NodeRoot, Track>
-            tracks =
-            new ChildWrapperList(this,
-            CHILD_TRACKS, Track.class);
+//    public static final String CHILD_TRACKS = "tracks";
+//    public final ChildWrapperList<NodeRoot, Track>
+//            tracks =
+//            new ChildWrapperList(this,
+//            CHILD_TRACKS, Track.class);
 
     public static final String PROP_FPS = "fps";
     public final PropertyWrapperFloat<TrackLibrary> fps =
             new PropertyWrapperFloat(this, PROP_FPS, 
             PropertyWrapper.FLAGS_NOANIM, 30f);
 
-    public static final String PROP_CURFRAME = "curFrame";
-    public final PropertyWrapperInteger<TrackLibrary> curFrame =
-            new PropertyWrapperInteger(this, PROP_CURFRAME,
+    public static final String PROP_FRAMECUR = "frameCur";
+    public final PropertyWrapperInteger<TrackLibrary> frameCur =
+            new PropertyWrapperInteger(this, PROP_FRAMECUR,
             PropertyWrapper.FLAGS_NOANIM, 0);
 
-    public static final String PROP_CURTRACK = "curTrack";
-    public final PropertyWrapper<TrackLibrary, Track> curTrack =
-            new PropertyWrapper(this, PROP_CURTRACK,
-            PropertyWrapper.FLAGS_NOANIM, Track.class);
+    public static final String PROP_FRAMEFIRST = "frameFirst";
+    public final PropertyWrapperInteger<TrackLibrary> frameFirst =
+            new PropertyWrapperInteger(this, PROP_FRAMEFIRST,
+            PropertyWrapper.FLAGS_NOANIM, 0);
+
+    public static final String PROP_FRAMELAST = "frameLast";
+    public final PropertyWrapperInteger<TrackLibrary> frameLast =
+            new PropertyWrapperInteger(this, PROP_FRAMELAST,
+            PropertyWrapper.FLAGS_NOANIM, 100);
+
+//    public static final String PROP_CURTRACK = "curTrack";
+//    public final PropertyWrapper<TrackLibrary, Track> curTrack =
+//            new PropertyWrapper(this, PROP_CURTRACK,
+//            PropertyWrapper.FLAGS_NOANIM, Track.class);
 
     public static final String PROP_LOOP = "loop";
     public final PropertyWrapperBoolean<TrackLibrary> loop =
@@ -58,31 +68,55 @@ public class TrackLibrary extends NodeObject
         super(uid);
 
         CurFrameUpdater updater = new CurFrameUpdater();
-        curFrame.addPropertyWrapperListener(updater);
+        frameCur.addPropertyWrapperListener(updater);
 //        curTrack.addPropertyWrapperListener(updater);
     }
 
 
     public void synchDocumentToFrame()
     {
-        Track track = getCurTrack();
-        if (track == null)
+//        Track track = getCurTrack();
+//        if (track == null)
+//        {
+//            return;
+//        }
+
+        FrameSynch synch = new FrameSynch(getFrameCur());
+        NodeSymbol sym = getSymbol();
+        if (sym != null)
         {
-            return;
+            sym.getRoot().visit(synch);
         }
-
-        FrameSynch synch = new FrameSynch(getCurFrame(), track.getUid());
-        getSymbol().getRoot().visit(synch);
     }
 
-    public int getCurFrame()
+    public int getFrameCur()
     {
-        return curFrame.getValue();
+        return frameCur.getValue();
     }
 
-    public void setCurFrame(int value)
+    public void setFrameCur(int value)
     {
-        curFrame.setValue(value);
+        frameCur.setValue(value);
+    }
+
+    public int getFrameFirst()
+    {
+        return frameFirst.getValue();
+    }
+
+    public void setFrameFirst(int value)
+    {
+        frameFirst.setValue(value);
+    }
+
+    public int getFrameLast()
+    {
+        return frameLast.getValue();
+    }
+
+    public void setFrameLast(int value)
+    {
+        frameLast.setValue(value);
     }
 
     public float getFps()
@@ -95,44 +129,44 @@ public class TrackLibrary extends NodeObject
         fps.setValue(value);
     }
 
-    public int getCurTrackUid()
-    {
-        PropertyData<Track> data = curTrack.getData();
-        if (data instanceof PropertyDataReference)
-        {
-            return ((PropertyDataReference)data).getUid();
-        }
-        return -1;
-    }
-
-    public Track getCurTrack()
-    {
-        PropertyData<Track> data = curTrack.getData();
-        if (data instanceof PropertyDataReference)
-        {
-            NodeSymbol doc = getSymbol();
-            if (doc == null)
-            {
-                return null;
-            }
-
-            int uid = ((PropertyDataReference)data).getUid();
-            return (Track)doc.getNode(uid);
-        }
-        return null;
-    }
+//    public int getCurTrackUid()
+//    {
+//        PropertyData<Track> data = curTrack.getData();
+//        if (data instanceof PropertyDataReference)
+//        {
+//            return ((PropertyDataReference)data).getUid();
+//        }
+//        return -1;
+//    }
+//
+//    public Track getCurTrack()
+//    {
+//        PropertyData<Track> data = curTrack.getData();
+//        if (data instanceof PropertyDataReference)
+//        {
+//            NodeSymbol doc = getSymbol();
+//            if (doc == null)
+//            {
+//                return null;
+//            }
+//
+//            int uid = ((PropertyDataReference)data).getUid();
+//            return (Track)doc.getNode(uid);
+//        }
+//        return null;
+//    }
 
     //----------------------------------------
 
     class FrameSynch implements NodeVisitor
     {
         final int frame;
-        final int trackUid;
+//        final int trackUid;
 
-        public FrameSynch(int frame, int trackUid)
+        public FrameSynch(int frame)
         {
             this.frame = frame;
-            this.trackUid = trackUid;
+//            this.trackUid = trackUid;
         }
 
         @Override
@@ -140,7 +174,7 @@ public class TrackLibrary extends NodeObject
         {
             for (PropertyWrapper wrapper: node.getPropertyWrappers())
             {
-                wrapper.synchToTrack(trackUid, frame);
+                wrapper.synchToTrack(frame);
             }
         }
     }

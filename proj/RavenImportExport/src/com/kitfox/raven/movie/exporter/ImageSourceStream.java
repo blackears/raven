@@ -66,11 +66,11 @@ public class ImageSourceStream
         this.capture = new MovieCapture(comp);
         
         frameRate = sym.getRoot().getTrackLibrary().getFps();
-        trackUid = sym.getRoot().getTrackLibrary().getCurTrackUid();
+//        trackUid = sym.getRoot().getTrackLibrary().getCurTrackUid();
         
         if (ctx.isFrameCur())
         {
-            frameCur = frameEnd = sym.getRoot().getTrackLibrary().getCurFrame();
+            frameCur = frameEnd = sym.getRoot().getTrackLibrary().getFrameCur();
             frameStride = 1;
         }
         else
@@ -107,7 +107,7 @@ public class ImageSourceStream
             return;
         }
 
-        BufferedImage img = capture.getImage(new FrameKey(trackUid, frameCur), false);
+        BufferedImage img = capture.getImage(new FrameKey(frameCur), false);
         frameCur += frameStride;
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

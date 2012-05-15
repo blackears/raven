@@ -27,7 +27,7 @@
     <xsd:complexType name="PropertyType">
         <xsd:sequence>
             <xsd:element name="direct" type="tns:PropertyDataType"></xsd:element>
-            <xsd:element name="track" type="tns:TrackType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+            <xsd:element name="track" type="tns:TrackType" minOccurs="1" maxOccurs="1"></xsd:element>
         </xsd:sequence>
         <xsd:attribute name="name" type="xsd:string"/>
     </xsd:complexType>
@@ -71,7 +71,6 @@
         <xsd:sequence>
             <xsd:element name="key" type="tns:TrackKeyType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
         </xsd:sequence>
-        <xsd:attribute name="trackUid" type="xsd:int"/>
         <xsd:attribute name="before" type="tns:RepeatType"/>
         <xsd:attribute name="after" type="tns:RepeatType"/>
     </xsd:complexType>
