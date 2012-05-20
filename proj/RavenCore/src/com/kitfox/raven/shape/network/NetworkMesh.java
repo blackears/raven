@@ -22,7 +22,6 @@ import com.kitfox.cache.CacheMap;
 import com.kitfox.cache.parser.CacheParser;
 import com.kitfox.cache.parser.ParseException;
 import com.kitfox.coyote.shape.CyPathIterator;
-import com.kitfox.coyote.shape.CyRectangle2i;
 import com.kitfox.coyote.shape.CyShape;
 import com.kitfox.coyote.shape.bezier.BezierCubic2i;
 import com.kitfox.coyote.shape.bezier.BezierLine2i;
@@ -155,7 +154,7 @@ public class NetworkMesh extends BezierMesh2i<NetworkDataVertex, NetworkDataEdge
         
         return mesh;
     }
-    
+
     public static NetworkMesh create(String text)
     {
         if (text == null || "".equals(text))
@@ -175,8 +174,7 @@ public class NetworkMesh extends BezierMesh2i<NetworkDataVertex, NetworkDataEdge
             Logger.getLogger(NetworkMesh.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
-    }    
-    
+    }
     
     public CacheMap toCache()
     {
@@ -188,28 +186,6 @@ public class NetworkMesh extends BezierMesh2i<NetworkDataVertex, NetworkDataEdge
     public String toString()
     {
         return toCache().toString();
-    }
-    
-    public CyRectangle2i getBounds()
-    {
-        CyRectangle2i bounds = null;
-        
-        for (BezierMeshVertex2i vert: getVertices())
-        {
-            for (int i = 0; i < vert.getNumEdges(); ++i)
-            {
-                BezierMeshEdge2i e = vert.getEdge(i);
-                
-                if (bounds == null)
-                {
-                    bounds = new CyRectangle2i(e.getMinX(), e.getMinY());
-                }
-                bounds.union(e.getMinX(), e.getMinY());
-                bounds.union(e.getMaxX(), e.getMaxY());                
-            }
-        }
-        
-        return bounds;
     }
 
     @Override

@@ -16,63 +16,39 @@
 
 package com.kitfox.raven.editor.node.scene;
 
+import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.raven.util.tree.FrameKey;
 import com.kitfox.coyote.shape.CyPath2d;
-import com.kitfox.coyote.shape.CyShape;
-import com.kitfox.raven.editor.node.tools.common.ServiceBezierNetwork;
-import com.kitfox.raven.shape.bezier.BezierNetwork;
-import com.kitfox.raven.shape.bezier.BezierPath;
-import com.kitfox.raven.shape.path.PathCurve;
-import com.kitfox.raven.util.planeData.PlaneDataProvider;
+import com.kitfox.coyote.shape.CyRectangle2d;
+import com.kitfox.coyote.shape.bezier.path.BezierPath2i;
+import com.kitfox.raven.editor.node.tools.common.shape.ServiceShapeManip;
+import com.kitfox.raven.editor.node.tools.common.shape.pen.ServiceBezierPath;
+import com.kitfox.raven.paint.RavenPaint;
+import com.kitfox.raven.paint.RavenStroke;
+import com.kitfox.raven.shape.network.NetworkPath;
+import com.kitfox.raven.shape.network.pick.NetworkHandleEdge;
+import com.kitfox.raven.shape.network.pick.NetworkHandleFace;
+import com.kitfox.raven.shape.network.pick.NetworkHandleVertex;
+import com.kitfox.raven.util.Intersection;
 import com.kitfox.raven.util.service.ServiceInst;
-import com.kitfox.raven.util.tree.ChildWrapperList;
-import com.kitfox.raven.util.tree.NodeSymbol;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
-import com.kitfox.raven.util.tree.NodeObjectProviderIndex;
 import com.kitfox.raven.util.tree.PropertyWrapper;
-import com.kitfox.raven.util.undo.History;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Path2D;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 
 /**
  *
  * @author kitfox
  */
 public class RavenNodePath extends RavenNodeShape
-        implements ServiceBezierNetwork
+        implements ServiceBezierPath, ServiceShapeManip
 {
     public static final String PROP_PATH = "path";
-    public final PropertyWrapper<RavenNodePath, PathCurve> path =
+    public final PropertyWrapper<RavenNodePath, NetworkPath> path =
             new PropertyWrapper(
-            this, PROP_PATH, PathCurve.class);
-
-    public static final String CHILD_VERTEX_PLANES = "vertexPlanes";
-    public final ChildWrapperList<RavenNodePath, RavenNodeDataPlane> vertexPlanes =
-            new ChildWrapperList<RavenNodePath, RavenNodeDataPlane>(
-            this, CHILD_VERTEX_PLANES, RavenNodeDataPlane.class);
-
-    public static final String CHILD_EDGE_PLANES = "edgePlanes";
-    public final ChildWrapperList<RavenNodePath, RavenNodeDataPlane> edgePlanes =
-            new ChildWrapperList<RavenNodePath, RavenNodeDataPlane>(
-            this, CHILD_EDGE_PLANES, RavenNodeDataPlane.class);
-
-    public static final String CHILD_FACE_PLANES = "facePlanes";
-    public final ChildWrapperList<RavenNodePath, RavenNodeDataPlane> facePlanes =
-            new ChildWrapperList<RavenNodePath, RavenNodeDataPlane>(
-            this, CHILD_FACE_PLANES, RavenNodeDataPlane.class);
-
-    public static final String CHILD_FACE_VERTEX_PLANES = "faceVertexPlanes";
-    public final ChildWrapperList<RavenNodePath, RavenNodeDataPlane> faceVertexPlanes =
-            new ChildWrapperList<RavenNodePath, RavenNodeDataPlane>(
-            this, CHILD_FACE_VERTEX_PLANES, RavenNodeDataPlane.class);
+            this, PROP_PATH, NetworkPath.class);
 
     private static final int flatnessSquared = 10000;
-//    Path2D.Double pathCache;
-    BezierPath bezierPath;
-
-    static final AffineTransform toPixels = new AffineTransform(1.0 / 100, 0, 0, 1.0 / 100, 0, 0);
 
     public RavenNodePath(int uid)
     {
@@ -85,176 +61,125 @@ public class RavenNodePath extends RavenNodeShape
     protected void clearCache()
     {
         super.clearCache();
-//        pathCache = null;
-        bezierPath = null;
     }
 
-    @Override
-    public CyShape createShapeLocal(FrameKey time)
+    protected CyPath2d getPathGrid(FrameKey key)
     {
-        NodeSymbol doc = getSymbol();
-        PathCurve curve = path.getValue(time);
-
-//        if (pathCache == null)
-//        {
-//            PathCurve curve = path.getValue();
-            if (curve == null)
+        CyPath2d shapePath = path.getUserCacheValue(CyPath2d.class, key);
+        if (shapePath == null)
+        {
+            BezierPath2i cPath = path.getValue(key);
+            if (cPath == null)
             {
                 return null;
             }
-
-            Path2D pathCache = curve.asPath2D();
-            pathCache = (Path2D.Double)toPixels.createTransformedShape(pathCache);
-//        }
-//        return pathCache;
-        return CyPath2d.create(pathCache);
+            shapePath = cPath.asPath();
+            path.setUserCacheValue(CyPath2d.class, key, shapePath);
+        }
+        return shapePath;
     }
-
-//    @Override
-//    public Shape getShapePickLocal()
-//    {
-//        if (pathCache == null)
-//        {
-//            PathCurve curve = path.getValue();
-//            if (curve == null)
-//            {
-//                return null;
-//            }
-//
-//            pathCache = curve.asPath2D();
-//            pathCache = (Path2D.Double)toPixels.createTransformedShape(pathCache);
-//        }
-//        return pathCache;
-//    }
+    
+    @Override
+    public CyPath2d createShapeLocal(FrameKey key)
+    {
+        CyPath2d shapePath = getPathGrid(key);
+        
+        return shapePath.createTransformedPath(meshToLocal);
+    }
 
     @Override
-    public BezierNetwork getBezierNetwork()
+    public NetworkPath getNetworkPath()
     {
-        if (bezierPath == null)
-        {
-            //Build from path curve
-            PathCurve curve = path.getValue();
-            if (curve == null)
-            {
-                return null;
-            }
-
-//            bezierPath = new BezierPath(flatnessSquared);
-//            bezierPath.append(curve.asPath2D(), null);
-
-            bezierPath = new BezierPath(curve,
-                    getPlaneData(vertexPlanes),
-                    getPlaneData(edgePlanes),
-                    getPlaneData(facePlanes),
-                    getPlaneData(faceVertexPlanes),
-                    flatnessSquared);
-        }
-
-        return bezierPath;
+        return new NetworkPath(path.getValue());
     }
-
-//    private ArrayList<RavenNodeDataPlane> getPlanes(ChildWrapper<RavenNodePath,
-//            RavenNodeDataPlane> planes)
-//    {
-//        for (int i = 0; i < planes.size(); ++i)
-//        {
-//            RavenNodeDataPlane dataPlane = (RavenNodeDataPlane)planes.get(i);
-//            dataPlane.getPlaneDataType();
-//
-//        }
-//    }
 
     @Override
-    public void updateFromBezierNetwork(BezierNetwork network, boolean history)
+    public void setNetworkPath(NetworkPath path, boolean history)
     {
-        if (!(network instanceof BezierPath))
-        {
-            return;
-        }
-
-        BezierPath bezPath = (BezierPath)network;
-        PathCurve curve = new PathCurve(bezPath.asPath());
-
-        History hist = getSymbol().getHistory();
-
-        if (history)
-        {
-            hist.beginTransaction("Update path");
-        }
-
-        path.setValue(curve, history);
-
-        vertexPlanes.removeAll();
-        for (Class<? extends PlaneDataProvider> key : network.getDataKeysVertex())
-        {
-            RavenNodeDataPlane plane = NodeObjectProviderIndex.inst().createNode(
-                    RavenNodeDataPlane.class, getSymbol());
-            vertexPlanes.add(plane);
-            plane.dataValues.addPropertyWrapperListener(clearCache);
-
-            ArrayList list = bezPath.buildDataPlaneVertex(key);
-            plane.setPlaneData(key, list, history);
-        }
-
-        edgePlanes.removeAll();
-        for (Class<? extends PlaneDataProvider> key : network.getDataKeysEdge())
-        {
-            RavenNodeDataPlane plane = NodeObjectProviderIndex.inst().createNode(
-                    RavenNodeDataPlane.class, getSymbol());
-            edgePlanes.add(plane);
-            plane.dataValues.addPropertyWrapperListener(clearCache);
-
-            ArrayList list = bezPath.buildDataPlaneEdge(key);
-            plane.setPlaneData(key, list, history);
-        }
-
-        facePlanes.removeAll();
-        for (Class<? extends PlaneDataProvider> key : network.getDataKeysFace())
-        {
-            RavenNodeDataPlane plane = NodeObjectProviderIndex.inst().createNode(
-                    RavenNodeDataPlane.class, getSymbol());
-            facePlanes.add(plane);
-            plane.dataValues.addPropertyWrapperListener(clearCache);
-
-            ArrayList list = bezPath.buildDataPlaneFace(key);
-            plane.setPlaneData(key, list, history);
-        }
-
-//        faceVertexPlanes.removeAll();
-//        for (Class<? extends PlaneDataProvider> key : network.getDataKeysFaceVertex())
-//        {
-//            RavenNodeDataPlane plane = NodeObjectProviderIndex.inst().createNode(
-//                    RavenNodeDataPlane.class, getDocument());
-//            faceVertexPlanes.add(plane);
-//            plane.dataValues.addPropertyWrapperListener(clearCache);
-//
-//            ArrayList list = network.buildDataPlaneFaceVertex(key);
-//            plane.setPlaneData(key, list, history);
-//        }
-
-        if (history)
-        {
-            hist.commitTransaction();
-        }
+        this.path.setValue(path, history);
     }
 
-    private HashMap<Class<? extends PlaneDataProvider>, ArrayList>
-            getPlaneData(
-            ChildWrapperList<RavenNodePath, RavenNodeDataPlane> planeChildren)
+    @Override
+    public CyMatrix4d getGraphToWorldXform()
     {
-        HashMap<Class<? extends PlaneDataProvider>, ArrayList> map
-                = new HashMap<Class<? extends PlaneDataProvider>, ArrayList>();
-
-        for (int i = 0; i < planeChildren.size(); ++i)
-        {
-            RavenNodeDataPlane plane = planeChildren.get(i);
-            map.put(plane.getPlaneDataType(), plane.getPlaneData());
-        }
-
-        return map;
+        CyMatrix4d g2w = getLocalToWorldTransform((CyMatrix4d)null);
+        g2w.scale(.01, .01, 1);
+        return g2w;
     }
 
+    @Override
+    public ArrayList<? extends NetworkHandleVertex> pickVertices(CyRectangle2d region, CyMatrix4d l2d, Intersection isect)
+    {
+//        NetworkMeshHandles handles = getMeshHandles();
+//        return handles.pickVertices(region, l2d, isect);
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
+    @Override
+    public ArrayList<? extends NetworkHandleEdge> pickEdges(CyRectangle2d region, CyMatrix4d l2d, Intersection isect)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public ArrayList<? extends NetworkHandleFace> pickFaces(CyRectangle2d region, CyMatrix4d l2d, Intersection isect)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public ArrayList<? extends NetworkHandleEdge> getConnectedEdges(NetworkHandleEdge edge)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setEdgePaintAndStroke(RavenPaint paint, RavenStroke stroke, Collection<? extends NetworkHandleEdge> edges, boolean history)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setEdgePaint(RavenPaint paint, Collection<? extends NetworkHandleEdge> edges, boolean history)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setEdgeStroke(RavenStroke stroke, Collection<? extends NetworkHandleEdge> edges, boolean history)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setFacePaint(RavenPaint paint, Collection<? extends NetworkHandleFace> faces, boolean history)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public ArrayList<? extends NetworkHandleEdge> getEdges()
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public ArrayList<? extends NetworkHandleVertex> getVertices()
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public ArrayList<? extends NetworkHandleEdge> getEdgesByIds(ArrayList<Integer> edgeIds)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public ArrayList<? extends NetworkHandleFace> getFacesByIds(ArrayList<Integer> faceIds)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
     //-----------------------------------------------
 

@@ -34,7 +34,6 @@ import com.kitfox.raven.util.tree.PropertyTrackKeyChangeEvent;
 import com.kitfox.raven.util.tree.PropertyWrapper;
 import com.kitfox.raven.util.tree.PropertyWrapperListener;
 import java.awt.Color;
-import java.awt.geom.Rectangle2D;
 import java.beans.PropertyChangeEvent;
 
 /**

@@ -25,6 +25,7 @@ import java.util.Collection;
  */
 public class CacheList extends CacheIdentifier
 {
+
     ArrayList<CacheElement> cache = new ArrayList<CacheElement>();
 
     public CacheList()
@@ -56,67 +57,83 @@ public class CacheList extends CacheIdentifier
         }
     }
 
-    public void trimToSize() {
+    public void trimToSize()
+    {
         cache.trimToSize();
     }
 
-    public int size() {
+    public int size()
+    {
         return cache.size();
     }
 
-    public CacheElement set(int index, CacheElement element) {
+    public CacheElement set(int index, CacheElement element)
+    {
         return cache.set(index, element);
     }
 
-    public boolean remove(CacheElement o) {
+    public boolean remove(CacheElement o)
+    {
         return cache.remove(o);
     }
 
-    public CacheElement remove(int index) {
+    public CacheElement remove(int index)
+    {
         return cache.remove(index);
     }
 
-    public int lastIndexOf(Object o) {
+    public int lastIndexOf(Object o)
+    {
         return cache.lastIndexOf(o);
     }
 
-    public boolean isEmpty() {
+    public boolean isEmpty()
+    {
         return cache.isEmpty();
     }
 
-    public int indexOf(Object o) {
+    public int indexOf(Object o)
+    {
         return cache.indexOf(o);
     }
 
-    public CacheElement get(int index) {
+    public CacheElement get(int index)
+    {
         return cache.get(index);
     }
 
-    public void ensureCapacity(int minCapacity) {
+    public void ensureCapacity(int minCapacity)
+    {
         cache.ensureCapacity(minCapacity);
     }
 
-    public boolean contains(CacheElement o) {
+    public boolean contains(CacheElement o)
+    {
         return cache.contains(o);
     }
 
-    public void clear() {
+    public void clear()
+    {
         cache.clear();
     }
 
-    public boolean addAll(int index, Collection<? extends CacheElement> c) {
+    public boolean addAll(int index, Collection<? extends CacheElement> c)
+    {
         return cache.addAll(index, c);
     }
 
-    public boolean addAll(Collection<? extends CacheElement> c) {
+    public boolean addAll(Collection<? extends CacheElement> c)
+    {
         return cache.addAll(c);
     }
 
-    public void add(int index, CacheElement element) {
+    public void add(int index, CacheElement element)
+    {
         cache.add(index, element);
     }
 
-    public boolean add(CacheElement e) {
+    public boolean add(CacheElement e)
+    {
         return cache.add(e);
     }
 
@@ -257,5 +274,4 @@ public class CacheList extends CacheIdentifier
     {
         add(new CacheString(value));
     }
-
 }

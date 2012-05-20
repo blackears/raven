@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-package com.kitfox.raven.shape.network.pick;
+package com.kitfox.raven.editor.node.tools.common.shape.pen;
 
-import com.kitfox.raven.paint.RavenPaint;
-import com.kitfox.raven.paint.RavenPaintLayout;
+import com.kitfox.coyote.math.CyMatrix4d;
+import com.kitfox.raven.shape.network.NetworkPath;
 
 /**
  *
  * @author kitfox
  */
-public interface NetworkHandleFace
+public interface ServiceBezierPath
 {
-    public int getIndex();
-    public RavenPaint getPaint();
-    public RavenPaintLayout getPaintLayout();
+    public NetworkPath getNetworkPath();
+    public void setNetworkPath(NetworkPath path, boolean history);
+    public CyMatrix4d getLocalToWorldTransform(CyMatrix4d xform);
+
+    public CyMatrix4d getGraphToWorldXform();
+    
 }

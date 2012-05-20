@@ -20,6 +20,7 @@ import com.kitfox.coyote.math.CyMatrix4d;
 import static java.lang.Math.*;
 import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.math.Math2DUtil;
+import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.PathConsumer;
 
 /**
@@ -278,6 +279,12 @@ public class BezierQuad2i extends BezierCurve2i
 
     @Override
     public void append(PathConsumer out)
+    {
+        out.quadTo(ax1, ay1, ax2, ay2);
+    }
+
+    @Override
+    public void append(CyPath2d out)
     {
         out.quadTo(ax1, ay1, ax2, ay2);
     }

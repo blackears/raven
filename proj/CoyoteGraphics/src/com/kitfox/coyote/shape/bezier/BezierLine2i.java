@@ -20,6 +20,7 @@ import com.kitfox.coyote.math.CyMatrix4d;
 import static java.lang.Math.*;
 import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.math.Math2DUtil;
+import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.PathConsumer;
 
 /**
@@ -210,6 +211,12 @@ public class BezierLine2i extends BezierCurve2i
 
     @Override
     public void append(PathConsumer out)
+    {
+        out.lineTo(ax1, ay1);
+    }
+
+    @Override
+    public void append(CyPath2d out)
     {
         out.lineTo(ax1, ay1);
     }

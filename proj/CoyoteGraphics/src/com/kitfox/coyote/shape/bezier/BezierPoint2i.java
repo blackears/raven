@@ -18,6 +18,7 @@ package com.kitfox.coyote.shape.bezier;
 
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.math.CyVector2d;
+import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.PathConsumer;
 
 /**
@@ -183,6 +184,12 @@ public class BezierPoint2i extends BezierCurve2i
 
     @Override
     public void append(PathConsumer out)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void append(CyPath2d out)
     {
         throw new UnsupportedOperationException();
     }

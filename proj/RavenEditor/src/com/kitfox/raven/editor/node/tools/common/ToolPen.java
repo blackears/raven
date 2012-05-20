@@ -16,6 +16,7 @@
 
 package com.kitfox.raven.editor.node.tools.common;
 
+import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.CyStroke;
 import com.kitfox.coyote.shape.CyStrokeCap;
 import com.kitfox.coyote.shape.CyStrokeJoin;
@@ -36,7 +37,7 @@ import com.kitfox.raven.shape.bezier.BezierPath;
 import com.kitfox.raven.shape.bezier.BezierPoint;
 import com.kitfox.raven.shape.bezier.BezierVertex;
 import com.kitfox.raven.shape.bezier.VertexSmooth;
-import com.kitfox.raven.shape.path.PathCurve;
+import com.kitfox.raven.shape.network.NetworkPath;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
 import com.kitfox.raven.util.tree.NodeObjectProviderIndex;
@@ -416,7 +417,7 @@ public class ToolPen extends ToolDisplay
             devToLocal.invert();
         } catch (NoninvertibleTransformException ex)
         {
-            Logger.getLogger(ToolPaintStroke.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ToolPen.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         Path2D.Double path = bezierPath.asPathInPixels();
@@ -437,7 +438,10 @@ public class ToolPen extends ToolDisplay
         String name = sym.createUniqueName("Pen");
         nodePath.setName(name);
 
-        PathCurve curve = new PathCurve(shape);
+        CyPath2d cyPath = new CyPath2d();
+        cyPath.append(shape);
+        NetworkPath curve = new NetworkPath();
+        curve.append(cyPath);
         nodePath.path.setValue(curve);
 
         nodePath.paint.setValue(null);

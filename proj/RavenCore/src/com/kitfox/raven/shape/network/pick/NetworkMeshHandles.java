@@ -49,7 +49,7 @@ import java.util.HashMap;
  *
  * @author kitfox
  */
-public class NetworkMeshHandles
+public class NetworkMeshHandles extends NetworkHandles
 {
     private final NetworkMesh mesh;
     private HashMap<Integer, HandleVertex> vertList = new HashMap<Integer, HandleVertex>();
@@ -61,17 +61,6 @@ public class NetworkMeshHandles
     HashMap<BezierMeshVertex2i, HandleVertex> vertMap = new HashMap<BezierMeshVertex2i, HandleVertex>();
     
     private CutLoop boundingLoop;
-    
-    static final double smoothAngle = 5;
-    static final double smoothCutoff = Math.cos(Math.PI - Math.toRadians(smoothAngle));
-        
-    private static CyMatrix4d coordToLocal;
-    static
-    {
-        CyMatrix4d m = CyMatrix4d.createIdentity();
-        m.scale(.01, .01, 1);
-        coordToLocal = m;
-    }
     
     public NetworkMeshHandles(NetworkMesh mesh)
     {
@@ -800,8 +789,6 @@ public class NetworkMeshHandles
             
             return null;
         }
-        
-        
     }
 
     public class HandleFace implements NetworkHandleFace

@@ -16,7 +16,6 @@
 
 package com.kitfox.coyote.shape.bezier.path;
 
-import com.kitfox.coyote.shape.bezier.mesh.BezierVertexSmooth;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 
 /**
@@ -25,24 +24,26 @@ import com.kitfox.coyote.shape.bezier.path.cut.Coord;
  */
 public class BezierPathVertex2i<VertexData>
 {
+    private final int id;
     private Coord coord;
-    private BezierVertexSmooth smooth;
+//    private BezierVertexSmooth smooth;
     private VertexData data;
     
-    BezierPathEdge2i edgeIn;
-    BezierPathEdge2i edgeOut;
+    private BezierPathEdge2i edgeIn;
+    private BezierPathEdge2i edgeOut;
 
-    public BezierPathVertex2i(Coord coord, BezierVertexSmooth smooth, VertexData data)
+    BezierPathVertex2i(int id, Coord coord, VertexData data)
     {
+        this.id = id;
         this.coord = coord;
-        this.smooth = smooth;
+  //      this.smooth = smooth;
         this.data = data;
     }
     
-    public BezierPathVertex2i(int x, int y)
-    {
-        this(new Coord(x, y), BezierVertexSmooth.FREE, null);
-    }
+//    BezierPathVertex2i(int id, int x, int y)
+//    {
+//        this(id, new Coord(x, y), null);
+//    }
 
     /**
      * @return the coord
@@ -61,22 +62,6 @@ public class BezierPathVertex2i<VertexData>
     }
 
     /**
-     * @return the smooth
-     */
-    public BezierVertexSmooth getSmooth()
-    {
-        return smooth;
-    }
-
-    /**
-     * @param smooth the smooth to set
-     */
-    public void setSmooth(BezierVertexSmooth smooth)
-    {
-        this.smooth = smooth;
-    }
-
-    /**
      * @return the data
      */
     public VertexData getData()
@@ -91,5 +76,72 @@ public class BezierPathVertex2i<VertexData>
     {
         this.data = data;
     }
+
+    /**
+     * @return the edgeIn
+     */
+    public BezierPathEdge2i getEdgeIn()
+    {
+        return edgeIn;
+    }
+
+    /**
+     * @param edgeIn the edgeIn to set
+     */
+    public void setEdgeIn(BezierPathEdge2i edgeIn)
+    {
+        this.edgeIn = edgeIn;
+    }
+
+    /**
+     * @return the edgeOut
+     */
+    public BezierPathEdge2i getEdgeOut()
+    {
+        return edgeOut;
+    }
+
+    /**
+     * @param edgeOut the edgeOut to set
+     */
+    public void setEdgeOut(BezierPathEdge2i edgeOut)
+    {
+        this.edgeOut = edgeOut;
+    }
+
+    /**
+     * @return the id
+     */
+    public int getId()
+    {
+        return id;
+    }
+
+    public int getNumEdges()
+    {
+        return 2;
+    }
+
+    public int getX()
+    {
+        return coord.x;
+    }
     
+    public int getY()
+    {
+        return coord.y;
+    }
+
+    public BezierPathEdge2i getOtherEdge(BezierPathEdge2i edge)
+    {
+        if (edgeIn == edge)
+        {
+            return edgeOut;
+        }
+        if (edgeOut == edge)
+        {
+            return edgeIn;
+        }
+        throw new IllegalArgumentException();
+    }
 }

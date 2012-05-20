@@ -19,7 +19,6 @@ package com.kitfox.coyote.shape.bezier.mesh;
 import com.kitfox.coyote.shape.bezier.BezierCubic2i;
 import com.kitfox.coyote.shape.bezier.BezierCurve2i;
 import com.kitfox.coyote.shape.bezier.BezierLine2i;
-import com.kitfox.coyote.shape.bezier.mesh.BezierVertexSmooth;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import static java.lang.Math.*;
 import java.util.ArrayList;

@@ -358,7 +358,8 @@ public class BezierPathCutter2i<DataType>
         return retList;
     }
     
-    public static BezierPath2i segmentsToEdges(ArrayList<Segment> segs)
+    public static BezierPath2i segmentsToEdges(ArrayList<Segment> segs,
+            GraphDataManager dataMgr)
     {
         ArrayList<EdgeBuilder> edges = new ArrayList<EdgeBuilder>();
         
@@ -424,7 +425,7 @@ public class BezierPathCutter2i<DataType>
         {
             EdgeItem ei = edgeItems.remove(edgeItems.size() - 1);
 
-            EdgeLoop curLoop = new EdgeLoop(ei);
+            EdgeLoop curLoop = new EdgeLoop(ei, dataMgr);
             loops.add(curLoop);
             
             boolean checkAgain = true;
@@ -446,10 +447,10 @@ public class BezierPathCutter2i<DataType>
         }
         
         //Build graph from loops
-        BezierPath2i path = new BezierPath2i();
+        BezierPath2i path = new BezierPath2i(dataMgr);
         for (EdgeLoop loop: loops)
         {
-            path.addLoop(loop.asBezierLoop());
+            loop.asBezierLoop(path);
         }
         
         return path;
@@ -459,16 +460,18 @@ public class BezierPathCutter2i<DataType>
     static class EdgeLoop
     {
         ArrayList<EdgeItem> items = new ArrayList<EdgeItem>();
+        final GraphDataManager dataMgr;
 
-        private EdgeLoop(EdgeItem ei)
+        private EdgeLoop(EdgeItem ei, GraphDataManager dataMgr)
         {
             items.add(ei);
+            this.dataMgr = dataMgr;
         }
         
-        public BezierLoop2i asBezierLoop()
+        public BezierLoop2i asBezierLoop(BezierPath2i path)
         {
             EdgeItem head = getHead();
-            BezierLoop2i loop = new BezierLoop2i(head.c0.x, head.c0.y);
+            BezierLoop2i loop = path.createLoop(head.c0.x, head.c0.y);
             
             for (EdgeItem item: items)
             {
@@ -478,7 +481,7 @@ public class BezierPathCutter2i<DataType>
                     {
                         BezierLine2i c = (BezierLine2i)item.curve;
                         BezierPathEdge2i e = 
-                                loop.appendLine(
+                                loop.lineTo(
                                 c.getAx1(), c.getAy1());
                         e.setData(item.data);
                         break;
@@ -487,7 +490,7 @@ public class BezierPathCutter2i<DataType>
                     {
                         BezierQuad2i c = (BezierQuad2i)item.curve;
                         BezierPathEdge2i e = 
-                                loop.appendQuad(
+                                loop.quadTo(
                                 c.getAx1(), c.getAy1(), 
                                 c.getAx2(), c.getAy2());
                         e.setData(item.data);
@@ -497,7 +500,7 @@ public class BezierPathCutter2i<DataType>
                     {
                         BezierCubic2i c = (BezierCubic2i)item.curve;
                         BezierPathEdge2i e = 
-                                loop.appendCubic(
+                                loop.cubicTo(
                                 c.getAx1(), c.getAy1(), 
                                 c.getAx2(), c.getAy2(),
                                 c.getAx3(), c.getAy3());

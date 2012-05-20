@@ -16,6 +16,7 @@
 
 package com.kitfox.raven.editor.node.tools.common;
 
+import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.CyStroke;
@@ -33,7 +34,7 @@ import com.kitfox.raven.paint.common.RavenPaintColor;
 import com.kitfox.raven.shape.bezier.BezierMath;
 import com.kitfox.coyote.shape.bezier.builder.PiecewiseBezierSchneider2d;
 import com.kitfox.raven.editor.node.scene.RavenSymbol;
-import com.kitfox.raven.shape.path.PathCurve;
+import com.kitfox.raven.shape.network.NetworkPath;
 import com.kitfox.raven.util.service.ServiceInst;
 import com.kitfox.raven.util.tree.NodeObject;
 import com.kitfox.raven.util.tree.NodeObjectProvider;
@@ -45,7 +46,6 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.Path2D;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jpen.PButtonEvent;
@@ -221,9 +221,9 @@ public class ToolPencilLine extends ToolDisplay
                 RavenSymbolRoot root = sym.getRoot();
                 RavenNodeSceneGraph sceneGraph = root.getSceneGraph();
 
-                ServiceDeviceCamera provDevCam = user.getToolService(ServiceDeviceCamera.class);
-                AffineTransform w2d = provDevCam
-                        .getWorldToDeviceTransform((AffineTransform)null);
+//                ServiceDeviceCamera provDevCam = user.getToolService(ServiceDeviceCamera.class);
+//                AffineTransform w2d = provDevCam
+//                        .getWorldToDeviceTransform((AffineTransform)null);
 
                 //Find node to add new stroke to
                 NodeObject topSel = root.getSelection().getTopSelected();
@@ -244,28 +244,10 @@ public class ToolPencilLine extends ToolDisplay
                     }
                 }
 
-                AffineTransform devToLocal = null;
-                if (parentGroupNode != null)
-                {
-                    devToLocal = parentGroupNode
-                            .getLocalToWorldTransform((AffineTransform)null);
-                    devToLocal.preConcatenate(w2d);
-                }
-                else
-                {
-                    devToLocal = w2d;
-                }
-                devToLocal.scale(1 / 100.0, 1 / 100.0);
-
-                try
-                {
-                    devToLocal.invert();
-                } catch (NoninvertibleTransformException ex)
-                {
-                    Logger.getLogger(ToolPencilLine.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                Path2D.Double shape = (Path2D.Double)devToLocal.createTransformedShape(
-                        path.asPathAWT());
+                CyMatrix4d graph2Dev = getDeviceToLocal(null);
+                graph2Dev.scale(1 / 100.0, 1 / 100.0, 1);
+                graph2Dev.invert();
+                CyPath2d shape = path.createTransformedPath(graph2Dev);
 
 
 
@@ -282,7 +264,8 @@ public class ToolPencilLine extends ToolDisplay
                 String name = sym.createUniqueName("Pencil");
                 nodePath.setName(name);
 
-                PathCurve curve = new PathCurve(shape);
+                NetworkPath curve = new NetworkPath();
+                curve.append(shape);
                 nodePath.path.setValue(curve);
 
                 nodePath.paint.setValue(null);

@@ -19,7 +19,7 @@ package com.kitfox.coyote.shape.bezier.path;
 import com.kitfox.coyote.shape.bezier.BezierCubic2i;
 import com.kitfox.coyote.shape.bezier.BezierCurve2i;
 import com.kitfox.coyote.shape.bezier.BezierLine2i;
-import com.kitfox.coyote.shape.bezier.BezierQuad2i;
+import com.kitfox.coyote.shape.bezier.mesh.BezierVertexSmooth;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 
 /**
@@ -28,44 +28,61 @@ import com.kitfox.coyote.shape.bezier.path.cut.Coord;
  */
 public class BezierPathEdge2i<EdgeData>
 {
+    private final int id;
     private BezierPathVertex2i start;
     private BezierPathVertex2i end;
     private EdgeData data;
     
+    private BezierVertexSmooth smooth0;
+    private BezierVertexSmooth smooth1;
+    
     //Order of curve: 2 -> line, 3 -> quad, 4 -> cubic    
-    private int order;
+//    private int order;
     //Knot values.  Will only be used if degree of curve requires them
     private int k0x;
     private int k0y;
     private int k1x;
     private int k1y;
 
-    public BezierPathEdge2i(BezierPathVertex2i start, BezierPathVertex2i end, EdgeData data, int order, int k0x, int k0y, int k1x, int k1y)
+    public BezierPathEdge2i(int id, 
+            BezierPathVertex2i start, BezierPathVertex2i end, 
+            EdgeData data, 
+            BezierVertexSmooth smooth0,
+            BezierVertexSmooth smooth1,
+            int k0x, int k0y, int k1x, int k1y)
     {
+        this.id = id;
         this.start = start;
         this.end = end;
         this.data = data;
-        this.order = order;
+        this.smooth0 = smooth0;
+        this.smooth1 = smooth1;
         this.k0x = k0x;
         this.k0y = k0y;
         this.k1x = k1x;
         this.k1y = k1y;
     }
 
-    public BezierPathEdge2i(BezierPathVertex2i start, BezierPathVertex2i end, EdgeData data, int k0x, int k0y, int k1x, int k1y)
-    {
-        this(start, end, data, 4, k0x, k0y, k1x, k1y);
-    }
-
-    public BezierPathEdge2i(BezierPathVertex2i start, BezierPathVertex2i end, EdgeData data, int k0x, int k0y)
-    {
-        this(start, end, data, 3, k0x, k0y, 0, 0);
-    }
-
-    public BezierPathEdge2i(BezierPathVertex2i start, BezierPathVertex2i end, EdgeData data)
-    {
-        this(start, end, data, 2, 0, 0, 0, 0);
-    }
+//    public BezierPathEdge2i(int id, 
+//            BezierPathVertex2i start, BezierPathVertex2i end, 
+//            EdgeData data, int k0x, int k0y, int k1x, int k1y)
+//    {
+//        this(id, start, end, data, 4, k0x, k0y, k1x, k1y);
+//    }
+//
+//    public BezierPathEdge2i(int id, 
+//            BezierPathVertex2i start, BezierPathVertex2i end, 
+//            EdgeData data, int k0x, int k0y)
+//    {
+//        this(id, start, end, data, 3, k0x, k0y, 0, 0);
+//    }
+//
+//    public BezierPathEdge2i(int id, 
+//            BezierPathVertex2i start, BezierPathVertex2i end, 
+//            EdgeData data)
+//    {
+//        this(id, start, end, data, 2, 0, 0, 0, 0);
+//    }
 
     /**
      * @return the start
@@ -113,22 +130,6 @@ public class BezierPathEdge2i<EdgeData>
     public void setData(EdgeData data)
     {
         this.data = data;
-    }
-
-    /**
-     * @return the order
-     */
-    public int getOrder()
-    {
-        return order;
-    }
-
-    /**
-     * @param order the order to set
-     */
-    public void setOrder(int order)
-    {
-        this.order = order;
     }
 
     /**
@@ -204,14 +205,13 @@ public class BezierPathEdge2i<EdgeData>
             return false;
         }
         
-        if (order >= 3 && (c0.x != k0x || c0.y != k0y))
+        if (!isLine())
         {
-            return false;
-        }
-        
-        if (order >= 4 && (c0.x != k1x || c0.y != k1y))
-        {
-            return false;
+            if (c0.x != k0x || c0.y != k0y
+                || c0.x != k1x || c0.y != k1y)
+            {
+                return false;
+            }
         }
         return true;
     }
@@ -221,16 +221,57 @@ public class BezierPathEdge2i<EdgeData>
         Coord c0 = start.getCoord();
         Coord c1 = end.getCoord();
         
-        switch (order)
+        if (isLine())
         {
-            case 2:
-                return new BezierLine2i(c0.x, c0.y, c1.x, c1.y);
-            case 3:
-                return new BezierQuad2i(c0.x, c0.y, k0x, k0y, c1.x, c1.y);
-            case 4:
-                return new BezierCubic2i(c0.x, c0.y, k0x, k0y, k1x, k1y, c1.x, c1.y);
+            return new BezierLine2i(c0.x, c0.y, c1.x, c1.y);
         }
-        return null;
+        return new BezierCubic2i(c0.x, c0.y, k0x, k0y, k1x, k1y, c1.x, c1.y);
+    }
+
+    /**
+     * @return the id
+     */
+    public int getId()
+    {
+        return id;
+    }
+
+    public boolean isLine()
+    {
+        return smooth0 == BezierVertexSmooth.CORNER
+                && smooth1 == BezierVertexSmooth.CORNER;
+    }
+
+    /**
+     * @return the smooth0
+     */
+    public BezierVertexSmooth getSmooth0()
+    {
+        return smooth0;
+    }
+
+    /**
+     * @param smooth0 the smooth0 to set
+     */
+    public void setSmooth0(BezierVertexSmooth smooth0)
+    {
+        this.smooth0 = smooth0;
+    }
+
+    /**
+     * @return the smooth1
+     */
+    public BezierVertexSmooth getSmooth1()
+    {
+        return smooth1;
+    }
+
+    /**
+     * @param smooth1 the smooth1 to set
+     */
+    public void setSmooth1(BezierVertexSmooth smooth1)
+    {
+        this.smooth1 = smooth1;
     }
 
     

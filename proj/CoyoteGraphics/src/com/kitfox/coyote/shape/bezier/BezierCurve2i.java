@@ -19,6 +19,7 @@ package com.kitfox.coyote.shape.bezier;
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.math.Math2DUtil;
+import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.PathConsumer;
 import java.util.ArrayList;
 
@@ -100,6 +101,8 @@ abstract public class BezierCurve2i
     abstract public BezierCurve2i offset(double width);
     
     abstract public void append(PathConsumer out);
+
+    abstract public void append(CyPath2d path);
 
     /**
      * Split curve at a set of t values.  Values must be arranged in ascending

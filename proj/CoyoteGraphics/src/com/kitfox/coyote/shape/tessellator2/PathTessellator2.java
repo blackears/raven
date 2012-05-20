@@ -212,7 +212,7 @@ public class PathTessellator2 extends PathConsumer
 
     /**
      * Search segments to see if there are more than one
-     * contigious groups.  If so, connect them by inserting an
+     * contiguous groups.  If so, connect them by inserting an
      * additional cut.
      */
     private void connectGraph()

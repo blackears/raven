@@ -16,16 +16,24 @@
 
 package com.kitfox.raven.shape.network.pick;
 
-import com.kitfox.raven.paint.RavenPaint;
-import com.kitfox.raven.paint.RavenPaintLayout;
+import com.kitfox.coyote.math.CyMatrix4d;
 
 /**
  *
  * @author kitfox
  */
-public interface NetworkHandleFace
+public class NetworkHandles
 {
-    public int getIndex();
-    public RavenPaint getPaint();
-    public RavenPaintLayout getPaintLayout();
+    protected static final double smoothAngle = 5;
+    protected static final double smoothCutoff = Math.cos(Math.PI - Math.toRadians(smoothAngle));
+        
+    protected static CyMatrix4d coordToLocal;
+    static
+    {
+        CyMatrix4d m = CyMatrix4d.createIdentity();
+        m.scale(.01, .01, 1);
+        coordToLocal = m;
+    }
+    
+    
 }

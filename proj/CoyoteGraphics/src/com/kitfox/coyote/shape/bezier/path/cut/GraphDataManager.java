@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package com.kitfox.raven.shape.network.pick;
+package com.kitfox.coyote.shape.bezier.path.cut;
 
-import com.kitfox.raven.paint.RavenPaint;
-import com.kitfox.raven.paint.RavenPaintLayout;
+import com.kitfox.coyote.shape.bezier.BezierCurve2i;
 
 /**
  *
  * @author kitfox
  */
-public interface NetworkHandleFace
+public interface GraphDataManager<VertexData, EdgeData>
 {
-    public int getIndex();
-    public RavenPaint getPaint();
-    public RavenPaintLayout getPaintLayout();
+    public VertexData copyVertexData(VertexData data);
+    public EdgeData copyEdgeData(EdgeData data);
+    public VertexData createDefaultVertexData(Coord c);
+    public EdgeData createDefaultEdgeData(BezierCurve2i c);
+    
 }

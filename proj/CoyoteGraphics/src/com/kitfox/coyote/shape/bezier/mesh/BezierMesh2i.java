@@ -17,6 +17,7 @@
 package com.kitfox.coyote.shape.bezier.mesh;
 
 import com.kitfox.coyote.math.Math2DUtil;
+import com.kitfox.coyote.shape.CyRectangle2i;
 import com.kitfox.coyote.shape.bezier.BezierCubic2i;
 import com.kitfox.coyote.shape.bezier.BezierCurve2i;
 import com.kitfox.coyote.shape.bezier.PickPoint;
@@ -88,6 +89,28 @@ abstract public class BezierMesh2i<VertexData, EdgeData>
     public double getFlatnessSquared()
     {
         return flatnessSquared;
+    }
+    
+    public CyRectangle2i getBounds()
+    {
+        CyRectangle2i bounds = null;
+        
+        for (BezierMeshVertex2i vert: getVertices())
+        {
+            for (int i = 0; i < vert.getNumEdges(); ++i)
+            {
+                BezierMeshEdge2i e = vert.getEdge(i);
+                
+                if (bounds == null)
+                {
+                    bounds = new CyRectangle2i(e.getMinX(), e.getMinY());
+                }
+                bounds.union(e.getMinX(), e.getMinY());
+                bounds.union(e.getMaxX(), e.getMaxY());                
+            }
+        }
+        
+        return bounds;
     }
     
     public ArrayList<Coord> getCoords()
