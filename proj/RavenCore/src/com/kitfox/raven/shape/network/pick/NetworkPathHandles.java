@@ -16,12 +16,16 @@
 
 package com.kitfox.raven.shape.network.pick;
 
+import com.kitfox.coyote.math.CyMatrix4d;
+import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.math.Math2DUtil;
 import com.kitfox.coyote.shape.CyPath2d;
+import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.coyote.shape.bezier.BezierCurve2d;
 import com.kitfox.coyote.shape.bezier.BezierCurve2i;
 import com.kitfox.coyote.shape.bezier.mesh.BezierVertexSmooth;
 import com.kitfox.coyote.shape.bezier.path.BezierLoop2i;
+import com.kitfox.coyote.shape.bezier.path.BezierLoopClosure;
 import com.kitfox.coyote.shape.bezier.path.BezierPath2i;
 import com.kitfox.coyote.shape.bezier.path.BezierPathEdge2i;
 import com.kitfox.coyote.shape.bezier.path.BezierPathVertex2i;
@@ -34,7 +38,9 @@ import com.kitfox.raven.shape.network.NetworkPath;
 import com.kitfox.raven.shape.network.keys.NetworkDataTypePaint;
 import com.kitfox.raven.shape.network.keys.NetworkDataTypePaintLayout;
 import com.kitfox.raven.shape.network.keys.NetworkDataTypeStroke;
+import com.kitfox.raven.util.Intersection;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 /**
@@ -46,10 +52,10 @@ public class NetworkPathHandles extends NetworkHandles
     private final NetworkPath path;
     private HashMap<Integer, HandleVertex> vertList = new HashMap<Integer, HandleVertex>();
     private HashMap<Integer, HandleEdge> edgeList = new HashMap<Integer, HandleEdge>();
-//    private HashMap<Integer, HandleFace> faceList = new HashMap<Integer, HandleFace>();
+    private HashMap<Integer, HandleFace> faceList = new HashMap<Integer, HandleFace>();
     private HashMap<Integer, HandleKnot> knotList = new HashMap<Integer, HandleKnot>();
 
-    HandleFace face;
+//    HandleFace face;
             
     HashMap<BezierPathEdge2i, HandleEdge> edgeMap
             = new HashMap<BezierPathEdge2i, HandleEdge>();
@@ -83,13 +89,276 @@ public class NetworkPathHandles extends NetworkHandles
             }
         }
         
-        CyPath2d pathShape = path.asPath();
-        face = new HandleFace(pathShape);
-        
-        for (BezierLoop2i loop: path.getLoops())
         {
+            CyPath2d pathShape = path.asPath();
+            HandleFace face = new HandleFace(pathShape);
+            faceList.put(face.getIndex(), face);
         }
         
+//        for (BezierLoop2i loop: path.getLoops())
+//        {
+//        }
+        
+    }
+
+    /**
+     * @return the path
+     */
+    public NetworkPath getPath()
+    {
+        return path;
+    }
+
+    /**
+     * @return the vertList
+     */
+    public ArrayList<HandleVertex> getVertList()
+    {
+        return new ArrayList<HandleVertex>(vertList.values());
+    }
+
+    /**
+     * @return the edgeList
+     */
+    public ArrayList<HandleEdge> getEdgeList()
+    {
+        return new ArrayList<HandleEdge>(edgeList.values());
+    }
+
+    /**
+     * @return the faceList
+     */
+    public ArrayList<HandleFace> getFaceList()
+    {
+        return new ArrayList<HandleFace>(faceList.values());
+    }
+
+    /**
+     * @return the faceList
+     */
+    public ArrayList<HandleKnot> getKnotList()
+    {
+        return new ArrayList<HandleKnot>(knotList.values());
+    }
+
+    /**
+     * Return edge handles, excluding those that are the closing segment of an
+     * open curve.
+     * 
+     * @return 
+     */
+    public ArrayList<HandleEdge> getDrawnEdges()
+    {
+        ArrayList<HandleEdge> list = getEdgeList();
+        for (BezierLoop2i loop: path.getLoops())
+        {
+            if (loop.getClosure() == BezierLoopClosure.OPEN)
+            {
+                HandleEdge e = getEdgeHandle(loop.getHead().getEdgeIn());
+                list.remove(e);
+            }
+        }
+        return list;
+    }
+
+    public BezierPathEdge2i<NetworkDataEdge> getEdge(NetworkHandleEdge edge)
+    {
+        if (edge instanceof HandleEdge)
+        {
+            return ((HandleEdge)edge).e;
+        }
+        return null;
+    }
+
+    public HandleEdge getEdgeHandle(BezierPathEdge2i e)
+    {
+        return edgeMap.get(e);
+    }
+
+    public HandleVertex getVertexHandle(int idx)
+    {
+        return vertList.get(idx);
+    }
+
+    public HandleEdge getEdgeHandle(int idx)
+    {
+        return edgeList.get(idx);
+    }
+
+    public HandleFace getFaceHandle(int idx)
+    {
+        return faceList.get(idx);
+    }
+
+    public HandleKnot getKnotHandle(int idx)
+    {
+        return knotList.get(idx);
+    }
+
+    public ArrayList<HandleVertex> getVerticesByIds(Collection<Integer> vertIds)
+    {
+        ArrayList<HandleVertex> list = new ArrayList<HandleVertex>();
+        for (Integer id: vertIds)
+        {
+            list.add(getVertexHandle(id));
+        }
+        return list;
+    }
+
+    public ArrayList<HandleEdge> getEdgesByIds(Collection<Integer> edgeIds)
+    {
+        ArrayList<HandleEdge> list = new ArrayList<HandleEdge>();
+        for (Integer id: edgeIds)
+        {
+            list.add(getEdgeHandle(id));
+        }
+        return list;
+    }
+
+    public ArrayList<HandleFace> getFacesByIds(Collection<Integer> faceIds)
+    {
+        ArrayList<HandleFace> list = new ArrayList<HandleFace>();
+        for (Integer id: faceIds)
+        {
+            list.add(getFaceHandle(id));
+        }
+        return list;
+    }
+    
+    public ArrayList<NetworkHandleVertex> pickVertices(CyRectangle2d region, 
+            CyMatrix4d l2d, Intersection isect)
+    {
+        ArrayList<NetworkHandleVertex> retList = new ArrayList<NetworkHandleVertex>();
+        
+        CyVector2d pt = new CyVector2d();
+        for (HandleVertex v: vertList.values())
+        {
+            Coord c = v.getCoord();
+            pt.set(c.x / 100f, c.y / 100f);
+            l2d.transformPoint(pt);
+            
+            if (region.contains(pt))
+            {
+                retList.add(v);
+            }
+        }
+        
+        return retList;
+    }
+    
+    public ArrayList<NetworkHandleKnot> pickKnots(CyRectangle2d region, 
+            CyMatrix4d l2d, Intersection isect)
+    {
+        ArrayList<NetworkHandleKnot> retList = new ArrayList<NetworkHandleKnot>();
+        
+        CyVector2d pt = new CyVector2d();
+        for (HandleKnot k: knotList.values())
+        {
+            Coord c = k.getCoord();
+            pt.set(c.x / 100f, c.y / 100f);
+            l2d.transformPoint(pt);
+            
+            if (region.contains(pt))
+            {
+                retList.add(k);
+            }
+        }
+        
+        return retList;
+    }
+
+    public ArrayList<NetworkHandleEdge> pickEdges(CyRectangle2d region, 
+            CyMatrix4d l2d, Intersection isect)
+    {
+        ArrayList<NetworkHandleEdge> retList = new ArrayList<NetworkHandleEdge>();
+        
+        for (HandleEdge e: edgeList.values())
+        {
+            CyPath2d path = e.getPath();
+            CyPath2d devPath = path.createTransformedPath(l2d);
+
+            CyRectangle2d bounds = devPath.getBounds();
+            
+            switch (isect)
+            {
+                case CONTAINS:
+                    if (bounds.contains(region))
+                    {
+                        retList.add(e);
+                    }
+                    break;
+                case INTERSECTS:
+                    if (devPath.intersects(region))
+                    {
+                        retList.add(e);
+                    }
+                    break;
+                case INSIDE:
+                    if (devPath.contains(region))
+                    {
+                        retList.add(e);
+                    }
+                    break;
+            }
+        }
+        
+        return retList;
+    }
+
+    public ArrayList<NetworkHandleFace> pickFaces(CyRectangle2d region, 
+            CyMatrix4d l2d, Intersection isect)
+    {
+        ArrayList<NetworkHandleFace> retList = new ArrayList<NetworkHandleFace>();
+        
+        for (HandleFace face: faceList.values())
+        {
+            CyPath2d path = face.getPathLocal();
+            CyPath2d devPath = path.createTransformedPath(l2d);
+
+            CyRectangle2d bounds = devPath.getBounds();
+            
+            switch (isect)
+            {
+                case CONTAINS:
+                    if (bounds.contains(region))
+                    {
+                        retList.add(face);
+                    }
+                    break;
+                case INTERSECTS:
+                    if (devPath.intersects(region))
+                    {
+                        retList.add(face);
+                    }
+                    break;
+                case INSIDE:
+                    if (devPath.contains(region))
+                    {
+                        retList.add(face);
+                    }
+                    break;
+            }
+        }
+        
+        return retList;
+    }
+
+    public ArrayList<NetworkHandleEdge> getConnectedEdges(NetworkHandleEdge edge)
+    {
+        ArrayList<NetworkHandleEdge> retList = new ArrayList<NetworkHandleEdge>();
+        
+        BezierPathEdge2i<NetworkDataEdge> initEdge = getEdge(edge);
+        BezierPathEdge2i<NetworkDataEdge> curEdge = initEdge;
+
+        retList.add(edge);
+        do
+        {
+            BezierPathVertex2i v0 = curEdge.getEnd();
+            curEdge = v0.getEdgeOut();
+            retList.add(getEdgeHandle(curEdge));
+        } while (curEdge != initEdge);
+                
+        return retList;
     }
     
     //--------------------------

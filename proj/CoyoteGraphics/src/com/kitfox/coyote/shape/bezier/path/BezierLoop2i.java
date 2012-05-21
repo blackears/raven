@@ -160,11 +160,11 @@ public class BezierLoop2i<VertexData, EdgeData>
     
     public BezierPathEdge2i cubicTo(int k0x, int k0y, int k1x, int k1y, int x, int y)
     {
-        BezierCubic2i quad = new BezierCubic2i(tail.getX(), tail.getY(),
+        BezierCubic2i cubic = new BezierCubic2i(tail.getX(), tail.getY(),
                 k0x, k0y, k1x, k1y, x, y);
         return append(BezierVertexSmooth.SMOOTH,
                 BezierVertexSmooth.SMOOTH,
-                quad.asCubic());
+                cubic);
     }
     
     public BezierPathEdge2i append(
@@ -279,6 +279,10 @@ public class BezierLoop2i<VertexData, EdgeData>
         do
         {
             BezierPathEdge2i e = v.getEdgeOut();
+if (e == null)
+{
+    int j = 9;
+}
             e.asCurve().append(path);
             v = e.getEnd();
         }

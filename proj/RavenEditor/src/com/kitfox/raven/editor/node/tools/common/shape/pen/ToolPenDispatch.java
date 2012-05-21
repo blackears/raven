@@ -84,11 +84,24 @@ public class ToolPenDispatch extends ToolDisplay
             }
             
             //Check if we're on a selection layer
-            ServiceBezierMesh servMesh = node.getNodeService(ServiceBezierMesh.class, false);
-            if (servMesh != null)
             {
-                delegate = new ToolPenMesh(this, node, servMesh);
-                delegateNode = node;
+                ServiceBezierMesh servMesh = node.getNodeService(ServiceBezierMesh.class, false);
+                if (servMesh != null)
+                {
+                    delegate = new ToolPenMesh(this, node, servMesh);
+                    delegateNode = node;
+                    return;
+                }
+            }
+
+            {
+                ServiceBezierPath servPath = node.getNodeService(ServiceBezierPath.class, false);
+                if (servPath != null)
+                {
+                    delegate = new ToolPenPath(this, node, servPath);
+                    delegateNode = node;
+                    return;
+                }
             }
         }
     }

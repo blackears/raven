@@ -106,14 +106,14 @@ public class NetworkPath extends BezierPath2i<NetworkDataVertex, NetworkDataEdge
     }
     
     @Override
-    protected void createEdge(int id, 
+    protected BezierPathEdge2i<NetworkDataEdge> createEdge(int id, 
             BezierPathVertex2i start, BezierPathVertex2i end,
             NetworkDataEdge data,
             BezierVertexSmooth smooth0,
             BezierVertexSmooth smooth1,
             int k0x, int k0y, int k1x, int k1y)
     {
-        super.createEdge(id, start, end, 
+        return super.createEdge(id, start, end, 
                 data, smooth0, smooth1, k0x, k0y, k1x, k1y);
     }
     
@@ -421,8 +421,8 @@ public class NetworkPath extends BezierPath2i<NetworkDataVertex, NetworkDataEdge
         private void loadVertex(NetworkPath path, CacheList list)
         {
             int id = list.getInteger(0, -1);
-            int x = list.getInteger(0, 0);
-            int y = list.getInteger(1, 0);
+            int x = list.getInteger(1, 0);
+            int y = list.getInteger(2, 0);
             
             HashMap<Class<? extends NetworkDataType>, Object> dataMap =
                     loadDataMap((CacheList)list.get(3));
@@ -457,11 +457,13 @@ public class NetworkPath extends BezierPath2i<NetworkDataVertex, NetworkDataEdge
             NetworkDataEdge edgeData = new NetworkDataEdge(
                     dataMapEdge, dataMapLeft, dataMapRight);
             
-            path.createEdge(id, 
+            BezierPathEdge2i e = path.createEdge(id, 
                     head, tail,
                     edgeData, 
                     smooth0, smooth1,
                     k0x, k0y, k1x, k1y);
+            head.setEdgeOut(e);
+            tail.setEdgeIn(e);
         }
 
         private void loadLoop(NetworkPath path, CacheMap map)

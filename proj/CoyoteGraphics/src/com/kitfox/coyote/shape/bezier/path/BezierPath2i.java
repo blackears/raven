@@ -21,7 +21,9 @@ import com.kitfox.coyote.shape.CyPathIterator;
 import com.kitfox.coyote.shape.CyRectangle2i;
 import com.kitfox.coyote.shape.CyShape;
 import com.kitfox.coyote.shape.bezier.BezierCubic2i;
+import com.kitfox.coyote.shape.bezier.BezierCurve2i;
 import com.kitfox.coyote.shape.bezier.BezierLine2i;
+import com.kitfox.coyote.shape.bezier.PickPoint;
 import com.kitfox.coyote.shape.bezier.mesh.BezierVertexSmooth;
 import com.kitfox.coyote.shape.bezier.path.cut.BezierPathCutter2i;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
@@ -133,21 +135,26 @@ public class BezierPath2i<VertexData, EdgeData>
     private BezierPathEdge2i<EdgeData> copyEdgeSameId(
             BezierPathEdge2i<EdgeData> e0)
     {
+        BezierPathVertex2i<VertexData> v0 = getVertex(e0.getStart().getId());
+        BezierPathVertex2i<VertexData> v1 = getVertex(e0.getEnd().getId());
         BezierPathEdge2i<EdgeData> e1 = 
                 new BezierPathEdge2i<EdgeData>(
                 e0.getId(), 
-                getVertex(e0.getStart().getId()),
-                getVertex(e0.getEnd().getId()),
+                v0,
+                v1,
                 (EdgeData)dataMgr.copyEdgeData(e0.getData()),
                 e0.getSmooth0(),
                 e0.getSmooth1(),
                 e0.getK0x(), e0.getK0y(),
                 e0.getK1x(), e0.getK1y());
         edgeMap.put(e1.getId(), e1);
+        v0.setEdgeOut(e1);
+        v1.setEdgeIn(e1);
+        
         return e1;
     }
 
-    protected void createEdge(int id, 
+    protected BezierPathEdge2i<EdgeData> createEdge(int id, 
             BezierPathVertex2i start, BezierPathVertex2i end,
             EdgeData data,
             BezierVertexSmooth smooth0,
@@ -166,6 +173,7 @@ public class BezierPath2i<VertexData, EdgeData>
                 k0x, k0y, k1x, k1y);
         edgeMap.put(e.getId(), e);
         nextEdgeId = Math.max(nextEdgeId, id + 1);
+        return e;
     }
     
     BezierPathEdge2i<EdgeData> createEdge(
@@ -378,7 +386,7 @@ public class BezierPath2i<VertexData, EdgeData>
             }
         }
     }
-    
+
     public BezierPathCutter2i createCutGraph(double flatnessSquared)
     {
         BezierPathCutter2i cut = new BezierPathCutter2i(flatnessSquared);
@@ -440,6 +448,57 @@ public class BezierPath2i<VertexData, EdgeData>
         }
         
         return bounds;
+    }
+
+    public BezierPathVertex2i<VertexData> getClosestVertex(double x, double y)
+    {
+        double minDist = Double.MAX_VALUE;
+        BezierPathVertex2i<VertexData> bestVtx = null;
+        
+        for (BezierPathVertex2i<VertexData> v: vertMap.values())
+        {
+            Coord c = v.getCoord();
+            double dist = c.getDistSquared(x, y);
+            if (dist < minDist)
+            {
+                minDist = dist;
+                bestVtx = v;
+            }
+        }
+        return bestVtx;
+    }
+
+    /**
+     * Finds the edge closest to the given point.
+     * 
+     * @param x
+     * @param y
+     * @param maxDistSq
+     * @return 
+     */
+    public BezierPathEdge2i<EdgeData> getClosestEdge(double x, double y, double maxDistSq)
+    {
+        double bestDistSq = maxDistSq;
+        BezierPathEdge2i bestEdge = null;
+        
+        for (BezierPathEdge2i e: edgeMap.values())
+        {
+            BezierCurve2i c = e.asCurve();
+            if (c.distBoundingBoxSq(x, y) > bestDistSq)
+            {
+                //Bounding box test to filter out points too far away
+                continue;
+            }
+            
+            PickPoint pt = c.getClosestPoint(x, y);
+            
+            if (pt.getDistSquared() <= bestDistSq)
+            {
+                bestEdge = e;
+                bestDistSq = pt.getDistSquared();
+            }
+        }
+        return bestEdge;
     }
 
 }

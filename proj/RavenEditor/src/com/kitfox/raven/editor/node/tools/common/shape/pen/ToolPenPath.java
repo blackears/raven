@@ -31,25 +31,23 @@ import com.kitfox.coyote.shape.bezier.BezierCubic2i;
 import com.kitfox.coyote.shape.bezier.BezierCurve2i;
 import com.kitfox.coyote.shape.bezier.BezierLine2i;
 import com.kitfox.coyote.shape.bezier.PickPoint;
-import com.kitfox.coyote.shape.bezier.mesh.BezierMeshEdge2i;
-import com.kitfox.coyote.shape.bezier.mesh.BezierMeshVertex2i;
-import com.kitfox.coyote.shape.bezier.mesh.CutLoop;
-import com.kitfox.coyote.shape.bezier.mesh.CutSegHalf;
+import com.kitfox.coyote.shape.bezier.path.BezierPathVertex2i;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
 import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 import com.kitfox.raven.editor.node.scene.RenderContext;
 import com.kitfox.raven.editor.node.tools.common.shape.MeshUtil;
+import com.kitfox.raven.editor.node.tools.common.shape.PathUtil;
 import com.kitfox.raven.paint.RavenPaint;
 import com.kitfox.raven.paint.RavenPaintLayout;
 import com.kitfox.raven.paint.RavenStroke;
 import com.kitfox.raven.shape.network.NetworkDataEdge;
 import com.kitfox.raven.shape.network.NetworkDataVertex;
-import com.kitfox.raven.shape.network.NetworkMesh;
+import com.kitfox.raven.shape.network.NetworkPath;
 import com.kitfox.raven.shape.network.keys.NetworkDataTypePaint;
 import com.kitfox.raven.shape.network.keys.NetworkDataTypePaintLayout;
 import com.kitfox.raven.shape.network.keys.NetworkDataTypeStroke;
-import com.kitfox.raven.shape.network.pick.NetworkMeshHandles;
-import com.kitfox.raven.shape.network.pick.NetworkMeshHandles.HandleEdge;
+import com.kitfox.raven.shape.network.pick.NetworkPathHandles;
+import com.kitfox.raven.shape.network.pick.NetworkPathHandles.HandleEdge;
 import com.kitfox.raven.util.tree.NodeObject;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -59,47 +57,47 @@ import java.util.ArrayList;
  *
  * @author kitfox
  */
-public class ToolPenMesh extends ToolPenDelegate
+public class ToolPenPath extends ToolPenDelegate
 {
     ArrayList<Step> plan = new ArrayList<Step>();
     MouseEvent mouseStart;
     MouseEvent mouseTrackEvt;
-    final ServiceBezierMesh servMesh;
+    private final ServiceBezierPath servPath;
     
     NodeObject node;
-    NetworkMeshHandles cacheHandles;
+    NetworkPathHandles cacheHandles;
 
-    protected ToolPenMesh(ToolPenDispatch dispatch, 
+    protected ToolPenPath(ToolPenDispatch dispatch, 
             NodeObject node,
-            ServiceBezierMesh servMesh)
+            ServiceBezierPath servPath)
     {
         super(dispatch);
         this.node = node;
-        this.servMesh = servMesh;
+        this.servPath = servPath;
     }
 
-    private NetworkMeshHandles getMeshHandles()
+    private NetworkPathHandles getPathHandles()
     {
-        NetworkMesh mesh = getMesh();
-        if (cacheHandles == null || cacheHandles.getMesh() != mesh)
+        NetworkPath path = getPath();
+        if (cacheHandles == null || cacheHandles.getPath() != path)
         {
-            cacheHandles = mesh == null ? null : new NetworkMeshHandles(mesh);
+            cacheHandles = path == null ? null : new NetworkPathHandles(path);
         }
         return cacheHandles;
     }
 
-    private NetworkMesh getMesh()
+    private NetworkPath getPath()
     {
-        return servMesh.getNetworkMesh();
-//        return cacheMesh;
+        return servPath.getNetworkPath();
+//        return cachePath;
     }
     
-    private void setMesh(NetworkMesh mesh, boolean history)
+    private void setPath(NetworkPath path, boolean history)
     {
-        servMesh.setNetworkMesh(mesh, history);
+        servPath.setNetworkPath(path, history);
     }
 
-    protected CyVector2d xformDev2MeshPoint(CyVector2d v, boolean snapGrid)
+    protected CyVector2d xformDev2PathPoint(CyVector2d v, boolean snapGrid)
     {
         v = xformDev2LocalPoint(v, snapGrid);
         v.scale(100);
@@ -108,16 +106,16 @@ public class ToolPenMesh extends ToolPenDelegate
 
     private Step startStep(MouseEvent evt)
     {
-        NetworkMeshHandles handles = getMeshHandles();
-        NetworkMesh mesh = handles.getMesh();
+        NetworkPathHandles handles = getPathHandles();
+        NetworkPath path = handles.getPath();
         RavenSymbolRoot root = getDocument();
         //GraphLayout layout = getGraphLayout();
         
-        CyVector2d pickPt = xformDev2MeshPoint(
+        CyVector2d pickPt = xformDev2PathPoint(
                 new CyVector2d(evt.getX(), evt.getY()), true);
 
-        //Look for existing mesh vertex to clamp to
-        BezierMeshVertex2i<NetworkDataVertex> v = mesh.getClosestVertex(pickPt.x, pickPt.y);
+        //Look for existing path vertex to clamp to
+        BezierPathVertex2i<NetworkDataVertex> v = path.getClosestVertex(pickPt.x, pickPt.y);
         double pickRad = root.getGraphRadiusPick() * 100;
         double pickRadiusSq = pickRad * pickRad;
         
@@ -137,22 +135,22 @@ public class ToolPenMesh extends ToolPenDelegate
             }
         }
         
-        //Check for clamp to edge in mesh
-        BezierMeshEdge2i<NetworkDataEdge> e = 
-                mesh.getClosestEdge(pickPt.x, pickPt.y, pickRadiusSq);
-        if (e != null)
-        {
-            BezierCurve2i curve = e.asCurve();
-            PickPoint pt = curve.getClosestPoint(pickPt.x, pickPt.y);
-
-            if (pt.getDistSquared() <= pickRadiusSq)
-            {
-                Step s = new Step(new CyVector2d(pt.getX(), pt.getY()));
-                s.splitEdge = handles.getEdgeHandle(e);
-                s.splitPoint = pt;
-                return s;
-            }
-        }
+//        //Check for clamp to edge in path
+//        BezierPathEdge2i<NetworkDataEdge> e = 
+//                path.getClosestEdge(pickPt.x, pickPt.y, pickRadiusSq);
+//        if (e != null)
+//        {
+//            BezierCurve2i curve = e.asCurve();
+//            PickPoint pt = curve.getClosestPoint(pickPt.x, pickPt.y);
+//
+//            if (pt.getDistSquared() <= pickRadiusSq)
+//            {
+//                Step s = new Step(new CyVector2d(pt.getX(), pt.getY()));
+//                s.splitEdge = handles.getEdgeHandle(e);
+//                s.splitPoint = pt;
+//                return s;
+//            }
+//        }
         
         //We're in free space.  Just use pick coord
         return new Step(pickPt);
@@ -160,55 +158,51 @@ public class ToolPenMesh extends ToolPenDelegate
 
     private void applyTangent(MouseEvent evt)
     {
-        CyVector2d dragPt = xformDev2MeshPoint(
+        CyVector2d dragPt = xformDev2PathPoint(
                 new CyVector2d(evt.getX(), evt.getY()), false);
         
-//        int dx = evt.getX() - mouseStart.getX();
-//        int dy = evt.getY() - mouseStart.getY();
-        
         Step step = plan.get(plan.size() - 1);
-//        CyVector2d tan = xformDev2MeshPoint(new CyVector2d(dx, dy), false);
         dragPt.sub(step.point);
         step.tangent = dragPt;
     }
     
     private void commit()
     {
-        NetworkMeshHandles handles = getMeshHandles();
-        NetworkMesh oldMesh = handles.getMesh();
-        NetworkMesh newMesh = new NetworkMesh(oldMesh);
-        NetworkMeshHandles newHandles = new NetworkMeshHandles(newMesh);
-//        NetworkMesh mesh = getMesh();
+        NetworkPathHandles handles = getPathHandles();
+        NetworkPath oldPath = handles.getPath();
+        NetworkPath newPath = new NetworkPath(oldPath);
+//        NetworkPathHandles newHandles = new NetworkPathHandles(newPath);
+//        NetworkPath path = getPath();
         
         //First, run through and cut any curves that need it
-        for (Step s: plan)
-        {
-            if (s.splitPoint != null)
-            {
-                PickPoint pt = s.splitPoint;
-                HandleEdge edgeHandle = newHandles.getEdgeHandle(s.splitEdge.getIndex());
-                BezierMeshEdge2i<NetworkDataEdge> e = edgeHandle.getEdge();
-                
-                BezierCurve2i curve = e.asCurve();
-                newMesh.removeEdge(e);
-                BezierCurve2i[] curves = curve.split(pt.getT());
-                
-                ArrayList<BezierMeshEdge2i> newEdges0 
-                        = newMesh.addEdge(curves[0], new NetworkDataEdge(e.getData()));
-                newMesh.addEdge(curves[1], new NetworkDataEdge(e.getData()));
-                
-                BezierMeshEdge2i newEdge0 = newEdges0.get(0);
-                BezierMeshVertex2i v = newEdge0.getEnd();
-                v.setData(new NetworkDataVertex(
-                        (NetworkDataVertex)e.getStart().getData()));
-                
-                Coord coord = v.getCoord();
-                s.point.set(coord.x, coord.y);
-            }
-        }
+//        for (Step s: plan)
+//        {
+//            if (s.splitPoint != null)
+//            {
+//                PickPoint pt = s.splitPoint;
+//                HandleEdge edgeHandle = newHandles.getEdgeHandle(s.splitEdge.getIndex());
+//                BezierPathEdge2i<NetworkDataEdge> e = edgeHandle.getEdge();
+//                
+//                BezierCurve2i curve = e.asCurve();
+//                newPath.removeEdge(e);
+//                BezierCurve2i[] curves = curve.split(pt.getT());
+//                
+//                ArrayList<BezierPathEdge2i> newEdges0 
+//                        = newPath.addEdge(curves[0], new NetworkDataEdge(e.getData()));
+//                newPath.addEdge(curves[1], new NetworkDataEdge(e.getData()));
+//                
+//                BezierPathEdge2i newEdge0 = newEdges0.get(0);
+//                BezierPathVertex2i v = newEdge0.getEnd();
+//                v.setData(new NetworkDataVertex(
+//                        (NetworkDataVertex)e.getStart().getData()));
+//                
+//                Coord coord = v.getCoord();
+//                s.point.set(coord.x, coord.y);
+//            }
+//        }
         
         //Get decoration info
-        CyRectangle2i bounds = newMesh.getBounds();
+        CyRectangle2i bounds = newPath.getBounds();
         for (int i = 0; i < plan.size() - 1; ++i)
         {
             Step s0 = plan.get(i);
@@ -239,6 +233,7 @@ public class ToolPenMesh extends ToolPenDelegate
         RavenPaint fillPaint = root.getFillPaint();
         
         //Add curves
+        CyPath2d curveToAdd = null;
         for (int i = 0; i < plan.size() - 1; ++i)
         {
             Step s0 = plan.get(i);
@@ -250,99 +245,118 @@ public class ToolPenMesh extends ToolPenDelegate
             data.putEdge(NetworkDataTypePaint.class, strokePaint);
             data.putEdge(NetworkDataTypeStroke.class, stroke);
             data.putEdge(NetworkDataTypePaintLayout.class, layout);
-            newMesh.addEdge(curve, data);
-        }
-
-        //Build faces
-        ArrayList<CutLoop> faces = newMesh.createFaces();
-        for (int i = 0; i < faces.size(); ++i)
-        {
-            CutLoop loop = faces.get(i);
-            if (loop.isCcw())
+            
+            //newPath.addEdge(curve, data);
+            if (curveToAdd == null)
             {
-                decorateFace(loop, fillPaint, layout);
+                curveToAdd = new CyPath2d();
+                curveToAdd.moveTo(curve.getStartX(), curve.getStartY());
+            }
+            if (curve instanceof BezierLine2i)
+            {
+                curveToAdd.lineTo(curve.getEndX(), curve.getEndY());
+            }
+            else
+            {
+                BezierCubic2i cubic = curve.asCubic();
+                curveToAdd.cubicTo(cubic.getAx1(), cubic.getAy1(),
+                        cubic.getAx2(), cubic.getAy2(),
+                        cubic.getAx3(), cubic.getAy3());
             }
         }
+
+//        //Build faces
+//        ArrayList<CutLoop> faces = newPath.createFaces();
+//        for (int i = 0; i < faces.size(); ++i)
+//        {
+//            CutLoop loop = faces.get(i);
+//            if (loop.isCcw())
+//            {
+//                decorateFace(loop, fillPaint, layout);
+//            }
+//        }
+        
+        newPath.append(curveToAdd);
         
         //Set value
-        setMesh(newMesh, true);
+        setPath(newPath, true);
         
         dispatch.delegateDone();
     }
     
-    private void decorateFace(CutLoop face, RavenPaint fillPaint, RavenPaintLayout fillLayout)
-    {
-        RavenPaint curPaint = null;
-        RavenPaintLayout curLayout = null;
-        
-        //Check existing face edges to see if a color is already set
-        ArrayList<CutSegHalf> segs = face.getSegs();
-        for (CutSegHalf half: segs)
-        {
-            BezierMeshEdge2i<NetworkDataEdge> e 
-                    = (BezierMeshEdge2i)half.getEdge();
-            if (e == null)
-            {
-                //Skip extra segments that were added by cutter to
-                // connect graph
-                continue;
-            }
-            NetworkDataEdge data = e.getData();
-            RavenPaint edgePaint;
-            RavenPaintLayout edgeLayout;
-            if (half.isRight())
-            {
-                edgePaint = data.getRight(NetworkDataTypePaint.class);
-                edgeLayout = data.getRight(NetworkDataTypePaintLayout.class);
-            }
-            else
-            {
-                edgePaint = data.getLeft(NetworkDataTypePaint.class);
-                edgeLayout = data.getLeft(NetworkDataTypePaintLayout.class);
-            }
-            
-            if (curPaint == null)
-            {
-                curPaint = edgePaint;
-            }
-            if (curLayout == null)
-            {
-                curLayout = edgeLayout;
-            }
-        }
-        
-        //Use default color if face has none
-        if (curPaint == null)
-        {
-            curPaint = fillPaint;
-        }
-        if (curLayout == null)
-        {
-            curLayout = fillLayout;
-        }
-        
-        //Decorate face
-        for (CutSegHalf half: segs)
-        {
-            BezierMeshEdge2i<NetworkDataEdge> e 
-                    = (BezierMeshEdge2i)half.getEdge();
-            if (e == null)
-            {
-                continue;
-            }
-            NetworkDataEdge data = e.getData();
-            if (half.isRight())
-            {
-                data.putRight(NetworkDataTypePaint.class, curPaint);
-                data.putRight(NetworkDataTypePaintLayout.class, curLayout);
-            }
-            else
-            {
-                data.putLeft(NetworkDataTypePaint.class, curPaint);
-                data.putLeft(NetworkDataTypePaintLayout.class, curLayout);
-            }
-        }
-    }
+//    private void decorateFace(CutLoop face, RavenPaint fillPaint, RavenPaintLayout fillLayout)
+//    {
+//        RavenPaint curPaint = null;
+//        RavenPaintLayout curLayout = null;
+//        
+//        //Check existing face edges to see if a color is already set
+//        ArrayList<CutSegHalf> segs = face.getSegs();
+//        for (CutSegHalf half: segs)
+//        {
+//            BezierPathEdge2i<NetworkDataEdge> e 
+//                    = (BezierPathEdge2i)half.getEdge();
+//            if (e == null)
+//            {
+//                //Skip extra segments that were added by cutter to
+//                // connect graph
+//                continue;
+//            }
+//            NetworkDataEdge data = e.getData();
+//            RavenPaint edgePaint;
+//            RavenPaintLayout edgeLayout;
+//            if (half.isRight())
+//            {
+//                edgePaint = data.getRight(NetworkDataTypePaint.class);
+//                edgeLayout = data.getRight(NetworkDataTypePaintLayout.class);
+//            }
+//            else
+//            {
+//                edgePaint = data.getLeft(NetworkDataTypePaint.class);
+//                edgeLayout = data.getLeft(NetworkDataTypePaintLayout.class);
+//            }
+//            
+//            if (curPaint == null)
+//            {
+//                curPaint = edgePaint;
+//            }
+//            if (curLayout == null)
+//            {
+//                curLayout = edgeLayout;
+//            }
+//        }
+//        
+//        //Use default color if face has none
+//        if (curPaint == null)
+//        {
+//            curPaint = fillPaint;
+//        }
+//        if (curLayout == null)
+//        {
+//            curLayout = fillLayout;
+//        }
+//        
+//        //Decorate face
+//        for (CutSegHalf half: segs)
+//        {
+//            BezierPathEdge2i<NetworkDataEdge> e 
+//                    = (BezierPathEdge2i)half.getEdge();
+//            if (e == null)
+//            {
+//                continue;
+//            }
+//            NetworkDataEdge data = e.getData();
+//            if (half.isRight())
+//            {
+//                data.putRight(NetworkDataTypePaint.class, curPaint);
+//                data.putRight(NetworkDataTypePaintLayout.class, curLayout);
+//            }
+//            else
+//            {
+//                data.putLeft(NetworkDataTypePaint.class, curPaint);
+//                data.putLeft(NetworkDataTypePaintLayout.class, curLayout);
+//            }
+//        }
+//    }
     
     @Override
     protected void click(MouseEvent evt)
@@ -422,8 +436,8 @@ public class ToolPenMesh extends ToolPenDelegate
 
         CyDrawStack stack = ctx.getDrawStack();
 
-        MeshUtil.drawGraph(stack, getMeshHandles(), 
-                getSelection(), node, servMesh.getGraphToWorldXform());
+        PathUtil.drawGraph(stack, getPathHandles(), 
+                getSelection(), node, servPath.getGraphToWorldXform());
         
         if (plan.isEmpty())
         {
@@ -463,7 +477,7 @@ public class ToolPenMesh extends ToolPenDelegate
         //Draw to cursor
         if (mouseTrackEvt != null)
         {
-            CyVector2d pt = xformDev2MeshPoint(
+            CyVector2d pt = xformDev2PathPoint(
                     new CyVector2d(mouseTrackEvt.getX(), mouseTrackEvt.getY()), true);
             path.lineTo(pt.x, pt.y);
         }
@@ -510,7 +524,7 @@ public class ToolPenMesh extends ToolPenDelegate
         //Draw curves and handles
         {
             ShapeLinesProvider prov = new ShapeLinesProvider(path);
-            CyVertexBuffer lineMesh = new CyVertexBuffer(prov);
+            CyVertexBuffer linePath = new CyVertexBuffer(prov);
 
             CyMatrix4d l2d = getLocalToDevice(null);
             l2d.scale(1 / 100.0, 1 / 100.0, 1);
@@ -524,13 +538,13 @@ public class ToolPenMesh extends ToolPenDelegate
             CyMatrix4d mvp = stack.getModelViewProjXform();
             mvp.scale(1 / 100.0, 1 / 100.0, 1);
 
-            rec.setMesh(lineMesh);
+            rec.setMesh(linePath);
             rec.setColor(root.getGraphColorEdge().asColor());
             rec.setOpacity(1);
     //mvp.scale(10, 100, 1);
             rec.setMvpMatrix(mvp);
 
-    //rec.setMesh(CyVertexBufferDataSquare.inst().getBuffer());
+    //rec.setPath(CyVertexBufferDataSquare.inst().getBuffer());
     //l2d.setIdentity();
     //l2d.scale(10, 100, 1);
     //rec.setMvpMatrix(l2d);
@@ -554,7 +568,7 @@ public class ToolPenMesh extends ToolPenDelegate
                         CyMaterialColorDrawRecordFactory.inst().allocRecord();
 
                 CyVector2d viewVert = new CyVector2d(v);
-                //From mesh space to local space
+                //From path space to local space
                 viewVert.scale(1 / 100f);
                 mv.transformPoint(viewVert);
 
@@ -609,7 +623,7 @@ public class ToolPenMesh extends ToolPenDelegate
         CyVector2d tangent;
         
         //If not null, cut edge at this point to get 
-        //BezierMeshEdge2i<NetworkDataEdge> splitEdge;
+        //BezierPathEdge2i<NetworkDataEdge> splitEdge;
         HandleEdge splitEdge;
         PickPoint splitPoint;
 
@@ -618,4 +632,5 @@ public class ToolPenMesh extends ToolPenDelegate
             this.point = point;
         }
     }
+    
 }

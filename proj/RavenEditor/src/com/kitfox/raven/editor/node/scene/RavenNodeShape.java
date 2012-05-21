@@ -209,6 +209,11 @@ abstract public class RavenNodeShape extends RavenNodeXformable
         FrameKey frame = ctx.getFrame();
 
         CyRectangle2d bounds = getBoundsLocal(frame);
+        if (bounds == null)
+        {
+            return;
+        }
+        
         if (!stack.intersectsFrustum(bounds))
         {
             return;

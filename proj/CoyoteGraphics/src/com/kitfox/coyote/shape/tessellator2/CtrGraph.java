@@ -172,6 +172,11 @@ Logger.getLogger(CtrGraph.class.getName()).log(Level.WARNING,
 
     private void calcWinding(ArrayList<CtrLoop> loops)
     {
+        if (loops.isEmpty())
+        {
+            return;
+        }
+        
         //Build map of edges to loops
         HashMap<CtrHalfEdge, CtrLoop> halfMap
                 = new HashMap<CtrHalfEdge, CtrLoop>();
