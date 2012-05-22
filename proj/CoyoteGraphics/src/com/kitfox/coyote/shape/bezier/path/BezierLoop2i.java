@@ -78,62 +78,28 @@ public class BezierLoop2i<VertexData, EdgeData>
         this.head.setEdgeIn(e);        
     }
 
-//    BezierLoop2i(int id, GraphDataManager dataMgr)
-//    {
-//        this.id = id;
-//        this.dataMgr = dataMgr;
-//    }
-    
-//    /**
-//     * Make an exact copy of loop, including same ids.
-//     * @param loop 
-//     */
-//    public BezierLoop2i(BezierLoop2i<VertexData, EdgeData> loop)
-//    {
-//        this.id = loop.id;
-//        this.dataMgr = loop.dataMgr;
-//        this.nextVertId = loop.nextVertId;
-//        this.nextEdgeId = loop.nextEdgeId;
-//        this.closure = loop.closure;
-//        
-//        BezierPathVertex2i dstHead = duplicateVertexSameIds(loop.head);
-//        
-//        BezierPathVertex2i srcVert = loop.head;
-//        BezierPathVertex2i dstVert = dstHead;
-//        while (true)
-//        {
-//            if (srcVert == loop.tail)
-//            {
-//                break;
-//            }
-//            BezierPathEdge2i srcEdge = srcVert.getEdgeOut();
-//            BezierPathVertex2i srcVertNext = srcEdge.getEnd();
-//            
-//            BezierPathVertex2i dstVertNext = duplicateVertexSameIds(srcVertNext);
-//            BezierPathEdge2i dstEdge = new BezierPathEdge2i(
-//                    srcEdge.getId(),
-//                    dstVert,
-//                    dstVertNext,
-//                    dataMgr.copyEdgeData(srcEdge.getData()),
-//                    srcEdge.getOrder(),
-//                    srcEdge.getK0x(), srcEdge.getK0y(), 
-//                    srcEdge.getK1x(), srcEdge.getK1y());
-//            dstVert.setEdgeOut(dstEdge);
-//            dstVertNext.setEdgeIn(dstEdge);
-//            
-//            dstVert = dstVertNext;
-//        }
-//        
-//        this.head = dstHead;
-//        this.tail = dstVert;
-//    }
-//    
-//    private BezierPathVertex2i duplicateVertexSameIds(BezierPathVertex2i v)
-//    {
-//        return new BezierPathVertex2i(
-//                v.getId(), v.getCoord(), v.getSmooth(), 
-//                dataMgr.copyVertexData(v.getData()));
-//    }
+    BezierLoop2i(
+            int id,
+            BezierPath2i path,
+            BezierPathVertex2i v0,
+            BezierPathVertex2i v1)
+    {
+        this.id = id;
+        this.path = path;
+        
+        this.head = v0;
+        this.tail = v1;
+        closure = BezierLoopClosure.OPEN;
+        
+        BezierPathEdge2i e = path.createEdge(tail, head);
+        
+        //Start with closing segment
+//        this.head.setEdgeIn(e);
+//        this.tail.setEdgeOut(e); 
+        
+        v0.setEdgeIn(e);
+        v1.setEdgeOut(e);
+    }
 
     public boolean isEmpty()
     {
@@ -249,7 +215,7 @@ public class BezierLoop2i<VertexData, EdgeData>
             
             bounds.union(c.x, c.y);
         }
-        while (v != tail);
+        while (v != head);
         
         return bounds;
     }
@@ -262,12 +228,22 @@ public class BezierLoop2i<VertexData, EdgeData>
         return head;
     }
 
+    void setHead(BezierPathVertex2i v)
+    {
+        this.head = v;
+    }
+
     /**
      * @return the tail
      */
     public BezierPathVertex2i getTail()
     {
         return tail;
+    }
+
+    void setTail(BezierPathVertex2i v)
+    {
+        this.tail = v;
     }
 
     public void appendToPath(CyPath2d path)
@@ -279,10 +255,10 @@ public class BezierLoop2i<VertexData, EdgeData>
         do
         {
             BezierPathEdge2i e = v.getEdgeOut();
-if (e == null)
-{
-    int j = 9;
-}
+//if (e == null)
+//{
+//    int j = 9;
+//}
             e.asCurve().append(path);
             v = e.getEnd();
         }
@@ -309,7 +285,7 @@ if (e == null)
             list.add(v1);
             v = v1;
         }
-        while (v != tail);
+        while (v != head);
     }
 
     public ArrayList<BezierPathEdge2i> getEdges()
@@ -330,7 +306,45 @@ if (e == null)
             list.add(e);
             v = e.getEnd();
         }
-        while (v != tail);
+        while (v != head);
+    }
+
+    public boolean containsEdge(BezierPathEdge2i e)
+    {
+        BezierPathVertex2i v = head;
+        
+        do
+        {
+            BezierPathEdge2i e1 = v.getEdgeOut();
+            if (e1 == e)
+            {
+                return true;
+            }
+            
+            v = e1.getEnd();
+        }
+        while (v != head);
+        
+        return false;
+    }
+
+    public boolean containsVertex(BezierPathVertex2i v0)
+    {
+        BezierPathVertex2i v1 = head;
+        
+        do
+        {
+            BezierPathEdge2i e1 = v1.getEdgeOut();
+            if (v1 == v0)
+            {
+                return true;
+            }
+            
+            v1 = e1.getEnd();
+        }
+        while (v1 != head);
+        
+        return false;
     }
 
     /**
@@ -339,6 +353,11 @@ if (e == null)
     public int getId()
     {
         return id;
+    }
+
+    public boolean isOnlyOneVertex()
+    {
+        return head == tail;
     }
     
 }

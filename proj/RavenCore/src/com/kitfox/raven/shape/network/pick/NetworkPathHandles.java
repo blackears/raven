@@ -416,6 +416,7 @@ public class NetworkPathHandles extends NetworkHandles
         
         public void delete()
         {
+            path.deleteVertex(v);
         }
     }
     
@@ -511,7 +512,7 @@ public class NetworkPathHandles extends NetworkHandles
         @Override
         public void remove()
         {
-//            path.deleteEdge(e);
+            path.deleteEdge(e);
         }
 
         @Override
@@ -633,7 +634,8 @@ public class NetworkPathHandles extends NetworkHandles
             
             BezierPathEdge2i e = v.getOtherEdge(edge);
             
-            HandleKnot k1 = knotList.get(e.getId() * 2);
+            HandleKnot k1 = knotList.get(e.getId() * 2
+                    + (head ? 0 : 1));
             if (k1 == null)
             {
                 return null;

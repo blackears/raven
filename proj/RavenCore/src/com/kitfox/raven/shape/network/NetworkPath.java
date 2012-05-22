@@ -125,6 +125,11 @@ public class NetworkPath extends BezierPath2i<NetworkDataVertex, NetworkDataEdge
         super.createLoop(id, head, tail, closure);
     }
 
+    public BezierPathEdge2i getEdge(int index)
+    {
+        return edgeMap.get(index);
+    }
+
     //---------------------------
     static class DataManager
             implements GraphDataManager<NetworkDataVertex, NetworkDataEdge>

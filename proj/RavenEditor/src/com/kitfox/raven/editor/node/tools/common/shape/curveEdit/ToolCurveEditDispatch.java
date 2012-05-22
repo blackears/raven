@@ -21,6 +21,7 @@ import com.kitfox.raven.editor.node.tools.ToolUser;
 import com.kitfox.raven.editor.node.tools.common.ServiceDocument;
 import com.kitfox.raven.editor.node.tools.common.ToolDisplay;
 import com.kitfox.raven.editor.node.tools.common.shape.pen.ServiceBezierMesh;
+import com.kitfox.raven.editor.node.tools.common.shape.pen.ServiceBezierPath;
 import com.kitfox.raven.util.Selection;
 import com.kitfox.raven.util.tree.NodeObject;
 import java.awt.event.KeyEvent;
@@ -64,11 +65,24 @@ public class ToolCurveEditDispatch extends ToolDisplay
             }
             
             //Check if we're on a selection layer
-            ServiceBezierMesh servMesh = node.getNodeService(ServiceBezierMesh.class, false);
-            if (servMesh != null)
             {
-                delegate = new ToolCurveEditMesh(this, node, servMesh);
-                delegateNode = node;
+                ServiceBezierMesh servMesh = node.getNodeService(ServiceBezierMesh.class, false);
+                if (servMesh != null)
+                {
+                    delegate = new ToolCurveEditMesh(this, node, servMesh);
+                    delegateNode = node;
+                    return;
+                }
+            }
+            
+            {
+                ServiceBezierPath servPath = node.getNodeService(ServiceBezierPath.class, false);
+                if (servPath != null)
+                {
+                    delegate = new ToolCurveEditPath(this, node, servPath);
+                    delegateNode = node;
+                    return;
+                }
             }
         }
     }

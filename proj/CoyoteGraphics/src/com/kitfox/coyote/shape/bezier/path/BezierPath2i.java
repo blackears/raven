@@ -222,8 +222,8 @@ public class BezierPath2i<VertexData, EdgeData>
         BezierLoop2i l1 = new BezierLoop2i(
                 l0.getId(), 
                 this,
-                getVertex(l0.getId()),
-                getVertex(l0.getId()),
+                getVertex(l0.getHead().getId()),
+                getVertex(l0.getTail().getId()),
                 l0.getClosure());
         loops.add(l1);
         loopMap.put(l1.getId(), l1);
@@ -253,9 +253,20 @@ public class BezierPath2i<VertexData, EdgeData>
     
     public BezierLoop2i createLoop(Coord c)
     {
-        BezierPathVertex2i v = createVertex(c);
-        
+        return createLoop(createVertex(c));
+    }
+    
+    public BezierLoop2i createLoop(BezierPathVertex2i v)
+    {
         BezierLoop2i loop = new BezierLoop2i(nextLoopId++, this, v);
+        loops.add(loop);
+        loopMap.put(loop.getId(), loop);
+        return loop;
+    }
+    
+    BezierLoop2i createLoop(BezierPathVertex2i v0, BezierPathVertex2i v1)
+    {
+        BezierLoop2i loop = new BezierLoop2i(nextLoopId++, this, v0, v1);
         loops.add(loop);
         loopMap.put(loop.getId(), loop);
         return loop;
@@ -499,6 +510,131 @@ public class BezierPath2i<VertexData, EdgeData>
             }
         }
         return bestEdge;
+    }
+
+    public BezierLoop2i getParentLoop(BezierPathVertex2i<VertexData> v)
+    {
+        for (BezierLoop2i loop: loopMap.values())
+        {
+            if (loop.containsVertex(v))
+            {
+                return loop;
+            }
+        }
+        return null;
+    }
+
+    public BezierLoop2i getParentLoop(BezierPathEdge2i<EdgeData> e)
+    {
+        for (BezierLoop2i loop: loopMap.values())
+        {
+            if (loop.containsEdge(e))
+            {
+                return loop;
+            }
+        }
+        return null;
+    }
+
+    public void deleteVertex(BezierPathVertex2i<VertexData> v)
+    {
+        BezierLoop2i parLoop = getParentLoop(v);
+        
+        if (parLoop.isOnlyOneVertex())
+        {
+            //Delete entire loop
+            loopMap.remove(parLoop.getId());
+            loops.remove(parLoop);
+            
+            BezierPathEdge2i e = v.getEdgeOut();
+            edgeMap.remove(e.getId());
+            vertMap.remove(v.getId());
+            return;
+        }
+        
+        //Join adjacent edges
+        BezierPathEdge2i<EdgeData> e1 = v.getEdgeOut();
+        BezierPathVertex2i<VertexData> v1 = e1.getEnd();
+        BezierPathEdge2i<EdgeData> e0 = v.getEdgeIn();
+        BezierPathVertex2i<VertexData> v0 = e0.getStart();
+        
+        BezierPathEdge2i e = createEdge(v0, v1, 
+                (EdgeData)dataMgr.createDefaultEdgeData(null), 
+                e0.getSmooth0(), e1.getSmooth1(), 
+                e0.getK0x(), e0.getK0y(), e1.getK1x(), e1.getK1y());
+        
+        v0.setEdgeOut(e);
+        v1.setEdgeIn(e);
+        
+        if (parLoop.getHead() == v)
+        {
+            parLoop.setHead(v1);
+        }
+        else if (parLoop.getTail() == v)
+        {
+            parLoop.setTail(v0);
+        }
+        
+        vertMap.remove(v.getId());
+        edgeMap.remove(e0.getId());
+        edgeMap.remove(e1.getId());
+    }
+    
+    /**
+     * Remove edge and split/open parent loop.
+     * 
+     * @param e Edge segment to remove.
+     */
+    public void deleteEdge(BezierPathEdge2i<EdgeData> e)
+    {
+        BezierLoop2i parLoop = getParentLoop(e);
+        
+        if (parLoop == null)
+        {
+            return;
+        }
+
+        if (parLoop.isOnlyOneVertex())
+        {
+            //Delete entire loop
+            loopMap.remove(parLoop.getId());
+            loops.remove(parLoop);
+            
+            BezierPathVertex2i v = e.getStart();
+            edgeMap.remove(e.getId());
+            vertMap.remove(v.getId());
+            return;
+        }
+        
+        if (parLoop.getClosure() == BezierLoopClosure.OPEN)
+        {
+            //Split into two loops
+            BezierPathVertex2i head = parLoop.getHead();
+            {
+                BezierPathVertex2i v0 = head;
+                BezierPathVertex2i v1 = e.getStart();
+                
+                BezierLoop2i loop = createLoop(v0, v1);
+            }
+            
+            {
+                BezierPathVertex2i v0 = e.getEnd();
+                BezierPathVertex2i v1 = parLoop.getTail();
+                
+                BezierLoop2i loop = createLoop(v0, v1);
+            }
+            
+            loopMap.remove(parLoop.getId());
+            loops.remove(parLoop);
+            edgeMap.remove(e.getId());
+        }
+        else
+        {
+            //Open loop
+            parLoop.setHead(e.getEnd());
+            parLoop.setTail(e.getStart());
+            parLoop.setClosure(BezierLoopClosure.OPEN);
+        }
     }
 
 }

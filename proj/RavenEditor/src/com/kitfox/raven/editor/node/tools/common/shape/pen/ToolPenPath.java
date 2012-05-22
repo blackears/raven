@@ -171,35 +171,6 @@ public class ToolPenPath extends ToolPenDelegate
         NetworkPathHandles handles = getPathHandles();
         NetworkPath oldPath = handles.getPath();
         NetworkPath newPath = new NetworkPath(oldPath);
-//        NetworkPathHandles newHandles = new NetworkPathHandles(newPath);
-//        NetworkPath path = getPath();
-        
-        //First, run through and cut any curves that need it
-//        for (Step s: plan)
-//        {
-//            if (s.splitPoint != null)
-//            {
-//                PickPoint pt = s.splitPoint;
-//                HandleEdge edgeHandle = newHandles.getEdgeHandle(s.splitEdge.getIndex());
-//                BezierPathEdge2i<NetworkDataEdge> e = edgeHandle.getEdge();
-//                
-//                BezierCurve2i curve = e.asCurve();
-//                newPath.removeEdge(e);
-//                BezierCurve2i[] curves = curve.split(pt.getT());
-//                
-//                ArrayList<BezierPathEdge2i> newEdges0 
-//                        = newPath.addEdge(curves[0], new NetworkDataEdge(e.getData()));
-//                newPath.addEdge(curves[1], new NetworkDataEdge(e.getData()));
-//                
-//                BezierPathEdge2i newEdge0 = newEdges0.get(0);
-//                BezierPathVertex2i v = newEdge0.getEnd();
-//                v.setData(new NetworkDataVertex(
-//                        (NetworkDataVertex)e.getStart().getData()));
-//                
-//                Coord coord = v.getCoord();
-//                s.point.set(coord.x, coord.y);
-//            }
-//        }
         
         //Get decoration info
         CyRectangle2i bounds = newPath.getBounds();
@@ -264,17 +235,6 @@ public class ToolPenPath extends ToolPenDelegate
                         cubic.getAx3(), cubic.getAy3());
             }
         }
-
-//        //Build faces
-//        ArrayList<CutLoop> faces = newPath.createFaces();
-//        for (int i = 0; i < faces.size(); ++i)
-//        {
-//            CutLoop loop = faces.get(i);
-//            if (loop.isCcw())
-//            {
-//                decorateFace(loop, fillPaint, layout);
-//            }
-//        }
         
         newPath.append(curveToAdd);
         

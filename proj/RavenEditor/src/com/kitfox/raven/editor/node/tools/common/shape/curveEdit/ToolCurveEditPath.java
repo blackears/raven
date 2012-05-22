@@ -23,17 +23,17 @@ import com.kitfox.coyote.shape.CyRectangle2d;
 import com.kitfox.coyote.shape.bezier.mesh.BezierVertexSmooth;
 import com.kitfox.raven.editor.node.scene.RavenSymbolRoot;
 import com.kitfox.raven.editor.node.scene.RenderContext;
-import com.kitfox.raven.editor.node.tools.common.shape.MeshUtil;
-import com.kitfox.raven.editor.node.tools.common.shape.pen.ServiceBezierMesh;
-import com.kitfox.raven.shape.network.NetworkMesh;
+import com.kitfox.raven.editor.node.tools.common.shape.PathUtil;
+import com.kitfox.raven.editor.node.tools.common.shape.pen.ServiceBezierPath;
+import com.kitfox.raven.shape.network.NetworkPath;
 import com.kitfox.raven.shape.network.pick.NetworkHandleEdge;
 import com.kitfox.raven.shape.network.pick.NetworkHandleKnot;
 import com.kitfox.raven.shape.network.pick.NetworkHandleSelection;
 import com.kitfox.raven.shape.network.pick.NetworkHandleVertex;
-import com.kitfox.raven.shape.network.pick.NetworkMeshHandles;
-import com.kitfox.raven.shape.network.pick.NetworkMeshHandles.HandleEdge;
-import com.kitfox.raven.shape.network.pick.NetworkMeshHandles.HandleFace;
-import com.kitfox.raven.shape.network.pick.NetworkMeshHandles.HandleVertex;
+import com.kitfox.raven.shape.network.pick.NetworkPathHandles;
+import com.kitfox.raven.shape.network.pick.NetworkPathHandles.HandleEdge;
+import com.kitfox.raven.shape.network.pick.NetworkPathHandles.HandleFace;
+import com.kitfox.raven.shape.network.pick.NetworkPathHandles.HandleVertex;
 import com.kitfox.raven.util.Intersection;
 import com.kitfox.raven.util.Selection;
 import com.kitfox.raven.util.tree.NodeObject;
@@ -51,43 +51,43 @@ import javax.swing.JPopupMenu;
  *
  * @author kitfox
  */
-public class ToolCurveEditMesh extends ToolCurveEditDelegate
+public class ToolCurveEditPath extends ToolCurveEditDelegate
 {
     NodeObject node;
-    final ServiceBezierMesh servMesh;
-    NetworkMeshHandles cacheHandles;
+    final ServiceBezierPath servPath;
+    NetworkPathHandles cacheHandles;
 
     private MouseEvent mouseStart;
     private MouseEvent mouseCur;
     
     boolean dragSelRect;
-    MeshDragSet dragSet;
+    PathDragSet dragSet;
     
-    protected ToolCurveEditMesh(ToolCurveEditDispatch dispatch, 
+    protected ToolCurveEditPath(ToolCurveEditDispatch dispatch, 
             NodeObject node,
-            ServiceBezierMesh servMesh)
+            ServiceBezierPath servPath)
     {
         super(dispatch);
-        this.servMesh = servMesh;
+        this.servPath = servPath;
         this.node = node;
     }
 
-    private NetworkMeshHandles getMeshHandles()
+    private NetworkPathHandles getPathHandles()
     {
-        NetworkMesh mesh = getMesh();
-        if (cacheHandles == null || cacheHandles.getMesh() != mesh)
+        NetworkPath path = getPath();
+        if (cacheHandles == null || cacheHandles.getPath() != path)
         {
-            cacheHandles = mesh == null ? null : new NetworkMeshHandles(mesh);
+            cacheHandles = path == null ? null : new NetworkPathHandles(path);
         }
         return cacheHandles;
     }
     
-    private NetworkMesh getMesh()
+    private NetworkPath getPath()
     {
-        return servMesh.getNetworkMesh();
+        return servPath.getNetworkPath();
     }
 
-    protected CyVector2d xformDev2MeshPoint(CyVector2d v, boolean snapGrid)
+    protected CyVector2d xformDev2PathPoint(CyVector2d v, boolean snapGrid)
     {
         v = xformDev2LocalPoint(v, snapGrid);
         v.scale(100);
@@ -115,12 +115,12 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
         CyRectangle2d region = new CyRectangle2d(evt.getX() - pickRad, evt.getY() - pickRad, 
                 pickRad * 2, pickRad * 2);
         
-        CyMatrix4d l2w = servMesh.getLocalToWorldTransform((CyMatrix4d)null);
+        CyMatrix4d l2w = servPath.getLocalToWorldTransform((CyMatrix4d)null);
         CyMatrix4d l2d = getWorldToDevice(null);
         l2d.mul(l2w);
         
-        MeshUtil.adjustSelection(region, getSelectType(evt), Intersection.INTERSECTS,
-                getSelection(), node, getMeshHandles(), l2w, l2d);
+        PathUtil.adjustSelection(region, getSelectType(evt), Intersection.INTERSECTS,
+                getSelection(), node, getPathHandles(), l2w, l2d);
     }
 
     @Override
@@ -136,8 +136,8 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
         CyRectangle2d region = new CyRectangle2d(evt.getX() - pickRad, evt.getY() - pickRad, 
                 pickRad * 2, pickRad * 2);
         
-        NetworkMeshHandles handles = getMeshHandles();
-        CyMatrix4d l2w = servMesh.getLocalToWorldTransform((CyMatrix4d)null);
+        NetworkPathHandles handles = getPathHandles();
+        CyMatrix4d l2w = servPath.getLocalToWorldTransform((CyMatrix4d)null);
         CyMatrix4d l2d = getWorldToDevice(null);
         l2d.mul(l2w);
         
@@ -150,31 +150,31 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
         
         
         Selection<NodeObject> sel = getSelection();
-        MeshUtil.removeHiddenKnots(pickKnot, sel, node);
+        PathUtil.removeHiddenKnots(pickKnot, sel, node);
 
-        CyMatrix4d g2w = servMesh.getGraphToWorldXform();
+        CyMatrix4d g2w = servPath.getGraphToWorldXform();
         CyMatrix4d g2d = getWorldToDevice(null);
         g2d.mul(g2w);
         
         if (!pickKnot.isEmpty())
         {
-            pickKnot = MeshUtil.getSelKnots(pickKnot.get(0),
+            pickKnot = PathUtil.getSelKnots(pickKnot.get(0),
                     sel, node, handles);
-            dragSet = new MeshDragSetKnot(servMesh, handles, g2d, pickKnot);
+            dragSet = new PathDragSetKnot(servPath, handles, g2d, pickKnot);
         }
         else if (!pickVert.isEmpty())
         {
-            pickVert = MeshUtil.getSelVertices(pickVert.get(0),
+            pickVert = PathUtil.getSelVertices(pickVert.get(0),
                     sel, node, handles);
-            dragSet = new MeshDragSetVertex(servMesh, handles, g2d, pickVert);
+            dragSet = new PathDragSetVertex(servPath, handles, g2d, pickVert);
         }
         else if (!pickEdge.isEmpty())
         {
             NetworkHandleEdge refEdge = pickEdge.get(0);
             
-            pickEdge = MeshUtil.getSelEdges(pickEdge.get(0),
+            pickEdge = PathUtil.getSelEdges(pickEdge.get(0),
                     sel, node, handles);
-            dragSet = new MeshDragSetEdge(servMesh, handles, g2d, 
+            dragSet = new PathDragSetEdge(servPath, handles, g2d, 
                     evt.getX(), evt.getY(),
                     refEdge, pickEdge);
         }
@@ -219,13 +219,13 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
             
             CyRectangle2d region = new CyRectangle2d(x0, y0, x1 - x0, y1 - y0);
         
-            CyMatrix4d l2w = servMesh.getLocalToWorldTransform((CyMatrix4d)null);
+            CyMatrix4d l2w = servPath.getLocalToWorldTransform((CyMatrix4d)null);
             CyMatrix4d l2d = getWorldToDevice(null);
             l2d.mul(l2w);
             
-            MeshUtil.adjustSelection(region, 
+            PathUtil.adjustSelection(region, 
                     getSelectType(evt), Intersection.INTERSECTS,
-                    getSelection(), node, getMeshHandles(), l2w, l2d);
+                    getSelection(), node, getPathHandles(), l2w, l2d);
             dragSelRect = false;
         }
         
@@ -276,8 +276,8 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
 
         CyDrawStack stack = ctx.getDrawStack();
 
-        MeshUtil.drawGraph(stack, getMeshHandles(), 
-                getSelection(), node, servMesh.getGraphToWorldXform());
+        PathUtil.drawGraph(stack, getPathHandles(), 
+                getSelection(), node, servPath.getGraphToWorldXform());
         
         if (dragSelRect)
         {
@@ -302,9 +302,9 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
             return;
         }
         
-        NetworkMeshHandles oldHandles = getMeshHandles();
-        NetworkMesh newMesh = new NetworkMesh(oldHandles.getMesh());
-        NetworkMeshHandles newHandles = new NetworkMeshHandles(newMesh);
+        NetworkPathHandles oldHandles = getPathHandles();
+        NetworkPath newPath = new NetworkPath(oldHandles.getPath());
+        NetworkPathHandles newHandles = new NetworkPathHandles(newPath);
         
         if (subSel.getNumVertices() == 0
                 && subSel.getNumEdges() == 0
@@ -324,7 +324,7 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
             HandleEdge h = newHandles.getEdgeHandle(i);
             if (h != null)
             {
-                h.delete();
+                h.remove();
             }
         }
         
@@ -337,21 +337,21 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
             }
         }
         
-        servMesh.setNetworkMesh(newMesh, true);
+        servPath.setNetworkPath(newPath, true);
     }
 
     private void showPopupMenu(MouseEvent evt)
     {
-        NetworkMeshHandles oldHandles = getMeshHandles();
+        NetworkPathHandles oldHandles = getPathHandles();
         Selection<NodeObject> sel = getSelection();
         
         ArrayList<NetworkHandleVertex> vertList = 
-                MeshUtil.getSelVertices(null, sel, node, oldHandles);
+                PathUtil.getSelVertices(null, sel, node, oldHandles);
         ArrayList<NetworkHandleVertex> vertListNew = new ArrayList<NetworkHandleVertex>();
 
-        NetworkMesh oldMesh = getMesh();
-        NetworkMesh newMesh = new NetworkMesh(oldMesh);
-        NetworkMeshHandles newHandles = new NetworkMeshHandles(newMesh);
+        NetworkPath oldPath = getPath();
+        NetworkPath newPath = new NetworkPath(oldPath);
+        NetworkPathHandles newHandles = new NetworkPathHandles(newPath);
         
         
         boolean hasAutoSmooth = false;
@@ -421,11 +421,11 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
     
     class ActionSmooth extends AbstractAction
     {
-        NetworkMeshHandles handles;
+        NetworkPathHandles handles;
         ArrayList<NetworkHandleVertex> vertList;
         BezierVertexSmooth smoothing;
 
-        private ActionSmooth(NetworkMeshHandles handles, 
+        private ActionSmooth(NetworkPathHandles handles, 
                 ArrayList<NetworkHandleVertex> vertList,
                 BezierVertexSmooth smoothing,
                 boolean selected)
@@ -451,9 +451,10 @@ public class ToolCurveEditMesh extends ToolCurveEditDelegate
                     e.setSmooth0(smoothing);
                 }
             }
-            NetworkMesh mesh = handles.getMesh();
-            servMesh.setNetworkMesh(mesh, true);
+            NetworkPath path = handles.getPath();
+            servPath.setNetworkPath(path, true);
         }
     }
-        
+
+    
 }
