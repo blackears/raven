@@ -191,33 +191,64 @@ public class PathOutliner extends PathConsumer
     CyVector2d pOff = new CyVector2d();
     private static final double EPSILON = .01;
 
-    private boolean isParallelEnough(double t, BezierCurve2d base, BezierCurve2d off)
-    {
-        BezierCurve2d dBase = base.getDerivative();
-        base.evaluate(t, pBase);
-        dBase.evaluate(t, tBase);
-        off.evaluate(t, pOff);
-
-        if (tBase.lengthSquared() == 0)
-        {
-            return true;
-        }
-        tBase.normalize();
-        tBase.rotCCW90();
-        tBase.scale(radius);
-        pBase.add(tBase);
-
-        return pBase.distanceSquared(pOff) < flatnessSquared;
-    }
+//    private boolean isParallelEnough(double t, BezierCurve2d base, BezierCurve2d off)
+//    {
+//        BezierCurve2d dBase = base.getDerivative();
+//        base.evaluate(t, pBase);
+//        dBase.evaluate(t, tBase);
+//        off.evaluate(t, pOff);
+//
+//        if (tBase.lengthSquared() == 0)
+//        {
+//            return true;
+//        }
+//        tBase.normalize();
+//        tBase.rotCCW90();
+//        tBase.scale(radius);
+//        pBase.add(tBase);
+//
+//        return pBase.distanceSquared(pOff) < flatnessSquared;
+//    }
 
     private void addOffsetWidth(BezierCurve2d base, boolean join, int depth, ArrayList<BezierCurve2d> list)
     {
         BezierCurve2d off = base.offset(radius);
 
-        if (base instanceof BezierLine2d ||
-                (isParallelEnough(.25, base, off)
-                && isParallelEnough(.75, base, off))
-                || depth > 20)
+        boolean splitCurve = false;
+        if (!(base instanceof BezierLine2d) 
+                && depth < 20)
+        {
+            BezierCubic2d c = base.asCubic();
+            
+            double c0x = c.getAx1() - c.getAx0();
+            double c0y = c.getAy1() - c.getAy0();
+            double c1x = c.getAx2() - c.getAx1();
+            double c1y = c.getAy2() - c.getAy1();
+            double c2x = c.getAx3() - c.getAx2();
+            double c2y = c.getAy3() - c.getAy2();
+            
+            double dot0 = c0x * c1x + c0y * c1y;
+            double dot1 = c1x * c2x + c1y * c2y;
+            
+            if (dot0 < 0 || dot1 < 0)
+            {
+                //Split if hull has any angles less than 90  degrees
+                splitCurve = true;
+            }
+            
+//            final int numSamp = 5;
+//            double ds = 1.0 / (numSamp + 1);
+//            for (int i = 0; i < numSamp; ++i)
+//            {
+//                if (!isParallelEnough((i + 1) * ds, base, off))
+//                {
+//                    splitCurve = true;
+//                    break;
+//                }
+//            }
+        }
+        
+        if (!splitCurve)
         {
             if (join && !list.isEmpty())
             {

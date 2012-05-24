@@ -283,6 +283,60 @@ public class BezierCubic2d extends BezierCurve2d
                 ax2, ay2,
                 ax0, ay0, ax3 - ax0, ay3 - ay0));
     }
+//
+//    @Override
+//    public BezierCubic2d offset(double width)
+//    {
+//        //Find points and tangents offset line will need to match
+//        //Initial points of offset curve displaced perpendicular
+//        // to curve
+//        BezierQuad2d dc = getDerivative();
+//        
+//        CyVector2d p0 = new CyVector2d();
+//        CyVector2d t0 = new CyVector2d();
+//        evaluate(0, p0);
+//        t0.set(getTanInX(), getTanInY());
+////        dc.evaluate(0, t0);
+//        if (t0.lengthSquared() == 0)
+//        {
+//            t0.x = 1;
+//        }
+//        t0.normalize();
+//        t0.scale(width);
+//
+//        CyVector2d p3 = new CyVector2d();
+//        CyVector2d t3 = new CyVector2d();
+//        evaluate(1, p3);
+//        t3.set(getTanOutX(), getTanOutY());
+////        dc.evaluate(1, t3);
+//        if (t3.lengthSquared() == 0)
+//        {
+//            t3.x = 1;
+//        }
+//        t3.normalize();
+//        t3.scale(width);
+//
+//        CyVector2d pm = new CyVector2d();
+//        CyVector2d tm = new CyVector2d();
+//        evaluate(.5, pm);
+//        dc.evaluate(.5, tm);
+//        if (tm.lengthSquared() == 0)
+//        {
+//            tm.set(ax3 - ax0, ay3 - ay0);
+//        }
+//        if (tm.lengthSquared() == 0)
+//        {
+//            tm.x = 1;
+//        }
+//        tm.normalize();
+//        tm.scale(width);
+//
+//        CyVector2d q0 = new CyVector2d(p0.x - t0.y, p0.y + t0.x);
+//        CyVector2d q3 = new CyVector2d(p3.x - t3.y, p3.y + t3.x);
+//        CyVector2d qm = new CyVector2d(pm.x - tm.y, pm.y + tm.x);
+//
+//        return create(q0, qm, q3, t0, t3);
+//    }
 
     @Override
     public BezierCubic2d offset(double width)
@@ -292,11 +346,9 @@ public class BezierCubic2d extends BezierCurve2d
         // to curve
         BezierQuad2d dc = getDerivative();
         
-        CyVector2d p0 = new CyVector2d();
-        CyVector2d t0 = new CyVector2d();
-        evaluate(0, p0);
-        t0.set(getTanInX(), getTanInY());
-//        dc.evaluate(0, t0);
+        CyVector2d p0 = new CyVector2d(ax0, ay0);
+        CyVector2d t0 = new CyVector2d(getTanInX(), getTanInY());
+
         if (t0.lengthSquared() == 0)
         {
             t0.x = 1;
@@ -304,11 +356,9 @@ public class BezierCubic2d extends BezierCurve2d
         t0.normalize();
         t0.scale(width);
 
-        CyVector2d p3 = new CyVector2d();
-        CyVector2d t3 = new CyVector2d();
-        evaluate(1, p3);
-        t3.set(getTanOutX(), getTanOutY());
-//        dc.evaluate(1, t3);
+        CyVector2d p3 = new CyVector2d(ax3, ay3);
+        CyVector2d t3 = new CyVector2d(getTanOutX(), getTanOutY());
+
         if (t3.lengthSquared() == 0)
         {
             t3.x = 1;
@@ -316,26 +366,51 @@ public class BezierCubic2d extends BezierCurve2d
         t3.normalize();
         t3.scale(width);
 
-        CyVector2d pm = new CyVector2d();
-        CyVector2d tm = new CyVector2d();
-        evaluate(.5, pm);
-        dc.evaluate(.5, tm);
-        if (tm.lengthSquared() == 0)
-        {
-            tm.set(ax3 - ax0, ay3 - ay0);
-        }
-        if (tm.lengthSquared() == 0)
-        {
-            tm.x = 1;
-        }
-        tm.normalize();
-        tm.scale(width);
+        final int numFitPoints = 3;
+        final double dt = 1.0 / (numFitPoints + 1);
+        double[] tArr = new double[numFitPoints + 2];
+        CyVector2d[] points = new CyVector2d[numFitPoints + 2];
 
         CyVector2d q0 = new CyVector2d(p0.x - t0.y, p0.y + t0.x);
         CyVector2d q3 = new CyVector2d(p3.x - t3.y, p3.y + t3.x);
-        CyVector2d qm = new CyVector2d(pm.x - tm.y, pm.y + tm.x);
+        
+        tArr[0] = 0;
+        tArr[numFitPoints + 1] = 1;
+        points[0] = q0;
+        points[numFitPoints + 1] = q3;
+        
+        for (int i = 0; i < numFitPoints; ++i)
+        {
+            double t = (i + 1) * dt;
+            CyVector2d pm = new CyVector2d();
+            CyVector2d tm = new CyVector2d();
+            evaluate(t, pm);
+            dc.evaluate(t, tm);
+            if (tm.lengthSquared() == 0)
+            {
+                tm.set(ax3 - ax0, ay3 - ay0);
+            }
+            if (tm.lengthSquared() == 0)
+            {
+                tm.x = 1;
+            }
+            tm.normalize();
+            tm.scale(width);
 
-        return create(q0, qm, q3, t0, t3);
+            CyVector2d qm = new CyVector2d(pm.x - tm.y, pm.y + tm.x);
+            
+            tArr[i + 1] = t;
+            points[i + 1] = qm;
+        }
+
+        t3.negate();
+        
+        BezierCubic2d curve = BezierFit2d.generateBezier(
+                0, numFitPoints + 1, 
+                tArr, points, 
+                t0, t3);
+        
+        return curve;
     }
 
     /**
@@ -401,9 +476,9 @@ public class BezierCubic2d extends BezierCurve2d
                 p1.x + t1.x * s.y, p1.y + t1.y * s.y,
                 p1.x, p1.y);
     }
-
+    
     @Override
-    public BezierCubic2d transfrom(CyMatrix4d xform)
+    public BezierCubic2d transform(CyMatrix4d xform)
     {
         CyVector2d a0 = new CyVector2d(ax0, ay0);
         CyVector2d a1 = new CyVector2d(ax1, ay1);

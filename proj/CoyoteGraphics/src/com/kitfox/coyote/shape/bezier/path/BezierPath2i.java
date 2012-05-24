@@ -608,6 +608,8 @@ public class BezierPath2i<VertexData, EdgeData>
         
         if (parLoop.getClosure() == BezierLoopClosure.OPEN)
         {
+            int closeEdgeId = parLoop.getHead().getEdgeIn().getId();
+            
             //Split into two loops
             BezierPathVertex2i head = parLoop.getHead();
             {
@@ -626,6 +628,7 @@ public class BezierPath2i<VertexData, EdgeData>
             
             loopMap.remove(parLoop.getId());
             loops.remove(parLoop);
+            edgeMap.remove(closeEdgeId);
             edgeMap.remove(e.getId());
         }
         else

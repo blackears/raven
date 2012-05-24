@@ -274,5 +274,21 @@ public class BezierPathEdge2i<EdgeData>
         this.smooth1 = smooth1;
     }
 
+    @Override
+    public String toString()
+    {
+        return "e("
+                + "id:" + id
+                + " vIn:" + (start == null ? -1 : start.getId())
+                + " vOut:" + (end == null ? -1 : end.getId())
+                + " s0:" + smooth0
+                + " s1:" + smooth1
+                + " k0x:" + k0x
+                + " k0y:" + k0y
+                + " k1x:" + k1x
+                + " k1y:" + k1y
+                + ")";
+    }
+
     
 }

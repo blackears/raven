@@ -16,7 +16,6 @@
 
 package com.kitfox.coyote.shape.outliner.bitmap;
 
-import com.kitfox.coyote.shape.outliner.LevelSampler;
 import com.kitfox.coyote.math.CyVector2d;
 import com.kitfox.coyote.shape.CyPath2d;
 import com.kitfox.coyote.shape.CyRectangle2i;

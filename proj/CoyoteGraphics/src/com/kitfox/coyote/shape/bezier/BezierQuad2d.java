@@ -305,7 +305,7 @@ public class BezierQuad2d extends BezierCurve2d
     }
 
     @Override
-    public BezierQuad2d transfrom(CyMatrix4d xform)
+    public BezierQuad2d transform(CyMatrix4d xform)
     {
         CyVector2d a0 = new CyVector2d(ax0, ay0);
         CyVector2d a1 = new CyVector2d(ax1, ay1);

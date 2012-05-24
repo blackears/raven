@@ -186,7 +186,7 @@ public class BezierPoint2d extends BezierCurve2d
     }
 
     @Override
-    public BezierPoint2d transfrom(CyMatrix4d xform)
+    public BezierPoint2d transform(CyMatrix4d xform)
     {
         CyVector2d a0 = new CyVector2d(ax0, ay0);
         

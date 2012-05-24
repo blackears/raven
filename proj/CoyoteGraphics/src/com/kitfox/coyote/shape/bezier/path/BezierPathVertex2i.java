@@ -144,4 +144,15 @@ public class BezierPathVertex2i<VertexData>
         }
         throw new IllegalArgumentException();
     }
+
+    @Override
+    public String toString()
+    {
+        return String.format("v(id:%d x:%d y:%d eIn:%d eOut:%d", 
+                id, coord.x, coord.y, 
+                edgeIn == null ? -1 : edgeIn.getId(),
+                edgeOut == null ? -1 : edgeOut.getId());
+    }
+    
+    
 }

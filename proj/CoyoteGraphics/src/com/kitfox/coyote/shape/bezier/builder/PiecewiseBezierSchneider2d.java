@@ -470,19 +470,19 @@ public class PiecewiseBezierSchneider2d
         return a * a * a;
     }
     
-    private double bernstein1(double u)
+    private static double bernstein1(double u)
     {
         double a = 1 - u;
         return 3 * a * a * u;
     }
     
-    private double bernstein2(double u)
+    private static double bernstein2(double u)
     {
         double a = 1 - u;
         return 3 * a * u * u;
     }
     
-    private double bernstein3(double u)
+    private static double bernstein3(double u)
     {
         return u * u * u;
     }

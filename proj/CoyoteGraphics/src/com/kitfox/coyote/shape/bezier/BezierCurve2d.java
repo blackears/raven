@@ -89,7 +89,7 @@ abstract public class BezierCurve2d
     abstract public void append(PathConsumer out);
     abstract public void append(CyPath2d path);
 
-    abstract public BezierCurve2d transfrom(CyMatrix4d xform);
+    abstract public BezierCurve2d transform(CyMatrix4d xform);
 
     abstract public CyPath2d asPath();
 
