@@ -66,6 +66,11 @@ public class Math2DUtil
         return ax * bx + ay * by;
     }
 
+    public static int dot(int ax, int ay, int bx, int by)
+    {
+        return ax * bx + ay * by;
+    }
+
     public static double distAlongRaySquared(double px, double py,
             double qx, double qy, double rx, double ry)
     {

@@ -389,10 +389,10 @@ public class BezierCubic2d extends BezierCurve2d
             if (tm.lengthSquared() == 0)
             {
                 tm.set(ax3 - ax0, ay3 - ay0);
-            }
-            if (tm.lengthSquared() == 0)
-            {
-                tm.x = 1;
+                if (tm.lengthSquared() == 0)
+                {
+                    tm.x = 1;
+                }
             }
             tm.normalize();
             tm.scale(width);

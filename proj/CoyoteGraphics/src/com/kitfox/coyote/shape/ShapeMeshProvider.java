@@ -24,7 +24,7 @@ import com.kitfox.coyote.renderer.CyVertexBufferDataProvider;
 import com.kitfox.coyote.renderer.CyGLWrapper.BufferUsage;
 import com.kitfox.coyote.renderer.CyGLWrapper.DrawMode;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
-import com.kitfox.coyote.shape.tessellator2.PathTessellator2;
+import com.kitfox.coyote.shape.tessellator3.PathTessellator3;
 import java.lang.ref.SoftReference;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
@@ -116,7 +116,7 @@ public class ShapeMeshProvider extends CyVertexBufferDataProvider
 
         public void build()
         {
-            PathTessellator2 tess = new PathTessellator2();
+            PathTessellator3 tess = new PathTessellator3();
             PathFlattener flat = new PathFlattener(tess, flatnessSquared);
 
             flat.feedShape(shape);

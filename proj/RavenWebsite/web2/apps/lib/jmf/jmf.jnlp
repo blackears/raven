@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp codebase="http://raven.java.net/apps/jmf"
+      href="jmf.jnlp">
+    <information>
+        <title>Java Media Framework</title>
+        <vendor>kitfox.com</vendor>
+        <homepage href="http://www.oracle.com/technetwork/java/javase/tech/index-jsp-140239.html"/>
+        <description>JMF</description>
+        <description kind="short">Library for working with streaming multimedia</description>
+        <offline-allowed/>
+    </information>
+    
+    <update check="background" policy="always"/>
+
+    <component-desc/>
+
+    <security>
+        <all-permissions/>
+    </security>
+  
+    <resources>
+        <jar href="jmf.jar"/>
+    </resources>
+    
+    <!--
+    <resources os="Windows" arch="x86">
+        <nativelib href="jmf-win32.jar" />
+    </resources>
+    
+    <resources os="Windows" arch="amd64">
+        <nativelib href="jmf-win64.jar" />
+    </resources>
+    
+    <resources os="Windows" arch="x86_64">
+        <nativelib href="jmf-win64.jar" />
+    </resources>
+    
+    <resources os="SunOS" arch="x86">
+        <nativelib href="jmf-linux32.jar" />
+    </resources>
+    
+    <resources os="SunOS" arch="amd64">
+        <nativelib href="jmf-linux64.jar" />
+    </resources>
+    
+    <resources os="SunOS" arch="x86_64">
+        <nativelib href="jmf-linux64.jar" />
+    </resources>
+    
+    <resources os="Linux" arch="x86">
+        <nativelib href="jmf-linux32.jar" />
+    </resources>
+    
+    <resources os="Linux" arch="amd64">
+        <nativelib href="jmf-linux64.jar" />
+    </resources>
+    
+    <resources os="Linux" arch="x86_64">
+        <nativelib href="jmf-linux64.jar" />
+    </resources>
+    
+    <resources os="Mac OS X">
+        <nativelib href="jmf-osx.jar" />
+    </resources>
+    -->
+</jnlp>

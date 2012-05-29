@@ -19,8 +19,8 @@ package com.kitfox.coyote.shape.test;
 import com.kitfox.coyote.math.CyMatrix4d;
 import com.kitfox.coyote.shape.*;
 import com.kitfox.coyote.shape.bezier.path.cut.Coord;
-import com.kitfox.coyote.shape.tessellator2.CtrLoop;
-import com.kitfox.coyote.shape.tessellator2.PathTessellator2;
+import com.kitfox.coyote.shape.tessellator3.PathTessellator3;
+import com.kitfox.coyote.shape.tessellator3.TessLoop;
 import java.util.ArrayList;
 
 /**
@@ -37,12 +37,12 @@ public class TessMain
 //        testHole();
 //        testOverlap();
 //        testCircle();
-//        testSquareOutline();
+        testSquareOutline();
 //        testCircleOutline();
 //        testSquareTess();
 //        testSquareOutlineTess();
 //        testCircleScaled();
-        testOutlineCurve();
+//        testOutlineCurve();
     }
     
     private void testSquare()
@@ -54,7 +54,7 @@ public class TessMain
         path.lineTo(0, 100);
         path.close();
         
-        PathTessellator2 tess = new PathTessellator2();
+        PathTessellator3 tess = new PathTessellator3();
         tess.feedShape(path);
         
         tess.dump(System.err);
@@ -69,7 +69,7 @@ public class TessMain
         path.lineTo(100, 100);
         path.close();
         
-        PathTessellator2 tess = new PathTessellator2();
+        PathTessellator3 tess = new PathTessellator3();
         tess.feedShape(path);
         
         tess.dump(System.err);
@@ -90,7 +90,7 @@ public class TessMain
         path.lineTo(80, 20);
         path.close();
         
-        PathTessellator2 tess = new PathTessellator2();
+        PathTessellator3 tess = new PathTessellator3();
         tess.feedShape(path);
         
         tess.dump(System.err);
@@ -111,7 +111,7 @@ public class TessMain
         path.lineTo(30, 100);
         path.close();
         
-        PathTessellator2 tess = new PathTessellator2();
+        PathTessellator3 tess = new PathTessellator3();
         tess.feedShape(path);
         
         tess.dump(System.err);
@@ -121,7 +121,7 @@ public class TessMain
     {
         CyEllipse2d path = new CyEllipse2d(0, 0, 100, 100);
 
-        PathTessellator2 tess = new PathTessellator2();
+        PathTessellator3 tess = new PathTessellator3();
         PathFlattener flat = new PathFlattener(tess);
         flat.feedShape(path);
         
@@ -130,16 +130,18 @@ public class TessMain
     
     private void testSquareOutline()
     {
-        CyRectangle2d ellipse = new CyRectangle2d(0, 0, 100, 100);
+        CyRectangle2d square = new CyRectangle2d(0, 0, 100, 100);
         CyStroke stroke = new CyStroke(10);
-        CyPath2d path = stroke.outlineShape(ellipse);
+        CyPath2d path = stroke.outlineShape(square);
 
-        PathTessellator2 tess = new PathTessellator2();
+        PathTessellator3 tess = new PathTessellator3();
         PathFlattener flat = new PathFlattener(tess);
         flat.feedShape(path);
         
+        tess.getTrianglesNonZero();
+        
         tess.dump(System.err);
-        tess.dumpScilab(System.err);
+        tess.dumpSvg(System.err);
     }
     
     private void testCircleOutline()
@@ -148,7 +150,7 @@ public class TessMain
         CyStroke stroke = new CyStroke(100);
         CyPath2d path = stroke.outlineShape(ellipse);
 
-        PathTessellator2 tess = new PathTessellator2();
+        PathTessellator3 tess = new PathTessellator3();
         PathFlattener flat = new PathFlattener(tess);
         flat.feedShape(path);
         
@@ -160,11 +162,11 @@ public class TessMain
     {
         CyRectangle2d path = new CyRectangle2d(0, 0, 100, 100);
 
-        PathTessellator2 tess = new PathTessellator2();
+        PathTessellator3 tess = new PathTessellator3();
         PathFlattener flat = new PathFlattener(tess);
         flat.feedShape(path);
 
-        for (CtrLoop loop: tess.getContours())
+        for (TessLoop loop: tess.getContours())
         {
             if (loop.getWinding() == 0)
             {
@@ -183,11 +185,11 @@ public class TessMain
         CyStroke stroke = new CyStroke(10);
         CyPath2d path = stroke.outlineShape(ellipse);
 
-        PathTessellator2 tess = new PathTessellator2();
+        PathTessellator3 tess = new PathTessellator3();
         PathFlattener flat = new PathFlattener(tess);
         flat.feedShape(path);
 
-        for (CtrLoop loop: tess.getContours())
+        for (TessLoop loop: tess.getContours())
         {
             if (loop.getWinding() == 0)
             {
@@ -222,7 +224,7 @@ public class TessMain
 
         path.dump(System.err);
         
-        PathTessellator2 tess = new PathTessellator2();
+        PathTessellator3 tess = new PathTessellator3();
         PathFlattener flat = new PathFlattener(tess, 10000);
         flat.feedShape(path);
         
@@ -232,8 +234,10 @@ public class TessMain
     private void testOutlineCurve()
     {
         CyPath2d path = new CyPath2d();
-        path.moveTo(14300.0, 17400.0);
-        path.cubicTo(14300.0, 17400.0, 21000.0, 16700.0, 22300.0, 15400.0);
+//        path.moveTo(14300.0, 17400.0);
+//        path.cubicTo(14300.0, 17400.0, 21000.0, 16700.0, 22300.0, 15400.0);
+        path.moveTo(143.0, 174.0);
+        path.cubicTo(143.0, 174.0, 210.0, 167.0, 223.0, 154.0);
 
 System.err.println("EdgeLayout In " + path.toString());
 

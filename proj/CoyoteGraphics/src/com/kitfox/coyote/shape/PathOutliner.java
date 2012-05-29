@@ -191,24 +191,24 @@ public class PathOutliner extends PathConsumer
     CyVector2d pOff = new CyVector2d();
     private static final double EPSILON = .01;
 
-//    private boolean isParallelEnough(double t, BezierCurve2d base, BezierCurve2d off)
-//    {
-//        BezierCurve2d dBase = base.getDerivative();
-//        base.evaluate(t, pBase);
-//        dBase.evaluate(t, tBase);
-//        off.evaluate(t, pOff);
-//
-//        if (tBase.lengthSquared() == 0)
-//        {
-//            return true;
-//        }
-//        tBase.normalize();
-//        tBase.rotCCW90();
-//        tBase.scale(radius);
-//        pBase.add(tBase);
-//
-//        return pBase.distanceSquared(pOff) < flatnessSquared;
-//    }
+    private boolean isParallelEnough(double t, BezierCurve2d base, BezierCurve2d off)
+    {
+        BezierCurve2d dBase = base.getDerivative();
+        base.evaluate(t, pBase);
+        dBase.evaluate(t, tBase);
+        off.evaluate(t, pOff);
+
+        if (tBase.lengthSquared() == 0)
+        {
+            return true;
+        }
+        tBase.normalize();
+        tBase.rotCCW90();
+        tBase.scale(radius);
+        pBase.add(tBase);
+
+        return pBase.distanceSquared(pOff) < flatnessSquared;
+    }
 
     private void addOffsetWidth(BezierCurve2d base, boolean join, int depth, ArrayList<BezierCurve2d> list)
     {
@@ -235,17 +235,19 @@ public class PathOutliner extends PathConsumer
                 //Split if hull has any angles less than 90  degrees
                 splitCurve = true;
             }
-            
-//            final int numSamp = 5;
-//            double ds = 1.0 / (numSamp + 1);
-//            for (int i = 0; i < numSamp; ++i)
-//            {
-//                if (!isParallelEnough((i + 1) * ds, base, off))
-//                {
-//                    splitCurve = true;
-//                    break;
-//                }
-//            }
+            else
+            {
+                final int numSamp = 5;
+                double ds = 1.0 / (numSamp + 1);
+                for (int i = 0; i < numSamp; ++i)
+                {
+                    if (!isParallelEnough((i + 1) * ds, base, off))
+                    {
+                        splitCurve = true;
+                        break;
+                    }
+                }
+            }
         }
         
         if (!splitCurve)
@@ -270,11 +272,11 @@ public class PathOutliner extends PathConsumer
 
     private void addJoin(CyVector2d p0, CyVector2d p1, List<BezierCurve2d> list)
     {
-        if (p0.distanceSquared(p1) < flatnessSquared)
-        {
-            //If close enough, ignore
-            return;
-        }
+//        if (p0.distanceSquared(p1) < flatnessSquared)
+//        {
+//            //If close enough, ignore
+//            return;
+//        }
 
         switch (join)
         {

@@ -28,6 +28,7 @@ import java.util.Iterator;
  *
  * @author kitfox
  */
+@Deprecated
 public class PathTessellator2 extends PathConsumer
 {
     double mx, my;
