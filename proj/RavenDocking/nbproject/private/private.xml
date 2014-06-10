@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
-    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenDocking/src/com/kitfox/docking/test/DockingTestFrame2.java</file>
-        <file>file:/C:/dev/java.net/raven/trunk/proj/RavenDocking/src/com/kitfox/docking/test/TestContentTextPane.java</file>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group name="Raven"/>
+        <group name="FontEditor3">
+            <file>file:/C:/dev/java.net/raven/trunk/proj/RavenDocking/src/com/kitfox/docking/DockingContainer.java</file>
+            <file>file:/C:/dev/java.net/raven/trunk/proj/RavenDocking/src/com/kitfox/docking/DraggingOverlayPanel.java</file>
+            <file>file:/C:/dev/java.net/raven/trunk/proj/RavenDocking/src/com/kitfox/docking/MinimizeTitlePanel.java</file>
+            <file>file:/C:/dev/java.net/raven/trunk/proj/RavenDocking/src/com/kitfox/docking/TabbedPaneTitle.java</file>
+            <file>file:/C:/dev/java.net/raven/trunk/proj/RavenDocking/src/com/kitfox/docking/DockingRegionContainer.java</file>
+            <file>file:/C:/dev/java.net/raven/trunk/proj/RavenDocking/src/com/kitfox/docking/DockingChild.java</file>
+            <file>file:/C:/dev/java.net/raven/trunk/proj/RavenDocking/src/com/kitfox/docking/RestoreRecord.java</file>
+            <file>file:/C:/dev/java.net/raven/trunk/proj/RavenDocking/src/com/kitfox/docking/DockingContent.java</file>
+            <file>file:/C:/dev/java.net/raven/trunk/proj/RavenDocking/src/com/kitfox/docking/DockingRegionTabbed.java</file>
+        </group>
     </open-files>
 </project-private>
